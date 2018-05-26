@@ -1,6 +1,14 @@
 var HtmlWebpackPlugin = require('html-webpack-plugin')
 
 module.exports = {
+  configureWebpack: {
+    resolve: {
+      alias: {
+        'vue$': 'vue/dist/vue.esm.js' // Full version with template compiler
+      }
+    }
+  },
+
   chainWebpack: config => {
     config
       .plugin('app-html')

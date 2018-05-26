@@ -1,3 +1,35 @@
+# Design decisions
+
+1. Both 'view.html' and 'edit.html' will share the same JS file.
+
+    Pros:
+    1. It simplifies the building system. By default, 
+    `vue-cli-service serve` treats only `main.js` as the entry.
+    Though we can change it by providing an `entry` parameter, 
+    it means we need to assign different `entry` JS files to
+    different html files.
+    2. It allows us to include the current code in the viewing 
+    page. This can be useful for users to quick view the code.
+    This is NOT a feature we are going to support soon.
+    
+    Cons:
+    1. It means we are including editor's JS into the bundle. It
+    would increase the size by a large extent. This makes `view.html`
+    and `edit.html` almost the same.
+    
+    There is another factor to be considered - the template compiler.
+    We could include the template compiler, and use different template
+    in `view.html` and `edit.html`. This also has its own pros and cons.
+    
+    Pros:
+    1. It is a clearer separation of intentions, as the difference of 
+    viewing and editing is located in the html files. It is at the end
+    of the day why we have two html files.
+    
+    Cons:
+    1. It increases the JS file by about 25Kb (10Kb zipped) for both
+    viewing and editing.
+
 # Output
 ## edit.html, edit.js
 These two files are used to insert or update the sequence diagram. 
