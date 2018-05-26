@@ -106,26 +106,8 @@
 </head>
 <body>
 <div id="app" class="container">
-    <div id="editor" class="split">
-        <div class="hint" style="padding-left: 19px">Create a sequence diagram here. <a target="_blank"
-                                                                                        href='https://www.zenuml.com/ZenUML_Sequence_Diagram_addon_help.html'>Documentation</a>
-        </div>
-        <editor></editor>
-    </div>
-    <div id="diagram" class="split">
-        <seq-diagram></seq-diagram>
-    </div>
+    <workspace></workspace>
 </div>
-
-<script>
-  function render() {
-    Split(['#editor', '#diagram'], {sizes: [35, 65]});
-  }
-
-  document.addEventListener("DOMContentLoaded", function (event) {
-    render()
-  });
-</script>
 <!-- built files will be auto injected -->
 </body>
 </html>

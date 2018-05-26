@@ -1,17 +1,26 @@
 <template>
-    <codemirror
-            :code="code"
-            :options="editorOptions"
-            @change="onEditorCodeChange">
+  <div class="editor">
+    <div class="header">
+      <span class="prompt">Write you code here.</span>
+      <a class="help-link" target="_blank" :href="helpUrl">Help</a>
+    </div>
+    <codemirror class="dsl-editor"
+      :code="code"
+      :options="editorOptions"
+      @change="onEditorCodeChange">
     </codemirror>
+  </div>
+
 </template>
 
 <script>
   import 'codemirror/keymap/sublime';
+
   export default {
     name: 'editor',
     data() {
       return {
+        helpUrl: '',
         editorOptions: {
           tabSize: 4,
           mode: 'text/javascript',
@@ -42,3 +51,19 @@
     }
   }
 </script>
+
+<style scoped>
+  .editor {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+  .header {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .CodeMirror {
+    flex-grow: 1;
+  }
+</style>
