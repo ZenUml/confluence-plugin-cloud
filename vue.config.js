@@ -11,10 +11,17 @@ module.exports = {
 
   chainWebpack: config => {
     config
-      .plugin('app-html')
+      .plugin('viewer-html')
       .use(HtmlWebpackPlugin, [{
         filename: 'view.html',
         template: './public/view.html',
+        inject: true
+      }])
+    config
+      .plugin('editor-html')
+      .use(HtmlWebpackPlugin, [{
+        filename: 'edit.html',
+        template: './public/edit.html',
         inject: true
       }])
 
@@ -23,6 +30,7 @@ module.exports = {
       .tap(args => {
         // constructor parameter for 'CopyWebpackPlugin'
         args[0][0].ignore.push('view.html')
+        args[0][0].ignore.push('edit.html')
         return args
       })
   }
