@@ -82,10 +82,6 @@
     margin-top: 5px;
   }
 
-  div.CodeMirror {
-    background-color: #fafafa !important;
-  }
-
   body {
     background-color: #f5f5f5;
   }
