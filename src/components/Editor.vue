@@ -7,7 +7,7 @@
     <codemirror class="dsl-editor"
       :code="code"
       :options="cmOptions"
-      @change="onEditorCodeChange">
+      @input="onEditorCodeChange">
     </codemirror>
   </div>
 

@@ -10,8 +10,8 @@
 </template>
 
 <script>
+  import { SeqDiagram } from 'vue-sequence'
   import Editor from './Editor.vue'
-  import { SeqDiagram, Store } from 'vue-sequence'
   import Split from 'split.js'
 
   export default {
