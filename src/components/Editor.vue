@@ -24,7 +24,7 @@
     name: 'editor',
     data() {
       return {
-        helpUrl: '',
+        helpUrl: 'https://www.zenuml.com/help.html',
         cmOptions: {
           tabSize: 4,
           mode: 'text/javascript',
