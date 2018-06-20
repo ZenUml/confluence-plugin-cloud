@@ -7,7 +7,7 @@ module.exports = {
   configureWebpack: {
     resolve: {
       alias: {
-        'vue$': 'vue/dist/vue.esm.js' // Full version with template compiler
+        // 'vue$': 'vue/dist/vue.esm.js' // Full version with template compiler
       }
     }
   },

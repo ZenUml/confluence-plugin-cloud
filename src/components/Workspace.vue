@@ -32,7 +32,7 @@
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
   .workspace {
-    height: 100%;
+    height: 480px;
   }
 
   .gutter {

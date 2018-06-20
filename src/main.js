@@ -3,11 +3,13 @@ import Vuex from 'vuex'
 import VueCodeMirror from 'vue-codemirror'
 import Split from 'split.js'
 
-import { SeqDiagram, Store } from 'vue-sequence'
+import { Version, SeqDiagram, Store } from 'vue-sequence'
 import 'vue-sequence/dist/vue-sequence.css'
-
+// eslint-disable-next-line
+console.log(Version)
 import Editor from './components/Editor'
 import Workspace from './components/Workspace'
+import App from './App'
 
 
 Vue.config.productionTip = false
@@ -20,14 +22,12 @@ Vue.use(VueCodeMirror)
 Vue.use(Vuex)
 const store = new Vuex.Store(Store);
 
-
 new Vue({
-  store
+  store,
+  render: h => h(App) // with this method, we don't need to use full version of vew
 }).$mount('#app')
 store.commit('code', 'A.method()')
 window.Split = Split
-// Equals to the above
-// new Vue({
-//   store
-//   el: '#app'
-// })
+if(window.onAppLoaded) {
+  window.onAppLoaded();
+}
