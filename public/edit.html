@@ -35,12 +35,9 @@
             overflow-x: auto;
         }
 
-        .container {
-            width: 100%;
+        #app {
             height: 480px;
-            margin-top: -10px;
         }
-
         .hint {
             margin-bottom: 5px;
         }
@@ -75,13 +72,13 @@
           if (!body) {
             body = EXAMPLE;
           }
-          window.app.$store.commit('code', body);
+          store.commit('code', body);
         });
 
         AP.require(["confluence", "dialog"], function (confluence, dialog) {
           function onSubmit() {
             var macroParams = {};
-            var macroBody = app.$store.state.code;
+            var macroBody = store.state.code;
             confluence.saveMacro(macroParams, macroBody);
             confluence.closeMacroEditor();
             return true;
@@ -96,6 +93,8 @@
       }
 
       window.onAppLoaded = loadConnect;
+
+      window.split = true;
 
     </script>
     <script type="text/javascript" src="js/heap.js"></script>

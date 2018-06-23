@@ -1,9 +1,9 @@
 <template>
   <div class="workspace">
-    <div id="workspace-left" class="split">
+    <div id="workspace-left" class="split editor">
       <editor/>
     </div>
-    <div id="workspace-right" class="split">
+    <div id="workspace-right" class="split diagram">
       <seq-diagram/>
     </div>
   </div>
@@ -20,7 +20,9 @@
       msg: String
     },
     mounted () {
-      Split(['#workspace-left', '#workspace-right'], { sizes: [35, 65]})
+      if (window.split) {
+        Split(['#workspace-left', '#workspace-right'], { sizes: [35, 65]})
+      }
     },
     components: {
       Editor,
@@ -30,9 +32,9 @@
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped>
+<style>
   .workspace {
-    height: 480px;
+    height: 100%;
   }
 
   .gutter {
@@ -50,6 +52,18 @@
     cursor: ew-resize;
   }
 
+  .view .gutter.gutter-horizontal {
+    display: none;
+  }
+
+  .view .editor {
+    display: none;
+  }
+
+  .view .diagram {
+    width: 100%;
+  }
+
   .split, .gutter.gutter-horizontal {
     float: left;
   }
@@ -65,8 +79,6 @@
 
   .container {
     width: 100%;
-    height: 480px;
-    margin-top: -10px;
   }
 
   .hint {
@@ -83,6 +95,6 @@
   }
 
   body {
-    background-color: #f5f5f5;
+    background-color: #fafafa;
   }
 </style>

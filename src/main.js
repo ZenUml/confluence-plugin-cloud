@@ -26,8 +26,7 @@ new Vue({
   store,
   render: h => h(App) // with this method, we don't need to use full version of vew
 }).$mount('#app')
-store.commit('code', 'A.method()')
-window.Split = Split
+window.store = store
 if(window.onAppLoaded) {
   window.onAppLoaded();
 }

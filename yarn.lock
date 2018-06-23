@@ -6779,9 +6779,9 @@ vue-loader@^15.2.0:
     vue-hot-reload-api "^2.3.0"
     vue-style-loader "^4.1.0"
 
-vue-sequence@^0.5.27:
-  version "0.5.27"
-  resolved "https://registry.yarnpkg.com/vue-sequence/-/vue-sequence-0.5.27.tgz#f136a32d1bf9022ca051497fd815e6c80d615a68"
+vue-sequence@^0.5.29:
+  version "0.5.29"
+  resolved "https://registry.yarnpkg.com/vue-sequence/-/vue-sequence-0.5.29.tgz#4365115f90c5ddc68d8fa7d9d52df81bf0bbe721"
   dependencies:
     sequence-parser "^0.5.9"
     vue "^2.5.16"

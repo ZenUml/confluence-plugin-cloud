@@ -11,7 +11,7 @@
   <script id="connect-loader">
     function initializeMacro() {
       loadMacroBody(function(body) {
-        app.$store.commit('code', body);
+        store.commit('code', body);
         AP.resize(document.body.scrollWidth, document.body.scrollHeight);
       });
     }
@@ -23,17 +23,13 @@
   </script>
 
   <script type="text/javascript" src="js/heap.js"></script>
-<link href="/latest/css/chunk-vendors.b114880e.css" rel="stylesheet"><link href="/latest/css/app.054c7662.css" rel="stylesheet"></head>
+<link href="/v1.0.7/css/chunk-vendors.8cdb264c.css" rel="stylesheet"><link href="/v1.0.7/css/app.ee1b34eb.css" rel="stylesheet"></head>
 <body>
-<div id="workspace" class="container">
+<div id="workspace" class="container view">
   <div id="app">
     <seq-diagram></seq-diagram>
-
-      <div id="error">
-
-      </div>
   </div>
 </div>
 <!-- built files will be auto injected -->
-<script type="text/javascript" src="/latest/js/chunk-vendors.7a974683.js"></script><script type="text/javascript" src="/latest/js/app.1f3562d9.js"></script></body>
+<script type="text/javascript" src="/v1.0.7/js/chunk-vendors.4f6c06e9.js"></script><script type="text/javascript" src="/v1.0.7/js/app.f07d98cb.js"></script></body>
 </html>
