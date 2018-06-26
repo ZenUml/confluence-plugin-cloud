@@ -24,7 +24,7 @@
     name: 'editor',
     data() {
       return {
-        helpUrl: 'https://www.zenuml.com/help.html',
+        helpUrl: 'https://www.zenuml.com/ZenUML_Sequence_Diagram_addon_help.html',
         cmOptions: {
           tabSize: 4,
           mode: 'text/javascript',
