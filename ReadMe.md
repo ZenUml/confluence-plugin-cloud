@@ -4,7 +4,13 @@ $ yarn serve
 # Release
 $ yarn build
 
-> Make sure to update `$VERSION` in package.json.
+> Make sure to update `$VERSION` in package.json. RECOVER old versions before commit.
+
+$ yarn sync
+
+> You need to first configure `aws` cli.
+
+The application will be released to "https://atlassian.zenuml.com/v1.0.9/edit.html".
 
 # Design decisions
 
