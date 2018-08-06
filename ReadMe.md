@@ -1,3 +1,11 @@
+# Run locally
+$ yarn serve
+
+# Release
+$ yarn build
+
+> Make sure to update `$VERSION` in package.json.
+
 # Design decisions
 
 1. Both 'view.html' and 'edit.html' will share the same JS file.
