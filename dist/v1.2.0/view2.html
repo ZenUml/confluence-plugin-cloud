@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-114996686-1"></script>
+  <script type="text/javascript" src="js/google-analytics.js"></script>
+  <title>view-sequence</title>
+
+  <meta charset="utf-8">
+  <script type="text/javascript" src="js/util.js"></script>
+  <script id="connect-loader">
+    function loadCode() {
+      var code = getUrlParam('code') || 'A->B:message';
+      if(code) {
+        store.commit('code', code);
+      }
+    }
+
+    window.onAppLoaded = loadCode;
+  </script>
+
+  <script type="text/javascript" src="js/heap.js"></script>
+<link href="/v1.2.0/css/chunk-vendors.53aa4f3c.css" rel="stylesheet"><link href="/v1.2.0/css/app.d5395ff5.css" rel="stylesheet"></head>
+<body>
+<div id="workspace" class="container view">
+  <div id="app">
+    <seq-diagram></seq-diagram>
+  </div>
+</div>
+<!-- built files will be auto injected -->
+<script type="text/javascript" src="/v1.2.0/js/chunk-vendors.69fccd3d.js"></script><script type="text/javascript" src="/v1.2.0/js/app.0632574e.js"></script></body>
+</html>
