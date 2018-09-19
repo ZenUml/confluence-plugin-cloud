@@ -21,10 +21,10 @@ module.exports = {
         inject: true
       }])
     config
-      .plugin('viewer2-html')
+      .plugin('v-html')
       .use(HtmlWebpackPlugin, [{
-        filename: `./${version}/view2.html`,
-        template: './public/view2.html',
+        filename: `./${version}/v.html`,
+        template: './public/v.html',
         inject: true
       }])
     config
