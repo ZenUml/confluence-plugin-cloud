@@ -4,11 +4,17 @@
       <span class="prompt FilePath">Write you code here.</span>
       <a class="help-link prettify-btn" target="_blank" :href="helpUrl">Help</a>
     </div>
-    <codemirror class="dsl-editor"
-      :code="code"
-      :options="cmOptions"
-      @input="onEditorCodeChange">
-    </codemirror>
+    <div class="body">
+      <div class="toolbox">
+        <img class="toolbox-item" src="https://www.websequencediagrams.com/t-signal.png" v-on:click="onToolboxClicked">
+        <img class="toolbox-item" src="https://www.websequencediagrams.com/t-dotted.png" v-on:click="onToolboxClicked">
+      </div>
+      <codemirror class="dsl-editor"
+        :code="code"
+        :options="cmOptions"
+        @input="onEditorCodeChange">
+      </codemirror>
+    </div>
   </div>
 
 </template>
@@ -43,6 +49,10 @@
     methods: {
       onEditorCodeChange(newCode) {
         this.$store.dispatch('updateCode', {code: newCode})
+      },
+      
+      onToolboxClicked(newCode) {
+        this.$store.dispatch('updateCode', {code: this.$store.state.code + '\nA->B:text'})
       }
     },
     computed: {
@@ -57,14 +67,28 @@
 </script>
 
 <style scoped>
-  .editor {
+  .editor, .toolbox {
     display: flex;
     flex-direction: column;
     height: 100%;
   }
-  .header {
+
+  .toolbox {
+    margin-top: 2px;
+    margin-right: 10px;
+  }
+
+  .toolbox-item {
+    margin-bottom: 2px;
+  }
+
+  .header, .body {
     display: flex;
     justify-content: space-between;
+  }
+
+  .body {
+    height: 100%;
   }
 
   .Editor-subheader {
