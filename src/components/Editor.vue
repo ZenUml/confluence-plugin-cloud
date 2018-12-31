@@ -5,10 +5,17 @@
       <a class="help-link prettify-btn" target="_blank" :href="helpUrl">Help</a>
     </div>
     <div class="toolbox button waves-effect">
-
+      <svg width="20px" height="20px" viewBox="0 0 50 50" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+        <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+          <g id="Participant-Copy" stroke="#202020">
+            <rect id="Rectangle" x="8.5" y="4.5" width="34" height="10" rx="3"></rect>
+            <path d="M25.5,15 L25.5,47.5" id="Line" stroke-linecap="square" stroke-dasharray="5"></path>
+          </g>
+        </g>
+      </svg>
       <svg v-on:click="onToolboxClicked"
            width="20px" height="20px" viewBox="0 0 50 50" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-        <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
           <g id="Message-Copy">
             <path d="M40.5,5 L40.5,47" id="Line" stroke="#202020" stroke-linecap="square" stroke-dasharray="5"></path>
             <path d="M11.6315789,20 L37,20" id="Line-2" stroke="#202020" stroke-width="2" stroke-linecap="square"></path>
@@ -19,17 +26,70 @@
           </g>
         </g>
       </svg>
-
-
       <svg v-on:click="onToolboxClicked"
         width="20px" height="20px" viewBox="0 0 50 50" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-        <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
           <g id="Execution-Copy" stroke="#202020">
             <path d="M40.5,5 L40.5,47" id="Line" stroke-linecap="square" stroke-dasharray="5"></path>
             <rect id="Rectangle" fill="#FFFFFF" x="37.5" y="20.5" width="6" height="13"></rect>
             <path d="M11.6315789,20 L34.3684211,20" id="Line-2" stroke-width="2" stroke-linecap="square"></path>
             <polygon id="Triangle" stroke-width="2" fill="#202020" transform="translate(32.473684, 20.000000) rotate(90.000000) translate(-32.473684, -20.000000) " points="32.4736842 15.4736842 36.4736842 24.5263158 28.4736842 24.5263158"></polygon>
             <path d="M9.5,5 L9.5,47" id="Line" stroke-linecap="square" stroke-dasharray="5"></path>
+          </g>
+        </g>
+      </svg>
+
+      <svg width="20px" height="20px" viewBox="0 0 50 50" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+        <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+          <g id="Creation-Copy">
+            <path d="M40.5,32 L40.5,49" id="Line" stroke="#202020" stroke-linecap="square" stroke-dasharray="5"></path>
+            <path d="M11.6315789,26 L29,26" id="Line-2" stroke="#202020" stroke-width="2" fill="#202020" stroke-linecap="square"></path>
+            <polygon id="Triangle" stroke="#202020" stroke-width="2" fill="#202020" transform="translate(28.526316, 26.000000) rotate(90.000000) translate(-28.526316, -26.000000) " points="28.5263158 21.4736842 32.5263158 30.5263158 24.5263158 30.5263158"></polygon>
+            <path d="M9.5,5 L9.5,47" id="Line" stroke="#202020" stroke-linecap="square" stroke-dasharray="5"></path>
+            <rect id="Rectangle" stroke="#202020" x="35.5" y="20.5" width="10" height="10" rx="3"></rect>
+            <text id="C" font-family="LucidaConsole, Lucida Console" font-size="18" font-weight="normal" fill="#202020">
+              <tspan x="11.6315789" y="24">C</tspan>
+            </text>
+          </g>
+        </g>
+      </svg>
+
+      <svg width="20px" height="20px" viewBox="0 0 50 50" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+        <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+          <g id="Alt-Copy">
+            <rect id="Rectangle" stroke="#202020" x="4.5" y="8.5" width="41" height="35"></rect>
+            <path d="M5.57147686,20.9013672 L22,21" id="Line-3" stroke="#202020" stroke-linecap="square"></path>
+            <text id="Alt" font-family="Arial-Black, Arial Black" font-size="14" font-weight="700" fill="#202020">
+              <tspan x="14" y="37">Alt</tspan>
+            </text>
+            <path d="M25.5,15.2006836 L22.1101562,20.9013672" id="Line-3" stroke="#202020" stroke-linecap="square"></path>
+            <path d="M25.5,15.2006836 L25.5,9" id="Line-4" stroke="#202020" stroke-linecap="square"></path>
+          </g>
+        </g>
+      </svg>
+
+      <svg width="20px" height="20px" viewBox="0 0 50 50" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+        <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+          <g id="Loop-Copy">
+            <rect id="Rectangle" stroke="#202020" x="4.5" y="8.5" width="41" height="35"></rect>
+            <path d="M5.57147686,20.9013672 L22,21" id="Line-3" stroke="#202020" stroke-linecap="square"></path>
+            <text id="Loop" font-family="Arial-Black, Arial Black" font-size="14" font-weight="700" fill="#202020">
+              <tspan x="6" y="37">Loop</tspan>
+            </text>
+            <path d="M25.5,15.2006836 L22.1101562,20.9013672" id="Line-3" stroke="#202020" stroke-linecap="square"></path>
+            <path d="M25.5,15.2006836 L25.5,9" id="Line-4" stroke="#202020" stroke-linecap="square"></path>
+          </g>
+        </g>
+      </svg>
+
+      <svg width="20px" height="20px" viewBox="0 0 50 50" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+        <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+          <g id="Note-Copy">
+            <path d="M7.625,15 L2.375,30.5" id="Line" stroke="#202020" stroke-linecap="square"></path>
+            <path d="M10.625,15 L5,31" id="Line" stroke="#202020" stroke-linecap="square"></path>
+            <text id="Note" font-family="Arial-ItalicMT, Arial" font-size="18" font-style="italic" font-weight="normal" fill="#202020">
+              <tspan x="9" y="30">Note</tspan>
+            </text>
           </g>
         </g>
       </svg>
