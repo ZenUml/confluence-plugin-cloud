@@ -196,6 +196,7 @@
 
   .toolbox svg {
     margin-right: 8px;
+    cursor: pointer;
   }
 
   .toolbox svg.help {
