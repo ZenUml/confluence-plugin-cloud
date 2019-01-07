@@ -4,7 +4,7 @@
       <span class="prompt FilePath">Write you code here.</span>
       <a class="help-link prettify-btn" target="_blank" :href="helpUrl">Help</a>
     </div>
-    <div class="toolbox button waves-effect">
+    <div class="toolbox">
       <svg v-on:click="addParticipant()"
          width="20px" height="20px" viewBox="0 0 50 50" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
         <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
@@ -56,7 +56,7 @@
         </g>
       </svg>
 
-      <svg v-on:click="appendCode('A.message {\n\if(condition) {\n\t}\n}')"
+      <svg v-on:click="appendCode('if(condition) {\n\t A.method()\n}\n')"
          width="20px" height="20px" viewBox="0 0 50 50" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
         <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
           <g id="Alt-Copy">
@@ -71,7 +71,7 @@
         </g>
       </svg>
 
-      <svg v-on:click="appendCode('A.message {\n\while(condition) {\n\t}\n}')"
+      <svg v-on:click="appendCode('while(condition) {\n\t A.method()\n}\n')"
          width="20px" height="20px" viewBox="0 0 50 50" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
         <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
           <g id="Loop-Copy">
@@ -94,6 +94,17 @@
             <path d="M10.625,15 L5,31" id="Line" stroke="#202020" stroke-linecap="square"></path>
             <text id="Note" font-family="Arial-ItalicMT, Arial" font-size="18" font-style="italic" font-weight="normal" fill="#202020">
               <tspan x="9" y="30">Note</tspan>
+            </text>
+          </g>
+        </g>
+      </svg>
+
+      <svg class="help" width="20px" height="20px" viewBox="0 0 50 50" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+        <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+          <g id="Help">
+            <circle id="Oval" stroke="#979797" fill="#D8D8D8" cx="25.5" cy="25.5" r="14.5"></circle>
+            <text id="?" font-family="ArialMT, Arial" font-size="18" font-weight="normal" fill="#202020">
+              <tspan x="20" y="32">?</tspan>
             </text>
           </g>
         </g>
@@ -175,28 +186,20 @@
 <style scoped>
 
 
-  .toolbox.button{
-    display: inline-block;
-    height: 22px;
+  .toolbox {
+    display: flex;
     padding: 5px;
     margin: 2px 2px;
     background: #FFF;
     box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14), 0 3px 1px -2px rgba(0,0,0,0.12), 0 1px 5px 0 rgba(0,0,0,0.2);
-    transition: all 0.3s;
-    border-radius: 3px;
-  }
-
-  .toolbox.waves-effect {
-    position: relative;
-    cursor: pointer;
-    display: inline-block;
-    overflow: hidden;
-    user-select: none;
-    transition: .3s ease-out;
   }
 
   .toolbox svg {
-    padding-right: 15px;
+    margin-right: 8px;
+  }
+
+  .toolbox svg.help {
+    margin-left: auto;
   }
 
   .editor {
