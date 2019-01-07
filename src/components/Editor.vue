@@ -5,7 +5,8 @@
       <a class="help-link prettify-btn" target="_blank" :href="helpUrl">Help</a>
     </div>
     <div class="toolbox button waves-effect">
-      <svg width="20px" height="20px" viewBox="0 0 50 50" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+      <svg v-on:click="addParticipant()"
+         width="20px" height="20px" viewBox="0 0 50 50" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
         <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
           <g id="Participant-Copy" stroke="#202020">
             <rect id="Rectangle" x="8.5" y="4.5" width="34" height="10" rx="3"></rect>
@@ -13,7 +14,7 @@
           </g>
         </g>
       </svg>
-      <svg v-on:click="onToolboxClicked"
+      <svg v-on:click="appendCode('A->B:message')"
            width="20px" height="20px" viewBox="0 0 50 50" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
         <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
           <g id="Message-Copy">
@@ -26,7 +27,7 @@
           </g>
         </g>
       </svg>
-      <svg v-on:click="onToolboxClicked"
+      <svg v-on:click="appendCode('A.message {\n}')"
         width="20px" height="20px" viewBox="0 0 50 50" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
         <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
           <g id="Execution-Copy" stroke="#202020">
@@ -39,7 +40,8 @@
         </g>
       </svg>
 
-      <svg width="20px" height="20px" viewBox="0 0 50 50" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+      <svg v-on:click="appendCode('a = new A()')"
+        width="20px" height="20px" viewBox="0 0 50 50" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
         <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
           <g id="Creation-Copy">
             <path d="M40.5,32 L40.5,49" id="Line" stroke="#202020" stroke-linecap="square" stroke-dasharray="5"></path>
@@ -54,7 +56,8 @@
         </g>
       </svg>
 
-      <svg width="20px" height="20px" viewBox="0 0 50 50" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+      <svg v-on:click="appendCode('A.message {\n\if(condition) {\n\t}\n}')"
+         width="20px" height="20px" viewBox="0 0 50 50" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
         <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
           <g id="Alt-Copy">
             <rect id="Rectangle" stroke="#202020" x="4.5" y="8.5" width="41" height="35"></rect>
@@ -68,7 +71,8 @@
         </g>
       </svg>
 
-      <svg width="20px" height="20px" viewBox="0 0 50 50" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+      <svg v-on:click="appendCode('A.message {\n\while(condition) {\n\t}\n}')"
+         width="20px" height="20px" viewBox="0 0 50 50" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
         <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
           <g id="Loop-Copy">
             <rect id="Rectangle" stroke="#202020" x="4.5" y="8.5" width="41" height="35"></rect>
@@ -82,7 +86,8 @@
         </g>
       </svg>
 
-      <svg width="20px" height="20px" viewBox="0 0 50 50" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+      <svg v-on:click="appendCode('//Note')"
+         width="20px" height="20px" viewBox="0 0 50 50" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
         <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
           <g id="Note-Copy">
             <path d="M7.625,15 L2.375,30.5" id="Line" stroke="#202020" stroke-linecap="square"></path>
@@ -136,9 +141,24 @@
       onEditorCodeChange(newCode) {
         this.$store.dispatch('updateCode', {code: newCode})
       },
-
-      onToolboxClicked(newCode) {
-        this.$store.dispatch('updateCode', {code: this.$store.state.code + '\nA->B:text'})
+      appendCode(code) {
+        this.$store.dispatch('updateCode', {code: this.$store.state.code + `\n${code}`});
+      },
+      addParticipant() {
+        let code = this.$store.state.code;
+        let lines = code.split('\n');
+        let buffer = '', added = false;
+        lines.forEach(line => {
+          if(!added && (line.trim().length > 0 && !line.trim().startsWith('//'))) {
+            buffer = `${buffer}\nNewParticipant`;
+            added = true;
+          }
+          buffer = `${buffer}\n${line}`;
+        });
+        if(!added) {
+          buffer = `${code}\nNewParticipant`;
+        }
+        this.$store.dispatch('updateCode', {code: buffer});
       }
     },
     computed: {
