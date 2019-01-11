@@ -27,6 +27,30 @@
           </g>
         </g>
       </svg>
+      <svg width="20px" height="20px" viewBox="0 0 50 50" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+        <!-- Generator: Sketch 52.5 (67469) - http://www.bohemiancoding.com/sketch -->
+        <title>Execution Copy 3</title>
+        <desc>Created with Sketch.</desc>
+        <g id="Execution-Copy-3" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+          <path d="M20.5,4 L20.5,46" id="Line" stroke="#202020" stroke-linecap="square" stroke-dasharray="5"></path>
+          <g id="Group-3" transform="translate(21.000000, 14.000000)">
+            <g id="Group-2">
+              <g id="Group" stroke="#202020" stroke-linecap="square" stroke-width="2">
+                <path d="M0.5,1 L19,1" id="Line-2"></path>
+                <path d="M19,12 L19,1" id="Line-2"></path>
+              </g>
+              <g id="Group" transform="translate(9.500000, 12.000000) rotate(-180.000000) translate(-9.500000, -12.000000) translate(4.000000, 5.000000)">
+                <path d="M6.97368421,0.725839752 L12.5869926,12.0263158 L1.36037585,12.0263158 L6.97368421,0.725839752 Z" id="Triangle" stroke="#202020" stroke-width="2" transform="translate(6.973684, 7.000000) rotate(90.000000) translate(-6.973684, -7.000000) "></path>
+                <path d="M6.97368421,0.725839752 L12.5869926,12.0263158 L1.36037585,12.0263158 L6.97368421,0.725839752 Z" id="Triangle-Copy" stroke="#202020" stroke-width="2" transform="translate(6.973684, 7.000000) rotate(90.000000) translate(-6.973684, -7.000000) "></path>
+                <rect id="Rectangle" fill="#FFFFFF" x="0" y="0" width="3" height="6"></rect>
+                <rect id="Rectangle" fill="#FFFFFF" x="0" y="8" width="3" height="6"></rect>
+              </g>
+            </g>
+            <path d="M3,12 L18,12" id="Line-2" stroke="#202020" stroke-width="2" stroke-linecap="square" transform="translate(10.500000, 12.000000) rotate(-180.000000) translate(-10.500000, -12.000000) "></path>
+          </g>
+        </g>
+      </svg>
+
       <svg v-on:click="appendCode('A.message {\n}')"
         width="20px" height="20px" viewBox="0 0 50 50" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
         <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
@@ -36,6 +60,41 @@
             <path d="M11.6315789,20 L34.3684211,20" id="Line-2" stroke-width="2" stroke-linecap="square"></path>
             <polygon id="Triangle" stroke-width="2" fill="#202020" transform="translate(32.473684, 20.000000) rotate(90.000000) translate(-32.473684, -20.000000) " points="32.4736842 15.4736842 36.4736842 24.5263158 28.4736842 24.5263158"></polygon>
             <path d="M9.5,5 L9.5,47" id="Line" stroke-linecap="square" stroke-dasharray="5"></path>
+          </g>
+        </g>
+      </svg>
+      <svg width="20px" height="20px" viewBox="0 0 50 50" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+        <!-- Generator: Sketch 52.5 (67469) - http://www.bohemiancoding.com/sketch -->
+        <title>Execution Copy 4</title>
+        <desc>Created with Sketch.</desc>
+        <g id="Execution-Copy-4" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+          <path d="M40.5,5 L40.5,47" id="Line" stroke="#202020" stroke-linecap="square" stroke-dasharray="5"></path>
+          <rect id="Rectangle" stroke="#202020" fill="#FFFFFF" x="37.5" y="20.5" width="6" height="13"></rect>
+          <path d="M11.6315789,20 L34.3684211,20" id="Line-2" stroke="#202020" stroke-width="2" stroke-linecap="square"></path>
+          <polygon id="Triangle" stroke="#202020" stroke-width="2" fill="#202020" transform="translate(32.473684, 20.000000) rotate(90.000000) translate(-32.473684, -20.000000) " points="32.4736842 15.4736842 36.4736842 24.5263158 28.4736842 24.5263158"></polygon>
+          <path d="M9.5,5 L9.5,47" id="Line" stroke="#202020" stroke-linecap="square" stroke-dasharray="5"></path>
+          <path d="M36.5,34 L17.0526316,34" id="Line" stroke="#202020" stroke-width="2" stroke-linecap="square" stroke-dasharray="3"></path>
+          <path d="M11.5,34 L18,34" id="Line-2-Copy" stroke="#202020" stroke-width="2" stroke-linecap="square" transform="translate(15.000000, 34.000000) rotate(-180.000000) translate(-15.000000, -34.000000) "></path>
+          <g id="Group-Copy" transform="translate(19.500000, 34.000000) rotate(-180.000000) translate(-19.500000, -34.000000) translate(14.000000, 27.000000)">
+            <path d="M6.97368421,0.725839752 L12.5869926,12.0263158 L1.36037585,12.0263158 L6.97368421,0.725839752 Z" id="Triangle" stroke="#202020" stroke-width="2" transform="translate(6.973684, 7.000000) rotate(90.000000) translate(-6.973684, -7.000000) "></path>
+            <path d="M6.97368421,0.725839752 L12.5869926,12.0263158 L1.36037585,12.0263158 L6.97368421,0.725839752 Z" id="Triangle-Copy" stroke="#202020" stroke-width="2" transform="translate(6.973684, 7.000000) rotate(90.000000) translate(-6.973684, -7.000000) "></path>
+            <rect id="Rectangle" fill="#FFFFFF" x="0" y="0" width="3" height="6"></rect>
+            <rect id="Rectangle" fill="#FFFFFF" x="0" y="8" width="3" height="6"></rect>
+          </g>
+        </g>
+      </svg>
+      <svg width="20px" height="20px" viewBox="0 0 50 50" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+        <title>Self sync message</title>
+        <g id="Execution-Copy-2" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+          <path d="M20.5,4 L20.5,46" id="Line" stroke="#202020" stroke-linecap="square" stroke-dasharray="5"></path>
+          <rect id="Rectangle" stroke="#202020" fill="#FFFFFF" x="17.5" y="24.5" width="6" height="13"></rect>
+          <g id="Group-2" transform="translate(20.000000, 12.000000)" stroke="#202020" stroke-width="2">
+            <g id="Group">
+              <path d="M1,1 L23,1" id="Line-2" stroke-linecap="square"></path>
+              <path d="M17.0526316,12.5 L22.5,12.5" id="Line-2" stroke-linecap="square"></path>
+              <path d="M23,12 L23,1" id="Line-2" stroke-linecap="square"></path>
+              <polygon id="Triangle" fill="#202020" transform="translate(10.526316, 12.000000) rotate(270.000000) translate(-10.526316, -12.000000) " points="10.5263158 7.47368421 14.5263158 16.5263158 6.52631579 16.5263158"></polygon>
+            </g>
           </g>
         </g>
       </svg>
