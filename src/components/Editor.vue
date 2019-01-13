@@ -175,6 +175,7 @@
     </div>
     <div class="body">
       <codemirror class="dsl-editor"
+        ref="myCm"
         :code="code"
         :options="cmOptions"
         @input="onEditorCodeChange">
@@ -219,6 +220,7 @@
       },
       appendCode(code) {
         this.$store.dispatch('updateCode', {code: this.$store.state.code + `\n${code}`});
+        this.codemirror.execCommand('goDocEnd');
       },
       addParticipant() {
         let code = this.$store.state.code;
@@ -235,6 +237,7 @@
           buffer = `${code}\nNewParticipant`;
         }
         this.$store.dispatch('updateCode', {code: buffer});
+        this.codemirror.execCommand('goDocStart');
       }
     },
     computed: {
@@ -243,6 +246,9 @@
       },
       code() {
         return this.$store.state.code
+      },
+      codemirror() {
+        return this.$refs.myCm.codemirror
       }
     }
   }
@@ -286,7 +292,7 @@
 
   .body {
     height: 100%;
-    min-height: 500px;
+    min-height: 400px;
   }
 
   .Editor-subheader {
