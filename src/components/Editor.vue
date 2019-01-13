@@ -79,7 +79,7 @@
           </g>
         </g>
       </svg>
-      <svg v-on:click="appendCode('selfMessage()')"
+      <svg v-on:click="appendCode('A.message() {\n  selfMessage()\n}')"
        width="20px" height="20px" viewBox="0 0 50 50" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
         <title>Self message</title>
         <g id="Execution-Copy-2" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
@@ -115,7 +115,7 @@
 
       <svg v-on:click="appendCode('if(condition) {\n\t A.method()\n}\n')"
          width="20px" height="20px" viewBox="0 0 50 50" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-        <title>Conditional</title> 
+        <title>Conditional</title>
         <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
           <g id="Alt-Copy">
             <rect id="Rectangle" stroke="#202020" x="4.5" y="8.5" width="41" height="35"></rect>
