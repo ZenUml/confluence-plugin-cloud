@@ -1,9 +1,5 @@
 <template>
   <div class="editor">
-    <div class="header Editor-subheader">
-      <span class="prompt FilePath">Write you code here.</span>
-      <a class="help-link prettify-btn" target="_blank" :href="helpUrl">Help</a>
-    </div>
     <div class="toolbox">
       <svg v-on:click="addParticipant()"
          width="20px" height="20px" viewBox="0 0 50 50" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
@@ -193,6 +189,7 @@
   import 'codemirror/lib/codemirror.css'
   // language js
   import 'codemirror/mode/javascript/javascript.js'
+  import 'codemirror/addon/display/placeholder.js'
   // theme css
   import 'codemirror/theme/base16-dark.css'
   export default {
@@ -211,7 +208,8 @@
           foldGutter: true,
           gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
           styleSelectedText: true,
-          highlightSelectionMatches: {showToken: /\w/, annotateScrollbar: true}
+          highlightSelectionMatches: {showToken: /\w/, annotateScrollbar: true},
+          placeholder: 'Write you code here'
         }
       }
     },
@@ -250,9 +248,14 @@
   }
 </script>
 
+<style>
+  .CodeMirror pre.CodeMirror-placeholder {
+    color: #777;
+  }
+</style>
+
+
 <style scoped>
-
-
   .toolbox {
     display: flex;
     padding: 5px;
