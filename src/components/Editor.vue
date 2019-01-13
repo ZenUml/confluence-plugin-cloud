@@ -275,6 +275,7 @@
 
   .body {
     height: 100%;
+    min-height: 500px;
   }
 
   .Editor-subheader {
