@@ -7,6 +7,7 @@
     <div class="toolbox">
       <svg v-on:click="addParticipant()"
          width="20px" height="20px" viewBox="0 0 50 50" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+         <title>New participant</title>
         <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
           <g id="Participant-Copy" stroke="#202020">
             <rect id="Rectangle" x="8.5" y="4.5" width="34" height="10" rx="3"></rect>
@@ -16,6 +17,7 @@
       </svg>
       <svg v-on:click="appendCode('A->B:message')"
            width="20px" height="20px" viewBox="0 0 50 50" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+        <title>Async message</title>
         <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
           <g id="Message-Copy">
             <path d="M40.5,5 L40.5,47" id="Line" stroke="#202020" stroke-linecap="square" stroke-dasharray="5"></path>
@@ -27,10 +29,8 @@
           </g>
         </g>
       </svg>
-      <svg width="20px" height="20px" viewBox="0 0 50 50" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-        <!-- Generator: Sketch 52.5 (67469) - http://www.bohemiancoding.com/sketch -->
-        <title>Execution Copy 3</title>
-        <desc>Created with Sketch.</desc>
+      <svg style="display:none" width="20px" height="20px" viewBox="0 0 50 50" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+        <title>Async self message</title>
         <g id="Execution-Copy-3" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
           <path d="M20.5,4 L20.5,46" id="Line" stroke="#202020" stroke-linecap="square" stroke-dasharray="5"></path>
           <g id="Group-3" transform="translate(21.000000, 14.000000)">
@@ -53,6 +53,7 @@
 
       <svg v-on:click="appendCode('A.message {\n}')"
         width="20px" height="20px" viewBox="0 0 50 50" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+        <title>Sync message</title>
         <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
           <g id="Execution-Copy" stroke="#202020">
             <path d="M40.5,5 L40.5,47" id="Line" stroke-linecap="square" stroke-dasharray="5"></path>
@@ -63,10 +64,9 @@
           </g>
         </g>
       </svg>
-      <svg width="20px" height="20px" viewBox="0 0 50 50" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-        <!-- Generator: Sketch 52.5 (67469) - http://www.bohemiancoding.com/sketch -->
-        <title>Execution Copy 4</title>
-        <desc>Created with Sketch.</desc>
+      <svg v-on:click="appendCode('result = A.message {\n}')"
+         width="20px" height="20px" viewBox="0 0 50 50" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+        <title>Return value</title>
         <g id="Execution-Copy-4" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
           <path d="M40.5,5 L40.5,47" id="Line" stroke="#202020" stroke-linecap="square" stroke-dasharray="5"></path>
           <rect id="Rectangle" stroke="#202020" fill="#FFFFFF" x="37.5" y="20.5" width="6" height="13"></rect>
@@ -83,8 +83,9 @@
           </g>
         </g>
       </svg>
-      <svg width="20px" height="20px" viewBox="0 0 50 50" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-        <title>Self sync message</title>
+      <svg v-on:click="appendCode('selfMessage()')"
+       width="20px" height="20px" viewBox="0 0 50 50" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+        <title>Self message</title>
         <g id="Execution-Copy-2" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
           <path d="M20.5,4 L20.5,46" id="Line" stroke="#202020" stroke-linecap="square" stroke-dasharray="5"></path>
           <rect id="Rectangle" stroke="#202020" fill="#FFFFFF" x="17.5" y="24.5" width="6" height="13"></rect>
@@ -101,6 +102,7 @@
 
       <svg v-on:click="appendCode('a = new A()')"
         width="20px" height="20px" viewBox="0 0 50 50" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+        <title>New instance</title>
         <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
           <g id="Creation-Copy">
             <path d="M40.5,32 L40.5,49" id="Line" stroke="#202020" stroke-linecap="square" stroke-dasharray="5"></path>
@@ -117,6 +119,7 @@
 
       <svg v-on:click="appendCode('if(condition) {\n\t A.method()\n}\n')"
          width="20px" height="20px" viewBox="0 0 50 50" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+        <title>Conditional</title> 
         <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
           <g id="Alt-Copy">
             <rect id="Rectangle" stroke="#202020" x="4.5" y="8.5" width="41" height="35"></rect>
@@ -132,6 +135,7 @@
 
       <svg v-on:click="appendCode('while(condition) {\n\t A.method()\n}\n')"
          width="20px" height="20px" viewBox="0 0 50 50" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+        <title>Loop</title>
         <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
           <g id="Loop-Copy">
             <rect id="Rectangle" stroke="#202020" x="4.5" y="8.5" width="41" height="35"></rect>
@@ -147,6 +151,7 @@
 
       <svg v-on:click="appendCode('//Note')"
          width="20px" height="20px" viewBox="0 0 50 50" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+        <title>Note</title>
         <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
           <g id="Note-Copy">
             <path d="M7.625,15 L2.375,30.5" id="Line" stroke="#202020" stroke-linecap="square"></path>
