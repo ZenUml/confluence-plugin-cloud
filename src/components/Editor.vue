@@ -113,7 +113,7 @@
         </g>
       </svg>
 
-      <svg v-on:click="appendCode('if(condition) {\n\t A.method()\n}\n')"
+      <svg v-on:click="appendCode('if(condition) {\n  A.method()\n}\n')"
          width="20px" height="20px" viewBox="0 0 50 50" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
         <title>Conditional</title>
         <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
@@ -129,7 +129,7 @@
         </g>
       </svg>
 
-      <svg v-on:click="appendCode('while(condition) {\n\t A.method()\n}\n')"
+      <svg v-on:click="appendCode('while(condition) {\n  A.method()\n}\n')"
          width="20px" height="20px" viewBox="0 0 50 50" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
         <title>Loop</title>
         <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
@@ -145,7 +145,7 @@
         </g>
       </svg>
 
-      <svg v-on:click="appendCode('//Note')"
+      <svg v-on:click="appendCode('//Note\nA.message()')"
          width="20px" height="20px" viewBox="0 0 50 50" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
         <title>Note</title>
         <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
