@@ -6,7 +6,7 @@
     "name": "ZenUML",
     "url": "https://www.zenuml.com/"
   },
-  "baseUrl": "https://atlassian.zenuml.com/v1.1.2",
+  "baseUrl": "https://atlassian.zenuml.com/v1.1.3",
   "links": {
     "self": "/atlassian-connect-lite.json",
     "homepage": "https://www.zenuml.com"
