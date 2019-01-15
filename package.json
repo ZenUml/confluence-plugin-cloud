@@ -6,7 +6,7 @@
     "serve": "vue-cli-service serve --open",
     "build": "VERSION=v1.1.3-dev vue-cli-service build",
     "build-win": "set VERSION=v1.1.3-dev&&vue-cli-service build",
-    "sync": "aws s3 sync ./dist s3://atlassian.zenuml.com ",
+    "sync": "aws s3 sync ./dist/v1.1.3-dev s3://atlassian.zenuml.com/v1.1.3-dev ",
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
