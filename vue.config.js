@@ -1,6 +1,8 @@
 var HtmlWebpackPlugin = require('html-webpack-plugin')
 
 var version = process.env.VERSION || 'latest'
+var product_type = process.env.PRODUCT_TYPE
+
 module.exports = {
   assetsDir: version,
   productionSourceMap: false,
@@ -18,14 +20,16 @@ module.exports = {
       .use(HtmlWebpackPlugin, [{
         filename: `./${version}/view.html`,
         template: './public/view.html',
-        inject: true
+        inject: true,
+        product_type: product_type
       }])
     config
       .plugin('editor-html')
       .use(HtmlWebpackPlugin, [{
         filename: `./${version}/edit.html`,
         template: './public/edit.html',
-        inject: true
+        inject: true,
+        product_type: product_type
       }])
 
     config
