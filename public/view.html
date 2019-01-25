@@ -11,8 +11,11 @@
   <script id="connect-loader">
     function initializeMacro() {
       loadMacroBody(function(body) {
-        store.commit('code', body);
-        AP.resize(document.body.scrollWidth, document.body.scrollHeight);
+        // store.commit('code', body);
+        var p = store.dispatch('updateCode', { code: body });
+        p.then(function () {
+          AP.resize(document.body.scrollWidth, document.body.scrollHeight);
+        })
       });
     }
 

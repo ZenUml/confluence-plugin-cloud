@@ -19,6 +19,15 @@
         flex-grow: 3;
       }
     </style>
+    <script id="connect-loader">
+      function loadConnect() {
+        let p = store.dispatch('updateCode', { code: 'A.method()'});
+        p.then(() => {
+          console.log('dispatch resolved...')
+        })
+      }
+      window.onAppLoaded = loadConnect;
+    </script>
 
     <title>confluence-plugin</title>
   </head>
