@@ -4,10 +4,13 @@
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve --open",
-    "build": "VERSION=v1.1.3 vue-cli-service build",
-    "build-win": "set VERSION=v1.1.3&&vue-cli-service build",
-    "sync": "aws s3 sync ./dist/v1.1.3 s3://atlassian.zenuml.com/v1.1.3",
-    "upload-descriptor": "aws s3 cp ./atlassian-connect-lite.json s3://atlassian.zenuml.com/v1.1.3/atlassian-connect-lite.json",
+    "build-lite": "VERSION=v1.1.4 PRODUCT_TYPE=lite vue-cli-service build",
+    "build-full": "VERSION=v1.1.4 PRODUCT_TYPE=full vue-cli-service build",
+    "build-lite-win": "set VERSION=v1.1.4 && set PRODUCT_TYPE=lite && vue-cli-service build",
+    "build-full-win": "set VERSION=v1.1.4 && set PRODUCT_TYPE=full && vue-cli-service build",
+    "sync": "aws s3 sync ./dist/v1.1.4 s3://atlassian.zenuml.com/v1.1.4",
+    "upload-lite-descriptor": "aws s3 cp ./atlassian-connect-lite.json s3://atlassian.zenuml.com/v1.1.4/atlassian-connect-lite.json",
+    "upload-full-descriptor": "aws s3 cp ./atlassian-connect.json s3://atlassian.zenuml.com/v1.1.4/atlassian-connect.json",
     "lint": "vue-cli-service lint"
   },
   "dependencies": {

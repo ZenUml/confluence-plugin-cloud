@@ -1,12 +1,13 @@
 {
-  "key": "com.zenuml.confluence-addon-lite",
-  "name": "ZenUML Lite",
-  "description": "ZenUML Lite add-on",
+  "key": "com.zenuml.confluence-addon",
+  "name": "ZenUML Sequence Diagram",
+  "description": "ZenUML Sequence Diagram add-on",
   "vendor": {
     "name": "ZenUML",
     "url": "https://www.zenuml.com/"
   },
-  "baseUrl": "https://atlassian.zenuml.com/v1.1.0",
+  "baseUrl": "https://atlassian.zenuml.com/v1.1.4",
+  "enableLicensing": true,
   "links": {
     "self": "/atlassian-connect.json",
     "homepage": "https://www.zenuml.com"
@@ -20,9 +21,9 @@
   "modules": {
     "dynamicContentMacros": [
       {
-        "key": "zenuml-sequence-macro-lite",
+        "key": "zenuml-sequence-macro",
         "name": {
-          "value": "ZenUML Lite"
+          "value": "ZenUML Sequence Diagram"
         },
         "url": "/view.html?pageId={page.id}&pageVersion={page.version}&macroId={macro.id}",
         "description": {
