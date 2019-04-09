@@ -56,5 +56,8 @@
         "featured": true
       }
     ]
+  },
+  "apiMigrations": {
+    "gdpr": true
   }
 }
