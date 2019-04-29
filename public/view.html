@@ -8,11 +8,135 @@
 
   <meta charset="utf-8">
   <script type="text/javascript" src="js/util.js"></script>
+  <script type="text/javascript" src="js/dom-to-image.min.js"></script>
+  <script type="text/javascript" src="js/md5.js"></script>
   <script id="connect-loader">
+    
+    function toPng() {
+        var node = document.getElementsByClassName('sequence-diagram')[0];
+        return domtoimage.toBlob(node, { bgcolor: 'white' });
+    }
+
     function initializeMacro() {
-      loadMacroBody(function(body) {
+      AP.confluence.getMacroData(data => console.log(`------------------ ${new Date()} - macroData: ${data}`));
+
+      loadMacroBody(async function(body) {
         store.commit('code', body);
         AP.resize(document.body.scrollWidth, document.body.scrollHeight);
+
+        const macroId = getUrlParam("macroId");
+        const uuid = getUrlParam("uuid");
+        const hash = md5(body);
+        console.log(`------------------ ${new Date()} - macroId: ${macroId}, uuid: ${uuid}, hash: ${hash}`);
+        
+        const propertyKey = 'zenuml-sequence-diagram';
+        AP.confluence.getContentProperty(propertyKey, async property => {
+          const zenumlProperty = property || {key: propertyKey, version: {number: 0}, value: []};
+          console.log(`------------------ ${new Date()} - zenumlProperty: ${JSON.stringify(zenumlProperty.value)}`);
+          
+          const macroInstance = zenumlProperty.value.find(m => m.hash === hash);
+
+          const pageId = getUrlParam("pageId");
+          var attachments;
+          console.log(`------------------ ${new Date()} - getting attachments`);
+          const response = await AP.request({
+            url: `/rest/api/content/${pageId}/child/attachment?expand=version`,
+            type: 'GET'
+          });
+          attachments = JSON.parse(response.body).results;
+          console.log(`------------------ ${new Date()} - got attachments`);
+
+          var attachment;
+          const attachmentName = `zenuml-${macroId}.png`;
+          if(macroInstance && macroInstance.macroId !== macroId) {
+            const oldAttachmentName = `zenuml-${macroInstance.macroId}.png`;
+            attachment = attachments.find(a => a.title == oldAttachmentName);
+
+            if(attachment != null) {
+              await AP.request({
+                url: `/rest/api/content/${pageId}/child/attachment/${attachment.id}`,
+                type: 'PUT',
+                contentType: 'application/json',
+                data: JSON.stringify({minorEdit: true, id: attachment.id, type: 'attachment', 
+                  title: attachmentName,
+                  version: {number: attachment.version.number}, metadata: {comment: hash}})
+              });
+            }
+          }
+          
+          if(attachment == null) {
+            attachment = attachments.find(a => a.title == attachmentName);
+          }
+          const attachmentExist = attachment != null;
+          const uri = attachmentExist ? `/rest/api/content/${pageId}/child/attachment/${attachment.id}/data` : `/rest/api/content/${pageId}/child/attachment`;
+
+          if(!attachmentExist || hash !== attachment.metadata.comment) {
+            const blob = await toPng();
+            console.log(`------------------ ${new Date()} - generated PNG blob`);
+            const file = new File([blob], attachmentName, {type: 'image/png'});
+            console.log(`------------------ ${new Date()} - generated PNG file`);
+
+            const response = await AP.request({
+              url: uri,
+              type: 'POST',
+              contentType: 'multipart/form-data',
+              data: {minorEdit: true, comment: hash, file: file}
+            });
+            console.log(`------------------ ${new Date()} - uploaded PNG file`);
+
+            const attachmentId = attachmentExist ? attachment.id : JSON.parse(response.body).results[0].id;
+            const versionNumber = attachmentExist ? attachment.version.number + 1 : 1;
+            
+            await AP.request({
+              url: `/rest/api/content/${pageId}/child/attachment/${attachmentId}`,
+              type: 'PUT',
+              contentType: 'application/json',
+              data: JSON.stringify({minorEdit: true, id: attachmentId, type: 'attachment', version: {number: versionNumber}, metadata: {comment: hash}})
+            });
+            console.log(`------------------ ${new Date()} - saved attachment properties`)
+          }
+
+          if(macroInstance && (macroInstance.macroId !== macroId || macroInstance.hash !== hash)) {
+            macroInstance.macroId = macroId;
+            macroInstance.hash = hash;
+            
+            zenumlProperty.version.number = zenumlProperty.version.number + 1;
+            AP.confluence.setContentProperty(zenumlProperty, result => {
+              if(result.error) {
+                throw `Failed to set content property '${propertyKey}': ${result.error}`;
+              }
+              console.log(`------------------ ${new Date()} - updated property`)
+            });
+          }
+        });
+
+        // AP.confluence.getContentProperty('uuid', async function(property) {
+        //   const uuid = property.value;
+        //   const macroId = getUrlParam("macroId");
+        //   console.log('---------------- macroId', macroId);
+        //   console.log(`---------------- uuid: ${uuid}`);
+
+        //   const pageId = getUrlParam("pageId");
+        //   const response = await AP.request({
+        //     url: `/rest/api/content/${pageId}/child/attachment?expand=version`,
+        //     type: 'GET'
+        //   });
+        //   const attachments = JSON.parse(response.body).results.map(a => ({id: a.id, title: a.title, type: a.type, version: a.version}));
+          
+        //   const attachmentName = `zenuml-${uuid}.png`;
+        //   const attachment = attachments.find(a => a.title == attachmentName);
+        //   const attachmentExist = attachment != null;
+
+        //   if(attachmentExist) {
+        //     const uri = `/rest/api/content/${pageId}/child/attachment/${attachment.id}`;
+        //     await AP.request({
+        //       url: uri,
+        //       type: 'PUT',
+        //       contentType: 'application/json',
+        //       data: JSON.stringify({id: attachment.id, type: attachment.type, version: attachment.version, title: `zenuml-${macroId}.png`})
+        //     });
+        //   }
+        // });
       });
     }
 
@@ -24,8 +148,8 @@
   </script>
 
   <script type="text/javascript" src="js/heap.js"></script>
-  <link href="css/diagram_<%= htmlWebpackPlugin.options.product_type %>.css" rel="stylesheet">
-</head>
+  <link href="css/diagram_lite.css" rel="stylesheet">
+<link href="/v1.1.5-dev/css/chunk-vendors.4e2874c5.css" rel="stylesheet"><link href="/v1.1.5-dev/css/app.40f2d4ea.css" rel="stylesheet"></head>
 <body>
 <div id="workspace" class="container view">
   <div id="app">
@@ -33,5 +157,5 @@
   </div>
 </div>
 <!-- built files will be auto injected -->
-</body>
+<script type="text/javascript" src="/v1.1.5-dev/js/chunk-vendors.6d3931bf.js"></script><script type="text/javascript" src="/v1.1.5-dev/js/app.791dcb5f.js"></script></body>
 </html>

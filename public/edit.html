@@ -57,6 +57,8 @@
 
     </style>
     <script type="text/javascript" src="js/util.js"></script>
+    <script type="text/javascript" src="js/md5.js"></script>
+    <script type="text/javascript" src="js/dom-to-image.min.js"></script>
     <script id="connect-loader">
       var EXAMPLE = '//Here is an example\n' +
         '//Replace it with your own sequence\n' +
@@ -67,6 +69,27 @@
         '  }\n' +
         '}';
 
+        function getParameterByName(name, url) {
+            if (!url) url = window.location.href;
+            name = name.replace(/[\[\]]/g, '\\$&');
+            var regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
+                results = regex.exec(url);
+            if (!results) return null;
+            if (!results[2]) return '';
+            return decodeURIComponent(results[2].replace(/\+/g, ' '));
+        }
+
+      function uuidv4() {
+        return ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, c =>
+          (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
+        )
+      }
+      
+      function toPng() {
+        var node = document.getElementsByClassName('sequence-diagram')[0];
+        return domtoimage.toBlob(node, { bgcolor: 'white' });
+      }
+
       function initializeMacro() {
         AP.confluence.getMacroBody(function (body) {
           if (!body) {
@@ -75,15 +98,107 @@
           store.commit('code', body);
         });
 
+        // var pageId;
+        // var attachments;
+        // AP.navigator.getLocation(async l => {
+        //   pageId = l.context.contentId;
+          
+        //   const response = await AP.request({
+        //     url: `/rest/api/content/${pageId}/child/attachment`,
+        //     type: 'GET'
+        //   });
+        //   attachments = JSON.parse(response.body).results.map(a => ({id: a.id, title: a.title}));
+        // });
+        
+        var macroParams = {};
+        AP.confluence.getMacroData(data => {
+          console.log(`------------------ ${new Date()} - macroData: `, data);
+          macroParams = data || {};
+          macroParams.uuid = macroParams.uuid || uuidv4();
+          
+          // AP.confluence.setContentProperty({
+          //   key: 'uuid',
+          //   value: macroParams.uuid,
+          //   version: {
+          //     number: 1
+          //   }
+          // }, function(result) {
+          //   console.log(result.property);
+          //   console.error(result.error);
+          // });
+        });
+
+        const propertyKey = 'zenuml-sequence-diagram';
+        var zenumlProperty;
+        AP.confluence.getContentProperty(propertyKey, property => {
+          zenumlProperty = property || {key: propertyKey, version: {number: 0}, value: []};
+          console.log(`------------------ ${new Date()} - zenumlProperty: ${JSON.stringify(zenumlProperty.value)}`);
+          // AP.user.getCurrentUser(user => {
+          //   if(zenumlProperty.value !== user.atlassianAccountId) {
+          //     zenumlProperty.value = user.atlassianAccountId;
+          //     zenumlProperty.version.number = zenumlProperty.version.number + 1;
+          //   }
+          // });
+        });
+
+        
+        // AP.confluence.getContentProperty(propertyKey, property => {
+        //   atlassianAccountIdProperty = property || {key: propertyKey, version: {number: 1}};
+        //   AP.user.getCurrentUser(user => {
+        //     if(atlassianAccountIdProperty.value !== user.atlassianAccountId) {
+        //       atlassianAccountIdProperty.value = user.atlassianAccountId;
+        //       atlassianAccountIdProperty.version.number = atlassianAccountIdProperty.version.number + 1;
+        //     }
+        //   });
+        // });
+
         AP.require(["confluence", "dialog"], function (confluence, dialog) {
-          function onSubmit() {
-            var macroParams = {};
+          async function onSubmit() {
+            console.log(`------------------ ${new Date()} - start saving`);
             var macroBody = store.state.code;
             confluence.saveMacro(macroParams, macroBody);
-            confluence.closeMacroEditor();
-            return true;
+            const hash = md5(macroBody);
+            console.log(`------------------ ${new Date()} - saved macro`)
+            
+            if(zenumlProperty.value.constructor !== Array) {
+              zenumlProperty.value = [];
+            }
+            const macroInstance = zenumlProperty.value.find(m => m.uuid === macroParams.uuid);
+            if(macroInstance) {
+              macroInstance.hash = hash;
+            } else {
+              zenumlProperty.value.push({uuid: macroParams.uuid, hash: hash});
+            }
+
+            zenumlProperty.version.number = zenumlProperty.version.number + 1;
+            AP.confluence.setContentProperty(zenumlProperty, result => {
+              if(result.error) {
+                throw `Failed to set content property '${propertyKey}': ${result.error}`;
+              }
+              console.log(`------------------ ${new Date()} - updated property`)
+              confluence.closeMacroEditor();
+            });
+
+            // var blob = await toPng();
+            // console.log(`------------------ ${new Date()} - generated PNG blob`);
+            // const attachmentName = `zenuml-${macroParams.uuid}.png`;
+            // const attachment = attachments.find(a => a.title == attachmentName);
+            // const attachmentExist = attachment != null;
+            // const uri = attachmentExist ? `/rest/api/content/${pageId}/child/attachment/${attachment.id}/data` : `/rest/api/content/${pageId}/child/attachment`;
+
+            // const file = new File([blob], attachmentName, {type: 'image/png'});
+            // console.log(`------------------ ${new Date()} - generated PNG file`);
+            
+            // await AP.request({
+            //   url: uri,
+            //   type: 'POST',
+            //   contentType: 'multipart/form-data',
+            //   data: {comment: 'static diagram', file: file}
+            // });
+            // console.log(`------------------ ${new Date()} - saved attachment`)
           }
 
+          AP.dialog.disableCloseOnSubmit();
           dialog.getButton("submit").bind(onSubmit);
         });
       }
@@ -98,12 +213,12 @@
 
     </script>
     <script type="text/javascript" src="js/heap.js"></script>
-    <link href="css/diagram_<%= htmlWebpackPlugin.options.product_type %>.css" rel="stylesheet">
-</head>
+    <link href="css/diagram_lite.css" rel="stylesheet">
+<link href="/v1.1.5-dev/css/chunk-vendors.4e2874c5.css" rel="stylesheet"><link href="/v1.1.5-dev/css/app.40f2d4ea.css" rel="stylesheet"></head>
 <body>
 <div id="app" class="container">
     <workspace></workspace>
 </div>
 <!-- built files will be auto injected -->
-</body>
+<script type="text/javascript" src="/v1.1.5-dev/js/chunk-vendors.6d3931bf.js"></script><script type="text/javascript" src="/v1.1.5-dev/js/app.791dcb5f.js"></script></body>
 </html>
