@@ -20,21 +20,21 @@
 
     async function getAttachments(pageId) {
       var attachments;
-      console.log(`------------------ ${new Date()} - getting attachments`);
+      console.log(`------------------ Sun May 05 2019 22:38:27 GMT+1000 (Australian Eastern Standard Time) - getting attachments`);
       const response = await AP.request({
         url: '/rest/api/content/' + pageId + '/child/attachment?expand=version',
         type: 'GET'
       });
       attachments = JSON.parse(response.body).results;
-      console.log(`------------------ ${new Date()} - got attachments`);
+      console.log(`------------------ Sun May 05 2019 22:38:27 GMT+1000 (Australian Eastern Standard Time) - got attachments`);
       return attachments;
     }
 
     async function uploadAttachment(attachmentName, uri, hash) {
-      console.log(`------------------ ${new Date()} - generating PNG`);
+      console.log(`------------------ Sun May 05 2019 22:38:27 GMT+1000 (Australian Eastern Standard Time) - generating PNG`);
       const blob = await toPng();
       const file = new File([blob], attachmentName, {type: 'image/png'});
-      console.log(`------------------ ${new Date()} - generated PNG`);
+      console.log(`------------------ Sun May 05 2019 22:38:27 GMT+1000 (Australian Eastern Standard Time) - generated PNG`);
 
       const response = await AP.request({
         url: uri,
@@ -42,7 +42,7 @@
         contentType: 'multipart/form-data',
         data: {minorEdit: true, comment: hash, file: file}
       });
-      console.log(`------------------ ${new Date()} - uploaded PNG`);
+      console.log(`------------------ Sun May 05 2019 22:38:27 GMT+1000 (Australian Eastern Standard Time) - uploaded PNG`);
       return response;
     }
 
@@ -53,7 +53,7 @@
         contentType: 'application/json',
         data: JSON.stringify({minorEdit: true, id: attachmentId, type: 'attachment', version: {number: versionNumber}, metadata: {comment: hash}})
       });
-      console.log(`------------------ ${new Date()} - saved attachment properties`);
+      console.log(`------------------ Sun May 05 2019 22:38:27 GMT+1000 (Australian Eastern Standard Time) - saved attachment properties`);
     }
 
     async function createAttachmentIfContentChanged(content) {
@@ -99,8 +99,8 @@
   </script>
 
   <script type="text/javascript" src="js/heap.js"></script>
-  <link href="css/diagram_<%= htmlWebpackPlugin.options.product_type %>.css" rel="stylesheet">
-</head>
+  <link href="css/diagram_full.css" rel="stylesheet">
+<link href="/v1.2.1/css/chunk-vendors.5866b9d2.css" rel="stylesheet"><link href="/v1.2.1/css/app.cef27add.css" rel="stylesheet"></head>
 <body>
 <div id="workspace" class="container view">
   <div id="app">
@@ -108,5 +108,5 @@
   </div>
 </div>
 <!-- built files will be auto injected -->
-</body>
+<script type="text/javascript" src="/v1.2.1/js/chunk-vendors.952cadd3.js"></script><script type="text/javascript" src="/v1.2.1/js/app.d1135479.js"></script></body>
 </html>

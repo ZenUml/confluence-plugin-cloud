@@ -25,7 +25,7 @@ var JavaScript = {
 
 function loadMacroBody(callback) {
   AP.require("request", function(request) {
-    var pageId = getUrlParam("pageId");
+    let pageId = getUrlParam("pageId");
     var pageVersion = getUrlParam("pageVersion");
     var macroId = getUrlParam("macroId");
     request({
