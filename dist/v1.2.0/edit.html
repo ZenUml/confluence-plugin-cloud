@@ -67,6 +67,12 @@
         '  }\n' +
         '}';
 
+      function uuidv4() {
+        return ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, c =>
+          (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
+        );
+      }
+
       function initializeMacro() {
         AP.confluence.getMacroBody(function (body) {
           if (!body) {
@@ -75,9 +81,14 @@
           store.commit('code', body);
         });
 
+        var macroParams = {};
+        AP.confluence.getMacroData(data => {
+          macroParams = data || {};
+          macroParams.uuid = macroParams.uuid || uuidv4();
+        });
+
         AP.require(["confluence", "dialog"], function (confluence, dialog) {
           function onSubmit() {
-            var macroParams = {};
             var macroBody = store.state.code;
             confluence.saveMacro(macroParams, macroBody);
             confluence.closeMacroEditor();
@@ -98,11 +109,12 @@
 
     </script>
     <script type="text/javascript" src="js/heap.js"></script>
-<link href="/v1.1.2/css/chunk-vendors.b5fc1b05.css" rel="stylesheet"><link href="/v1.1.2/css/app.fa11b818.css" rel="stylesheet"></head>
+    <link href="css/diagram_lite.css" rel="stylesheet">
+<link href="/v1.2.0/css/chunk-vendors.5866b9d2.css" rel="stylesheet"><link href="/v1.2.0/css/app.cef27add.css" rel="stylesheet"></head>
 <body>
 <div id="app" class="container">
     <workspace></workspace>
 </div>
 <!-- built files will be auto injected -->
-<script type="text/javascript" src="/v1.1.2/js/chunk-vendors.59b3a3fd.js"></script><script type="text/javascript" src="/v1.1.2/js/app.6ef7a4e4.js"></script></body>
+<script type="text/javascript" src="/v1.2.0/js/chunk-vendors.952cadd3.js"></script><script type="text/javascript" src="/v1.2.0/js/app.d1135479.js"></script></body>
 </html>
