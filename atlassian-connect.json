@@ -6,7 +6,7 @@
     "name": "ZenUML",
     "url": "https://www.zenuml.com/"
   },
-  "baseUrl": "https://atlassian.zenuml.com/v1.1.4",
+  "baseUrl": "https://atlassian-firebase.zenuml.com/v1.2.1",
   "enableLicensing": true,
   "links": {
     "self": "/atlassian-connect.json",
@@ -16,7 +16,8 @@
     "type": "none"
   },
   "scopes": [
-    "READ"
+    "READ",
+    "WRITE"
   ],
   "modules": {
     "dynamicContentMacros": [
@@ -25,7 +26,12 @@
         "name": {
           "value": "ZenUML Sequence Diagram"
         },
-        "url": "/view.html?pageId={page.id}&pageVersion={page.version}&macroId={macro.id}",
+        "renderModes": {
+          "default": {
+            "url": "/attachment?pageId={page.id}&pageVersion={page.version}&macroId={macro.id}&uuid={uuid}"
+          }
+        },
+        "url": "/view.html?pageId={page.id}&pageVersion={page.version}&macroId={macro.id}&uuid={uuid}",
         "description": {
           "value": "Create a ZenUML Sequence Diagram"
         },
