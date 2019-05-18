@@ -67,6 +67,12 @@
         '  }\n' +
         '}';
 
+      function uuidv4() {
+        return ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, c =>
+          (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
+        );
+      }
+
       function initializeMacro() {
         AP.confluence.getMacroBody(function (body) {
           if (!body) {
@@ -75,9 +81,14 @@
           store.commit('code', body);
         });
 
+        var macroParams = {};
+        AP.confluence.getMacroData(data => {
+          macroParams = data || {};
+          macroParams.uuid = macroParams.uuid || uuidv4();
+        });
+
         AP.require(["confluence", "dialog"], function (confluence, dialog) {
           function onSubmit() {
-            var macroParams = {};
             var macroBody = store.state.code;
             confluence.saveMacro(macroParams, macroBody);
             confluence.closeMacroEditor();
