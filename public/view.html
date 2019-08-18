@@ -57,18 +57,17 @@
     }
 
     async function createAttachmentIfContentChanged(content) {
-      const macroId = getUrlParam("macroId");
       const uuid = getUrlParam("uuid");
       const hash = md5(content);
-      
+
       const pageId = getUrlParam("pageId");
       const attachments = await getAttachments(pageId);
 
       const attachmentName = 'zenuml-' + uuid + '.png';
       var attachment = attachments.find(a => a.title == attachmentName);
-      
-      const uri = attachment != null 
-        ? '/rest/api/content/' + pageId + '/child/attachment/' + attachment.id + '/data' 
+
+      const uri = attachment != null
+        ? '/rest/api/content/' + pageId + '/child/attachment/' + attachment.id + '/data'
         : '/rest/api/content/' + pageId + '/child/attachment';
 
       if(attachment == null || hash !== attachment.metadata.comment) {
@@ -76,10 +75,11 @@
 
         const attachmentId = attachment != null ? attachment.id : JSON.parse(response.body).results[0].id;
         const versionNumber = attachment != null ? attachment.version.number + 1 : 1;
-        
+
         await updateAttachmentProperties(pageId, attachmentId, versionNumber, hash);
       }
     }
+
 
 
     function initializeMacro() {
