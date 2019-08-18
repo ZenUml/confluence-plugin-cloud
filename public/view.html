@@ -64,7 +64,7 @@
       const attachments = await getAttachments(pageId);
 
       const attachmentName = 'zenuml-' + uuid + '.png';
-      var attachment = attachments.find(a => a.title == attachmentName);
+      var attachment = attachments.find(a => a.title === attachmentName);
 
       const uri = attachment != null
         ? '/rest/api/content/' + pageId + '/child/attachment/' + attachment.id + '/data'
