@@ -1,5 +1,6 @@
 {
   "projects": {
-    "default": "zenuml-confluence-app"
+    "prod": "zenuml-confluence-app",
+    "dev": "zenuml-confluence-app-dev"
   }
 }
