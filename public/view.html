@@ -12,6 +12,8 @@
   <script type="text/javascript" src="js/md5.js"></script>
 
   <script id="connect-loader">
+
+    let uuid = getUrlParam("uuid");
     
     function toPng() {
         var node = document.getElementsByClassName('sequence-diagram')[0];
@@ -20,21 +22,17 @@
 
     async function getAttachments(pageId) {
       var attachments;
-      console.log(`------------------ ${new Date()} - getting attachments`);
       const response = await AP.request({
         url: '/rest/api/content/' + pageId + '/child/attachment?expand=version',
         type: 'GET'
       });
       attachments = JSON.parse(response.body).results;
-      console.log(`------------------ ${new Date()} - got attachments`);
       return attachments;
     }
 
     async function uploadAttachment(attachmentName, uri, hash) {
-      console.log(`------------------ ${new Date()} - generating PNG`);
       const blob = await toPng();
       const file = new File([blob], attachmentName, {type: 'image/png'});
-      console.log(`------------------ ${new Date()} - generated PNG`);
 
       const response = await AP.request({
         url: uri,
@@ -42,7 +40,6 @@
         contentType: 'multipart/form-data',
         data: {minorEdit: true, comment: hash, file: file}
       });
-      console.log(`------------------ ${new Date()} - uploaded PNG`);
       return response;
     }
 
@@ -53,11 +50,9 @@
         contentType: 'application/json',
         data: JSON.stringify({minorEdit: true, id: attachmentId, type: 'attachment', version: {number: versionNumber}, metadata: {comment: hash}})
       });
-      console.log(`------------------ ${new Date()} - saved attachment properties`);
     }
 
     async function createAttachmentIfContentChanged(content) {
-      const uuid = getUrlParam("uuid");
       const hash = md5(content);
 
       const pageId = getUrlParam("pageId");
@@ -80,14 +75,27 @@
       }
     }
 
+    async function onMacroBodyReady(body) {
+      store.commit('code', body);
+      AP.resize(document.body.scrollWidth, document.body.scrollHeight);
+      await createAttachmentIfContentChanged(body);
+    }
 
+    function loadBodyFromContentProperty(callback) {
+      AP.confluence.getContentProperty(propertyKey(uuid), function(property) {
+        callback(property && property.value);
+      });
+    }
 
-    function initializeMacro() {
-      loadMacroBody(async function(body) {
-        store.commit('code', body);
-        AP.resize(document.body.scrollWidth, document.body.scrollHeight);
-
-        await createAttachmentIfContentChanged(body);
+    async function initializeMacro() {
+      loadBodyFromContentProperty(async (newBody) => {
+        if(!newBody) {
+          AP.confluence.getMacroBody(async (oldBody) => {
+            await onMacroBodyReady(oldBody || EXAMPLE);
+          });
+        } else {
+          await onMacroBodyReady(newBody);
+        }
       });
     }
 

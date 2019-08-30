@@ -6,7 +6,7 @@
     "name": "ZenUML",
     "url": "https://www.zenuml.com/"
   },
-  "baseUrl": "https://atlassian-firebase.zenuml.com/v1.2.0",
+  "baseUrl": "https://atlassian-firebase.zenuml.com/v1.3.0",
   "links": {
     "self": "/atlassian-connect-lite.json",
     "homepage": "https://www.zenuml.com"
@@ -35,7 +35,7 @@
           "value": "Create a ZenUML Sequence Diagram"
         },
         "outputType": "block",
-        "bodyType": "plain-text",
+        "bodyType": "none",
         "editor": {
           "url": "/edit.html",
           "editTitle": {
