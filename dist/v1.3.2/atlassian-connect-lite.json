@@ -50,7 +50,7 @@
         "icon": {
           "width": 128,
           "height": 128,
-          "url": "image/zenuml_logo.png"
+          "url": "/image/zenuml_logo.png"
         },
         "documentation": {
           "url": "https://www.zenuml.com/ZenUML_Sequence_Diagram_addon_help.html"
