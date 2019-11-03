@@ -100,7 +100,10 @@
     function loadConnect() {
       JavaScript.load(getConnectUrl(), initializeMacro);
     }
-    window.onAppLoaded = window.location.href.indexOf('localhost') ? null : loadConnect;
+    function loadDemo() {
+      store.commit('code', 'A.method()');
+    }
+    window.onAppLoaded = window.location.href.indexOf('localhost') ? loadDemo : loadConnect;
 
   </script>
 
