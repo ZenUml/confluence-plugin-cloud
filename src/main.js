@@ -8,7 +8,6 @@ import 'vue-sequence/dist/vue-sequence.css'
 console.log(Version)
 import Editor from './components/Editor'
 import Workspace from './components/Workspace'
-import App from './App'
 
 
 Vue.config.productionTip = false
@@ -23,7 +22,7 @@ const store = new Vuex.Store(Store);
 
 new Vue({
   store,
-  render: h => h(App) // with this method, we don't need to use full version of vew
+  render: h => h(Workspace) // with this method, we don't need to use full version of vew
 }).$mount('#app')
 window.store = store
 if(window.onAppLoaded) {
