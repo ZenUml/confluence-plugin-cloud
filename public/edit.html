@@ -58,7 +58,7 @@
         JavaScript.load(getConnectUrl(), initializeMacro);
       }
 
-      window.onAppLoaded = loadConnect;
+      window.onAppLoaded = window.location.href.indexOf('localhost') ? null : loadConnect;
 
       window.split = true;
 
