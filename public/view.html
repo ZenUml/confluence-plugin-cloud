@@ -13,8 +13,6 @@
 
   <script id="connect-loader">
 
-    let uuid = getUrlParam("uuid");
-    
     function toPng() {
         var node = document.getElementsByClassName('sequence-diagram')[0];
         return domtoimage.toBlob(node, { bgcolor: 'white' });
@@ -58,7 +56,7 @@
       const pageId = getUrlParam("pageId");
       const attachments = await getAttachments(pageId);
 
-      const attachmentName = 'zenuml-' + uuid + '.png';
+      const attachmentName = 'zenuml-' + getUrlParam("uuid") + '.png';
       var attachment = attachments.find(a => a.title === attachmentName);
 
       const uri = attachment != null
@@ -82,7 +80,7 @@
     }
 
     function loadBodyFromContentProperty(callback) {
-      AP.confluence.getContentProperty(propertyKey(uuid), function(property) {
+      AP.confluence.getContentProperty(propertyKey(getUrlParam("uuid")), function(property) {
         callback(property && property.value);
       });
     }
@@ -102,7 +100,7 @@
     function loadConnect() {
       JavaScript.load(getConnectUrl(), initializeMacro);
     }
-    window.onAppLoaded = loadConnect;
+    window.onAppLoaded = window.location.href.indexOf('localhost') ? null : loadConnect;
 
   </script>
 
