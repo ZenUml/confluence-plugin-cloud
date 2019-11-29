@@ -14,9 +14,3 @@ export default {
   }
 }
 </script>
-
-<style>
- #app {
-   height: 300px;
- }
-</style>

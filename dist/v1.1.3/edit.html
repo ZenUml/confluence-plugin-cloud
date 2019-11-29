@@ -58,45 +58,28 @@
     </style>
     <script type="text/javascript" src="js/util.js"></script>
     <script id="connect-loader">
+      var EXAMPLE = '//Here is an example\n' +
+        '//Replace it with your own sequence\n' +
+        'BookController.getBook(id) {\n' +
+        '  bookDto = BookService.getBook(id) {\n' +
+        '    bookEntity = BookRepository.findOne(id)\n' +
+        '    bookDto = BookConverter.convert(bootEntity)\n' +
+        '  }\n' +
+        '}';
 
       function initializeMacro() {
-        const initialVersion = 1;
-        let macroParams = {param: initialVersion};
-        let bodyProperty;
-
-        AP.confluence.getMacroData(data => {
-          macroParams = data || macroParams;
-          macroParams.uuid = macroParams.uuid || uuidv4();
-          macroParams.param = macroParams.param || initialVersion;
-
-          const key = propertyKey(macroParams.uuid);
-          bodyProperty = {key: key, value: '', version: {number: 0}};
-
-          AP.confluence.getContentProperty(key, function(property) {
-            bodyProperty = property || bodyProperty;
-
-            let body = property && property.value;
-            if(!body) {
-              AP.confluence.getMacroBody(data => {
-                body = data;
-              });
-            }
-            store.commit('code', body || EXAMPLE);
-          });
+        AP.confluence.getMacroBody(function (body) {
+          if (!body) {
+            body = EXAMPLE;
+          }
+          store.commit('code', body);
         });
 
         AP.require(["confluence", "dialog"], function (confluence, dialog) {
           function onSubmit() {
-            const macroBody = store.state.code;
-            macroParams.param = macroParams.param + 1;
+            var macroParams = {};
+            var macroBody = store.state.code;
             confluence.saveMacro(macroParams, macroBody);
-
-            bodyProperty.version.number = bodyProperty.version.number + 1;
-            bodyProperty.value = macroBody;
-            AP.confluence.setContentProperty(bodyProperty, function(result) {
-              console.warn(result.error);
-            });
-
             confluence.closeMacroEditor();
             return true;
           }
@@ -115,12 +98,12 @@
 
     </script>
     <script type="text/javascript" src="js/heap.js"></script>
-    <link href="css/diagram_full.css" rel="stylesheet">
-<link href="/v1.3.1/css/chunk-vendors.a157c209.css" rel="stylesheet"><link href="/v1.3.1/css/app.d1711d2a.css" rel="stylesheet"></head>
+    <link href="css/diagram.css" rel="stylesheet">
+<link href="/v1.1.3/css/chunk-vendors.afc84da6.css" rel="stylesheet"><link href="/v1.1.3/css/app.351296f6.css" rel="stylesheet"></head>
 <body>
 <div id="app" class="container">
     <workspace></workspace>
 </div>
 <!-- built files will be auto injected -->
-<script type="text/javascript" src="/v1.3.1/js/chunk-vendors.a9c4e9c8.js"></script><script type="text/javascript" src="/v1.3.1/js/app.106d54a4.js"></script></body>
+<script type="text/javascript" src="/v1.1.3/js/chunk-vendors.a5b6fda1.js"></script><script type="text/javascript" src="/v1.1.3/js/app.6a94f018.js"></script></body>
 </html>

@@ -20,7 +20,9 @@
       msg: String
     },
     mounted () {
-      Split(['#workspace-left', '#workspace-right'], { sizes: [35, 65]})
+      if (window.split) {
+        Split(['#workspace-left', '#workspace-right'], { sizes: [35, 65]})
+      }
     },
     components: {
       Editor,
