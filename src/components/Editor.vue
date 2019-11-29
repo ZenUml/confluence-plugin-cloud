@@ -197,7 +197,7 @@
     name: 'editor',
     data() {
       return {
-        helpUrl: 'https://www.zenuml.com/ZenUML_Sequence_Diagram_addon_help.html',
+        helpUrl: 'https://zenuml.atlassian.net/wiki/spaces/Doc/overview',
         cmOptions: {
           tabSize: 4,
           mode: 'text/javascript',
