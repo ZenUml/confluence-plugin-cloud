@@ -6,7 +6,7 @@
     "name": "ZenUML",
     "url": "https://www.zenuml.com/"
   },
-  "baseUrl": "https://atlassian-firebase.zenuml.com/v1.3.2",
+  "baseUrl": "https://ac624963.ngrok.io/v1.3.2",
   "links": {
     "self": "/atlassian-connect-lite.json",
     "homepage": "https://www.zenuml.com"

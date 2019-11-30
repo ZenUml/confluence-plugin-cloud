@@ -108,7 +108,7 @@
     function loadDemo() {
       store.commit('code', 'A.method()');
     }
-    window.onAppLoaded = window.location.href.indexOf('localhost') ? loadDemo : loadConnect;
+    window.onAppLoaded = window.location.href.indexOf('localhost') > 0 ? loadDemo : loadConnect;
 
   </script>
 
