@@ -7,6 +7,10 @@
     "url": "https://www.zenuml.com/"
   },
   "baseUrl": "https://atlassian-firebase.zenuml.com/v1.3.1",
+  "lifecycle": {
+    "installed": "/installed",
+    "uninstalled": "/uninstalled"
+  },
   "enableLicensing": true,
   "links": {
     "self": "/atlassian-connect.json",

@@ -10,6 +10,14 @@
       {
         "source": "/*/attachment",
         "function": "renderAttachment"
+      },
+      {
+        "source": "/*/installed",
+        "function": "installedEndpoint"
+      },
+      {
+        "source": "/*/uninstalled",
+        "function": "uninstalledEndpoint"
       }
     ]
   }
