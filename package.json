@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve --open",
-    "build-lite": "VERSION=v1.3.0 PRODUCT_TYPE=lite vue-cli-service build --no-clean",
+    "build-lite": "VERSION=v1.3.2 PRODUCT_TYPE=lite vue-cli-service build --no-clean",
     "build-full": "VERSION=v1.3.1 PRODUCT_TYPE=full vue-cli-service build --no-clean",
     "build-lite-win": "set VERSION=v1.3.0&&set PRODUCT_TYPE=lite&&vue-cli-service build --no-clean",
     "build-full-win": "set VERSION=v1.3.1&&set PRODUCT_TYPE=full&&vue-cli-service build --no-clean",

@@ -75,7 +75,12 @@
 
     async function onMacroBodyReady(body) {
       store.commit('code', body);
-      AP.resize(document.body.scrollWidth, document.body.scrollHeight);
+      setTimeout(function () {
+        let width = document.body.scrollWidth;
+        let height = document.body.scrollHeight;
+        console.log('Resize to ', width, height);
+        AP.resize(width, height);
+      }, 1000);
       await createAttachmentIfContentChanged(body);
     }
 

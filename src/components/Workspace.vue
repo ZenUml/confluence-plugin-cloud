@@ -5,6 +5,9 @@
     </div>
     <div id="workspace-right" class="split diagram">
       <seq-diagram/>
+      <div class="get-support-container">
+        <get-support/>
+      </div>
     </div>
   </div>
 </template>
@@ -12,6 +15,7 @@
 <script>
   import { SeqDiagram } from 'vue-sequence'
   import Editor from './Editor.vue'
+  import GetSupport from './GetSupport'
   import Split from 'split.js'
 
   export default {
@@ -20,9 +24,12 @@
       msg: String
     },
     mounted () {
-      Split(['#workspace-left', '#workspace-right'], { sizes: [35, 65]})
+      if (window.split) {
+        Split(['#workspace-left', '#workspace-right'], { sizes: [35, 65]})
+      }
     },
     components: {
+      GetSupport,
       Editor,
       SeqDiagram
     }
@@ -34,6 +41,21 @@
   .workspace {
     height: 100%;
     width: 100%;
+  }
+
+  /*.get-support-container {*/
+  /*  display: none;*/
+  /*}*/
+
+  #workspace-right .get-support-container {
+    display: block;
+    position: absolute;
+    bottom: 5px;
+    left: 11px;
+  }
+
+  #workspace-right {
+    position: relative;
   }
 
   .gutter {
