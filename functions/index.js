@@ -6,12 +6,14 @@ exports.renderAttachment = functions.https.onRequest((request, response) => {
 
 exports.installedEndpoint = functions.https.onRequest((request, response) => {
   console.log('request.body.baseUrl:', request.body.baseUrl);
-  console.log('request.clientKey:', request.body.clientKey);
+  console.log('request.body.clientKey:', request.body.clientKey);
+  console.log('request.body.pluginsVersion:', request.body.pluginsVersion);
   response.status(200).send(`OK`);
 });
 
 exports.uninstalledEndpoint = functions.https.onRequest((request, response) => {
   console.log('request.body.baseUrl:', request.body.baseUrl);
-  console.log('request.clientKey:', request.body.clientKey);
+  console.log('request.body.clientKey:', request.body.clientKey);
+  console.log('request.body.pluginsVersion:', request.body.pluginsVersion);
   response.status(200).send(`OK`);
 });
