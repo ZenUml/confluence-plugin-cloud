@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-114996686-1"></script>
+    <script type="text/javascript" src="js/google-analytics.js"></script>
+
+    <meta charset="utf-8">
+    <style>
+        .gutter {
+            background-color: #eee;
+            background-repeat: no-repeat;
+            background-position: 50%;
+        }
+
+        .gutter.gutter-vertical {
+            background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAFAQMAAABo7865AAAABlBMVEVHcEzMzMzyAv2sAAAAAXRSTlMAQObYZgAAABBJREFUeF5jOAMEEAIEEFwAn3kMwcB6I2AAAAAASUVORK5CYII=')
+        }
+
+        .gutter.gutter-horizontal {
+            background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAeCAYAAADkftS9AAAAIklEQVQoU2M4c+bMfxAGAgYYmwGrIIiDjrELjpo5aiZeMwF+yNnOs5KSvgAAAABJRU5ErkJggg==');
+            cursor: ew-resize;
+        }
+
+        .split, .gutter.gutter-horizontal {
+            float: left;
+        }
+
+        .split, .gutter.gutter-horizontal {
+            height: 100%;
+        }
+
+        .split {
+            overflow-y: auto;
+            overflow-x: auto;
+        }
+
+        #app {
+            height: 480px;
+        }
+        .hint {
+            margin-bottom: 5px;
+        }
+
+        #diagram {
+            /* This should be the same color as .seq-diagram*/
+            background-color: #fafafa;
+        }
+
+        #editor {
+            margin-top: 5px;
+        }
+
+        body {
+            background-color: #f5f5f5;
+        }
+
+    </style>
+    <script type="text/javascript" src="js/util.js"></script>
+    <script id="connect-loader">
+      var EXAMPLE = '//Here is an example\n' +
+        '//Replace it with your own sequence\n' +
+        'BookController.getBook(id) {\n' +
+        '  bookDto = BookService.getBook(id) {\n' +
+        '    bookEntity = BookRepository.findOne(id)\n' +
+        '    bookDto = BookConverter.convert(bootEntity)\n' +
+        '  }\n' +
+        '}';
+
+      function initializeMacro() {
+        AP.confluence.getMacroBody(function (body) {
+          if (!body) {
+            body = EXAMPLE;
+          }
+          store.commit('code', body);
+        });
+
+        AP.require(["confluence", "dialog"], function (confluence, dialog) {
+          function onSubmit() {
+            var macroParams = {};
+            var macroBody = store.state.code;
+            confluence.saveMacro(macroParams, macroBody);
+            confluence.closeMacroEditor();
+            return true;
+          }
+
+          dialog.getButton("submit").bind(onSubmit);
+        });
+      }
+
+      function loadConnect() {
+        JavaScript.load(getConnectUrl(), initializeMacro);
+      }
+
+      window.onAppLoaded = loadConnect;
+
+      window.split = true;
+
+    </script>
+    <script type="text/javascript" src="js/heap.js"></script>
+    <link href="css/diagram_full.css" rel="stylesheet">
+<link href="/v1.1.4/css/chunk-vendors.afc84da6.css" rel="stylesheet"><link href="/v1.1.4/css/app.351296f6.css" rel="stylesheet"></head>
+<body>
+<div id="app" class="container">
+    <workspace></workspace>
+</div>
+<!-- built files will be auto injected -->
+<script type="text/javascript" src="/v1.1.4/js/chunk-vendors.a5b6fda1.js"></script><script type="text/javascript" src="/v1.1.4/js/app.e1301db7.js"></script></body>
+</html>

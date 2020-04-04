@@ -56,9 +56,7 @@ function loadMacroBody(callback) {
 }
 
 function getConnectUrl() {
-  var baseUrl = getUrlParam('xdm_e') + getUrlParam('cp');
-  var url = baseUrl + '/atlassian-connect/all.js';
-  return url;
+  return 'https://connect-cdn.atl-paas.net/all.js';
 }
 
 function uuidv4() {

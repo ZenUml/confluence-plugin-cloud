@@ -13,8 +13,6 @@
 
   <script id="connect-loader">
 
-    let uuid = getUrlParam("uuid");
-    
     function toPng() {
         var node = document.getElementsByClassName('sequence-diagram')[0];
         return domtoimage.toBlob(node, { bgcolor: 'white' });
@@ -58,7 +56,7 @@
       const pageId = getUrlParam("pageId");
       const attachments = await getAttachments(pageId);
 
-      const attachmentName = 'zenuml-' + uuid + '.png';
+      const attachmentName = 'zenuml-' + getUrlParam("uuid") + '.png';
       var attachment = attachments.find(a => a.title === attachmentName);
 
       const uri = attachment != null
@@ -77,12 +75,17 @@
 
     async function onMacroBodyReady(body) {
       store.commit('code', body);
-      AP.resize(document.body.scrollWidth, document.body.scrollHeight);
+      setTimeout(function () {
+        let width = document.body.scrollWidth;
+        let height = document.body.scrollHeight;
+        console.log('Resize to ', width, height);
+        AP.resize(width, height);
+      }, 1000);
       await createAttachmentIfContentChanged(body);
     }
 
     function loadBodyFromContentProperty(callback) {
-      AP.confluence.getContentProperty(propertyKey(uuid), function(property) {
+      AP.confluence.getContentProperty(propertyKey(getUrlParam("uuid")), function(property) {
         callback(property && property.value);
       });
     }
@@ -102,19 +105,20 @@
     function loadConnect() {
       JavaScript.load(getConnectUrl(), initializeMacro);
     }
-    window.onAppLoaded = loadConnect;
+    function loadDemo() {
+      store.commit('code', 'A.method()');
+    }
+    window.onAppLoaded = window.location.href.indexOf('localhost') > 0 ? loadDemo : loadConnect;
 
   </script>
 
   <script type="text/javascript" src="js/heap.js"></script>
   <link href="css/diagram_lite.css" rel="stylesheet">
-<link href="/v1.3.2/css/chunk-vendors.5bee3e2e.css" rel="stylesheet"><link href="/v1.3.2/css/app.686bedb3.css" rel="stylesheet"></head>
+<link href="/v1.3.2/css/chunk-vendors.0f4b94e3.css" rel="stylesheet"><link href="/v1.3.2/css/app.85e4d2f8.css" rel="stylesheet"></head>
 <body>
 <div id="workspace" class="container view">
-  <div id="app">
-    <seq-diagram></seq-diagram>
-  </div>
+  <div id="app"></div>
 </div>
 <!-- built files will be auto injected -->
-<script type="text/javascript" src="/v1.3.2/js/chunk-vendors.fd0bd836.js"></script><script type="text/javascript" src="/v1.3.2/js/app.9db6e3bd.js"></script></body>
+<script type="text/javascript" src="/v1.3.2/js/chunk-vendors.c7b1899c.js"></script><script type="text/javascript" src="/v1.3.2/js/app.a823602e.js"></script></body>
 </html>

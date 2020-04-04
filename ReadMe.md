@@ -1,6 +1,14 @@
 # Run locally
 $ yarn serve
 
+Open local pages at:
+1. index.html - http://localhost:8080
+1. edit.html - http://localhost:8080/latest/edit.html
+1. view.html - http://localhost:8080/latest/view.html
+
+> `latest` is defined in `vue.config.js`. When `process.env.VERSION` is not provided
+`latest` is used.
+
 # Release
 $ yarn build
 
