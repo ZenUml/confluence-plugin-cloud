@@ -3,15 +3,16 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "serve": "vue-cli-service serve --open",
-    "build-lite": "VERSION=v1.3.2 PRODUCT_TYPE=lite vue-cli-service build --no-clean",
+    "start": "vue-cli-service serve --open",
+    "test:unit": "vue-cli-service test:unit",
+    "lint": "vue-cli-service lint",
     "build-full": "VERSION=v1.3.1 PRODUCT_TYPE=full vue-cli-service build --no-clean",
-    "build-lite-win": "set VERSION=v1.3.0&&set PRODUCT_TYPE=lite&&vue-cli-service build --no-clean",
     "build-full-win": "set VERSION=v1.3.1&&set PRODUCT_TYPE=full&&vue-cli-service build --no-clean",
+    "build-lite": "VERSION=v1.3.2 PRODUCT_TYPE=lite vue-cli-service build --no-clean",
+    "build-lite-win": "set VERSION=v1.3.0&&set PRODUCT_TYPE=lite&&vue-cli-service build --no-clean",
     "outdated-sync": "aws s3 sync ./dist/v1.1.4 s3://atlassian.zenuml.com/v1.1.4",
-    "outdated-upload-lite-descriptor": "aws s3 cp ./atlassian-connect-lite.json s3://atlassian.zenuml.com/v1.1.4/atlassian-connect-lite.json",
     "outdated-upload-full-descriptor": "aws s3 cp ./atlassian-connect.json s3://atlassian.zenuml.com/v1.1.4/atlassian-connect.json",
-    "lint": "vue-cli-service lint"
+    "outdated-upload-lite-descriptor": "aws s3 cp ./atlassian-connect-lite.json s3://atlassian.zenuml.com/v1.1.4/atlassian-connect-lite.json"
   },
   "dependencies": {
     "firebase-functions": "^3.3.0",
@@ -20,13 +21,15 @@
     "test-lib": "^2.1.2",
     "vue": "^2.6.10",
     "vue-codemirror": "^4.0.6",
-    "vue-sequence": "^0.9.4",
+    "vue-sequence": "^0.9.5",
     "vuex": "^3.1.0"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "^3.7.0",
     "@vue/cli-plugin-eslint": "^3.7.0",
+    "@vue/cli-plugin-unit-jest": "~4.3.0",
     "@vue/cli-service": "^3.7.0",
+    "@vue/test-utils": "1.0.0-beta.31",
     "vue-template-compiler": "^2.6.10"
   },
   "eslintConfig": {
@@ -41,7 +44,18 @@
     "rules": {},
     "parserOptions": {
       "parser": "babel-eslint"
-    }
+    },
+    "overrides": [
+      {
+        "files": [
+          "**/__tests__/*.{j,t}s?(x)",
+          "**/tests/unit/**/*.spec.{j,t}s?(x)"
+        ],
+        "env": {
+          "jest": true
+        }
+      }
+    ]
   },
   "postcss": {
     "plugins": {
