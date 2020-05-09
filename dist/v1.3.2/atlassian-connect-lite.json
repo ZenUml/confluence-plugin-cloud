@@ -39,7 +39,7 @@
           "value": "Create a ZenUML Sequence Diagram"
         },
         "outputType": "block",
-        "bodyType": "none",
+        "bodyType": "plain-text",
         "editor": {
           "url": "/edit.html",
           "editTitle": {
