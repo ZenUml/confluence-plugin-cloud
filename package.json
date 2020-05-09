@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "start": "vue-cli-service serve --open",
+    "start": "VERSION=latest PRODUCT_TYPE=lite vue-cli-service serve --open",
     "test:unit": "vue-cli-service test:unit",
     "lint": "vue-cli-service lint",
     "build:full": "VERSION=v1.3.1 PRODUCT_TYPE=full vue-cli-service build --no-clean",

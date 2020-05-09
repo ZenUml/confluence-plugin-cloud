@@ -13,7 +13,16 @@ module.exports = {
       }
     }
   },
-
+  devServer: {
+    before: function (app) {
+      app.get(/installed/, function (req, res) {
+        res.status(200).send(`OK`);
+      })
+      app.get(/uninstalled/, function (req, res) {
+        res.status(200).send(`OK`);
+      })
+    }
+  },
   chainWebpack: config => {
     config
       .plugin('viewer-html')
