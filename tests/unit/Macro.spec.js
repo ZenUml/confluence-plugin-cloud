@@ -35,9 +35,13 @@ describe('Macro', () => {
       const mockApConfluence = new MockApConfluence();
       const store = new Vuex.Store(Store);
       const macro = new Macro(mockApConfluence, store);
-      macro.onSubmit('a')
+      const code = 'a';
+      macro.onSubmit(code)
       mockApConfluence.getMacroData((data) => {
         expect(data.uuid).toBe('random_uuid')
+        mockApConfluence.getContentProperty(data.uuid, (cp) => {
+          expect(cp.value).toBe(code)
+        })
       })
     })
   })

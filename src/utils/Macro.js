@@ -29,6 +29,11 @@ BookService BookRepository Receipt Notification
   onSubmit(code) {
     this._key = this._key || uuidv4()
     this._confluence.saveMacro({uuid: this._key})
+    const contentProperty = {
+      key: this._key,
+      value: code
+    }
+    this._confluence.setContentProperty(contentProperty)
   }
 }
 export default Macro
