@@ -4,5 +4,5 @@ node_js:
 install:
 - yarn install
 script:
-- yarn build-full
+- yarn build:full
 cache: yarn
