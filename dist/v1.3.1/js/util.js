@@ -1,12 +1,15 @@
 
-const EXAMPLE = '//Here is an example\n' +
-'//Replace it with your own sequence\n' +
-'BookController.getBook(id) {\n' +
-'  bookDto = BookService.getBook(id) {\n' +
-'    bookEntity = BookRepository.findOne(id)\n' +
-'    bookDto = BookConverter.convert(bootEntity)\n' +
-'  }\n' +
-'}';
+const EXAMPLE = `// Sample! Declare the participants (optional)
+BookService BookRepository Receipt Notification
+@Starter(User)
+"{id, dueDate, ...}" = BookService.Borrow(id) {
+  BookRepository.Update(id, onLoan)
+
+  // Send Event with "Source->Target:Event". "Source->" is optional
+  Notification:BOOK_ON_LOAN event with id, due date, etc. 
+  new Receipt(id, dueDate)
+}
+`
 
 function propertyKey(uuid) {
   const macroKey = 'zenuml-sequence-macro';

@@ -47,6 +47,10 @@
   /*  display: none;*/
   /*}*/
 
+  .view #workspace-right .get-support-container {
+    display: none;
+  }
+
   #workspace-right .get-support-container {
     display: block;
     position: absolute;
