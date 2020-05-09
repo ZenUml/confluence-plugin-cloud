@@ -12,8 +12,11 @@ BookService BookRepository Receipt Notification
   new Receipt(id, dueDate)
 }
 `
+  _confluence;
   _store;
-  constructor(store) {
+  _key
+  constructor(confluence, store) {
+    this._confluence = confluence;
     this._store = store;
   }
 
@@ -23,8 +26,9 @@ BookService BookRepository Receipt Notification
     }
   }
 
-  onSubmit() {
-
+  onSubmit(code) {
+    this._key = this._key || uuidv4()
+    this._confluence.saveMacro({uuid: this._key})
   }
 }
 export default Macro
