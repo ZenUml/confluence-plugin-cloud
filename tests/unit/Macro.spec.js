@@ -5,42 +5,38 @@ jest.mock('../../src/utils/uuid', () => {
   return () => 'random_uuid'
 })
 describe('Macro', () => {
-  describe('when initialising', () => {
-    describe('should load content', () => {
-      describe('if not initialized', () => {
-        it('uses Example', async () => {
-          const mockApConfluence = new MockApConfluence();
-          const macro = new Macro(mockApConfluence);
-          const code = await macro.load();
-          expect(code).toBe(macro.EXAMPLE)
-        })
-      })
+  describe('load content when initialising', () => {
+    it('if not initialised uses Example', async () => {
+      const mockApConfluence = new MockApConfluence();
+      const macro = new Macro(mockApConfluence);
+      const code = await macro.load();
+      expect(code).toBe(macro.EXAMPLE)
+    })
 
-      test('or macro body', async () => {
-        const mockApConfluence = new MockApConfluence();
-        mockApConfluence.saveMacro({}, 'body')
-        const macro = new Macro(mockApConfluence);
-        const code = await macro.load();
-        expect(code).toBe('body')
-      })
+    test('or macro body', async () => {
+      const mockApConfluence = new MockApConfluence();
+      mockApConfluence.saveMacro({}, 'body')
+      const macro = new Macro(mockApConfluence);
+      const code = await macro.load();
+      expect(code).toBe('body')
+    })
 
-      test('or content property', async () => {
-        const mockApConfluence = new MockApConfluence();
-        mockApConfluence.saveMacro({uuid: '1234'}, 'body')
-        mockApConfluence.setContentProperty({key: '1234', value: 'A.method'})
-        const macro = new Macro(mockApConfluence);
-        const code = await macro.load();
-        expect(code).toBe('A.method')
-      })
+    test('or content property', async () => {
+      const mockApConfluence = new MockApConfluence();
+      mockApConfluence.saveMacro({uuid: '1234'}, 'body')
+      mockApConfluence.setContentProperty({key: '1234', value: 'A.method'})
+      const macro = new Macro(mockApConfluence);
+      const code = await macro.load();
+      expect(code).toBe('A.method')
+    })
 
-      test('if no macro data', async () => {
-        const mockApConfluence = new MockApConfluence();
-        mockApConfluence.saveMacro({}, 'body')
-        mockApConfluence.setContentProperty({key: '1234', value: 'A.method'})
-        const macro = new Macro(mockApConfluence);
-        const code = await macro.load();
-        expect(code).toBe('body')
-      })
+    test('if no macro data', async () => {
+      const mockApConfluence = new MockApConfluence();
+      mockApConfluence.saveMacro({}, 'body')
+      mockApConfluence.setContentProperty({key: '1234', value: 'A.method'})
+      const macro = new Macro(mockApConfluence);
+      const code = await macro.load();
+      expect(code).toBe('body')
     })
   })
 
@@ -53,7 +49,6 @@ describe('Macro', () => {
         const code = 'A.method';
         macro.onSubmit(code)
         expect(await macro.load()).toBe(code)
-        expect(macro.key).toBe('random_uuid')
       })
 
       it('for the next times', async () => {
@@ -66,7 +61,6 @@ describe('Macro', () => {
         const newCode = 'B.method';
         macro.onSubmit(newCode)
         expect(await macro.load()).toBe(newCode)
-        expect(macro.key).toBe('random_uuid')
       })
     })
 
@@ -81,7 +75,6 @@ describe('Macro', () => {
         const newCode = 'B.method';
         macro.onSubmit(newCode)
         expect(await macro.load()).toBe(newCode)
-        expect(macro.key).toBe('1234')
       })
     })
   })
