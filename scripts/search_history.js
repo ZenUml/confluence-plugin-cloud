@@ -55,7 +55,7 @@
       console.log('searching ZenUML macro in history');
 
       getVersions(pageId).then(r => findVersion(pageId, r.results))
-          .then(r => r && console.log(`non-empty macro found:\n\n${JSON.stringify(r)}`));
+          .then(r => r && console.log(`found ${r.length} macro(s):\n-----------------\n${r.join('\n-----------------\n')}`));
   };
 
   findLatestNonEmptyZenumlBody();
