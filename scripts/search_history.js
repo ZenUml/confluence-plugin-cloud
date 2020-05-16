@@ -5,11 +5,12 @@
 
   const zenumlIframeId = 'com.zenuml.confluence-addon';
 
-  const namespacePrefix = 'ac:';
-
   const macroBodySelector = 'structured-macro[name=zenuml-sequence-macro-lite],structured-macro[name=zenuml-sequence-macro] plain-text-body';
 
-  const stripNamespacePrefix = (xml) => xml.replace(new RegExp(namespacePrefix, 'gi'), '');
+  const stripNamespacePrefix = (xml) => xml
+    .replace(/<[^</> ]+:/g, '<') //e.g. <ac:link>
+    .replace(/<\/[^</]+:/g, '</') //e.g. </ac:link>
+    .replace(/ [^:<]+:([^:]+)=/g, ' $1='); //e.g. <ri:user ri:userkey=...>
 
   const parse = (xml) => new DOMParser().parseFromString(stripNamespacePrefix(xml), 'text/xml');
 
