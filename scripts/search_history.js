@@ -13,7 +13,9 @@
 
   const parse = (xml) => new DOMParser().parseFromString(stripNamespacePrefix(xml), 'text/xml');
 
-  const extract = (xml) => Array.from(parse(xml).querySelectorAll(macroBodySelector)).map(e => e.textContent);
+  const wrapXml = (xml) => `<root>${xml}</root>`;
+
+  const extract = (xml) => Array.from(parse(wrapXml(xml)).querySelectorAll(macroBodySelector)).map(e => e.textContent);
 
   const versionUrl = (pageId, version) => `/wiki/plugins/viewstorage/viewpagestorage.action?pageId=${pageId}&pageVersion=${version}`;
 
