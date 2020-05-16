@@ -46,18 +46,15 @@ describe('Macro', () => {
 
   describe('when submitting', () => {
     // TODO: check if saveMacroData({}) will remove macro-body
-    it.skip('should save macro data  and content property', () => {
+    it('should save macro data  and content property', async () => {
       const mockApConfluence = new MockApConfluence();
-      const store = new Vuex.Store(Store);
-      const macro = new Macro(mockApConfluence, store);
-      const code = 'a';
+      const macro = new Macro(mockApConfluence);
+      const code = 'A.method';
       macro.onSubmit(code)
-      mockApConfluence.getMacroData((data) => {
-        expect(data.uuid).toBe('random_uuid')
-        mockApConfluence.getContentProperty(data.uuid, (cp) => {
-          expect(cp.value).toBe(code)
-        })
-      })
+      expect((await macro.getMacroData()).uuid).toBe('random_uuid')
+      expect(await macro.getMacroBody()).toBe('A.method')
+      expect((await macro.getContentProperty()).value).toBe('A.method')
+      expect((await macro.getContentProperty()).key).toBe('random_uuid')
     })
   })
 })

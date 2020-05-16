@@ -40,18 +40,18 @@ BookService BookRepository Receipt Notification
     const key = macroData?.uuid
     return new Promise((resolve => {
       this._confluence.getContentProperty(key, (cp) => {
-        resolve(cp?.value)
+        resolve(cp)
       })
     }))
   }
 
   async load() {
-    return await this.getContentProperty() || await this.getMacroBody() || this.EXAMPLE
+    return (await this.getContentProperty())?.value || await this.getMacroBody() || this.EXAMPLE
   }
 
   onSubmit(code) {
     this._key = this._key || uuidv4()
-    this._confluence.saveMacro({uuid: this._key})
+    this._confluence.saveMacro({uuid: this._key}, code)
     const contentProperty = {
       key: this._key,
       value: code
