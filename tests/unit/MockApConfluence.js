@@ -1,6 +1,7 @@
 class MockApConfluence {
   macroParams
   macroBody
+  key
   contentProperty
 
   saveMacro(params, body) {
@@ -17,11 +18,16 @@ class MockApConfluence {
   }
 
   setContentProperty(content) {
+    this.key = content.key
     this.contentProperty = content
   }
 
   getContentProperty(key, cb) {
-    cb(this.contentProperty)
+    if (this.key === key) {
+      cb(this.contentProperty)
+    } else {
+      cb(null)
+    }
   }
 }
 

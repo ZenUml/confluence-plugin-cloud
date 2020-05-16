@@ -32,6 +32,15 @@ describe('Macro', () => {
         const code = await macro.load();
         expect(code).toBe('A.method')
       })
+
+      test('if no macro data', async () => {
+        const mockApConfluence = new MockApConfluence();
+        mockApConfluence.saveMacro({}, 'body')
+        mockApConfluence.setContentProperty({key: '1234', value: 'A.method'})
+        const macro = new Macro(mockApConfluence);
+        const code = await macro.load();
+        expect(code).toBe('body')
+      })
     })
   })
 
