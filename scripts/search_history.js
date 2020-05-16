@@ -7,7 +7,7 @@
 
   const namespacePrefix = 'ac:';
 
-  const macroBodySelector = 'structured-macro[name=zenuml-sequence-macro-lite] plain-text-body';
+  const macroBodySelector = 'structured-macro[name=zenuml-sequence-macro-lite],structured-macro[name=zenuml-sequence-macro] plain-text-body';
 
   const stripNamespacePrefix = (xml) => xml.replace(new RegExp(namespacePrefix, 'gi'), '');
 
@@ -55,7 +55,7 @@
       console.log('searching ZenUML macro in history');
 
       getVersions(pageId).then(r => findVersion(pageId, r.results))
-          .then(r => console.log(`non-empty macro found:\n\n${JSON.stringify(r)}`));
+          .then(r => r && console.log(`non-empty macro found:\n\n${JSON.stringify(r)}`));
   };
 
   findLatestNonEmptyZenumlBody();
