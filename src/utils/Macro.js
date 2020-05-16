@@ -13,17 +13,40 @@ BookService BookRepository Receipt Notification
 }
 `
   _confluence;
-  _store;
   _key
-  constructor(confluence, store) {
+  constructor(confluence) {
     this._confluence = confluence;
-    this._store = store;
   }
 
-  initialize(data) {
-    if (!data) {
-      this._store.state.code = this.EXAMPLE
-    }
+  getMacroBody = () => {
+    return new Promise((resolve) => {
+      this._confluence.getMacroBody((body) => {
+        resolve(body)
+      })
+    })
+  }
+
+  getMacroData = () => {
+    return new Promise((resolve => {
+      this._confluence.getMacroData((data) => {
+        resolve(data)
+      })
+    }))
+  }
+
+  getContentProperty = async () => {
+    const macroData = await this.getMacroData();
+
+    const key = macroData?.uuid
+    return new Promise((resolve => {
+      this._confluence.getContentProperty(key, (cp) => {
+        resolve(cp?.value)
+      })
+    }))
+  }
+
+  async load() {
+    return await this.getContentProperty() || await this.getMacroBody() || this.EXAMPLE
   }
 
   onSubmit(code) {
