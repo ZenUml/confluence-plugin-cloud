@@ -14,6 +14,7 @@ module.exports = {
     }
   },
   devServer: {
+    compress: true,  // This reduces the app.js from 4.8MB to 1.2MB
     before: function (app) {
       app.get(/installed/, function (req, res) {
         res.status(200).send(`OK`);
