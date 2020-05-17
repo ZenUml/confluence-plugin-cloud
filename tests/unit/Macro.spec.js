@@ -9,7 +9,7 @@ describe('Macro', () => {
     it('if not initialised uses Example', async () => {
       const mockApConfluence = new MockApConfluence();
       const macro = new Macro(mockApConfluence);
-      const code = await macro.load();
+      const code = (await macro.load()).code
       expect(code).toBe(macro.EXAMPLE)
     })
 
@@ -17,7 +17,7 @@ describe('Macro', () => {
       const mockApConfluence = new MockApConfluence();
       mockApConfluence.saveMacro({}, 'body')
       const macro = new Macro(mockApConfluence);
-      const code = await macro.load();
+      const code = (await macro.load()).code;
       expect(code).toBe('body')
     })
 
@@ -26,7 +26,7 @@ describe('Macro', () => {
       mockApConfluence.saveMacro({uuid: '1234'}, 'body')
       mockApConfluence.setContentProperty({key: 'zenuml-sequence-macro-1234-body', value: 'A.method'})
       const macro = new Macro(mockApConfluence);
-      const code = await macro.load();
+      const code = (await macro.load()).code;
       expect(code).toBe('A.method')
     })
 
@@ -35,7 +35,7 @@ describe('Macro', () => {
       mockApConfluence.saveMacro({}, 'body')
       mockApConfluence.setContentProperty({key: 'zenuml-sequence-macro-1234-body', value: 'A.method'})
       const macro = new Macro(mockApConfluence);
-      const code = await macro.load();
+      const code = (await macro.load()).code;
       expect(code).toBe('body')
     })
   })
@@ -49,7 +49,7 @@ describe('Macro', () => {
         await macro.load()
         const code = 'A.method';
         await macro.onSubmit(code)
-        expect(await macro.load()).toBe(code)
+        expect((await macro.load()).code).toBe(code)
         const contentProperty = await macro.getContentProperty();
         expect(contentProperty.value).toBe(code)
         expect(contentProperty.version.number).toBe(1)
@@ -66,9 +66,22 @@ describe('Macro', () => {
         const newCode = 'B.method';
         await macro.load()
         await macro.onSubmit(newCode)
-        expect(await macro.load()).toBe(newCode)
+        expect((await macro.load()).code).toBe(newCode)
         const contentProperty = await macro.getContentProperty();
         expect(contentProperty.version.number).toBe(2)
+      })
+    })
+
+    describe('Submit styles', () => {
+      it('for styles', async () => {
+        const mockApConfluence = new MockApConfluence();
+        const macro = new Macro(mockApConfluence);
+        await macro.load()
+
+        await macro.onSubmit('A.method', {'selector': {backgroundColor: 'red'}})
+        const zenData = await macro.load()
+
+        expect(zenData.code).toBe('A.method')
       })
     })
 
@@ -82,7 +95,7 @@ describe('Macro', () => {
         await macro.load()
         const newCode = 'B.method';
         await macro.onSubmit(newCode)
-        expect(await macro.load()).toBe(newCode)
+        expect((await macro.load()).code).toBe(newCode)
         const contentProperty = await macro.getContentProperty();
         expect(contentProperty.version.number).toBe(101)
       })

@@ -86,7 +86,7 @@
 
     async function initializeMacro() {
       const macro = new Macro(AP.confluence);
-      const code = await macro.load()
+      const code = (await macro.load()).code
       await onMacroBodyReady(code)
     }
 

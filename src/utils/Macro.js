@@ -60,7 +60,8 @@ BookService BookRepository Receipt Notification
 
   async load() {
     this._loaded = true
-    return (await this.getContentProperty())?.value || await this.getMacroBody() || this.EXAMPLE
+    const code = (await this.getContentProperty())?.value || await this.getMacroBody() || this.EXAMPLE;
+    return {code: code}
   }
 
   // Warning! Do not call getXXX in onSubmit. Do retest if you want to call getXXX.
