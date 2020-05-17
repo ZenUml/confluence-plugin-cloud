@@ -51,7 +51,7 @@ describe('Macro', () => {
         await macro.onSubmit(code)
         expect((await macro.load()).code).toBe(code)
         const contentProperty = await macro.getContentProperty();
-        expect(contentProperty.value).toBe(code)
+        expect(contentProperty.value.code).toBe(code)
         expect(contentProperty.version.number).toBe(1)
       })
 

@@ -60,7 +60,14 @@ BookService BookRepository Receipt Notification
 
   async load() {
     this._loaded = true
-    const code = (await this.getContentProperty())?.value || await this.getMacroBody() || this.EXAMPLE;
+    const contentProp = await this.getContentProperty();
+    let code;
+    if(typeof contentProp?.value === 'string') {
+      code = contentProp?.value
+    } else {
+      code = contentProp?.value?.code
+    }
+    code = code || await this.getMacroBody() || this.EXAMPLE;
     return {code: code}
   }
 
@@ -75,7 +82,7 @@ BookService BookRepository Receipt Notification
     const versionNumber = this._versionNumber
     const contentProperty = {
       key: this.propertyKey(key),
-      value: code,
+      value: {code: code},
       version: {
         number: versionNumber ? versionNumber + 1 : 1
       }
