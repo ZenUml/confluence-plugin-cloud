@@ -36,12 +36,15 @@ BookService BookRepository Receipt Notification
   getContentProperty = async () => {
     const macroData = await this.getMacroData();
 
-    // TODO: Side effect!
     const key = macroData?.uuid
     return new Promise((resolve => {
-      this._confluence.getContentProperty(key, (cp) => {
-        resolve(cp)
-      })
+      if (!key) {
+        resolve(null)
+      } else {
+        this._confluence.getContentProperty(key, (cp) => {
+          resolve(cp)
+        })
+      }
     }))
   }
 
@@ -50,13 +53,16 @@ BookService BookRepository Receipt Notification
   }
 
   async onSubmit(code) {
-    const macroData = await this.getMacroData();
-
-    const key = macroData?.uuid || uuidv4()
-    this._confluence.saveMacro({uuid: key}, code)
+    const contentProp = await this.getContentProperty();
+    const key = contentProp?.key || uuidv4()
+    this._confluence.saveMacro({uuid: key, updatedAt: new Date()}, code)
+    const versionNumber = contentProp?.version?.number;
     const contentProperty = {
       key: key,
-      value: code
+      value: code,
+      version: {
+        number: versionNumber ? versionNumber + 1 : 1
+      }
     }
     this._confluence.setContentProperty(contentProperty)
   }

@@ -1,4 +1,4 @@
-import MockApConfluence from './MockApConfluence'
+import MockApConfluence from '../../src/utils/MockApConfluence'
 import Macro from '../../src/utils/Macro'
 
 jest.mock('../../src/utils/uuid', () => {
@@ -49,7 +49,9 @@ describe('Macro', () => {
         const code = 'A.method';
         await macro.onSubmit(code)
         expect(await macro.load()).toBe(code)
-        expect((await macro.getContentProperty()).value).toBe(code)
+        const contentProperty = await macro.getContentProperty();
+        expect(contentProperty.value).toBe(code)
+        expect(contentProperty.version.number).toBe(1)
       })
 
       it('for the next times', async () => {
@@ -62,6 +64,8 @@ describe('Macro', () => {
         const newCode = 'B.method';
         await macro.onSubmit(newCode)
         expect(await macro.load()).toBe(newCode)
+        const contentProperty = await macro.getContentProperty();
+        expect(contentProperty.version.number).toBe(2)
       })
     })
 
@@ -69,13 +73,15 @@ describe('Macro', () => {
       it('for the next times', async () => {
         const mockApConfluence = new MockApConfluence();
         mockApConfluence.saveMacro({uuid: '1234'}, 'body')
-        mockApConfluence.setContentProperty({key: '1234', value: 'A.method'})
+        mockApConfluence.setContentProperty({key: '1234', value: 'A.method', version: {number: 100}})
         const macro = new Macro(mockApConfluence);
         // Must load first
         await macro.load()
         const newCode = 'B.method';
         await macro.onSubmit(newCode)
         expect(await macro.load()).toBe(newCode)
+        const contentProperty = await macro.getContentProperty();
+        expect(contentProperty.version.number).toBe(101)
       })
     })
   })

@@ -8,10 +8,10 @@
   <script type="text/javascript" src="js/util.js"></script>
   <script id="connect-loader">
 
-    function initializeMacro() {
-      const initialVersion = 1;
-      let macroParams = {param: initialVersion};
-      let bodyProperty;
+    async function initializeMacro() {
+      const macro = new Macro(AP.confluence)
+      const code = await macro.load()
+      store.commit(code)
 
       AP.confluence.getMacroData(data => {
         macroParams = data || macroParams;
@@ -58,8 +58,7 @@
       JavaScript.load(getConnectUrl(), initializeMacro);
     }
 
-    window.onAppLoaded = window.location.href.indexOf('localhost') > 0 ? null : loadConnect;
-
+    window.onAppLoaded = loadConnect;
     window.split = true;
 
   </script>
