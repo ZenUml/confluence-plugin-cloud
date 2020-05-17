@@ -84,22 +84,10 @@
       await createAttachmentIfContentChanged(body);
     }
 
-    function loadBodyFromContentProperty(callback) {
-      AP.confluence.getContentProperty(propertyKey(getUrlParam("uuid")), function(property) {
-        callback(property && property.value);
-      });
-    }
-
     async function initializeMacro() {
-      loadBodyFromContentProperty(async (newBody) => {
-        if(!newBody) {
-          AP.confluence.getMacroBody(async (oldBody) => {
-            await onMacroBodyReady(oldBody || EXAMPLE);
-          });
-        } else {
-          await onMacroBodyReady(newBody);
-        }
-      });
+      const macro = new Macro(AP.confluence);
+      const code = await macro.load()
+      await onMacroBodyReady(code)
     }
 
     function loadConnect() {
