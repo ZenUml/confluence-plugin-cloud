@@ -47,8 +47,9 @@ describe('Macro', () => {
         const mockApConfluence = new MockApConfluence();
         const macro = new Macro(mockApConfluence);
         const code = 'A.method';
-        macro.onSubmit(code)
+        await macro.onSubmit(code)
         expect(await macro.load()).toBe(code)
+        expect((await macro.getContentProperty()).value).toBe(code)
       })
 
       it('for the next times', async () => {
@@ -57,9 +58,9 @@ describe('Macro', () => {
         // mockApConfluence.setContentProperty({key: '1234', value: 'A.method'})
         const macro = new Macro(mockApConfluence);
         const oldCode = 'A.method';
-        macro.onSubmit(oldCode)
+        await macro.onSubmit(oldCode)
         const newCode = 'B.method';
-        macro.onSubmit(newCode)
+        await macro.onSubmit(newCode)
         expect(await macro.load()).toBe(newCode)
       })
     })
@@ -73,7 +74,7 @@ describe('Macro', () => {
         // Must load first
         await macro.load()
         const newCode = 'B.method';
-        macro.onSubmit(newCode)
+        await macro.onSubmit(newCode)
         expect(await macro.load()).toBe(newCode)
       })
     })
