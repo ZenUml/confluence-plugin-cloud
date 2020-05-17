@@ -17,6 +17,11 @@ BookService BookRepository Receipt Notification
     this._confluence = confluence;
   }
 
+  propertyKey(uuid) {
+    const macroKey = 'zenuml-sequence-macro';
+    return `${macroKey}-${uuid}-body`;
+  }
+
   getMacroBody = () => {
     return new Promise((resolve) => {
       this._confluence.getMacroBody((body) => {
@@ -41,7 +46,7 @@ BookService BookRepository Receipt Notification
       if (!key) {
         resolve(null)
       } else {
-        this._confluence.getContentProperty(key, (cp) => {
+        this._confluence.getContentProperty(this.propertyKey(key), (cp) => {
           resolve(cp)
         })
       }
@@ -58,7 +63,7 @@ BookService BookRepository Receipt Notification
     this._confluence.saveMacro({uuid: key, updatedAt: new Date()}, code)
     const versionNumber = contentProp?.version?.number;
     const contentProperty = {
-      key: key,
+      key: this.propertyKey(key),
       value: code,
       version: {
         number: versionNumber ? versionNumber + 1 : 1
