@@ -30,6 +30,7 @@ new Vue({
 window.store = store
 
 if (window.location.href.indexOf('localhost') > 0) {
+  // eslint-disable-next-line
   console.log('You are using a mocked AP.confluence')
   window.AP = {
     confluence: new MockApConfluence()
