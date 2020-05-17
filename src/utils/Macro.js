@@ -15,6 +15,7 @@ BookService BookRepository Receipt Notification
   _confluence;
   _key;
   _versionNumber;
+  _loaded = false;
   constructor(confluence) {
     this._confluence = confluence;
   }
@@ -58,12 +59,16 @@ BookService BookRepository Receipt Notification
   }
 
   async load() {
+    this._loaded = true
     return (await this.getContentProperty())?.value || await this.getMacroBody() || this.EXAMPLE
   }
 
   // Warning! Do not call getXXX in onSubmit. Do retest if you want to call getXXX.
   // It does not work as of 17th May 2020. That is why we have stored key and version
   async onSubmit(code) {
+    if (!this._loaded) {
+      throw new Error('You have to call load before calling onSubmit()')
+    }
     const key = this._key || uuidv4()
     this._confluence.saveMacro({uuid: key, updatedAt: new Date()}, code)
     const versionNumber = this._versionNumber
