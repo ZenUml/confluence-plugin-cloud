@@ -1,11 +1,12 @@
 // This script is used to search in wiki page history to find the latest version which contains non-empty ZenUML macro
 // It's intended to be manually executed in browser developer console
 
-(function() {
+(async function() {
 
-  const zenumlIframeId = 'com.zenuml.confluence-addon';
+  const zenumlLite = 'zenuml-sequence-macro-lite';
+  const zenumlFull = 'zenuml-sequence-macro';
 
-  const macroBodySelector = 'structured-macro[name=zenuml-sequence-macro-lite],structured-macro[name=zenuml-sequence-macro] plain-text-body';
+  const macroBodySelector = `structured-macro[name=${zenumlLite}],structured-macro[name=${zenumlFull}] plain-text-body`;
 
   const stripNamespacePrefix = (xml) => xml
     .replace(/<[^</> ]+:/g, '<') //e.g. <ac:link>
@@ -24,10 +25,16 @@
 
   const getVersions = (pageId) => fetch(`/wiki/rest/api/content/${pageId}/version`).then(r => r.json());
 
+  const listPages = () => fetch('/wiki/rest/api/content').then(r => r.json()).then(d => d.results.filter(r => r.type === 'page').map(p => p.id));
+
+  const getStorageFormat = (pageId) => fetch(`/wiki/plugins/viewstorage/viewpagestorage.action?pageId=${pageId}`).then(r => r.text()).then(x => ({pageId: pageId, content: x}));
+
+  const filterPages = async () => (await Promise.all((await listPages()).map(p => getStorageFormat(p)))).filter(p => p.content.includes(zenumlFull) || p.content.includes(zenumlLite));
+
   //find latest version which has non-empty macro body
   const findVersion = async (pageId, versions) => {
       for(let i = 0; i < versions.length; i++) {
-          console.log(`checking version ${versions[i].number}`);
+          console.log(`checking page ${pageId} version ${versions[i].number}`);
           const macros = await getVersion(pageId, versions[i].number);
           if(macros.find(m => m.trim().length > 0)) {
               return macros;
@@ -35,30 +42,10 @@
       }
   };
 
-  const hasZenumlPlugin = () => Array.from(document.querySelectorAll('iframe')).find(i => i.id.includes(zenumlIframeId));
-
-  const getPageId = () => {
-      const match = window.location.href.match(/\/pages\/(\d+)\//);
-      return match && match[1];
-  };
-
-  const findLatestNonEmptyZenumlBody = () => {
-      if(!hasZenumlPlugin()) {
-          console.log('ZenUML plugin not detected, abort');
-      }
-
-
-      const pageId = getPageId();
-      if(!pageId) {
-          console.log('Wiki page not detected, abort');
-      }
-
-      console.log('searching ZenUML macro in history');
-
-      getVersions(pageId).then(r => findVersion(pageId, r.results))
+  (await filterPages()).forEach(({pageId}) => {
+    console.log(`checking page ${pageId}`);
+    getVersions(pageId).then(r => findVersion(pageId, r.results))
           .then(r => r && console.log(`found ${r.length} macro(s):\n-----------------\n${r.join('\n-----------------\n')}`));
-  };
-
-  findLatestNonEmptyZenumlBody();
+  });
 
 })();
