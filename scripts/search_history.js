@@ -29,8 +29,6 @@
 
   const getStorageFormat = (pageId) => fetch(`/wiki/plugins/viewstorage/viewpagestorage.action?pageId=${pageId}`).then(r => r.text()).then(x => ({pageId: pageId, content: x}));
 
-  const filterPages = async () => (await Promise.all((await listPages()).map(p => getStorageFormat(p)))).filter(p => p.content.includes(zenumlFull) || p.content.includes(zenumlLite));
-
   //find latest version which has non-empty macro body
   const findVersion = async (pageId, versions) => {
       for(let i = 0; i < versions.length; i++) {
@@ -42,10 +40,17 @@
       }
   };
 
-  (await filterPages()).forEach(({pageId}) => {
-    console.log(`checking page ${pageId}`);
-    getVersions(pageId).then(r => findVersion(pageId, r.results))
-          .then(r => r && console.log(`found ${r.length} macro(s):\n-----------------\n${r.join('\n-----------------\n')}`));
-  });
+  const iteratePages = async () => {
+    (await listPages()).forEach(async (pageId) => {
+      const data = await getStorageFormat(pageId);
+      if(data.content.includes(zenumlFull) || data.content.includes(zenumlLite)) {
+        console.log(`checking page ${pageId}`);
+        await getVersions(pageId).then(r => findVersion(pageId, r.results))
+              .then(r => r && console.log(`found ${r.length} macro(s) in page ${pageId}:\n-----------------\n${r.join('\n-----------------\n')}`));
+      }
+    });
+  };
+
+  await iteratePages();
 
 })();
