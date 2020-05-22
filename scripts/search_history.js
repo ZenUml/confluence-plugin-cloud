@@ -83,7 +83,7 @@
 
       if(data.content.includes(zenumlFull) || data.content.includes(zenumlLite)) {
         if(option.verbose) {
-          console.log(`checking page ${title}`);
+          console.log(`checking page "${title}"`);
         }
         const versions = await getVersions(pageId);
         const version = await findVersion(pageId, versions.results, option);
@@ -100,18 +100,35 @@
     });
   };
 
+  const getCurrentPageId = () => {
+    const match = window.location.href.match(/\/pages\/(\d+)\//);
+    return match && match[1];
+  };
+
   async function search(url, option) {
+    if(!option.allPages) {
+      const pageId = getCurrentPageId();
+      if(!pageId) {
+        return;
+      }
+      url = `${url}/${pageId}`;
+    }
+
     if(option.verbose) {
       console.log(`fetching ${url}`);
     }
+
     const data = await fetch(url).then(r => r.json());
-    await iteratePages(data.results, option);
+    await iteratePages(option.allPages ? data.results : [data], option);
   
     if(data._links.next) {
       await search(`/wiki${data._links.next}`, option);
     }
   }
 
-  await search('/wiki/rest/api/content', {dryrun: true, verbose: false});
+  //dryrun: do not create/update content property if true
+  //verbose: true to print logs
+  //allPages: false to search current page only
+  await search('/wiki/rest/api/content', {dryrun: true, verbose: false, allPages: false});
 
 })();
