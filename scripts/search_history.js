@@ -88,7 +88,7 @@
         const versions = await getVersions(pageId);
         const version = await findVersion(pageId, versions.results, option);
         if(version) {
-          console.log(`found ${version.macros.length} macro(s) in page "${title}" version ${version.version}:\n--------------------------------------------\n${version.macros.map(JSON.stringify).join('\n--------------------------------------------\n')}`);
+          console.log(`found ${version.macros.length} macro(s) in page "${title}" version ${version.version}:\n--------------------------------------------\n${version.macros.map(JSON.stringify).join('\n--------------------------------------------\n')}\n${option.base}${page._links.webui}`);
 
           if(!option.dryrun) {
             version.macros.filter(m => m.uuid && m.body && m.body.trim().length > 0).forEach(async (m) => {
@@ -119,6 +119,7 @@
     }
 
     const data = await fetch(url).then(r => r.json());
+    option.base = data._links.base;
     await iteratePages(option.allPages ? data.results : [data], option);
   
     if(data._links.next) {
