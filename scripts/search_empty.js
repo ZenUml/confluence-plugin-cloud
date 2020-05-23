@@ -46,8 +46,9 @@
         }
 
         const macros = parseMacros(xml);
-        if(macros.find(m => !m.body || m.body.trim().length === 0)) {
-          console.log(`found page "${title}" has empty macro body: ${option.base}${page._links.webui}\nstorage format: ${option.base.replace('/wiki', '')}${storageFormatUrl(pageId)}`);
+        const empty = macros.filter(m => m.body && m.body.trim().length === 0);
+        if(empty && empty.length > 0) {
+          console.log(`found page "${title}" has ${empty.length} empty macro body: ${option.base}${page._links.webui}\nstorage format: ${option.base.replace('/wiki', '')}${storageFormatUrl(pageId)}`);
         }
       }
     });
