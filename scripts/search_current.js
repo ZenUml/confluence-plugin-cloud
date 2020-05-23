@@ -56,10 +56,10 @@
         const version = await getVersion(pageId, versions[i].number);
 
         for(let j = 0; j < version.macros.length && hasUnresolved(); j++) {
-          const match = m.uuid && getById(m.uuid) || getByIndex(i);
+          const match = m.uuid && getById(m.uuid) || getByIndex(j);
           if(match && isEmpty(match) && !isEmpty(m)) {
             match.resolved = true;
-            console.log(`found in page ${pageId} version ${versions[i].number}:\n${m.body}`);
+            console.log(`found in page ${pageId} version ${versions[i].number} macro ${uuid || `#${j}`}:\n${m.body}`);
           }
         }
       }
