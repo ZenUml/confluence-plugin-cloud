@@ -15,7 +15,7 @@ describe('Macro', () => {
     })
 
     // data
-    test('or macro body', async () => {
+    test('data, no body or property', async () => {
       const mockApConfluence = new MockApConfluence();
       mockApConfluence.saveMacro({uuid: 1234})
       const macro = new Macro(mockApConfluence);
@@ -40,6 +40,23 @@ describe('Macro', () => {
       const macro = new Macro(mockApConfluence);
       const code = (await macro.load()).code;
       expect(code).toBe('A.method')
+    })
+
+    // data, prop
+    test('or content property, but uuid from window.location.search', async () => {
+      delete global.window.location;
+      global.window = Object.create(window);
+      global.window.location = {
+        search: '?uuid=1234',
+      };
+      const mockApConfluence = new MockApConfluence();
+      mockApConfluence.setContentProperty({key: 'zenuml-sequence-macro-1234-body', value: 'A.method'})
+      const macro = new Macro(mockApConfluence);
+      const code = (await macro.load()).code;
+      expect(code).toBe('A.method')
+      global.window.location = {
+        search: '',
+      };
     })
 
     // data, body
@@ -85,6 +102,9 @@ describe('Macro', () => {
         const contentProperty = await macro.getContentProperty();
         expect(contentProperty.value.code).toBe(code)
         expect(contentProperty.version.number).toBe(1)
+        const data = await macro.getMacroData()
+        expect(data.uuid).toBe('random_uuid')
+        expect(data.updatedAt).toBeDefined()
       })
 
       it('for the next times', async () => {
