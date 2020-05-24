@@ -16,7 +16,7 @@ BookService BookRepository Receipt Notification
   _key;
   _versionNumber;
   _loaded = false;
-  constructor(confluence) {
+  constructor(confluence = AP.confluence) {
     this._confluence = confluence;
   }
 
@@ -26,18 +26,28 @@ BookService BookRepository Receipt Notification
   }
 
   getMacroBody = () => {
-    return new Promise((resolve) => {
+    return new Promise((resolve, reject) => {
+      try {
       this._confluence.getMacroBody((body) => {
         resolve(body)
       })
+      } catch (e) {
+        console.error('Failed to retrieve macro body.', e)
+        resolve(null)
+      }
     })
   }
 
   getMacroData = () => {
-    return new Promise((resolve => {
-      this._confluence.getMacroData((data) => {
-        resolve(data)
-      })
+    return new Promise(((resolve) => {
+      try {
+        this._confluence.getMacroData((data) => {
+          resolve(data)
+        })
+      } catch (e) {
+        console.error('Failed to retrieve macro data.', e)
+        resolve(null)
+      }
     }))
   }
 
@@ -45,17 +55,34 @@ BookService BookRepository Receipt Notification
     const macroData = await this.getMacroData();
 
     const key = macroData?.uuid
-    return new Promise((resolve => {
+    return new Promise(resolve => {
       if (!key) {
         resolve(null)
       } else {
         this._key = key
-        this._confluence.getContentProperty(this.propertyKey(key), (cp) => {
-          this._versionNumber = cp?.version?.number
-          resolve(cp)
-        })
+        try {
+          this._confluence.getContentProperty(this.propertyKey(key), (cp) => {
+            this._versionNumber = cp?.version?.number
+            resolve(cp)
+          })
+        } catch (e) {
+          console.error('Failed to retrieve content property.', e)
+          resolve(null)
+        }
       }
-    }))
+    })
+  }
+
+  setContentProperty = async (content) => {
+    return new Promise((resolve, reject) => {
+      this._confluence.setContentProperty(content, (result) => {
+        if(result.error) {
+          reject(result.error)
+        } else {
+          resolve(true)
+        }
+      })
+    })
   }
 
   async load() {
@@ -71,11 +98,11 @@ BookService BookRepository Receipt Notification
     return {code: code}
   }
 
-  // Warning! Do not call getXXX in onSubmit. Do retest if you want to call getXXX.
+  // Warning! Do not call getXXX in save. Do retest if you want to call getXXX.
   // It does not work as of 17th May 2020. That is why we have stored key and version
-  async onSubmit(code) {
+  async save(code) {
     if (!this._loaded) {
-      throw new Error('You have to call load before calling onSubmit()')
+      throw new Error('You have to call load before calling save()')
     }
     const key = this._key || uuidv4()
     this._confluence.saveMacro({uuid: key, updatedAt: new Date()}, code)
@@ -87,7 +114,7 @@ BookService BookRepository Receipt Notification
         number: versionNumber ? versionNumber + 1 : 1
       }
     }
-    this._confluence.setContentProperty(contentProperty)
+    await this.setContentProperty(contentProperty)
   }
 }
 export default Macro

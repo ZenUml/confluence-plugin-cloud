@@ -17,9 +17,10 @@ class MockApConfluence {
     cb(this.macroBody)
   }
 
-  setContentProperty(content) {
+  setContentProperty(content, cb) {
     this.key = content.key
     this.contentProperty = content
+    cb && cb(content)
   }
 
   getContentProperty(key, cb) {

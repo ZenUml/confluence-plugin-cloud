@@ -29,7 +29,7 @@ new Vue({
 }).$mount('#app')
 window.store = store
 
-if (window.location.href.indexOf('localhost') > 0) {
+if (window.location.href.includes('localhost')) {
   // eslint-disable-next-line
   console.log('You are using a mocked AP.confluence')
   window.AP = {

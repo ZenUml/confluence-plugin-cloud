@@ -2,7 +2,6 @@
 <html lang="en">
 <head>
   <!-- Global site tag (gtag.js) - Google Analytics -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-114996686-1"></script>
   <script type="text/javascript" src="js/google-analytics.js"></script>
   <title>confluence-plugin-view</title>
 
@@ -93,14 +92,10 @@
     function loadConnect() {
       JavaScript.load(getConnectUrl(), initializeMacro);
     }
-    function loadDemo() {
-      store.commit('code', 'A.method()');
-    }
-    window.onAppLoaded = window.location.href.indexOf('localhost') > 0 ? loadDemo : loadConnect;
+    window.onAppLoaded = loadConnect;
 
   </script>
 
-  <script type="text/javascript" src="js/heap.js"></script>
   <link href="css/diagram_<%= htmlWebpackPlugin.options.product_type %>.css" rel="stylesheet">
 </head>
 <body>
