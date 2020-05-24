@@ -6,6 +6,9 @@ import { Version, SeqDiagram, Store } from 'vue-sequence'
 import 'vue-sequence/dist/vue-sequence.css'
 // eslint-disable-next-line
 console.log(Version)
+
+import MockApConfluence from './utils/MockApConfluence'
+import Macro from './utils/Macro'
 import Editor from './components/Editor'
 import Workspace from './components/Workspace'
 
@@ -25,6 +28,16 @@ new Vue({
   render: h => h(Workspace) // with this method, we don't need to use full version of vew
 }).$mount('#app')
 window.store = store
+
+if (window.location.href.includes('localhost')) {
+  // eslint-disable-next-line
+  console.log('You are using a mocked AP.confluence')
+  window.AP = {
+    confluence: new MockApConfluence()
+  }
+}
+
+window.Macro = Macro
 if(window.onAppLoaded) {
   window.onAppLoaded();
 }
