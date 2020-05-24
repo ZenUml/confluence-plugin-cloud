@@ -2,7 +2,6 @@
 <html lang="en">
 <head>
   <!-- Global site tag (gtag.js) - Google Analytics -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-114996686-1"></script>
   <script type="text/javascript" src="js/google-analytics.js"></script>
   <title>confluence-plugin-view</title>
 
@@ -84,41 +83,25 @@
       await createAttachmentIfContentChanged(body);
     }
 
-    function loadBodyFromContentProperty(callback) {
-      AP.confluence.getContentProperty(propertyKey(getUrlParam("uuid")), function(property) {
-        callback(property && property.value);
-      });
-    }
-
     async function initializeMacro() {
-      loadBodyFromContentProperty(async (newBody) => {
-        if(!newBody) {
-          AP.confluence.getMacroBody(async (oldBody) => {
-            await onMacroBodyReady(oldBody || EXAMPLE);
-          });
-        } else {
-          await onMacroBodyReady(newBody);
-        }
-      });
+      const macro = new Macro(AP.confluence);
+      const code = (await macro.load()).code
+      await onMacroBodyReady(code)
     }
 
     function loadConnect() {
       JavaScript.load(getConnectUrl(), initializeMacro);
     }
-    function loadDemo() {
-      store.commit('code', 'A.method()');
-    }
-    window.onAppLoaded = window.location.href.indexOf('localhost') > 0 ? loadDemo : loadConnect;
+    window.onAppLoaded = loadConnect;
 
   </script>
 
-  <script type="text/javascript" src="js/heap.js"></script>
   <link href="css/diagram_lite.css" rel="stylesheet">
-<link href="/v1.3.2/css/chunk-vendors.d54d287a.css" rel="stylesheet"><link href="/v1.3.2/css/app.a1d85f7f.css" rel="stylesheet"></head>
+<link href="/v1.3.2/css/chunk-vendors.33cd507d.css" rel="stylesheet"><link href="/v1.3.2/css/app.1661f0c7.css" rel="stylesheet"></head>
 <body>
 <div id="workspace" class="container view">
   <div id="app"></div>
 </div>
 <!-- built files will be auto injected -->
-<script type="text/javascript" src="/v1.3.2/js/chunk-vendors.5b899b4e.js"></script><script type="text/javascript" src="/v1.3.2/js/app.35909294.js"></script></body>
+<script type="text/javascript" src="/v1.3.2/js/chunk-vendors.be34c80f.js"></script><script type="text/javascript" src="/v1.3.2/js/app.a507bf53.js"></script></body>
 </html>
