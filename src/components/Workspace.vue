@@ -4,6 +4,7 @@
       <editor/>
     </div>
     <div id="workspace-right" class="split diagram">
+      <styling-panel/>
       <seq-diagram/>
       <div class="get-support-container">
         <get-support/>
@@ -17,6 +18,7 @@
   import Editor from './Editor.vue'
   import GetSupport from './GetSupport'
   import Split from 'split.js'
+  import StylingPanel from "./StylingPanel";
 
   export default {
     name: 'Workspace',
@@ -29,6 +31,7 @@
       }
     },
     components: {
+      StylingPanel,
       GetSupport,
       Editor,
       SeqDiagram
