@@ -4,7 +4,6 @@
 
 <script>
   import VSwatches from './VueSwatches/VSwatches'
-  import 'vue-swatches/dist/vue-swatches.css'
   export default {
     name: "StylingPanel",
     data() {

@@ -12,12 +12,14 @@
     "build:lite-win": "set VERSION=v1.3.0&&set PRODUCT_TYPE=lite&&vue-cli-service build --no-clean"
   },
   "dependencies": {
+    "@babel/core": "^7.9.6",
+    "@babel/preset-env": "^7.9.6",
     "firebase-functions": "^3.3.0",
     "sequence-parser": "^0.8.6",
     "split.js": "^1.3.5",
     "vue": "^2.6.10",
     "vue-codemirror": "^4.0.6",
-    "vue-sequence": "^0.9.5",
+    "vue-sequence": "^0.9.8",
     "vue-swatches": "^2.0.3",
     "vuex": "^3.1.0"
   },
@@ -27,6 +29,11 @@
     "@vue/cli-plugin-unit-jest": "~4.3.0",
     "@vue/cli-service": "^3.7.0",
     "@vue/test-utils": "1.0.0-beta.29",
+    "babel-cli": "^6.26.0",
+    "babel-preset-es2015": "^6.24.1",
+    "test-lib": "^2.1.2",
+    "vue-jest": "^3.0.5",
+    "vue-svg-loader": "^0.16.0",
     "vue-template-compiler": "^2.6.10"
   },
   "eslintConfig": {

@@ -4,7 +4,7 @@
       <editor/>
     </div>
     <div id="workspace-right" class="split diagram">
-      <styling-panel/>
+      <styling-panel :class="{ 'enabled': colorPanelEnabled }"/>
       <seq-diagram/>
       <div class="get-support-container">
         <get-support/>
@@ -24,6 +24,11 @@
     name: 'Workspace',
     props: {
       msg: String
+    },
+    computed: {
+      colorPanelEnabled: function() {
+        return this.$store.state.selected.length > 0
+      }
     },
     mounted () {
       if (window.split) {

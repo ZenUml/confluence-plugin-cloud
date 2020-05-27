@@ -12,6 +12,13 @@ import Macro from './utils/Macro'
 import Editor from './components/Editor'
 import Workspace from './components/Workspace'
 
+// Code Editor style
+import 'codemirror/lib/codemirror.css'
+// theme css
+import 'codemirror/theme/base16-dark.css'
+
+import 'vue-swatches/dist/vue-swatches.css'
+
 
 Vue.config.productionTip = false
 
