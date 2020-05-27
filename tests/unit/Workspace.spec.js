@@ -9,13 +9,13 @@ describe('Workspace', () => {
   it('should disable color panel by default', async () => {
     const store = new Vuex.Store(Store)
     const workspaceWrapper = shallowMount(Workspace, {store, localVue})
-    expect(workspaceWrapper.find('.enabled').exists()).toBeFalsy()
+    expect(workspaceWrapper.find('.disabled').exists()).toBeTruthy()
     store.commit('onSelect', 'A')
     expect(workspaceWrapper.vm.colorPanelEnabled).toBeTruthy()
 
-    expect(workspaceWrapper.find('.enabled').exists()).toBeTruthy()
+    expect(workspaceWrapper.find('.disabled').exists()).toBeFalsy()
     store.commit('onSelect', 'A')
     expect(workspaceWrapper.vm.colorPanelEnabled).toBeFalsy()
-    expect(workspaceWrapper.find('.enabled').exists()).toBeFalsy()
+    expect(workspaceWrapper.find('.disabled').exists()).toBeTruthy()
   })
 })

@@ -4,7 +4,7 @@
       <editor/>
     </div>
     <div id="workspace-right" class="split diagram">
-      <styling-panel :class="{ 'enabled': colorPanelEnabled }"/>
+      <styling-panel :class="{ 'disabled': !colorPanelEnabled }"/>
       <seq-diagram/>
       <div class="get-support-container">
         <get-support/>
@@ -51,6 +51,9 @@
     width: 100%;
   }
 
+  .workspace .disabled {
+    filter: grayscale(100%);
+  }
   /*.get-support-container {*/
   /*  display: none;*/
   /*}*/
