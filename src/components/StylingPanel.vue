@@ -16,7 +16,10 @@
       onColorSelected: function () {
         this.$store.state.selected.forEach(
           p => {
-            this.$store.state.styles[p] = this.color
+            const styles = this.$store.state.styles
+            const style = {}
+            style[p] = this.color
+            this.$store.state.styles = Object.assign({}, styles, style)
           }
         )
       }

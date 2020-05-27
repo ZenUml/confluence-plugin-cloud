@@ -186,6 +186,7 @@
 </template>
 
 <script>
+  import CodeMirror from 'vue-codemirror'
   import 'codemirror/keymap/sublime'
   // language js
   import 'codemirror/mode/javascript/javascript.js'
@@ -247,7 +248,8 @@
       codemirror() {
         return this.$refs.myCm.codemirror
       }
-    }
+    },
+    components: {CodeMirror}
   }
 </script>
 

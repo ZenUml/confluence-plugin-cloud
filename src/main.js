@@ -28,6 +28,7 @@ Vue.component('workspace', Workspace)
 Vue.use(VueCodeMirror)
 
 Vue.use(Vuex)
+Store.state.styles = {}
 const store = new Vuex.Store(Store);
 
 new Vue({

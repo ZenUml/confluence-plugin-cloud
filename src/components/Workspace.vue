@@ -1,5 +1,6 @@
 <template>
   <div class="workspace">
+    <div v-html="styles"></div>
     <div id="workspace-left" class="split editor">
       <editor/>
     </div>
@@ -26,6 +27,13 @@
       msg: String
     },
     computed: {
+      styles() {
+        const stylesInStore = this.$store.state.styles;
+        const statements = Object.keys(stylesInStore)
+          .map(k => `#${k} .participant { background: ${stylesInStore[k]}; }`)
+          .join('\n');
+        return `<style> ${statements}</style>`;
+      },
       colorPanelEnabled: function() {
         return this.$store.state.selected.length > 0
       }
