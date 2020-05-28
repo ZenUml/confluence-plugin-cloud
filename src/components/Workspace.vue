@@ -4,8 +4,8 @@
     <div id="workspace-left" class="split editor">
       <editor/>
     </div>
-    <div id="workspace-right" class="split diagram">
-      <styling-panel :class="{ 'disabled': !colorPanelEnabled }"/>
+    <div id="workspace-right" class="split diagram" @click="deselectAll">
+      <styling-panel/>
       <seq-diagram/>
       <div class="get-support-container">
         <get-support/>
@@ -33,9 +33,18 @@
           .map(k => `#${k} .participant { background: ${stylesInStore[k]}; }`)
           .join('\n');
         return `<style> ${statements}</style>`;
-      },
-      colorPanelEnabled: function() {
-        return this.$store.state.selected.length > 0
+      }
+    },
+    methods: {
+      deselectAll(event) {
+        let el = event.target
+        while (el) {
+          if (el.classList && (el.classList.contains('participant') || el.classList.contains('vue-swatches'))) {
+            return
+          }
+          el = el.parentNode
+        }
+        this.$store.state.selected = []
       }
     },
     mounted () {
@@ -59,9 +68,6 @@
     width: 100%;
   }
 
-  .workspace .disabled {
-    filter: grayscale(100%);
-  }
   /*.get-support-container {*/
   /*  display: none;*/
   /*}*/

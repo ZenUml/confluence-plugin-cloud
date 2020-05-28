@@ -20,11 +20,9 @@ describe('Workspace', () => {
     const color1 = workspaceWrapper.find('[aria-label="#8777d9"]')
     color1.trigger('click')
     expect(store.state.styles.A).toBe('#8777d9')
-    expect(workspaceWrapper.vm.colorPanelEnabled).toBeTruthy()
 
     expect(workspaceWrapper.vm.styles).toBe('<style> #A .participant { background: #8777d9; }</style>')
     store.commit('onSelect', 'A')
-    expect(workspaceWrapper.vm.colorPanelEnabled).toBeFalsy()
     expect(workspaceWrapper.vm.styles).toBe('<style> #A .participant { background: #8777d9; }</style>')
     expect(workspaceWrapper.find('.disabled').exists()).toBeTruthy()
   })

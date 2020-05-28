@@ -17,9 +17,6 @@ import 'codemirror/lib/codemirror.css'
 // theme css
 import 'codemirror/theme/base16-dark.css'
 
-import 'vue-swatches/dist/vue-swatches.css'
-
-
 Vue.config.productionTip = false
 
 Vue.component('seq-diagram', SeqDiagram)

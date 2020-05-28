@@ -588,9 +588,7 @@
     cursor: not-allowed;
   }
   .vue-swatches__container {
-    margin-bottom: 5px;
     box-sizing: content-box;
-    padding: 5px;
   }
   .vue-swatches__container:not(.vue-swatches--inline) {
     position: absolute;
