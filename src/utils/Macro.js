@@ -103,13 +103,16 @@ BookService BookRepository Receipt Notification
     this._loaded = true
     const contentProp = await this.getContentProperty();
     let code;
+    let styles;
     if(typeof contentProp?.value === 'string') {
       code = contentProp?.value
     } else {
       code = contentProp?.value?.code
+      styles = contentProp?.value?.styles
     }
-    code = code || await this.getMacroBody() || this.EXAMPLE;
-    return {code: code}
+    code = code || await this.getMacroBody() || this.EXAMPLE
+    styles = styles || {}
+    return {code: code, styles}
   }
 
   // Warning! Do not call getXXX in save. Do retest if you want to call getXXX.
