@@ -108,8 +108,10 @@ describe('Macro', () => {
         const macro = new Macro(mockApConfluence);
         await macro.load()
         const code = 'A.method';
-        await macro.save(code)
+        const styles = {'#A': { backgroundColor: '#FFF'}}
+        await macro.save(code, styles)
         expect((await macro.load()).code).toBe(code)
+        expect((await macro.load()).styles['#A'].backgroundColor).toBe('#FFF')
         const contentProperty = await macro.getContentProperty();
         expect(contentProperty.value.code).toBe(code)
         expect(contentProperty.version.number).toBe(1)
