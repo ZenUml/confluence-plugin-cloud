@@ -13,7 +13,7 @@
     data() {
       return {
         color: '',
-        swatches: ['#8777d9', '#2684ff', '#57d9a3', '#ffc400', '#ff7452', '']
+        swatches: ['#8777d9', '#2684ff', '#57d9a3', '#ffc400', '#ff7452', '#5243aa', '#0052cc', '#00875a', '#ff991f', '#de350b', '']
       }
     },
     computed: {
