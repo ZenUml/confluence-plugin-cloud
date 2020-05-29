@@ -8,12 +8,13 @@
 
     async function initializeMacro() {
       const macro = new Macro(AP.confluence)
-      const code = (await macro.load()).code
+      const {code, styles} = await macro.load()
       store.commit('code', code)
+      store.state.styles = styles
 
       AP.require(["confluence", "dialog"], function (confluence, dialog) {
         async function onSubmit() {
-          await macro.save(store.state.code)
+          await macro.save(store.state.code, store.state.styles)
           confluence.closeMacroEditor();
           return true;
         }

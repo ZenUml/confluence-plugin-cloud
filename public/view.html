@@ -72,21 +72,18 @@
       }
     }
 
-    async function onMacroBodyReady(body) {
-      store.commit('code', body);
+    async function initializeMacro() {
+      const macro = new Macro(AP.confluence);
+      const {code, styles} = await macro.load()
+      store.commit('code', code)
+      store.state.styles = styles
       setTimeout(function () {
         let width = document.body.scrollWidth;
         let height = document.body.scrollHeight;
         console.log('Resize to ', width, height);
         AP.resize(width, height);
       }, 1000);
-      await createAttachmentIfContentChanged(body);
-    }
-
-    async function initializeMacro() {
-      const macro = new Macro(AP.confluence);
-      const code = (await macro.load()).code
-      await onMacroBodyReady(code)
+      await createAttachmentIfContentChanged(code);
     }
 
     function loadConnect() {
