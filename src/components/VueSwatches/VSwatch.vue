@@ -101,7 +101,7 @@
         return {
           width: `${this.swatchSize}px`,
           height: `${this.swatchSize}px`,
-          marginBottom: `${this.spacingSize}px`,
+          marginBottom: `0px`,
           marginRight: `${this.spacingSize}px`,
           borderRadius: this.borderRadius,
           backgroundColor: this.swatchColor !== "" ? this.swatchColor : "#FFFFFF",

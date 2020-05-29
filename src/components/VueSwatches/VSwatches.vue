@@ -129,7 +129,7 @@
   export const DEFAULT_BORDER_RADIUS = "10px";
   export const DEFAULT_ROW_LENGTH = 4;
   export const DEFAULT_TRIGGER_CONTAINER_SPACE = 5;
-  export const DEFAULT_SWATCH_SIZE = 15;
+  export const DEFAULT_SWATCH_SIZE = 25;
   export const DEFAULT_SHOW_BORDER = false;
   export default {
     name: "v-swatches",

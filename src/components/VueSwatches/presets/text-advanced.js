@@ -99,6 +99,6 @@ export default {
   ],
   borderRadius: "0",
   rowLength: 10,
-  swatchSize: 15,
+  swatchSize: 25,
   spacingSize: 0
 };
