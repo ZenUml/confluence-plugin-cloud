@@ -16,7 +16,7 @@ describe('Workspace', () => {
     await workspaceWrapper.vm.$nextTick()
     const color1 = workspaceWrapper.find('[aria-label="#8777d9"]')
     color1.trigger('click')
-    expect(store.state.styles.A.backgroundColor).toBe('#8777d9')
+    expect(store.state.styles['#A'].backgroundColor).toBe('#8777d9')
 
     expect(workspaceWrapper.vm.styles).toBe('<style> #A .participant { background: #8777d9; }</style>')
     store.commit('onSelect', 'A')

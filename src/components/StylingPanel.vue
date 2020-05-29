@@ -27,7 +27,7 @@
           p => {
             const styles = this.$store.state.styles
             const style = {}
-            style[p] = {backgroundColor: this.color}
+            style[`#${p}`] = {backgroundColor: this.color}
             this.$store.state.styles = Object.assign({}, styles, style)
           }
         )
