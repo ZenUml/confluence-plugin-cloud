@@ -8,19 +8,19 @@
     ],
     "rewrites": [
       {
-        "source": "**/atlassian-connect*.json",
+        "source": "/atlassian-connect*.json",
         "function": "descriptor"
       },
       {
-        "source": "/*/attachment",
+        "source": "/attachment",
         "function": "renderAttachment"
       },
       {
-        "source": "/*/installed",
+        "source": "/installed",
         "function": "installedEndpoint"
       },
       {
-        "source": "/*/uninstalled",
+        "source": "/uninstalled",
         "function": "uninstalledEndpoint"
       }
     ]
