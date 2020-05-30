@@ -8,6 +8,10 @@
     ],
     "rewrites": [
       {
+        "source": "**/atlassian-connect*.json",
+        "function": "descriptor"
+      },
+      {
         "source": "/*/attachment",
         "function": "renderAttachment"
       },
