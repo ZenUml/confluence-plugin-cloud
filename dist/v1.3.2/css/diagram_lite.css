@@ -3,3 +3,7 @@
     text-align: right;
     float: right;
 }
+
+.workspace #workspace-right .styling-panel {
+    display: none;
+}

@@ -1,6 +1,7 @@
 {
   "projects": {
     "prod": "zenuml-confluence-app",
+    "stage:lite": "zenuml-conf-stg-lite",
     "dev": "zenuml-confluence-app-dev",
     "legacy": "zenuml-atlassian"
   }
