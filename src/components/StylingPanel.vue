@@ -44,7 +44,7 @@
 </style>
 <style scoped>
   .styling-panel {
-    height: 26px;
+    height: 34px;
     display: flex;
     margin: 2px 2px;
     background: #FFF;
