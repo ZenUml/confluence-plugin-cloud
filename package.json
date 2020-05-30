@@ -10,7 +10,7 @@
     "build:full": "VERSION=v1.3.1 PRODUCT_TYPE=full vue-cli-service build --no-clean",
     "build:full-win": "set VERSION=v1.3.1&&set PRODUCT_TYPE=full&&vue-cli-service build --no-clean",
     "build:lite": "PRODUCT_TYPE=lite vue-cli-service build",
-    "deploy:lite:stage": "firebase deploy --project lite:stage",
+    "deploy:lite:stage": "yarn build:lite && firebase deploy --project lite:stage",
     "build:lite-win": "set VERSION=v1.3.0&&set PRODUCT_TYPE=lite&&vue-cli-service build --no-clean"
   },
   "dependencies": {
