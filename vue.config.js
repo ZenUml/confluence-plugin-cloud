@@ -1,10 +1,8 @@
 var HtmlWebpackPlugin = require('html-webpack-plugin')
-
-var version = process.env.VERSION || 'latest'
-var product_type = process.env.PRODUCT_TYPE
+var productType = process.env.PRODUCT_TYPE
 
 module.exports = {
-  assetsDir: version,
+  assetsDir: productType,
   productionSourceMap: false,
   configureWebpack: {
     resolve: {
@@ -28,18 +26,18 @@ module.exports = {
     config
       .plugin('viewer-html')
       .use(HtmlWebpackPlugin, [{
-        filename: `./${version}/view.html`,
+        filename: `./${productType}/view.html`,
         template: './public/view.html',
         inject: true,
-        product_type: product_type
+        product_type: productType
       }])
     config
       .plugin('editor-html')
       .use(HtmlWebpackPlugin, [{
-        filename: `./${version}/edit.html`,
+        filename: `./${productType}/edit.html`,
         template: './public/edit.html',
         inject: true,
-        product_type: product_type
+        product_type: productType
       }])
 
     config
@@ -48,7 +46,7 @@ module.exports = {
         // constructor parameter for 'CopyWebpackPlugin'
         args[0][0].ignore.push('view.html')
         args[0][0].ignore.push('edit.html')
-        args[0][0].to = `${version}/`
+        args[0][0].to = `${productType}/`
         return args
       })
   }
