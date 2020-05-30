@@ -1,0 +1,9 @@
+#diagram::after, .sequence-diagram::after {
+    content: " - powered by zenuml.com";
+    text-align: right;
+    float: right;
+}
+
+.workspace #workspace-right .styling-panel {
+    display: none;
+}
