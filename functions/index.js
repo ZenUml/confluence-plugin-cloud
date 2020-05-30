@@ -24,9 +24,10 @@ exports.descriptor = functions.https.onRequest((req, resp) => {
   const basePath = url.substring(0, url.lastIndexOf('/'));
   const self = url.substring(url.lastIndexOf('/'));
   descriptor.baseUrl = `${req.protocol}://${req.hostname}${basePath}`;
+  // This is not necessary but works as a defense.
   descriptor.links.self = self;
 
-  const isLite = url.includes('-lite');
+  const isLite = url.includes('lite');
   if (isLite) {
     descriptor.key = 'com.zenuml.confluence-addon-lite';
     descriptor.name = 'ZenUML Lite';
