@@ -12,6 +12,10 @@ import Macro from './utils/Macro'
 import Editor from './components/Editor'
 import Workspace from './components/Workspace'
 
+// Code Editor style
+import 'codemirror/lib/codemirror.css'
+// theme css
+import 'codemirror/theme/base16-dark.css'
 
 Vue.config.productionTip = false
 
@@ -21,6 +25,7 @@ Vue.component('workspace', Workspace)
 Vue.use(VueCodeMirror)
 
 Vue.use(Vuex)
+Store.state.styles = {}
 const store = new Vuex.Store(Store);
 
 new Vue({

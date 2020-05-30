@@ -103,18 +103,21 @@ BookService BookRepository Receipt Notification
     this._loaded = true
     const contentProp = await this.getContentProperty();
     let code;
+    let styles;
     if(typeof contentProp?.value === 'string') {
       code = contentProp?.value
     } else {
       code = contentProp?.value?.code
+      styles = contentProp?.value?.styles
     }
-    code = code || await this.getMacroBody() || this.EXAMPLE;
-    return {code: code}
+    code = code || await this.getMacroBody() || this.EXAMPLE
+    styles = styles || {}
+    return {code: code, styles}
   }
 
   // Warning! Do not call getXXX in save. Do retest if you want to call getXXX.
   // It does not work as of 17th May 2020. That is why we have stored key and version
-  async save(code) {
+  async save(code, styles) {
     if (!this._loaded) {
       throw new Error('You have to call load before calling save()')
     }
@@ -123,7 +126,7 @@ BookService BookRepository Receipt Notification
     const versionNumber = this._versionNumber
     const contentProperty = {
       key: this.propertyKey(key),
-      value: {code: code},
+      value: {code: code, styles: styles},
       version: {
         number: versionNumber ? versionNumber + 1 : 1
       }

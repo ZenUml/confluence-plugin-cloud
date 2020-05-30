@@ -1,9 +1,11 @@
 <template>
   <div class="workspace">
+    <div v-html="styles"></div>
     <div id="workspace-left" class="split editor">
       <editor/>
     </div>
-    <div id="workspace-right" class="split diagram">
+    <div id="workspace-right" class="split diagram" @click="deselectAll">
+      <styling-panel/>
       <seq-diagram/>
       <div class="get-support-container">
         <get-support/>
@@ -17,11 +19,33 @@
   import Editor from './Editor.vue'
   import GetSupport from './GetSupport'
   import Split from 'split.js'
+  import StylingPanel from "./StylingPanel";
 
   export default {
     name: 'Workspace',
     props: {
       msg: String
+    },
+    computed: {
+      styles() {
+        const stylesInStore = this.$store.state.styles;
+        const statements = Object.keys(stylesInStore)
+          .map(k => `${k} .participant { background: ${stylesInStore[k].backgroundColor}; }`)
+          .join('\n');
+        return `<style> ${statements}</style>`;
+      }
+    },
+    methods: {
+      deselectAll(event) {
+        let el = event.target
+        while (el) {
+          if (el.classList && (el.classList.contains('participant') || el.classList.contains('vue-swatches'))) {
+            return
+          }
+          el = el.parentNode
+        }
+        this.$store.state.selected = []
+      }
     },
     mounted () {
       if (window.split) {
@@ -29,6 +53,7 @@
       }
     },
     components: {
+      StylingPanel,
       GetSupport,
       Editor,
       SeqDiagram

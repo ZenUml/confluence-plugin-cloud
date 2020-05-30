@@ -186,13 +186,11 @@
 </template>
 
 <script>
+  import CodeMirror from 'vue-codemirror'
   import 'codemirror/keymap/sublime'
-  import 'codemirror/lib/codemirror.css'
   // language js
   import 'codemirror/mode/javascript/javascript.js'
   import 'codemirror/addon/display/placeholder.js'
-  // theme css
-  import 'codemirror/theme/base16-dark.css'
   export default {
     name: 'editor',
     data() {
@@ -250,7 +248,8 @@
       codemirror() {
         return this.$refs.myCm.codemirror
       }
-    }
+    },
+    components: {CodeMirror}
   }
 </script>
 

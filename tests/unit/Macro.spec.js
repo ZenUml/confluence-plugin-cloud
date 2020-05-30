@@ -42,6 +42,17 @@ describe('Macro', () => {
       expect(code).toBe('A.method')
     })
 
+    test('or content property as object {code, styles}', async () => {
+      const mockApConfluence = new MockApConfluence();
+      mockApConfluence.saveMacro({uuid: '1234'})
+      mockApConfluence.setContentProperty({key: 'zenuml-sequence-macro-1234-body', value: {code: 'A.method', styles: {'#A': { backgroundColor: '#FFF'}}}})
+      const macro = new Macro(mockApConfluence);
+      const code = (await macro.load()).code;
+      expect(code).toBe('A.method')
+      const styles = (await macro.load()).styles
+      expect(styles['#A'].backgroundColor).toBe('#FFF')
+    })
+
     // data, prop
     test('or content property, but uuid from window.location.search', async () => {
       delete global.window.location;
@@ -97,8 +108,10 @@ describe('Macro', () => {
         const macro = new Macro(mockApConfluence);
         await macro.load()
         const code = 'A.method';
-        await macro.save(code)
+        const styles = {'#A': { backgroundColor: '#FFF'}}
+        await macro.save(code, styles)
         expect((await macro.load()).code).toBe(code)
+        expect((await macro.load()).styles['#A'].backgroundColor).toBe('#FFF')
         const contentProperty = await macro.getContentProperty();
         expect(contentProperty.value.code).toBe(code)
         expect(contentProperty.version.number).toBe(1)
