@@ -3,8 +3,6 @@
     "full:stage": "zenuml-conf-stg-full",
     "full:prod":  "zenuml-conf-full",
     "lite:stage": "zenuml-conf-stg-lite",
-    "lite:prod":  "zenuml-conf-lite",
-    "dev": "zenuml-confluence-app-dev",
-    "legacy": "zenuml-atlassian"
+    "lite:prod":  "zenuml-conf-lite"
   }
 }
