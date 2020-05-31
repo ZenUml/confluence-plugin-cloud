@@ -1,9 +1,9 @@
 {
   "projects": {
-    "prod": "zenuml-confluence-app",
     "full:stage": "zenuml-conf-stg-full",
-    "lite:prod": "zenuml-conf-lite",
+    "full:prod":  "zenuml-conf-full",
     "lite:stage": "zenuml-conf-stg-lite",
+    "lite:prod":  "zenuml-conf-lite",
     "dev": "zenuml-confluence-app-dev",
     "legacy": "zenuml-atlassian"
   }
