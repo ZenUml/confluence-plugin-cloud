@@ -1,5 +1,7 @@
 const functions = require('firebase-functions');
 const descriptor = require('./atlassian-connect.json');
+const SteinStore = require('stein-js-client');
+const store = new SteinStore('https://api.steinhq.com/v1/storages/5ed5fe9883c30d0425e2c433');
 
 exports.renderAttachment = functions.https.onRequest((request, response) => {
   response.send(`<ac:image> <ri:attachment ri:filename="zenuml-${request.query.uuid}.png" /> </ac:image>`);
@@ -7,15 +9,29 @@ exports.renderAttachment = functions.https.onRequest((request, response) => {
 
 exports.installedEndpoint = functions.https.onRequest((request, response) => {
   console.log('request.body.baseUrl:', request.body.baseUrl);
-  console.log('request.body.clientKey:', request.body.clientKey);
-  console.log('request.body.pluginsVersion:', request.body.pluginsVersion);
+  store.append('Sheet1', [
+    {
+      DateTime: new Date().toLocaleString('en-AU'),
+      ClientSite: request.body.baseUrl,
+      AppType: 'Unknown',
+      EventType: 'Install',
+      Notes: ''
+    }
+  ]).then(console.log)
   response.status(200).send(`OK`);
 });
 
 exports.uninstalledEndpoint = functions.https.onRequest((request, response) => {
   console.log('request.body.baseUrl:', request.body.baseUrl);
-  console.log('request.body.clientKey:', request.body.clientKey);
-  console.log('request.body.pluginsVersion:', request.body.pluginsVersion);
+  store.append('Sheet1', [
+    {
+      DateTime: new Date().toLocaleString('en-AU'),
+      ClientSite: request.body.baseUrl,
+      AppType: 'Unknown',
+      EventType: 'Uninstall',
+      Notes: ''
+    }
+  ]).then(console.log)
   response.status(200).send(`OK`);
 });
 
