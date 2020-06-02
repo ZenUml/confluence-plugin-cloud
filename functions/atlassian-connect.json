@@ -42,7 +42,7 @@
         "outputType": "block",
         "bodyType": "plain-text",
         "editor": {
-          "url": "/edit.html?macroId={macro.id}&uuid={uuid}",
+          "url": "/edit.html?update=20200602",
           "editTitle": {
             "value": "Edit Sequence Diagram"
           },
