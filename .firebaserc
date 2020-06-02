@@ -1,8 +1,8 @@
 {
   "projects": {
     "full:stage": "zenuml-conf-stg-full",
-    "full:prod":  "zenuml-conf-full",
+    "full:prod": "zenuml-conf-full",
     "lite:stage": "zenuml-conf-stg-lite",
-    "lite:prod":  "zenuml-conf-lite"
+    "lite:prod": "zenuml-conf-lite",
   }
 }
