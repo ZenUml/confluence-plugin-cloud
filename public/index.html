@@ -11,8 +11,17 @@
     </script>
   </head>
   <body style="height: 100vh;">
+    <script src="https://unpkg.com/mermaid@8.5.2/dist/mermaid.min.js"></script>
+    <script>
+      mermaid.mermaidAPI.initialize();
+    </script>
     <h1>Demo</h1>
     <p>This page is used for <code>yarn serve</code> and local testing with <code>yarn build</code>.</p>
+    <label for="diagramType">Diagram Type:</label>
+    <select id="diagramType">
+      <option value="zenuml">ZenUML</option>
+      <option value="mermaid">Mermaid</option>
+    </select>
     <div id="app"></div>
     <!-- built files will be auto injected -->
   </body>

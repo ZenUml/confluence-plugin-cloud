@@ -214,7 +214,21 @@
     },
     methods: {
       onEditorCodeChange(newCode) {
-        this.$store.dispatch('updateCode', {code: newCode})
+        const isMermaid = document.querySelector('#diagramType option:checked').text === 'Mermaid';
+
+        if(isMermaid && newCode && newCode.trim().length > 0) {
+          this.$store.dispatch('updateCode', {code: ''});
+
+          var element = document.querySelector("#mermaid");
+          var cb = function(svg){
+              element.innerHTML = svg;
+          };
+          mermaid.mermaidAPI.render('id1', newCode, cb);
+        } else {
+          document.querySelector('#mermaid').innerHTML = '';
+
+          this.$store.dispatch('updateCode', {code: newCode});
+        }
       },
       appendCode(code) {
         this.$store.dispatch('updateCode', {code: this.$store.state.code + `\n${code}`});
