@@ -7,6 +7,7 @@
     <div id="workspace-right" class="split diagram" @click="deselectAll">
       <styling-panel/>
       <seq-diagram/>
+      <div id="mermaid"></div>
       <div class="get-support-container">
         <get-support/>
       </div>
