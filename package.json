@@ -13,7 +13,7 @@
     "build:lite-win": "set VERSION=v1.3.0&&set PRODUCT_TYPE=lite&&vue-cli-service build --no-clean"
   },
   "dependencies": {
-    "@babel/core": "^7.9.6",
+    "@babel/core": "^7.10.2",
     "@babel/preset-env": "^7.9.6",
     "firebase-functions": "^3.3.0",
     "sequence-parser": "^0.8.6",
