@@ -4,6 +4,7 @@
       <toggle-switch
         :options="toggleOptions"
         :@change="updateMap()"
+        v-model="diagramType"
         />
       <a class="help" target="_blank" :href="helpUrl">
         <svg width="20px" height="20px" viewBox="0 0 50 50" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
@@ -42,6 +43,7 @@
     name: 'editor',
     data() {
       return {
+        diagramType: 'ZenUML',
         helpUrl: 'https://zenuml.atlassian.net/wiki/spaces/Doc/overview',
         cmOptions: {
           tabSize: 4,
@@ -70,20 +72,20 @@
             width: '100px'
           },
           items: {
-            labels: [{ name: 'ZenUML', color: 'white', backgroundColor: '#2684FF'},
-              {name: 'mermaid', color: 'white', backgroundColor: '#42B982'}]
+            labels: [{ name: 'ZenUML', value: 'ZenUML', color: 'white', backgroundColor: '#2684FF'},
+              {name: 'mermaid', value: 'mermaid', color: 'white', backgroundColor: '#42B982'}]
           }
         }
       }
     },
     methods: {
       onEditorCodeChange(newCode) {
-        const isMermaid = document.querySelector('#diagramType option:checked').text === 'Mermaid';
+        const isMermaid = this.diagramType === 'mermaid';
 
         if(isMermaid && newCode && newCode.trim().length > 0) {
           this.$store.dispatch('updateCode', {code: ''});
 
-          var element = document.querySelector("#mermaid");
+          var element = document.querySelector("#mermaid-diagram");
           var cb = function(svg){
               element.innerHTML = svg;
           };
@@ -91,7 +93,7 @@
           // eslint-disable-next-line
           mermaid.mermaidAPI.render('id1', newCode, cb);
         } else {
-          document.querySelector('#mermaid').innerHTML = '';
+          document.querySelector('#mermaid-diagram').innerHTML = '';
 
           this.$store.dispatch('updateCode', {code: newCode});
         }
