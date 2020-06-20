@@ -91,8 +91,18 @@
           var cb = function(svg){
               element.innerHTML = svg;
           };
+          const isValid = (str) => {
+            try {
+              mermaid.parse(str);
+              return true;
+            } catch (e) {
+              return false;
+            }
+          };
 
-          mermaid.mermaidAPI.render('id1', newCode, cb);
+          if(isValid(newCode)) {
+            mermaid.mermaidAPI.render('id1', newCode, cb);
+          }
         } else {
           document.querySelector('#mermaid-diagram').innerHTML = '';
 
