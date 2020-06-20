@@ -34,6 +34,7 @@
 
 <script>
   import CodeMirror from 'vue-codemirror'
+  import mermaid from 'mermaid'
   import ToggleSwitch from 'vuejs-toggle-switch'
   import 'codemirror/keymap/sublime'
   // language js
@@ -84,7 +85,6 @@
 
         if(isMermaid && newCode && newCode.trim().length > 0) {
           this.$store.dispatch('updateCode', {code: ''});
-          // eslint-disable-next-line
           mermaid.mermaidAPI.initialize();
 
           var element = document.querySelector("#mermaid-diagram");
@@ -92,7 +92,6 @@
               element.innerHTML = svg;
           };
 
-          // eslint-disable-next-line
           mermaid.mermaidAPI.render('id1', newCode, cb);
         } else {
           document.querySelector('#mermaid-diagram').innerHTML = '';
