@@ -1,7 +1,10 @@
 <template>
   <div class="editor">
     <div class="toolbox">
-
+      <toggle-switch
+        :options="toggleOptions"
+        :@change="updateMap()"
+        />
       <a class="help" target="_blank" :href="helpUrl">
         <svg width="20px" height="20px" viewBox="0 0 50 50" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
           <title>Help</title>
@@ -30,6 +33,7 @@
 
 <script>
   import CodeMirror from 'vue-codemirror'
+  import ToggleSwitch from 'vuejs-toggle-switch'
   import 'codemirror/keymap/sublime'
   // language js
   import 'codemirror/mode/javascript/javascript.js'
@@ -52,6 +56,23 @@
           styleSelectedText: true,
           highlightSelectionMatches: {showToken: /\w/, annotateScrollbar: true},
           placeholder: 'Write you code here'
+        },
+        toggleOptions: {
+          layout: {
+            color: '#007BFF',
+            backgroundColor: 'white',
+            borderColor: '#007BFF'
+          },
+          size: {
+            fontSize: '1',
+            height: '2',
+            padding: '0.5',
+            width: '100px'
+          },
+          items: {
+            labels: [{ name: 'ZenUML', color: 'white', backgroundColor: '#2684FF'},
+              {name: 'mermaid', color: 'white', backgroundColor: '#42B982'}]
+          }
         }
       }
     },
@@ -75,22 +96,8 @@
           this.$store.dispatch('updateCode', {code: newCode});
         }
       },
-      addParticipant() {
-        let code = this.$store.state.code;
-        let lines = code.split('\n');
-        let buffer = '', added = false;
-        lines.forEach(line => {
-          if(!added && (line.trim().length > 0 && !line.trim().startsWith('//'))) {
-            buffer = `${buffer}\nNewParticipant`;
-            added = true;
-          }
-          buffer = `${buffer}\n${line}`;
-        });
-        if(!added) {
-          buffer = `${code}\nNewParticipant`;
-        }
-        this.$store.dispatch('updateCode', {code: buffer});
-        this.codemirror.execCommand('goDocStart');
+      updateMap() {
+
       }
     },
     computed: {
@@ -104,7 +111,7 @@
         return this.$refs.myCm.codemirror
       }
     },
-    components: {CodeMirror}
+    components: {CodeMirror, ToggleSwitch}
   }
 </script>
 
