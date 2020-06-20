@@ -84,6 +84,8 @@
 
         if(isMermaid && newCode && newCode.trim().length > 0) {
           this.$store.dispatch('updateCode', {code: ''});
+          // eslint-disable-next-line
+          mermaid.mermaidAPI.initialize();
 
           var element = document.querySelector("#mermaid-diagram");
           var cb = function(svg){
