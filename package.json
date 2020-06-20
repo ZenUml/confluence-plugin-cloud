@@ -8,6 +8,7 @@
     "test:unit": "vue-cli-service test:unit",
     "lint": "vue-cli-service lint",
     "build:full": "PRODUCT_TYPE=full vue-cli-service build",
+    "firebase:serve": "firebase serve --only functions,hosting",
     "deploy:full:stage":  "yarn build:full && firebase deploy --project full:stage",
     "deploy:full:prod":   "yarn build:full && firebase deploy --project full:prod",
     "build:full-win":     "set VERSION=v1.3.1&&set PRODUCT_TYPE=full&&vue-cli-service build --no-clean",
