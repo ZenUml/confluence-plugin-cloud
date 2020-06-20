@@ -223,6 +223,8 @@
           var cb = function(svg){
               element.innerHTML = svg;
           };
+
+          // eslint-disable-next-line
           mermaid.mermaidAPI.render('id1', newCode, cb);
         } else {
           document.querySelector('#mermaid').innerHTML = '';
