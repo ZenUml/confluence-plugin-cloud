@@ -18,7 +18,7 @@
   },
   "dependencies": {
     "firebase-functions": "^3.7.0",
-    "split.js": "^1.3.5",
+    "split.js": "^1.6.0",
     "stein-js-client": "^0.0.2",
     "vue": "^2.6.11",
     "vue-codemirror": "^4.0.6",
