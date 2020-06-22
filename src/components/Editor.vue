@@ -34,7 +34,6 @@
 
 <script>
   import CodeMirror from 'vue-codemirror'
-  import mermaid from 'mermaid'
   import ToggleSwitch from 'vuejs-toggle-switch'
   import 'codemirror/keymap/sublime'
   // language js
@@ -74,7 +73,7 @@
           },
           items: {
             labels: [{ name: 'ZenUML', value: 'ZenUML', color: 'white', backgroundColor: '#2684FF'},
-              {name: 'mermaid', value: 'mermaid', color: 'white', backgroundColor: '#42B982'}]
+              {name: 'Mermaid', value: 'mermaid', color: 'white', backgroundColor: '#42B982'}]
           }
         }
       }
@@ -85,23 +84,8 @@
 
         if(isMermaid && newCode && newCode.trim().length > 0) {
           this.$store.dispatch('updateCode', {code: ''});
-          mermaid.mermaidAPI.initialize();
 
-          var element = document.querySelector("#mermaid-diagram");
-          var cb = function(svg){
-              element.innerHTML = svg;
-          };
-          const isValid = (str) => {
-            try {
-              mermaid.parse(str);
-              return true;
-            } catch (e) {
-              return false;
-            }
-          };
-
-          if(isValid(newCode)) {
-            mermaid.mermaidAPI.render('id1', newCode, cb);
+          if(window.renderMermaid(newCode)) {
             window.mermaidCode = newCode;
           }
         } else {
@@ -119,11 +103,19 @@
         return this.$refs.myEditor.Editor
       },
       code() {
-        return this.$store.state.code
+        return this.diagramType === 'mermaid' ? window.mermaidCode : this.$store.state.code
       },
       codemirror() {
         return this.$refs.myCm.codemirror
       }
+    },
+    mounted() {
+      window.updateDiagramType = () => {
+        if(window.mermaidCode) {
+          this.diagramType = 'mermaid';
+          window.renderMermaid(window.mermaidCode);
+        }
+      };
     },
     components: {CodeMirror, ToggleSwitch}
   }

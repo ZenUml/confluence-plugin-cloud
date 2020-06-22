@@ -13,6 +13,11 @@
       const {code, styles, mermaidCode} = await macro.load();
       store.commit('code', code);
       store.state.styles = styles;
+      window.mermaidCode = mermaidCode;
+
+      if(window.updateDiagramType) {
+        window.updateDiagramType();
+      }
 
       AP.require(["confluence", "dialog"], function (confluence, dialog) {
         async function onSubmit() {

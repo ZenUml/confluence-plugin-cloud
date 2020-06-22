@@ -72,6 +72,7 @@
 
         if(isValid(mermaidCode)) {
           mermaid.mermaidAPI.render('id1', mermaidCode, cb);
+          return true;
         }
       }
     },
