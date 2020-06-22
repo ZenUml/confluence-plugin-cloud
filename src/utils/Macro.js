@@ -104,20 +104,27 @@ BookService BookRepository Receipt Notification
     const contentProp = await this.getContentProperty();
     let code;
     let styles;
+    let mermaidCode;
     if(typeof contentProp?.value === 'string') {
       code = contentProp?.value
     } else {
       code = contentProp?.value?.code
       styles = contentProp?.value?.styles
+      mermaidCode = contentProp?.value?.mermaidCode
     }
-    code = code || await this.getMacroBody() || this.EXAMPLE
+    code = code || await this.getMacroBody();
+
+    if(!mermaidCode && !code) {
+      code = this.EXAMPLE;
+    }
+    
     styles = styles || {}
-    return {code: code, styles}
+    return {code, styles, mermaidCode}
   }
 
   // Warning! Do not call getXXX in save. Do retest if you want to call getXXX.
   // It does not work as of 17th May 2020. That is why we have stored key and version
-  async save(code, styles) {
+  async save(code, styles, mermaidCode) {
     if (!this._loaded) {
       throw new Error('You have to call load before calling save()')
     }
@@ -126,7 +133,7 @@ BookService BookRepository Receipt Notification
     const versionNumber = this._versionNumber
     const contentProperty = {
       key: this.propertyKey(key),
-      value: {code: code, styles: styles},
+      value: {code, styles, mermaidCode},
       version: {
         number: versionNumber ? versionNumber + 1 : 1
       }

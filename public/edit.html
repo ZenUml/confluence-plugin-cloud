@@ -9,14 +9,14 @@
   <script id="connect-loader">
 
     async function initializeMacro() {
-      const macro = new Macro(AP.confluence)
-      const {code, styles} = await macro.load()
-      store.commit('code', code)
-      store.state.styles = styles
+      const macro = new Macro(AP.confluence);
+      const {code, styles, mermaidCode} = await macro.load();
+      store.commit('code', code);
+      store.state.styles = styles;
 
       AP.require(["confluence", "dialog"], function (confluence, dialog) {
         async function onSubmit() {
-          await macro.save(store.state.code, store.state.styles)
+          await macro.save(store.state.code, store.state.styles, window.mermaidCode);
           confluence.closeMacroEditor();
           return true;
         }

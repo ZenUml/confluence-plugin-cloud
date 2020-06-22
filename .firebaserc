@@ -5,6 +5,7 @@
     "lite:prod": "zenuml-conf-lite",
     "prod:old": "zenuml-confluence-app",
     "full:prod": "zenuml-conf-full",
-    "full:stage": "zenuml-conf-stg-full"
+    "full:stage": "zenuml-conf-stg-full",
+    "yanhui": "confluence-plugin-dev-4840c"
   }
 }

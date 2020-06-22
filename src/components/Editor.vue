@@ -102,6 +102,7 @@
 
           if(isValid(newCode)) {
             mermaid.mermaidAPI.render('id1', newCode, cb);
+            window.mermaidCode = newCode;
           }
         } else {
           document.querySelector('#mermaid-diagram').innerHTML = '';
