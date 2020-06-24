@@ -1,12 +1,16 @@
 <template>
   <div>
-    Mermaid Diagram
+    {{code}}
   </div>
 </template>
 
 <script>
   export default {
-
+    computed: {
+      code() {
+        return this.$store.state.mermaidCode
+      }
+    },
   }
 </script>
 
