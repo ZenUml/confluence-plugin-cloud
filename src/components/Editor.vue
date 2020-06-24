@@ -80,7 +80,7 @@
     },
     methods: {
       onEditorCodeChange(newCode) {
-        const isMermaid = this.diagramType === 'mermaid';
+        const isMermaid = this.diagramType.toLowerCase() === 'mermaid';
 
         if(isMermaid && newCode && newCode.trim().length > 0) {
           this.$store.dispatch('updateCode', {code: ''});
