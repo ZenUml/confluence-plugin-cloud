@@ -101,17 +101,18 @@
         return this.$refs.myEditor.Editor
       },
       code() {
-        return this.diagramType === 'mermaid' ? window.mermaidCode : this.$store.state.code
+        return this.diagramType === 'mermaid' ? this.$store.state.mermaidCode : this.$store.state.code
       },
       codemirror() {
         return this.$refs.myCm.codemirror
       }
     },
     mounted() {
+      const that = this
       window.updateDiagramType = () => {
-        if(window.mermaidCode) {
+        if(that.$store.state.mermaidCode) {
           this.diagramType = 'mermaid';
-          window.renderMermaid(window.mermaidCode);
+          this.$store.dispatch('updateMermaidCode', that.$store.state.mermaidCode)
         }
       };
     },
