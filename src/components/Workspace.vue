@@ -5,10 +5,11 @@
       <editor/>
     </div>
     <div id="workspace-right" class="split diagram" @click="deselectAll">
-      <mermaid v-show="this.$store.state.diagramType.toLowerCase() === 'mermaid'"/>
-      <styling-panel/>
-      <seq-diagram v-show="this.$store.state.diagramType.toLowerCase() === 'zenuml'"/>
-      <div id="mermaid-diagram"></div>
+      <mermaid v-show="this.$store.getters.diagramType === 'mermaid'"/>
+      <div v-show="this.$store.getters.diagramType === 'zenuml'">
+        <styling-panel/>
+        <seq-diagram />
+      </div>
       <div class="get-support-container">
         <get-support/>
       </div>

@@ -80,9 +80,9 @@
     },
     methods: {
       onEditorCodeChange(newCode) {
-        const isMermaid = this.$store.state.diagramType.toLowerCase() === 'mermaid';
+        const isMermaid = this.$store.getters.diagramType === 'mermaid';
 
-        if(isMermaid && newCode && newCode.trim().length > 0) {
+        if(isMermaid) {
           this.$store.dispatch('updateMermaidCode', newCode)
           // this.$store.state.mermaidCode = newCode
         } else {
@@ -98,7 +98,7 @@
         return this.$refs.myEditor.Editor
       },
       code() {
-        return this.$store.state.diagramType.toLowerCase() === 'mermaid' ? this.$store.state.mermaidCode : this.$store.state.code
+        return this.$store.getters.diagramType === 'mermaid' ? this.$store.state.mermaidCode : this.$store.state.code
       },
       codemirror() {
         return this.$refs.myCm.codemirror

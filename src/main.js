@@ -77,13 +77,16 @@ const ExtendedStore = {
     ...Store.getters,
     svg: (state) => {
       return state.mermaidSvg
+    },
+    diagramType: (state) => {
+      return state.diagramType.toLowerCase() || 'zenuml'
     }
   },
   state: {
     ...Store.state,
     mermaidCode: '',
     mermaidSvg: '',
-    diagramType: 'mermaid',
+    diagramType: 'zenuml',
     styles: {}
   }
 }
