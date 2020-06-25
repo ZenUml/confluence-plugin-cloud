@@ -73,7 +73,7 @@ const ExtendedStore = {
       return state.mermaidSvg
     },
     diagramType: (state) => {
-      return state.diagramType.toLowerCase() || 'zenuml'
+      return state.diagramType?.toLowerCase() || 'zenuml'
     }
   },
   state: {
