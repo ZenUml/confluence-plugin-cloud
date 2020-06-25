@@ -5,9 +5,9 @@
       <editor/>
     </div>
     <div id="workspace-right" class="split diagram" @click="deselectAll">
+      <mermaid v-show="this.$store.state.diagramType.toLowerCase() === 'mermaid'"/>
       <styling-panel/>
-      <mermaid/>
-      <seq-diagram/>
+      <seq-diagram v-show="this.$store.state.diagramType.toLowerCase() === 'zenuml'"/>
       <div id="mermaid-diagram"></div>
       <div class="get-support-container">
         <get-support/>
