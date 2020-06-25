@@ -36,12 +36,20 @@ const ExtendedStore = {
     },
     updateMermaidDiagram(state, payload) {
       state.mermaidSvg = payload
+    },
+    updateDiagramType(state, payload) {
+      state.diagramType = payload
     }
   },
   actions: {
     ...Store.actions,
     updateMermaidCode({commit}, payload) {
       commit('updateMermaidCode', payload)
+      if (payload) {
+        commit('updateDiagramType', 'mermaid')
+      } else {
+        return
+      }
       mermaid.mermaidAPI.initialize();
       const cb = function(svg){
         commit('updateMermaidDiagram', svg);
@@ -60,6 +68,9 @@ const ExtendedStore = {
         mermaid.mermaidAPI.render('any-id', payload, cb);
         return true;
       }
+    },
+    updateDiagramType({commit}, payload) {
+      commit('updateDiagramType', payload)
     }
   },
   getters: {
@@ -72,6 +83,7 @@ const ExtendedStore = {
     ...Store.state,
     mermaidCode: '',
     mermaidSvg: '',
+    diagramType: 'mermaid',
     styles: {}
   }
 }

@@ -3,7 +3,7 @@
     <div class="toolbox">
       <toggle-switch
         :options="toggleOptions"
-        :@change="updateMap()"
+        @change="updateMap($event.value)"
         v-model="diagramType"
         />
       <a class="help" target="_blank" :href="helpUrl">
@@ -80,20 +80,17 @@
     },
     methods: {
       onEditorCodeChange(newCode) {
-        const isMermaid = this.diagramType.toLowerCase() === 'mermaid';
+        const isMermaid = this.$store.state.diagramType.toLowerCase() === 'mermaid';
 
         if(isMermaid && newCode && newCode.trim().length > 0) {
-          this.$store.dispatch('updateCode', {code: ''});
           this.$store.dispatch('updateMermaidCode', newCode)
           // this.$store.state.mermaidCode = newCode
         } else {
-          document.querySelector('#mermaid-diagram').innerHTML = '';
-
           this.$store.dispatch('updateCode', {code: newCode});
         }
       },
-      updateMap() {
-
+      updateMap(type) {
+        this.$store.dispatch('updateDiagramType', type)
       }
     },
     computed: {
@@ -101,7 +98,7 @@
         return this.$refs.myEditor.Editor
       },
       code() {
-        return this.diagramType === 'mermaid' ? this.$store.state.mermaidCode : this.$store.state.code
+        return this.$store.state.diagramType.toLowerCase() === 'mermaid' ? this.$store.state.mermaidCode : this.$store.state.code
       },
       codemirror() {
         return this.$refs.myCm.codemirror
