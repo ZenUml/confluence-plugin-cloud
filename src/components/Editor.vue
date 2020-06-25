@@ -70,7 +70,8 @@
             width: '100px'
           },
           items: {
-            labels: [{ name: 'ZenUML', value: 'ZenUML', color: 'white', backgroundColor: '#2684FF'},
+            preSelected: 'ZenUML',
+            labels: [{ name: 'ZenUML', value: 'zenuml', color: 'white', backgroundColor: '#2684FF'},
               {name: 'Mermaid', value: 'mermaid', color: 'white', backgroundColor: '#42B982'}]
           }
         }
