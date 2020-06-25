@@ -6,6 +6,7 @@
     </div>
     <div id="workspace-right" class="split diagram" @click="deselectAll">
       <styling-panel/>
+      <mermaid/>
       <seq-diagram/>
       <div id="mermaid-diagram"></div>
       <div class="get-support-container">
@@ -21,7 +22,7 @@
   import GetSupport from './GetSupport'
   import Split from 'split.js'
   import StylingPanel from "./StylingPanel";
-  import mermaid from 'mermaid';
+  import Mermaid from './Mermaid'
 
   export default {
     name: 'Workspace',
@@ -53,30 +54,9 @@
       if (window.split) {
         Split(['#workspace-left', '#workspace-right'], { sizes: [35, 65]})
       }
-
-      window.renderMermaid = (mermaidCode) => {
-        mermaid.mermaidAPI.initialize();
-
-        var element = document.querySelector("#mermaid-diagram");
-        var cb = function(svg){
-            element.innerHTML = svg;
-        };
-        const isValid = (str) => {
-          try {
-            mermaid.parse(str);
-            return true;
-          } catch (e) {
-            return false;
-          }
-        };
-
-        if(isValid(mermaidCode)) {
-          mermaid.mermaidAPI.render('id1', mermaidCode, cb);
-          return true;
-        }
-      }
     },
     components: {
+      Mermaid,
       StylingPanel,
       GetSupport,
       Editor,

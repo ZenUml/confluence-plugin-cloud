@@ -11,6 +11,7 @@ import MockApConfluence from './utils/MockApConfluence'
 import Macro from './utils/Macro'
 import Editor from './components/Editor'
 import Workspace from './components/Workspace'
+import mermaid from 'mermaid'
 
 // Code Editor style
 import 'codemirror/lib/codemirror.css'
@@ -25,8 +26,57 @@ Vue.component('workspace', Workspace)
 Vue.use(VueCodeMirror)
 
 Vue.use(Vuex)
-Store.state.styles = {}
-const store = new Vuex.Store(Store);
+
+const ExtendedStore = {
+  ...Store,
+  mutations: {
+    ...Store.mutations,
+    updateMermaidCode(state, payload) {
+      state.mermaidCode = payload
+    },
+    updateMermaidDiagram(state, payload) {
+      state.mermaidSvg = payload
+    }
+  },
+  actions: {
+    ...Store.actions,
+    updateMermaidCode({commit}, payload) {
+      commit('updateMermaidCode', payload)
+      mermaid.mermaidAPI.initialize();
+      var cb = function(svg){
+        commit('updateMermaidDiagram', svg);
+        window.mermaidCode = newCode;
+      };
+      const isValid = (str) => {
+        try {
+          mermaid.parse(str);
+          return true;
+        } catch (e) {
+          return false;
+        }
+      };
+
+      if(isValid(payload)) {
+        mermaid.mermaidAPI.render('any-id', payload, cb);
+        return true;
+      }
+    }
+  },
+  getters: {
+    ...Store.getters,
+    svg: (state) => {
+      return state.mermaidSvg
+    }
+  },
+  state: {
+    ...Store.state,
+    mermaidCode: '',
+    mermaidSvg: '',
+    styles: {}
+  }
+}
+
+const store = new Vuex.Store(ExtendedStore);
 
 new Vue({
   store,

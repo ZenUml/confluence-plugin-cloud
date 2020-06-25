@@ -84,10 +84,8 @@
 
         if(isMermaid && newCode && newCode.trim().length > 0) {
           this.$store.dispatch('updateCode', {code: ''});
-
-          if(window.renderMermaid(newCode)) {
-            window.mermaidCode = newCode;
-          }
+          this.$store.dispatch('updateMermaidCode', newCode)
+          // this.$store.state.mermaidCode = newCode
         } else {
           document.querySelector('#mermaid-diagram').innerHTML = '';
 
