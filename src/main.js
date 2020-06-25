@@ -45,15 +45,9 @@ const ExtendedStore = {
     ...Store.actions,
     updateMermaidCode({commit}, payload) {
       commit('updateMermaidCode', payload)
-      if (payload) {
-        commit('updateDiagramType', 'mermaid')
-      } else {
-        return
-      }
       mermaid.mermaidAPI.initialize();
       const cb = function(svg){
         commit('updateMermaidDiagram', svg);
-        window.mermaidCode = payload;
       };
       const isValid = (str) => {
         try {

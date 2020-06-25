@@ -4,7 +4,6 @@
       <toggle-switch
         :options="toggleOptions"
         @change="updateMap($event.value)"
-        v-model="diagramType"
         />
       <a class="help" target="_blank" :href="helpUrl">
         <svg width="20px" height="20px" viewBox="0 0 50 50" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
@@ -43,7 +42,6 @@
     name: 'editor',
     data() {
       return {
-        diagramType: 'ZenUML',
         helpUrl: 'https://zenuml.atlassian.net/wiki/spaces/Doc/overview',
         cmOptions: {
           tabSize: 4,
@@ -103,15 +101,6 @@
       codemirror() {
         return this.$refs.myCm.codemirror
       }
-    },
-    mounted() {
-      const that = this
-      window.updateDiagramType = () => {
-        if(that.$store.state.mermaidCode) {
-          this.diagramType = 'mermaid';
-          this.$store.dispatch('updateMermaidCode', that.$store.state.mermaidCode)
-        }
-      };
     },
     components: {CodeMirror, ToggleSwitch}
   }
