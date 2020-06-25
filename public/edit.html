@@ -10,14 +10,12 @@
 
     async function initializeMacro() {
       const macro = new Macro(AP.confluence);
-      const {code, styles, mermaidCode} = await macro.load();
+      const {code, styles, mermaidCode, diagramType} = await macro.load();
       store.commit('code', code);
       store.state.styles = styles;
-      window.mermaidCode = mermaidCode;
 
-      if(window.updateDiagramType) {
-        window.updateDiagramType();
-      }
+      store.dispatch('updateMermaidCode', mermaidCode)
+      store.dispatch('updateDiagramType', diagramType)
 
       AP.require(["confluence", "dialog"], function (confluence, dialog) {
         async function onSubmit() {
