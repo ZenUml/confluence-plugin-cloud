@@ -14,7 +14,7 @@
       store.commit('code', code);
       store.state.styles = styles;
 
-      store.dispatch('updateMermaidCode', mermaidCode)
+      store.dispatch('updateMermaidCode', mermaidCode || store.state.mermaidCode)
       store.dispatch('updateDiagramType', diagramType)
 
       AP.require(["confluence", "dialog"], function (confluence, dialog) {
