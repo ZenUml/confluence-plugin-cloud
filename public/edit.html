@@ -19,7 +19,7 @@
 
       AP.require(["confluence", "dialog"], function (confluence, dialog) {
         async function onSubmit() {
-          await macro.save(store.state.code, store.state.styles, store.state.mermaidCode, store.state.diagramType());
+          await macro.save(store.state.code, store.state.styles, store.state.mermaidCode, store.state.diagramType);
           confluence.closeMacroEditor();
           return true;
         }
