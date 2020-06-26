@@ -18,6 +18,13 @@ import 'codemirror/lib/codemirror.css'
 // theme css
 import 'codemirror/theme/base16-dark.css'
 
+// eslint-disable-next-line
+window.mermaid = mermaid
+
+mermaid.mermaidAPI.initialize({
+  startOnLoad:true
+})
+
 Vue.config.productionTip = false
 
 Vue.component('seq-diagram', SeqDiagram)
@@ -45,22 +52,16 @@ const ExtendedStore = {
     ...Store.actions,
     updateMermaidCode({commit}, payload) {
       commit('updateMermaidCode', payload)
-      mermaid.mermaidAPI.initialize();
-      const cb = function(svg){
-        commit('updateMermaidDiagram', svg);
-      };
-      const isValid = (str) => {
-        try {
-          mermaid.parse(str);
-          return true;
-        } catch (e) {
-          return false;
-        }
-      };
-
-      if(isValid(payload)) {
-        mermaid.mermaidAPI.render('any-id', payload, cb);
-        return true;
+      try {
+        mermaid.parse(payload);
+        mermaid.mermaidAPI.render('any-id',
+          payload,
+          (svg) => {
+            commit('updateMermaidDiagram', svg);
+          }
+        );
+      } catch (e) {
+        return false;
       }
     },
     updateDiagramType({commit}, payload) {
@@ -78,7 +79,7 @@ const ExtendedStore = {
   },
   state: {
     ...Store.state,
-    mermaidCode: '',
+    mermaidCode: 'graph TD; A-->B;',
     mermaidSvg: '',
     diagramType: 'zenuml',
     styles: {}
