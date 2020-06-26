@@ -4,6 +4,7 @@
       <toggle-switch
         :options="toggleOptions"
         @change="updateMap($event.value)"
+        :value="diagramType"
         />
       <a class="help" target="_blank" :href="helpUrl">
         <svg width="20px" height="20px" viewBox="0 0 50 50" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
@@ -70,9 +71,8 @@
             width: '100px'
           },
           items: {
-            preSelected: 'ZenUML',
-            labels: [{ name: 'ZenUML', value: 'zenuml', color: 'white', backgroundColor: '#2684FF'},
-              {name: 'Mermaid', value: 'mermaid', color: 'white', backgroundColor: '#42B982'}]
+            labels: [{ name: 'ZenUML', color: 'white', backgroundColor: '#2684FF'},
+              {name: 'Mermaid', color: 'white', backgroundColor: '#42B982'}]
           }
         }
       }
@@ -101,6 +101,9 @@
       },
       codemirror() {
         return this.$refs.myCm.codemirror
+      },
+      diagramType() {
+        return this.$store.getters.diagramType === 'mermaid' ? 'Mermaid' : 'ZenUML';
       }
     },
     components: {CodeMirror, ToggleSwitch}
