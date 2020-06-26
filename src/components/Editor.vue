@@ -3,8 +3,7 @@
     <div class="toolbox">
       <toggle-switch
         :options="toggleOptions"
-        :@change="updateMap()"
-        v-model="diagramType"
+        @change="updateMap($event.value)"
         />
       <a class="help" target="_blank" :href="helpUrl">
         <svg width="20px" height="20px" viewBox="0 0 50 50" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
@@ -43,7 +42,6 @@
     name: 'editor',
     data() {
       return {
-        diagramType: 'ZenUML',
         helpUrl: 'https://zenuml.atlassian.net/wiki/spaces/Doc/overview',
         cmOptions: {
           tabSize: 4,
@@ -72,7 +70,8 @@
             width: '100px'
           },
           items: {
-            labels: [{ name: 'ZenUML', value: 'ZenUML', color: 'white', backgroundColor: '#2684FF'},
+            preSelected: 'ZenUML',
+            labels: [{ name: 'ZenUML', value: 'zenuml', color: 'white', backgroundColor: '#2684FF'},
               {name: 'Mermaid', value: 'mermaid', color: 'white', backgroundColor: '#42B982'}]
           }
         }
@@ -80,22 +79,17 @@
     },
     methods: {
       onEditorCodeChange(newCode) {
-        const isMermaid = this.diagramType.toLowerCase() === 'mermaid';
+        const isMermaid = this.$store.getters.diagramType === 'mermaid';
 
-        if(isMermaid && newCode && newCode.trim().length > 0) {
-          this.$store.dispatch('updateCode', {code: ''});
-
-          if(window.renderMermaid(newCode)) {
-            window.mermaidCode = newCode;
-          }
+        if(isMermaid) {
+          this.$store.dispatch('updateMermaidCode', newCode)
+          // this.$store.state.mermaidCode = newCode
         } else {
-          document.querySelector('#mermaid-diagram').innerHTML = '';
-
           this.$store.dispatch('updateCode', {code: newCode});
         }
       },
-      updateMap() {
-
+      updateMap(type) {
+        this.$store.dispatch('updateDiagramType', type)
       }
     },
     computed: {
@@ -103,19 +97,11 @@
         return this.$refs.myEditor.Editor
       },
       code() {
-        return this.diagramType === 'mermaid' ? window.mermaidCode : this.$store.state.code
+        return this.$store.getters.diagramType === 'mermaid' ? this.$store.state.mermaidCode : this.$store.state.code
       },
       codemirror() {
         return this.$refs.myCm.codemirror
       }
-    },
-    mounted() {
-      window.updateDiagramType = () => {
-        if(window.mermaidCode) {
-          this.diagramType = 'mermaid';
-          window.renderMermaid(window.mermaidCode);
-        }
-      };
     },
     components: {CodeMirror, ToggleSwitch}
   }

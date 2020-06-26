@@ -11,11 +11,19 @@ import MockApConfluence from './utils/MockApConfluence'
 import Macro from './utils/Macro'
 import Editor from './components/Editor'
 import Workspace from './components/Workspace'
+import mermaid from 'mermaid'
 
 // Code Editor style
 import 'codemirror/lib/codemirror.css'
 // theme css
 import 'codemirror/theme/base16-dark.css'
+
+// eslint-disable-next-line
+window.mermaid = mermaid
+
+mermaid.mermaidAPI.initialize({
+  startOnLoad:true
+})
 
 Vue.config.productionTip = false
 
@@ -25,8 +33,60 @@ Vue.component('workspace', Workspace)
 Vue.use(VueCodeMirror)
 
 Vue.use(Vuex)
-Store.state.styles = {}
-const store = new Vuex.Store(Store);
+
+const ExtendedStore = {
+  ...Store,
+  mutations: {
+    ...Store.mutations,
+    updateMermaidCode(state, payload) {
+      state.mermaidCode = payload
+    },
+    updateMermaidDiagram(state, payload) {
+      state.mermaidSvg = payload
+    },
+    updateDiagramType(state, payload) {
+      state.diagramType = payload
+    }
+  },
+  actions: {
+    ...Store.actions,
+    updateMermaidCode({commit}, payload) {
+      commit('updateMermaidCode', payload)
+      try {
+        mermaid.parse(payload);
+        mermaid.mermaidAPI.render('any-id',
+          payload,
+          (svg) => {
+            commit('updateMermaidDiagram', svg);
+          }
+        );
+      } catch (e) {
+        return false;
+      }
+    },
+    updateDiagramType({commit}, payload) {
+      commit('updateDiagramType', payload)
+    }
+  },
+  getters: {
+    ...Store.getters,
+    svg: (state) => {
+      return state.mermaidSvg
+    },
+    diagramType: (state) => {
+      return state.diagramType?.toLowerCase() || 'zenuml'
+    }
+  },
+  state: {
+    ...Store.state,
+    mermaidCode: 'graph TD; A-->B;',
+    mermaidSvg: '',
+    diagramType: 'zenuml',
+    styles: {}
+  }
+}
+
+const store = new Vuex.Store(ExtendedStore);
 
 new Vue({
   store,

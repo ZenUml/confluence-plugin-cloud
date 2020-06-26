@@ -75,14 +75,13 @@
 
     async function initializeMacro() {
       const macro = new Macro(AP.confluence);
-      const {code, styles, mermaidCode} = await macro.load();
+      const {code, styles, mermaidCode, diagramType} = await macro.load();
 
       store.commit('code', code);
       store.state.styles = styles;
 
-      if(window.renderMermaid) {
-        window.renderMermaid(mermaidCode);
-      }
+      store.dispatch('updateMermaidCode', mermaidCode)
+      store.dispatch('updateDiagramType', diagramType)
 
       setTimeout(function () {
         let width = document.body.scrollWidth;
