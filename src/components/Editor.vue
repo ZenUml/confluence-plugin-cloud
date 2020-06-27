@@ -79,7 +79,7 @@
           }
         },
         get() {
-          return this.$store.state.diagramType
+          return this.$store.state.diagramType || 'zenuml'
         }
       },
     },
