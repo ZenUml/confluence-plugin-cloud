@@ -7222,10 +7222,20 @@ hex-color-regex@^1.1.0:
   resolved "https://registry.yarnpkg.com/hex-color-regex/-/hex-color-regex-1.1.0.tgz#4c06fccb4602fe2602b3c93df82d7e7dbf1a8a8e"
   integrity sha512-l9sfDFsuqtOqKDsQdqrMRk0U85RZc0RtOR9yPI7mRVOa4FsR/BVnZ0shmQRM96Ji99kYZP/7hn1cedc1+ApsTQ==
 
+highlight.js@^10.1.1:
+  version "10.1.1"
+  resolved "https://registry.yarnpkg.com/highlight.js/-/highlight.js-10.1.1.tgz#691a2148a8d922bf12e52a294566a0d993b94c57"
+  integrity sha512-b4L09127uVa+9vkMgPpdUQP78ickGbHEQTWeBrQFTJZ4/n2aihWOGS0ZoUqAwjVmfjhq/C76HRzkqwZhK4sBbg==
+
 highlight.js@^9.6.0:
   version "9.18.1"
   resolved "https://registry.yarnpkg.com/highlight.js/-/highlight.js-9.18.1.tgz#ed21aa001fe6252bb10a3d76d47573c6539fe13c"
   integrity sha512-OrVKYz70LHsnCgmbXctv/bfuvntIKDz177h0Co37DQ5jamGZLVmoCVMtjMtNZY3X9DrCcKfklHPNeA0uPZhSJg==
+
+highlightjs@^9.16.2:
+  version "9.16.2"
+  resolved "https://registry.yarnpkg.com/highlightjs/-/highlightjs-9.16.2.tgz#07ea6cc7c93340fc440734fb7abf28558f1f0fe1"
+  integrity sha512-FK1vmMj8BbEipEy8DLIvp71t5UsC7n2D6En/UfM/91PCwmOpj6f2iu0Y0coRC62KSRHHC+dquM2xMULV/X7NFg==
 
 hmac-drbg@^1.0.0:
   version "1.0.1"
@@ -9446,6 +9456,11 @@ marked@^0.7.0:
   version "0.7.0"
   resolved "https://registry.yarnpkg.com/marked/-/marked-0.7.0.tgz#b64201f051d271b1edc10a04d1ae9b74bb8e5c0e"
   integrity sha512-c+yYdCZJQrsRjTPhUx7VKkApw9bwDkNbHUKo1ovgcfDjb2kc8rLuRbIFyXL5WOEUwzSSKo3IXpph2K6DqB/KZg==
+
+marked@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/marked/-/marked-1.1.0.tgz#62504ad4d11550c942935ccc5e39d64e5a4c4e50"
+  integrity sha512-EkE7RW6KcXfMHy2PA7Jg0YJE1l8UPEZE8k45tylzmZM30/r1M1MUXWQfJlrSbsTeh7m/XTwHbWUENvAJZpp1YA==
 
 math-random@^1.0.1:
   version "1.0.4"
@@ -13703,13 +13718,16 @@ vue-loader@^15.9.2:
     vue-hot-reload-api "^2.3.0"
     vue-style-loader "^4.1.0"
 
-vue-sequence@^1.0.14:
-  version "1.0.14"
-  resolved "https://registry.yarnpkg.com/vue-sequence/-/vue-sequence-1.0.14.tgz#5b03661473a7e9084c254dfb17b6142e3da9357a"
-  integrity sha512-lhCm21HHJI5Bu8SzLq06vqZfVE325jh/eEH/cMT/o2Jll/uhsaDPUbks5fSA3iSnxkVMtYV/NOdMk/9WBhDNEw==
+vue-sequence@^1.0.21:
+  version "1.0.21"
+  resolved "https://registry.yarnpkg.com/vue-sequence/-/vue-sequence-1.0.21.tgz#133658a726e719639dfb669bce5942f86827557c"
+  integrity sha512-SmGiH8zGdRhEhn9XfhgqYuLgtKCqGiMo7/skmORFXpJqUw/Kd2bNF2PJdX+gIdDB+KkbcYQKQnA4ha24dG07WA==
   dependencies:
     antlr4 "^4.8.0"
     gauge-ts "0.0.5"
+    highlight.js "^10.1.1"
+    highlightjs "^9.16.2"
+    marked "^1.1.0"
     vue "^2.5.16"
     vuex "^3.4.0"
 
