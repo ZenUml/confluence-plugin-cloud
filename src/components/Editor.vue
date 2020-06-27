@@ -24,7 +24,6 @@
 
 <script>
   import CodeMirror from 'vue-codemirror'
-  import ToggleSwitch from 'vuejs-toggle-switch'
   import 'codemirror/keymap/sublime'
   // language js
   import 'codemirror/mode/javascript/javascript.js'
@@ -84,7 +83,7 @@
         }
       },
     },
-    components: {CodeMirror, ToggleSwitch}
+    components: {CodeMirror}
   }
 </script>
 
