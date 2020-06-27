@@ -3,7 +3,7 @@
     <div class="toolbox">
       <va-radio-group :vertical="false" v-model="diagramType">
         <va-radio-btn label="zenuml">ZenUML</va-radio-btn>
-        <va-radio-btn label="mermaid">Mermaid</va-radio-btn>
+        <va-radio-btn label="mermaid">Mermaid (Beta)</va-radio-btn>
       </va-radio-group>
 
       <a class="help" target="_blank" :href="helpUrl">
