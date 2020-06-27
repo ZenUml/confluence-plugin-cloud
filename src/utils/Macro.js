@@ -1,17 +1,23 @@
 import uuidv4 from './uuid'
 
 class Macro {
-  EXAMPLE = `// Sample! Declare the participants (optional)
-BookService BookRepository Receipt Notification
-@Starter(User)
-"{id, dueDate, ...}" = BookService.Borrow(id) {
-  BookRepository.Update(id, onLoan)
-
-  // Send Event with "Source->Target:Event". "Source->" is optional
-  Notification:BOOK_ON_LOAN event with id, due date, etc. 
-  new Receipt(id, dueDate)
-}
-`
+  EXAMPLE = `// [ZenUML syntax spec](https://zenuml.atlassian.net/wiki/spaces/Doc/pages/518848513/Sequence+diagram+syntax)
+//<br> \`POST /orders\`
+// 
+// - [ ] Setup loadbalancer 
+// - [x] Config Kong gateway - [instrucions](document)
+OrderController.create(payload) {
+  
+  // Create an **immutable** \`order\`
+  // 1. Validate \`payload\`
+  // 1. Log with \`x-correlationid\`
+  OrderService.create(payload) {
+    // | id | Prod_Name | Price | Inserted_At |
+    // |----|-----------|-------|-------------|
+    // |123 | book 1    | $10.00| 2020-06-30  |
+    OrderRepo.save()
+  }
+}`
   _confluence;
   _key;
   _versionNumber;
