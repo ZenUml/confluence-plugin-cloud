@@ -1,11 +1,11 @@
 <template>
   <div class="editor">
     <div class="toolbox">
-      <toggle-switch
-        :options="toggleOptions"
-        @change="updateMap($event.value)"
-        :value="diagramType"
-        />
+      <va-radio-group :vertical="false" v-model="diagramType">
+        <va-radio-btn label="zenuml">ZenUML</va-radio-btn>
+        <va-radio-btn label="mermaid">Mermaid</va-radio-btn>
+      </va-radio-group>
+
       <a class="help" target="_blank" :href="helpUrl">
         <svg width="20px" height="20px" viewBox="0 0 50 50" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
           <title>Help</title>
@@ -42,6 +42,7 @@
   export default {
     name: 'editor',
     data() {
+
       return {
         helpUrl: 'https://zenuml.atlassian.net/wiki/spaces/Doc/overview',
         cmOptions: {
@@ -57,23 +58,6 @@
           styleSelectedText: true,
           highlightSelectionMatches: {showToken: /\w/, annotateScrollbar: true},
           placeholder: 'Write you code here'
-        },
-        toggleOptions: {
-          layout: {
-            color: '#007BFF',
-            backgroundColor: 'white',
-            borderColor: '#007BFF'
-          },
-          size: {
-            fontSize: '1',
-            height: '2',
-            padding: '0.5',
-            width: '100px'
-          },
-          items: {
-            labels: [{ name: 'ZenUML', color: 'white', backgroundColor: '#2684FF'},
-              {name: 'Mermaid', color: 'white', backgroundColor: '#42B982'}]
-          }
         }
       }
     },
@@ -83,13 +67,9 @@
 
         if(isMermaid) {
           this.$store.dispatch('updateMermaidCode', newCode)
-          // this.$store.state.mermaidCode = newCode
         } else {
           this.$store.dispatch('updateCode', {code: newCode});
         }
-      },
-      updateMap(type) {
-        this.$store.dispatch('updateDiagramType', type)
       }
     },
     computed: {
@@ -102,9 +82,17 @@
       codemirror() {
         return this.$refs.myCm.codemirror
       },
-      diagramType() {
-        return this.$store.getters.diagramType === 'mermaid' ? 'Mermaid' : 'ZenUML';
-      }
+      diagramType: {
+        set(type) {
+          this.$store.dispatch('updateDiagramType', type)
+          if (type === 'zenuml') {
+            this.$store.dispatch('reloadZenUML')
+          }
+        },
+        get() {
+          return this.$store.state.diagramType
+        }
+      },
     },
     components: {CodeMirror, ToggleSwitch}
   }
