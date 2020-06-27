@@ -7,17 +7,7 @@
       </va-radio-group>
 
       <a class="help" target="_blank" :href="helpUrl">
-        <svg width="20px" height="20px" viewBox="0 0 50 50" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-          <title>Help</title>
-          <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-            <g id="Help">
-              <circle id="Oval" stroke="#979797" fill="#D8D8D8" cx="25.5" cy="25.5" r="14.5"></circle>
-              <text id="?" font-family="ArialMT, Arial" font-size="18" font-weight="normal" fill="#202020">
-                <tspan x="20" y="32">?</tspan>
-              </text>
-            </g>
-          </g>
-        </svg>
+        <va-button round type="default"><va-icon type="question-circle" /></va-button>
       </a>
     </div>
     <div class="body">
@@ -121,6 +111,7 @@
 
   .toolbox .help {
     margin-left: auto;
+    text-decoration: none;
   }
 
   .editor {
