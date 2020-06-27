@@ -13,10 +13,15 @@ import Editor from './components/Editor'
 import Workspace from './components/Workspace'
 import mermaid from 'mermaid'
 
+import Va from 'vue-atlas'
+import 'vue-atlas/dist/vue-atlas.css'
+
 // Code Editor style
 import 'codemirror/lib/codemirror.css'
 // theme css
 import 'codemirror/theme/base16-dark.css'
+
+Vue.use(Va, 'en')
 
 // eslint-disable-next-line
 window.mermaid = mermaid
@@ -66,6 +71,11 @@ const ExtendedStore = {
     },
     updateDiagramType({commit}, payload) {
       commit('updateDiagramType', payload)
+    },
+    reloadZenUML({commit, state}) {
+      const code = state.code
+      commit('code', '')
+      commit('code', code)
     }
   },
   getters: {
