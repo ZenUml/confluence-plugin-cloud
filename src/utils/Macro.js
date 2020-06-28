@@ -1,8 +1,7 @@
 import uuidv4 from './uuid'
 
 class Macro {
-  EXAMPLE = `// [ZenUML syntax spec](https://zenuml.atlassian.net/wiki/spaces/Doc/pages/518848513/Sequence+diagram+syntax)
-//<br> \`POST /orders\`
+  EXAMPLE = `//\`POST /orders\`
 // 
 // - [ ] Setup loadbalancer 
 // - [x] Config Kong gateway - [instrucions](document)
