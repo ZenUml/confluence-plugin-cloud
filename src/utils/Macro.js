@@ -4,7 +4,7 @@ class Macro {
   EXAMPLE = `//\`POST /orders\`
 // 
 // - [ ] Setup loadbalancer 
-// - [x] Config Kong gateway - [instrucions](document)
+// - [x] Config Kong gateway
 OrderController.create(payload) {
   
   // Create an **immutable** \`order\`
