@@ -25,7 +25,7 @@
     "vue": "^2.6.11",
     "vue-atlas": "^2.1.8",
     "vue-codemirror": "^4.0.6",
-    "vue-sequence": "^1.0.21",
+    "vue-sequence": "^1.0.28",
     "vuex": "^3.4.0"
   },
   "devDependencies": {
