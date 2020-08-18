@@ -5480,9 +5480,9 @@ domutils@^1.5.1, domutils@^1.7.0:
     domelementtype "1"
 
 dot-prop@^4.1.0:
-  version "4.2.0"
-  resolved "https://registry.yarnpkg.com/dot-prop/-/dot-prop-4.2.0.tgz#1f19e0c2e1aa0e32797c49799f2837ac6af69c57"
-  integrity sha512-tUMXrxlExSW6U2EXiiKGSBVdYgtV8qlHL+C10TsW4PURY/ic+eaysnSkwB4kA/mBlCyy/IKDJ+Lc3wbWeaXtuQ==
+  version "4.2.1"
+  resolved "https://registry.yarnpkg.com/dot-prop/-/dot-prop-4.2.1.tgz#45884194a71fc2cda71cbb4bceb3a4dd2f433ba4"
+  integrity sha512-l0p4+mIuJIua0mhxGoh4a+iNL9bmeK5DvnSVQa6T0OhrVmaEa1XScX5Etc673FePCJOArq/4Pa2cLGODUWTPOQ==
   dependencies:
     is-obj "^1.0.0"
 
@@ -13783,11 +13783,6 @@ vue@^2.5.16, vue@^2.6.11, vue@^2.6.6:
   version "2.6.11"
   resolved "https://registry.yarnpkg.com/vue/-/vue-2.6.11.tgz#76594d877d4b12234406e84e35275c6d514125c5"
   integrity sha512-VfPwgcGABbGAue9+sfrD4PuwFar7gPb1yl1UK1MwXoQPAw0BKSqWfoYCT/ThFrdEVWoI51dBuyCoiNU9bZDZxQ==
-
-vuejs-toggle-switch@^1.3.1:
-  version "1.3.1"
-  resolved "https://registry.yarnpkg.com/vuejs-toggle-switch/-/vuejs-toggle-switch-1.3.1.tgz#29ee7022e165dd7496a4647d77d1ae05c260ada3"
-  integrity sha512-YE7xp4CTlTB8RasV2UTNLW+rueAVpbRNYmO9zlE3BlHoRzz1c+ruaWN17oAlgTjuaYhlzE3Gx+jfpTVlIFS5Ww==
 
 vuex@^3.4.0:
   version "3.4.0"
