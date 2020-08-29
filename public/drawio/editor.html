@@ -5,7 +5,14 @@
     <title>Grapheditor</title>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <link rel="stylesheet" type="text/css" href="styles/grapheditor.css">
+
+	<link rel="stylesheet" type="text/css" href="styles/grapheditor.css">
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-114996686-1"></script>
+	<script type="text/javascript" src="../js/google-analytics.js"></script>
+	<script type="text/javascript" src="../js/util.js"></script>
+    
 	<script type="text/javascript">
 		mxBasePath = 'src';
 		// Parses URL parameters. Supported parameters are:
@@ -80,6 +87,8 @@
 					var doc = mxUtils.parseXml(xml); 
 					editor.setGraphXml(doc.documentElement);
 				};
+
+				loadConnect(initializeMacro);
 			};
 			
 			// Adds required resources (disables loading of fallback properties, this can only
@@ -105,6 +114,32 @@
 				document.body.innerHTML = '<center style="margin-top:10%;">Error loading resource files. Please check browser console.</center>';
 			});
 		})();
+	</script>
+
+	<script id="connect-loader" type="text/javascript">
+
+		async function initializeMacro() {
+			const macro = new Macro(AP.confluence, 'graph');
+			const {graphXml} = await macro.load();
+
+			if(graphXml) {
+				setGraphXml(graphXml);
+			}
+			
+			AP.require(["confluence", "dialog"], function (confluence, dialog) {
+				async function onSubmit() {
+					const xml = getGraphXml();
+					await macro.save(xml);
+					
+					confluence.closeMacroEditor();
+					return true;
+				}
+				dialog.getButton("submit").bind(onSubmit);
+			});
+		}
+
+		// window.onAppLoaded = () => loadConnect(initializeMacro);
+
 	</script>
 </body>
 </html>

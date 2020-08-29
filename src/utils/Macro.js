@@ -21,14 +21,16 @@ OrderController.create(payload) {
   _key;
   _versionNumber;
   _loaded = false;
+  _macroIdentifier;
 
   // eslint-disable-next-line
-  constructor(confluence = AP.confluence) {
+  constructor(confluence = AP.confluence, macroIdentifier = 'sequence') {
     this._confluence = confluence;
+    this._macroIdentifier = macroIdentifier;
   }
 
   propertyKey(uuid) {
-    const macroKey = 'zenuml-sequence-macro';
+    const macroKey = `zenuml-${this._macroIdentifier}-macro`;
     return `${macroKey}-${uuid}-body`;
   }
 
@@ -111,6 +113,7 @@ OrderController.create(payload) {
     let styles;
     let mermaidCode;
     let diagramType;
+    let graphXml;
     if(typeof contentProp?.value === 'string') {
       code = contentProp?.value
     } else {
@@ -118,6 +121,7 @@ OrderController.create(payload) {
       styles = contentProp?.value?.styles
       mermaidCode = contentProp?.value?.mermaidCode
       diagramType = contentProp?.value?.diagramType
+      graphXml = contentProp?.value?.graphXml
     }
     code = code || await this.getMacroBody();
 
@@ -126,7 +130,7 @@ OrderController.create(payload) {
     }
 
     styles = styles || {}
-    return {code, styles, mermaidCode, diagramType}
+    return {code, styles, mermaidCode, diagramType, graphXml};
   }
 
   // Warning! Do not call getXXX in save. Do retest if you want to call getXXX.
@@ -136,16 +140,20 @@ OrderController.create(payload) {
       throw new Error('You have to call load before calling save()')
     }
     const key = this._key || uuidv4()
-    this._confluence.saveMacro({uuid: key, updatedAt: new Date()}, code)
-    const versionNumber = this._versionNumber
+    this._confluence.saveMacro({uuid: key, updatedAt: new Date()}, code);
+    const versionNumber = this._versionNumber;
+
+    const value = this._macroIdentifier === 'graph' ? {graphXml: code} : {code, styles, mermaidCode, diagramType};
+
     const contentProperty = {
       key: this.propertyKey(key),
-      value: {code, styles, mermaidCode, diagramType},
+      value: value,
       version: {
         number: versionNumber ? versionNumber + 1 : 1
       }
     }
     await this.setContentProperty(contentProperty)
-  }
+  }  
 }
+
 export default Macro

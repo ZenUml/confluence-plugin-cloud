@@ -37,15 +37,33 @@ module.exports = {
         template: './public/edit.html',
         inject: true,
         product_type: productType
+      }])    
+    config
+      .plugin('drawio-viewer-html')
+      .use(HtmlWebpackPlugin, [{
+        filename: `./drawio/viewer.html`,
+        template: './public/drawio/viewer.html',
+        inject: true,
+        product_type: productType
+      }])
+    config
+      .plugin('drawio-editor-html')
+      .use(HtmlWebpackPlugin, [{
+        filename: `./drawio/editor.html`,
+        template: './public/drawio/editor.html',
+        inject: true,
+        product_type: productType
       }])
 
     config
       .plugin('copy')
       .tap(args => {
         // constructor parameter for 'CopyWebpackPlugin'
-        args[0][0].ignore.push('view.html')
-        args[0][0].ignore.push('edit.html')
-        return args
+        args[0][0].ignore.push('view.html');
+        args[0][0].ignore.push('edit.html');
+        args[0][0].ignore.push('viewer.html');
+        args[0][0].ignore.push('editor.html');
+        return args;
       })
   }
 };

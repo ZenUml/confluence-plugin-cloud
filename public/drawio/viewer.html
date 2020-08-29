@@ -5,6 +5,9 @@
     <title>Grapheditor viewer</title>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+	<script type="text/javascript" src="../js/util.js"></script>
+	
 	<script type="text/javascript">
 		var STENCIL_PATH = 'stencils';
 		var IMAGE_PATH = 'images';
@@ -60,18 +63,30 @@
 		graph.resizeContainer = true;
 		graph.setEnabled(false);
 
-		function show(data)
+		function setGraphXml(data)
 		{
 			var xmlDoc = mxUtils.parseXml(data);
 			var codec = new mxCodec(xmlDoc);
 			codec.decode(xmlDoc.documentElement, graph.getModel());
 		};
 		
-		window.setGraphXml = show;
+		async function initializeMacro() {
+			const macro = new Macro(AP.confluence, 'graph');
+			const {graphXml} = await macro.load();
 
-		const example = `<mxGraphModel dx="902" dy="334" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169"><root><mxCell id="0"/><mxCell id="1" parent="0"/><mxCell id="2" value="" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1"><mxGeometry x="350" y="140" width="120" height="80" as="geometry"/></mxCell><mxCell id="5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;" edge="1" parent="1" source="3" target="2"><mxGeometry relative="1" as="geometry"/></mxCell><mxCell id="3" value="" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1"><mxGeometry x="50" y="210" width="120" height="60" as="geometry"/></mxCell></root></mxGraphModel>`;
+			if(graphXml) {
+				setGraphXml(graphXml);
+			}
 
-		show(example);
+			setTimeout(function () {
+				let width = document.body.scrollWidth;
+				let height = document.body.scrollHeight;
+				console.log('Resize to ', width, height);
+				AP.resize(width, height);
+			}, 1000);
+		}
+
+		loadConnect(initializeMacro);
 	</script>
 </body>
 </html>
