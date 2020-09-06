@@ -13,4 +13,5 @@ build:
 deploy-full-prod:
   stage: deploy
   script:
+    - yarn install
     - yarn deploy:full:stage --token $FIREBASE_TOKEN
