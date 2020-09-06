@@ -10,15 +10,7 @@ Open local pages at:
 `latest` is used.
 
 # Release
-$ yarn build
-
-> Make sure to update `$VERSION` in package.json. RECOVER old versions before commit.
-
-$ yarn sync
-
-> You need to first configure `aws` cli.
-
-The application will be released to "https://atlassian.zenuml.com/v1.0.9/edit.html".
+The release is done through 
 
 # Design decisions
 

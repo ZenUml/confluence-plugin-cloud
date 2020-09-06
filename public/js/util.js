@@ -22,8 +22,13 @@ var JavaScript = {
 	  return script;
 	}
 };
+
 function getConnectUrl() {
   return 'https://connect-cdn.atl-paas.net/all.js';
+}
+
+function loadConnect(callback) {
+	return JavaScript.load(getConnectUrl(), callback);
 }
 
 function uuidv4() {

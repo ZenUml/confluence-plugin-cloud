@@ -1,0 +1,16 @@
+stages:
+  - install
+  - test
+  - deploy
+install:
+  stage: install
+  script:
+    - yarn install
+test:
+  stage: test
+  script:
+    - 'yarn test:unit'
+deploy-full-prod:
+  stage: deploy
+  script:
+    - 'yarn deploy:full:prod --token ${{secrets.FIREBASE_TOKEN}}'

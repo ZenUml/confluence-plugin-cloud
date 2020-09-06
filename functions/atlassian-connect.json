@@ -64,6 +64,56 @@
           "visuals"
         ],
         "featured": true
+      },
+      {
+        "key": "zenuml-graph-macro",
+        "name": {
+          "value": "ZenUML Graph"
+        },
+        "renderModes": {
+          "default": {
+            "url": "/attachment?pageId={page.id}&pageVersion={page.version}&macroId={macro.id}&uuid={uuid}"
+          }
+        },
+        "url": "/drawio/viewer.html?pageId={page.id}&pageVersion={page.version}&macroId={macro.id}&uuid={uuid}",
+        "description": {
+          "value": "Create a ZenUML Graph"
+        },
+        "outputType": "block",
+        "bodyType": "none",
+        "editor": {
+          "url": "/drawio/initEditor.html",
+          "editTitle": {
+            "value": "Edit ZenUML Graph"
+          },
+          "insertTitle": {
+            "value": "Create ZenUML Graph"
+          },
+          "width": "100%",
+          "height": "100%"
+        },
+        "icon": {
+          "width": 16,
+          "height": 16,
+          "url": "image/zenuml_logo.png"
+        },
+        "documentation": {
+          "url": "https://www.zenuml.com/ZenUML_Sequence_Diagram_addon_help.html"
+        },
+        "categories": [
+          "visuals"
+        ],
+        "featured": true
+      }
+    ],
+    "dialogs": [
+      {
+        "url": "/drawio/editor.html",
+        "options": {
+          "size": "fullscreen",
+          "chrome": false
+        },
+        "key": "editor-dialog-module-key"
       }
     ]
   },
