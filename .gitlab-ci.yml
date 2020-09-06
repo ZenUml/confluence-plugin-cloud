@@ -1,15 +1,14 @@
 image: node:latest
 
 stages:
-  - install
-  - test
+  - CI
   - deploy
 install:
-  stage: install
+  stage: CI
   script:
     - yarn install
 test:
-  stage: test
+  stage: CI
   script:
     - 'yarn test:unit'
 deploy-full-prod:
