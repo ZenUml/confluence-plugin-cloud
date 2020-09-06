@@ -35,7 +35,7 @@ deploy-lite-prod:
   stage: Prod
   script:
     - yarn install
-    - yarn deploy:lite:stage --token $FIREBASE_TOKEN
+    - yarn deploy:lite:prod --token $FIREBASE_TOKEN
   when: manual
   only:
     - master
