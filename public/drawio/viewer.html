@@ -5,34 +5,37 @@
     <title>Grapheditor viewer</title>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-114996686-1"></script>
+  <script type="text/javascript" src="../js/google-analytics.js"></script>
 
 	<script type="text/javascript" src="../js/util.js"></script>
-	
+
 	<script type="text/javascript">
 		var STENCIL_PATH = 'stencils';
 		var IMAGE_PATH = 'images';
 		var STYLE_PATH = 'styles';
-	
+
 		var urlParams = (function(url)
 		{
 			var result = new Object();
 			var idx = url.lastIndexOf('?');
-	
+
 			if (idx > 0)
 			{
 				var params = url.substring(idx + 1).split('&');
-				
+
 				for (var i = 0; i < params.length; i++)
 				{
 					idx = params[i].indexOf('=');
-					
+
 					if (idx > 0)
 					{
 						result[params[i].substring(0, idx)] = params[i].substring(idx + 1);
 					}
 				}
 			}
-			
+
 			return result;
 		})(window.location.href);
 
@@ -69,7 +72,7 @@
 			var codec = new mxCodec(xmlDoc);
 			codec.decode(xmlDoc.documentElement, graph.getModel());
 		};
-		
+
 		async function initializeMacro() {
 			const macro = new Macro(AP.confluence, 'graph');
 			const {graphXml} = await macro.load();
