@@ -1,16 +1,41 @@
+image: node:latest
+
 stages:
-  - install
-  - test
-  - deploy
-install:
-  stage: install
+  - CI
+  - Staging
+  - Prod
+build:
+  stage: CI
   script:
     - yarn install
-test:
-  stage: test
+    - yarn test:unit
+
+deploy-full-stage:
+  stage: Staging
   script:
-    - 'yarn test:unit'
+    - yarn install
+    - yarn deploy:full:stage --token $FIREBASE_TOKEN
+
+deploy-lite-stage:
+  stage: Staging
+  script:
+    - yarn install
+    - yarn deploy:lite:stage --token $FIREBASE_TOKEN
+
 deploy-full-prod:
-  stage: deploy
+  stage: Prod
   script:
-    - 'yarn deploy:full:prod --token ${{secrets.FIREBASE_TOKEN}}'
+    - yarn install
+    - echo 'deploy full prod'
+  when: manual
+  only:
+    - master
+
+deploy-lite-prod:
+  stage: Prod
+  script:
+    - yarn install
+    - yarn deploy:lite:stage --token $FIREBASE_TOKEN
+  when: manual
+  only:
+    - master
