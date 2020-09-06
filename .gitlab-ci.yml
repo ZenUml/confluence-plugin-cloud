@@ -3,15 +3,14 @@ image: node:latest
 stages:
   - CI
   - deploy
-install:
+
+build:
   stage: CI
   script:
     - yarn install
-test:
-  stage: CI
-  script:
-    - 'yarn test:unit'
+    - yarn test:unit
+
 deploy-full-prod:
   stage: deploy
   script:
-    - 'yarn deploy:full:stage --token $FIREBASE_TOKEN'
+    - yarn deploy:full:stage --token $FIREBASE_TOKEN
