@@ -9,11 +9,11 @@ exports.renderAttachment = functions.https.onRequest((request, response) => {
 
 exports.installedEndpoint = functions.https.onRequest((request, response) => {
   console.log('request.body.baseUrl:', request.body.baseUrl);
-  store.append('Sheet1', [
+  store.append('ZenUML', [
     {
       DateTime: new Date().toLocaleString('en-AU'),
       ClientSite: request.body.baseUrl,
-      AppType: 'Unknown',
+      AppType: isLite(request) ? 'Lite' : 'Full',
       EventType: 'Install',
       Notes: ''
     }
@@ -23,11 +23,11 @@ exports.installedEndpoint = functions.https.onRequest((request, response) => {
 
 exports.uninstalledEndpoint = functions.https.onRequest((request, response) => {
   console.log('request.body.baseUrl:', request.body.baseUrl);
-  store.append('Sheet1', [
+  store.append('ZenUML', [
     {
       DateTime: new Date().toLocaleString('en-AU'),
       ClientSite: request.body.baseUrl,
-      AppType: 'Unknown',
+      AppType: isLite(request) ? 'Lite' : 'Full',
       EventType: 'Uninstall',
       Notes: ''
     }
