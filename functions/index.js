@@ -9,11 +9,11 @@ exports.renderAttachment = functions.https.onRequest((request, response) => {
 
 exports.installedEndpoint = functions.https.onRequest((request, response) => {
   console.log('request.body.baseUrl:', request.body.baseUrl);
-  store.append('Sheet1', [
+  store.append('ZenUML', [
     {
       DateTime: new Date().toLocaleString('en-AU'),
       ClientSite: request.body.baseUrl,
-      AppType: 'Unknown',
+      AppType: isLite(request) ? 'Lite' : 'Full',
       EventType: 'Install',
       Notes: ''
     }
@@ -23,11 +23,11 @@ exports.installedEndpoint = functions.https.onRequest((request, response) => {
 
 exports.uninstalledEndpoint = functions.https.onRequest((request, response) => {
   console.log('request.body.baseUrl:', request.body.baseUrl);
-  store.append('Sheet1', [
+  store.append('ZenUML', [
     {
       DateTime: new Date().toLocaleString('en-AU'),
       ClientSite: request.body.baseUrl,
-      AppType: 'Unknown',
+      AppType: isLite(request) ? 'Lite' : 'Full',
       EventType: 'Uninstall',
       Notes: ''
     }
@@ -35,15 +35,19 @@ exports.uninstalledEndpoint = functions.https.onRequest((request, response) => {
   response.status(200).send(`OK`);
 });
 
-exports.descriptor = functions.https.onRequest((req, resp) => {
-  const url = req.url;
-  const basePath = url.substring(0, url.lastIndexOf('/'));
-  const self = url.substring(url.lastIndexOf('/'));
-  descriptor.baseUrl = `${req.protocol}://${req.hostname}${basePath}`;
+function isLite(req) {
+  const url = req.url
+  const basePath = url.substring(0, url.lastIndexOf('/'))
+  const self = url.substring(url.lastIndexOf('/'))
+  descriptor.baseUrl = `${req.protocol}://${req.hostname}${basePath}`
   // This is not necessary but works as a defense.
-  descriptor.links.self = self;
+  descriptor.links.self = self
 
-  const isLite = url.includes('lite');
+  return url.includes('lite')
+}
+
+exports.descriptor = functions.https.onRequest((req, resp) => {
+  const isLite = isLite(req)
   if (isLite) {
     descriptor.key = 'com.zenuml.confluence-addon-lite';
     descriptor.name = 'ZenUML Lite';
