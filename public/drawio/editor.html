@@ -81,6 +81,7 @@
 				this.actions.get('save').setEnabled(false);
 				this.actions.get('saveAs').setEnabled(false);
 				this.actions.get('export').setEnabled(false);
+				this.actions.get('help').setEnabled(false);
 
 				window.getGraphXml = () => mxUtils.getXml(editor.getGraphXml());
 				window.setGraphXml = (xml) => {

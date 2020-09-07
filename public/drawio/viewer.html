@@ -66,6 +66,14 @@
 		graph.resizeContainer = true;
 		graph.setEnabled(false);
 
+		function setGraphStyle(styleUrl)
+		{
+			var req = mxUtils.load(styleUrl);
+			var root = req.getDocumentElement();
+			var dec = new mxCodec(root.ownerDocument);
+			dec.decode(root, graph.stylesheet);
+		};
+
 		function setGraphXml(data)
 		{
 			var xmlDoc = mxUtils.parseXml(data);
@@ -78,6 +86,7 @@
 			const {graphXml} = await macro.load();
 
 			if(graphXml) {
+				setGraphStyle('styles/default.xml');
 				setGraphXml(graphXml);
 			}
 
