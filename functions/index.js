@@ -8,6 +8,7 @@ exports.renderAttachment = functions.https.onRequest((request, response) => {
 });
 
 exports.installedEndpoint = functions.https.onRequest((request, response) => {
+  console.log('request.body:', request.body);
   console.log('request.body.baseUrl:', request.body.baseUrl);
   store.append('ZenUML', [
     {
