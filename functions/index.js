@@ -8,12 +8,14 @@ exports.renderAttachment = functions.https.onRequest((request, response) => {
 });
 
 exports.installedEndpoint = functions.https.onRequest((request, response) => {
+  console.log('request.body.key:', request.body.key);
   console.log('request.body.baseUrl:', request.body.baseUrl);
+  let key = request.body.key;
   store.append('ZenUML', [
     {
       DateTime: new Date().toLocaleString('en-AU'),
       ClientSite: request.body.baseUrl,
-      AppType: isLite(request) ? 'Lite' : 'Full',
+      AppType: key.includes('lite')? 'Lite': 'Full',
       EventType: 'Install',
       Notes: ''
     }
@@ -22,12 +24,14 @@ exports.installedEndpoint = functions.https.onRequest((request, response) => {
 });
 
 exports.uninstalledEndpoint = functions.https.onRequest((request, response) => {
+  console.log('request.body.key:', request.body.key);
   console.log('request.body.baseUrl:', request.body.baseUrl);
+  let key = request.body.key;
   store.append('ZenUML', [
     {
       DateTime: new Date().toLocaleString('en-AU'),
       ClientSite: request.body.baseUrl,
-      AppType: isLite(request) ? 'Lite' : 'Full',
+      AppType: key.includes('lite')? 'Lite': 'Full',
       EventType: 'Uninstall',
       Notes: ''
     }
@@ -35,19 +39,15 @@ exports.uninstalledEndpoint = functions.https.onRequest((request, response) => {
   response.status(200).send(`OK`);
 });
 
-function isLite(req) {
-  const url = req.url
-  const basePath = url.substring(0, url.lastIndexOf('/'))
-  const self = url.substring(url.lastIndexOf('/'))
-  descriptor.baseUrl = `${req.protocol}://${req.hostname}${basePath}`
-  // This is not necessary but works as a defense.
-  descriptor.links.self = self
-
-  return url.includes('lite')
-}
-
 exports.descriptor = functions.https.onRequest((req, resp) => {
-  const isLite = isLite(req)
+  const url = req.url;
+  const basePath = url.substring(0, url.lastIndexOf('/'));
+  const self = url.substring(url.lastIndexOf('/'));
+  descriptor.baseUrl = `${req.protocol}://${req.hostname}${basePath}`;
+  // This is not necessary but works as a defense.
+  descriptor.links.self = self;
+
+  const isLite = url.includes('lite');
   if (isLite) {
     descriptor.key = 'com.zenuml.confluence-addon-lite';
     descriptor.name = 'ZenUML Lite';
