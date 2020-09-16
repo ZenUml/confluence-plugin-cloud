@@ -22,7 +22,7 @@
     "mermaid": "^8.5.2",
     "split.js": "^1.6.0",
     "stein-js-client": "^0.0.2",
-    "vue": "^2.6.11",
+    "vue": "^2.6.12",
     "vue-atlas": "^2.1.8",
     "vue-codemirror": "^4.0.6",
     "vue-sequence": "^1.0.21",
@@ -46,7 +46,7 @@
     "test-lib": "^2.1.2",
     "vue-jest": "^3.0.5",
     "vue-svg-loader": "^0.16.0",
-    "vue-template-compiler": "^2.6.11"
+    "vue-template-compiler": "^2.6.12"
   },
   "eslintConfig": {
     "root": true,
