@@ -171,7 +171,36 @@ Toolbar.prototype.init = function()
 	var insertMenu = this.addMenu('', mxResources.get('insert') + ' (' + mxResources.get('doubleClickTooltip') + ')', true, 'insert', null, true);
 	this.addDropDownArrow(insertMenu, 'geSprite-plus', 38, 48, -4, -3, 36, -8);
 	this.addTableDropDown();
+	this.addZenUmlButton();
 };
+
+/**
+ * Adds the toolbar elements.
+ */
+Toolbar.prototype.addZenUmlButton = function()
+{
+	this.addSeparator();
+
+	function showZenUmlDialog(){	
+		
+		var dlg = new ZenUmlDialog(this.editorUi);
+		this.editorUi.showDialog(dlg.container, 900, 600, true, false);
+		// this.editorUi.dialog.container.style.overflow = 'auto';
+		// document.querySelector("diagram-as-code").style.overflow = "auto"
+
+		let graph = document.getElementsByTagName("diagram-as-code")[0]
+		let root = graph.shadowRoot;
+		var node = root.querySelector(".sequence-diagram");
+		node.parentElement.style.overflow = "auto"
+
+		dlg.init();
+	}
+	
+	this.addButton('geSprite-plus','insert zenUml',showZenUmlDialog.bind(this), null)
+	
+};
+
+/**
 
 /**
  * Adds the toolbar elements.

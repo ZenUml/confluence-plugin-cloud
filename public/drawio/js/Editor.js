@@ -1026,6 +1026,148 @@ Dialog.prototype.close = function(cancel, isEsc)
 	this.container.parentNode.removeChild(this.container);
 };
 
+
+/**
+ * zenUml dialog.
+ */
+var ZenUmlDialog = function(editorUi, umlData, insertCallback)
+{
+
+	function parse(graphData, evt)
+	{
+
+			// if (editorUi.spinner.spin(document.body, mxResources.get('inserting')))
+			// {
+				var graph = editorUi.editor.graph;
+
+				function insertGraph(generateGraph) {
+					let graph = document.getElementsByTagName("diagram-as-code")[0]
+					let root = graph.shadowRoot;
+					var node = root.querySelector(".sequence-diagram");
+					domtoimage.toSvg(node).then((result) => {
+					  result = result.replaceAll("%0A","")
+					  result = result.replaceAll("&","")
+					//   console.log(result);
+					//   console.log(window.btoa(result.substring(33)))
+					  var umlGraph = editorUi.generateZenUmlImage(result.substring(33));
+
+					  generateGraph(graph.vueComponent.$store.state.code,umlGraph.base64Str,umlGraph.w,umlGraph.h)
+					});
+				  }
+
+				 function generateDefaultGraph(graphData, graphBase64, w, h)
+				{
+					insertPoint = (mxEvent.isAltDown(evt)) ? insertPoint : graph.getCenterInsertPoint(new mxRectangle(0, 0, w, h));
+					// editorUi.spinner.stop();
+					var cell = null;
+
+					graph.getModel().beginUpdate();
+					try
+					{
+						cell = graph.insertVertex(null, null, null, insertPoint.x, insertPoint.y,
+								w, h, 'shape=image;noLabel=1;verticalAlign=top;imageAspect=1;' +
+								'image=' + graphBase64 + ';')
+
+						graph.setAttributeForCell(cell, 'zenUmlData',
+							JSON.stringify({data: graphData, config:
+							{}}, null, 2));
+					}
+					finally
+					{
+						editorUi.hideDialog();
+						graph.getModel().endUpdate();
+					}
+
+					if (cell != null)
+					{
+						graph.setSelectionCell(cell);
+						graph.scrollCellToVisible(cell);
+					}
+				}
+
+
+				insertGraph(insertCallback ? insertCallback : generateDefaultGraph)
+
+			}
+		// }
+
+
+
+
+
+	var div = document.createElement('div');
+	div.style.height = '100%';
+	// div.style.overflow = "auto"
+
+	// Create zenUml webcomponent
+	var zenuml = document.createElement('diagram-as-code');
+	zenuml.setAttribute('show-editor', true)
+    zenuml.style.height = 'calc(100% - 35px)';
+	zenuml.style.display = 'block';
+	zenuml.style.border = 'solid 1px #eee';
+	zenuml.style.overflow = 'hidden';
+	var defaultValue = umlData || 'A.method() { if (x) { v.mm() } }'
+	zenuml.innerHTML = defaultValue
+
+	div.appendChild(zenuml);
+
+	var buttonContainer = document.createElement('div');
+	buttonContainer.style.margin = '2px';
+	this.init = function()
+	{
+		// TODO: focus on editor
+		// textarea.focus();
+	};
+
+
+	var helpBtn = mxUtils.button(mxResources.get('help'), function()
+	{
+
+		alert('redirect to zenUml document')
+
+	});
+
+	helpBtn.className = 'geBtn';
+	buttonContainer.appendChild(helpBtn);
+
+	var cancelBtn = mxUtils.button(mxResources.get('close'), function()
+	{
+
+		// mxgraph does not support this
+		// editorUi.confirm(mxResources.get('areYouSure'), function()
+		// {
+		// 	editorUi.hideDialog();
+		// });
+		editorUi.hideDialog();
+
+	});
+
+	cancelBtn.className = 'geBtn';
+
+	if (editorUi.editor.cancelFirst)
+	{
+		buttonContainer.appendChild(cancelBtn);
+	}
+
+	var okBtn = mxUtils.button(mxResources.get('insert'), function(evt)
+	{
+		parse(defaultValue, evt);
+	});
+	buttonContainer.appendChild(okBtn);
+
+	okBtn.className = 'geBtn gePrimaryBtn';
+
+	if (!editorUi.editor.cancelFirst)
+	{
+		buttonContainer.appendChild(cancelBtn);
+	}
+
+	div.appendChild(buttonContainer);
+	this.container = div;
+
+};
+
+
 /**
  * 
  */

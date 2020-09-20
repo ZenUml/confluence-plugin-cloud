@@ -1055,7 +1055,108 @@ EditorUi.prototype.hsplitClickEnabled = false;
 EditorUi.prototype.init = function()
 {
 	var graph = this.editor.graph;
+
 	
+	// Starts editing zenUml data
+	graph.cellEditor.editZenUmlData = function(cell, trigger, data)
+	{
+		// console.log('editZenUmlData', data)
+		var graphDataObj = JSON.parse(data);
+
+		function generateGraph(graphData, graphBase64, w, h)
+		{
+			// ui.spinner.stop();
+
+			graph.getModel().beginUpdate();
+
+			try
+			{
+				graph.setCellStyles('image', graphBase64, [cell]);
+				var geo = graph.model.getGeometry(cell);
+
+				if (geo != null)
+				{
+					geo = geo.clone();
+					// geo.width = Math.max(geo.width, w);
+					// geo.height = Math.max(geo.height, h);
+					geo.width = w;
+					geo.height = h;
+					graph.cellsResized([cell], [geo], false);
+				}
+
+				graph.setAttributeForCell(cell, 'zenUmlData',
+					JSON.stringify({data:graphData, config:
+					{}}, null, 2));
+			}
+			finally
+			{
+				graph.getModel().endUpdate();
+				ui.hideDialog();
+			}
+			if (cell != null)
+			{
+				graph.setSelectionCell(cell);
+				graph.scrollCellToVisible(cell);
+			}
+		}
+
+
+		var dlg = new ZenUmlDialog(ui, graphDataObj.data, generateGraph);
+		ui.showDialog(dlg.container, 900, 600, true, false);
+		ui.dialog.container.style.overflow = 'auto';
+		dlg.init();
+
+	};
+
+	graph.cellEditor.startEditing = function(cell, trigger)
+	{
+		try
+		{
+			var data = this.graph.getAttributeForCell(cell, 'zenUmlData');
+			
+			if (data != null)
+			{
+				this.editZenUmlData(cell, trigger, data);
+			}
+			else if (data != null)
+			{
+				data = this.graph.getAttributeForCell(cell, 'plantUmlData');
+				this.editPlantUmlData(cell, trigger, data);
+			}
+			else
+			{
+				data = this.graph.getAttributeForCell(cell, 'mermaidData');
+			
+				if (data != null)
+				{
+					this.editMermaidData(cell, trigger, data);
+				}
+				else
+				{
+					var style = graph.getCellStyle(cell);
+					
+					if (mxUtils.getValue(style, 'metaEdit', '0') == '1')
+					{
+						ui.showDataDialog(cell);
+					}
+					else
+					{
+						cellEditorStartEditing.apply(this, arguments);
+					}
+				}
+			}
+		}
+		catch (e)
+		{
+			ui.handleError(e);
+		}
+	};
+
+
+
+	
+
+
 	if (!graph.standalone)
 	{
 		// Hides tooltips and connection points when scrolling
@@ -4735,4 +4836,90 @@ EditorUi.prototype.destroy = function()
 			c[i].parentNode.removeChild(c[i]);
 		}
 	}
+};
+
+
+	/**
+	 * Imports the given XML into the existing diagram.
+	 */
+	EditorUi.prototype.convertDataUri = function(uri)
+	{
+		// Handles special case of data URI which needs to be rewritten
+		// to be used in a cell style to remove the semicolon
+		if (uri.substring(0, 5) == 'data:')
+		{
+			var semi = uri.indexOf(';');
+			
+			if (semi > 0)
+			{
+				uri = uri.substring(0, semi) + uri.substring(uri.indexOf(',', semi + 1));
+			}
+		}
+		
+		return uri;
+	};
+
+/**
+ * Generates a zenUml image.
+ */
+EditorUi.prototype.generateZenUmlImage = function(svg)
+{
+	var ui = this;
+
+	// console.log(svg)
+	try
+	{
+		// Workaround for namespace errors in SVG output for IE
+		if (mxClient.IS_IE || mxClient.IS_IE11)
+		{
+			svg = svg.replace(/ xmlns:\S*="http:\/\/www.w3.org\/XML\/1998\/namespace"/g, '').
+				replace(/ (NS xml|\S*):space="preserve"/g, ' xml:space="preserve"');
+		}
+		
+		var doc = mxUtils.parseXml(svg);
+		var svgs = doc.getElementsByTagName('svg');
+
+		// console.log('doc', doc)
+		// console.log('svgs', svgs)
+
+		if (svgs.length > 0)
+		{
+			var w = parseFloat(svgs[0].getAttribute('width'));
+			var h = parseFloat(svgs[0].getAttribute('height'));
+			
+			if (isNaN(w) || isNaN(h))
+			{
+				try
+				{
+					var viewBox = svgs[0].getAttribute('viewBox').split(/\s+/);
+					w = parseFloat(viewBox[2]);
+					h = parseFloat(viewBox[3]);
+				}
+				catch(e)
+				{
+					//Any size such that it shows up
+					w = w || 600;
+					h = h || 400;									
+				}
+			}
+
+			Editor.createSvgDataUri = function(svg)
+			{
+				return 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(svg)));
+			};
+		
+			// TODO: zen: w and h
+			var base64Str = ui.convertDataUri(Editor.createSvgDataUri(svg));
+			return {base64Str,w,h}
+		}
+		else
+		{
+			console.log({message: mxResources.get('invalidInput')});
+		}
+	}
+	catch (e)
+	{
+		console.log(e);
+	}
+
 };
