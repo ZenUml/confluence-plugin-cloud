@@ -1,4 +1,7 @@
-import uuidv4 from './uuid'
+import uuidv4 from './uuid';
+import LZUTF8 from 'lzutf8';
+
+const COMPRESS_ENCODING = 'Base64';
 
 class Macro {
   EXAMPLE = `//\`POST /orders\`
@@ -114,6 +117,7 @@ OrderController.create(payload) {
     let mermaidCode;
     let diagramType;
     let graphXml;
+    let compressed;
     if(typeof contentProp?.value === 'string') {
       code = contentProp?.value
     } else {
@@ -122,6 +126,7 @@ OrderController.create(payload) {
       mermaidCode = contentProp?.value?.mermaidCode
       diagramType = contentProp?.value?.diagramType
       graphXml = contentProp?.value?.graphXml
+      compressed = contentProp?.value?.compressed
     }
     code = code || await this.getMacroBody();
 
@@ -130,6 +135,10 @@ OrderController.create(payload) {
     }
 
     styles = styles || {}
+
+    if(compressed) {
+      graphXml = LZUTF8.decompress(graphXml, {inputEncoding: COMPRESS_ENCODING});
+    }
     return {code, styles, mermaidCode, diagramType, graphXml};
   }
 
@@ -143,7 +152,10 @@ OrderController.create(payload) {
     this._confluence.saveMacro({uuid: key, updatedAt: new Date()}, code);
     const versionNumber = this._versionNumber;
 
-    const value = this._macroIdentifier === 'graph' ? {graphXml: code} : {code, styles, mermaidCode, diagramType};
+    const compressedCode = LZUTF8.compress(code, {outputEncoding: COMPRESS_ENCODING});
+
+    const value = this._macroIdentifier === 'graph' ? 
+      {graphXml: compressedCode, compressed: true} : {code, styles, mermaidCode, diagramType};
 
     const contentProperty = {
       key: this.propertyKey(key),
