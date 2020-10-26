@@ -12,7 +12,7 @@
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-114996686-1"></script>
 	<script type="text/javascript" src="../js/google-analytics.js"></script>
 	<script type="text/javascript" src="../js/util.js"></script>
-    
+
 	<script type="text/javascript">
 		mxBasePath = 'src';
 		// Parses URL parameters. Supported parameters are:
@@ -24,25 +24,25 @@
 		{
 			var result = new Object();
 			var idx = url.lastIndexOf('?');
-	
+
 			if (idx > 0)
 			{
 				var params = url.substring(idx + 1).split('&');
-				
+
 				for (var i = 0; i < params.length; i++)
 				{
 					idx = params[i].indexOf('=');
-					
+
 					if (idx > 0)
 					{
 						result[params[i].substring(0, idx)] = params[i].substring(idx + 1);
 					}
 				}
 			}
-			
+
 			return result;
 		})(window.location.href);
-	
+
 		// Default resources are included in grapheditor resources
 		mxLoadResources = false;
 	</script>
@@ -63,13 +63,13 @@
 	<script type="text/javascript" src="js/Toolbar.js"></script>
 	<script type="text/javascript" src="js/Dialogs.js"></script>
 </head>
-<body class="geEditor">
+<body class="geEditor" style="line-height: unset">
 	<script type="text/javascript">
 		// Extends EditorUi to update I/O action states based on availability of backend
 		(function()
 		{
 			var editorUiInit = EditorUi.prototype.init;
-			
+
 			EditorUi.prototype.init = function()
 			{
 				editorUiInit.apply(this, arguments);
@@ -86,13 +86,13 @@
 
 				window.getGraphXml = () => mxUtils.getXml(editor.getGraphXml());
 				window.setGraphXml = (xml) => {
-					var doc = mxUtils.parseXml(xml); 
+					var doc = mxUtils.parseXml(xml);
 					editor.setGraphXml(doc.documentElement);
 				};
 
 				loadConnect(initializeMacro);
 			};
-			
+
 			// Adds required resources (disables loading of fallback properties, this can only
 			// be used if we know that all keys are defined in the language specific file)
 			mxResources.loadDefaultBundle = false;
@@ -104,11 +104,11 @@
 			{
 				// Adds bundle text to resources
 				mxResources.parse(xhr[0].getText());
-				
+
 				// Configures the default graph theme
 				var themes = new Object();
-				themes[Graph.prototype.defaultThemeName] = xhr[1].getDocumentElement(); 
-				
+				themes[Graph.prototype.defaultThemeName] = xhr[1].getDocumentElement();
+
 				// Main
 				new EditorUi(new Editor(urlParams['chrome'] == '0', themes));
 			}, function()
@@ -127,12 +127,12 @@
 			if(graphXml) {
 				setGraphXml(graphXml);
 			}
-			
+
 			AP.require(["confluence", "dialog"], function (confluence, dialog) {
 				async function onSubmit() {
 					const xml = getGraphXml();
 					await macro.save(xml);
-					
+
 					confluence.closeMacroEditor();
 					return true;
 				}
