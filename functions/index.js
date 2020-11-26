@@ -1,5 +1,5 @@
-import format from 'date-fns/format';
-import {utcToZonedTime} from 'date-fns-tz';
+const format = require('date-fns/format');
+const {utcToZonedTime} = require('date-fns-tz');
 const functions = require('firebase-functions');
 const descriptor = require('./atlassian-connect.json');
 const SteinStore = require('stein-js-client');
