@@ -1,7 +1,10 @@
+import format from 'date-fns/format';
+import {utcToZonedTime} from 'date-fns-tz';
 const functions = require('firebase-functions');
 const descriptor = require('./atlassian-connect.json');
 const SteinStore = require('stein-js-client');
 const store = new SteinStore('https://api.steinhq.com/v1/storages/5ed5fe9883c30d0425e2c433');
+
 
 exports.renderAttachment = functions.https.onRequest((request, response) => {
   response.send(`<ac:image> <ri:attachment ri:filename="zenuml-${request.query.uuid}.png" /> </ac:image>`);
@@ -13,7 +16,7 @@ exports.installedEndpoint = functions.https.onRequest((request, response) => {
   let key = request.body.key;
   store.append('ZenUML', [
     {
-      DateTime: new Date().toLocaleString('en-AU'),
+      DateTime: format(utcToZonedTime(new Date(), 'Australia/Melbourne'), 'dd/MM/YYYY hh:mm:ss'),
       ClientSite: request.body.baseUrl,
       AppType: key.includes('lite')? 'Lite': 'Full',
       EventType: 'Install',
@@ -29,7 +32,7 @@ exports.uninstalledEndpoint = functions.https.onRequest((request, response) => {
   let key = request.body.key;
   store.append('ZenUML', [
     {
-      DateTime: new Date().toLocaleString('en-AU'),
+      DateTime: format(utcToZonedTime(new Date(), 'Australia/Melbourne'), 'dd/MM/YYYY hh:mm:ss'),
       ClientSite: request.body.baseUrl,
       AppType: key.includes('lite')? 'Lite': 'Full',
       EventType: 'Uninstall',
