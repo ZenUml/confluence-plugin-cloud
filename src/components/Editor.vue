@@ -28,7 +28,6 @@
   // language js
   import 'codemirror/mode/javascript/javascript.js'
   import 'codemirror/addon/display/placeholder.js'
-  import _ from 'lodash'
 
   export default {
     name: 'editor',
@@ -53,16 +52,16 @@
       }
     },
     methods: {
-      onEditorCodeChange: _.debounce(function(newCode){
+      onEditorCodeChange: function (newCode) {
         const isMermaid = this.$store.getters.diagramType === 'mermaid';
 
-        if(isMermaid) {
+        if (isMermaid) {
           this.$store.dispatch('updateMermaidCode', newCode)
         } else {
-          this.$store.dispatch('updateCode', {code: newCode});
+          this.$store.dispatch('updateCode', newCode);
         }
-      }, 100
-    )},
+      }
+    },
     computed: {
       editor() {
         return this.$refs.myEditor.Editor

@@ -38,11 +38,11 @@ Vue.component('workspace', Workspace)
 Vue.use(VueCodeMirror)
 
 Vue.use(Vuex)
-
+const storeConfig = Store()
 const ExtendedStore = {
-  ...Store,
+  ...storeConfig,
   mutations: {
-    ...Store.mutations,
+    ...storeConfig.mutations,
     updateMermaidCode(state, payload) {
       state.mermaidCode = payload
     },
@@ -54,7 +54,7 @@ const ExtendedStore = {
     }
   },
   actions: {
-    ...Store.actions,
+    ...storeConfig.actions,
     updateMermaidCode({commit}, payload) {
       commit('updateMermaidCode', payload)
       try {
@@ -79,7 +79,7 @@ const ExtendedStore = {
     }
   },
   getters: {
-    ...Store.getters,
+    ...storeConfig.getters,
     svg: (state) => {
       return state.mermaidSvg
     },
@@ -88,7 +88,7 @@ const ExtendedStore = {
     }
   },
   state: {
-    ...Store.state,
+    ...storeConfig.state,
     mermaidCode: 'graph TD; A-->B;',
     mermaidSvg: '',
     diagramType: 'zenuml',
