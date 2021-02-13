@@ -29,6 +29,8 @@
   // language js
   import 'codemirror/mode/javascript/javascript.js'
   import 'codemirror/addon/display/placeholder.js'
+  import 'codemirror/addon/edit/closebrackets.js'
+
   import EventBus from '../EventBus'
 
   export default {
@@ -48,7 +50,8 @@
           gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
           styleSelectedText: true,
           highlightSelectionMatches: {showToken: /\w/, annotateScrollbar: true},
-          placeholder: 'Write you code here'
+          placeholder: 'Write you code here',
+          autoCloseBrackets: true,
         }
       }
     },
