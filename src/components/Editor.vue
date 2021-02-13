@@ -23,22 +23,25 @@
 </template>
 
 <script>
-  import CodeMirror from 'vue-codemirror'
+  import _ from 'lodash'
+  import { codemirror } from 'vue-codemirror'
   import 'codemirror/keymap/sublime'
   // language js
   import 'codemirror/mode/javascript/javascript.js'
   import 'codemirror/addon/display/placeholder.js'
+  import 'codemirror/addon/edit/closebrackets.js'
+
+  import EventBus from '../EventBus'
 
   export default {
     name: 'editor',
     data() {
-
       return {
         helpUrl: 'https://zenuml.atlassian.net/wiki/spaces/Doc/overview',
         cmOptions: {
           tabSize: 4,
           mode: 'text/javascript',
-          theme: 'base16-dark',
+          theme: 'monokai',
           lineNumbers: true,
           line: true,
           keyMap: "sublime",
@@ -47,7 +50,8 @@
           gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
           styleSelectedText: true,
           highlightSelectionMatches: {showToken: /\w/, annotateScrollbar: true},
-          placeholder: 'Write you code here'
+          placeholder: 'Write you code here',
+          autoCloseBrackets: true,
         }
       }
     },
@@ -58,7 +62,7 @@
         if (isMermaid) {
           this.$store.dispatch('updateMermaidCode', newCode)
         } else {
-          this.$store.dispatch('updateCode', newCode);
+          this.$store.dispatch('updateCode', {code: newCode});
         }
       }
     },
@@ -84,14 +88,49 @@
         }
       },
     },
-    components: {CodeMirror}
+    mounted() {
+      const that = this
+      EventBus.$on('highlight', (codeRange) => {
+        if(that.mark) {
+          that.mark.clear()
+        }
+        that.mark = that.codemirror.markText({
+          line: codeRange.start.line-1, ch: codeRange.start.col
+        }, {
+          line: codeRange.stop.line-1, ch: codeRange.stop.col
+        }, {css: 'background: gray'})
+      })
+      this.codemirror.on('cursorActivity',_.debounce(() => {
+        if (this.mark) {
+          this.mark.clear()
+        }
+        const cursor = that.codemirror.getCursor();
+        const line = cursor.line;
+        let pos = cursor.ch;
+
+        for (let i = 0; i < line; i++) {
+          pos += that.codemirror.getLine(i).length + 1
+        }
+        that.$store.state.cursor = pos
+      }, 500))
+
+    },
+    components: {codemirror}
   }
 </script>
 
 <style>
+  @import "~codemirror/lib/codemirror.css";
+  @import "~codemirror/theme/monokai.css";
   .CodeMirror pre.CodeMirror-placeholder {
     color: #777;
   }
+
+  .dsl-editor .CodeMirror * {
+    font-family: Menlo, 'Fira Code', Monaco, source-code-pro, "Ubuntu Mono", "DejaVu sans mono", Consolas, monospace;
+    font-size: 16px;
+  }
+
 </style>
 
 
