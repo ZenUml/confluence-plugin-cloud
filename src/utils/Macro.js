@@ -4,20 +4,20 @@ import LZUTF8 from 'lzutf8';
 const COMPRESS_ENCODING = 'Base64';
 
 class Macro {
-  EXAMPLE = `//\`POST /orders\`
-// 
-// - [ ] Setup loadbalancer 
-// - [x] Config Kong gateway
+  EXAMPLE = `<<Controller>> OrderController
+<<BFF>> OrderService
+group BusinessService {
+  PurchaseService
+  InvoiceService
+}
+//\`POST /orders\`
 OrderController.create(payload) {
-  
-  // Create an **immutable** \`order\`
-  // 1. Validate \`payload\`
-  // 1. Log with \`x-correlationid\`
   OrderService.create(payload) {
-    // | id | Prod_Name | Price | Inserted_At |
-    // |----|-----------|-------|-------------|
-    // |123 | book 1    | $10.00| 2020-06-30  |
-    OrderRepo.save()
+    order = new Order(payload)
+    par {
+      PurchaseService.createPO(order)
+      InvoiceService.createInvoice(order)      
+    }
   }
 }`
   _confluence;
@@ -154,7 +154,7 @@ OrderController.create(payload) {
 
     const compressedCode = LZUTF8.compress(code, {outputEncoding: COMPRESS_ENCODING});
 
-    const value = this._macroIdentifier === 'graph' ? 
+    const value = this._macroIdentifier === 'graph' ?
       {graphXml: compressedCode, compressed: true} : {code, styles, mermaidCode, diagramType};
 
     const contentProperty = {
@@ -165,7 +165,7 @@ OrderController.create(payload) {
       }
     }
     await this.setContentProperty(contentProperty)
-  }  
+  }
 }
 
 export default Macro
