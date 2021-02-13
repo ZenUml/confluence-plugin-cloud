@@ -23,7 +23,7 @@
 </template>
 
 <script>
-  import CodeMirror from 'vue-codemirror'
+  import { codemirror } from 'vue-codemirror'
   import 'codemirror/keymap/sublime'
   // language js
   import 'codemirror/mode/javascript/javascript.js'
@@ -84,7 +84,7 @@
         }
       },
     },
-    components: {CodeMirror}
+    components: {codemirror}
   }
 </script>
 
