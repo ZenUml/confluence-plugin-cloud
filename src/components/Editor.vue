@@ -41,7 +41,7 @@
         cmOptions: {
           tabSize: 4,
           mode: 'text/javascript',
-          theme: 'base16-dark',
+          theme: 'monokai',
           lineNumbers: true,
           line: true,
           keyMap: "sublime",
@@ -120,9 +120,17 @@
 </script>
 
 <style>
+  @import "~codemirror/lib/codemirror.css";
+  @import "~codemirror/theme/monokai.css";
   .CodeMirror pre.CodeMirror-placeholder {
     color: #777;
   }
+
+  .dsl-editor .CodeMirror * {
+    font-family: Menlo, 'Fira Code', Monaco, source-code-pro, "Ubuntu Mono", "DejaVu sans mono", Consolas, monospace;
+    font-size: 16px;
+  }
+
 </style>
 
 
