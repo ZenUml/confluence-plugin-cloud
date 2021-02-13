@@ -23,6 +23,7 @@
 </template>
 
 <script>
+  import _ from 'lodash'
   import { codemirror } from 'vue-codemirror'
   import 'codemirror/keymap/sublime'
   // language js
@@ -96,6 +97,20 @@
           line: codeRange.stop.line-1, ch: codeRange.stop.col
         }, {css: 'background: gray'})
       })
+      this.codemirror.on('cursorActivity',_.debounce(() => {
+        if (this.mark) {
+          this.mark.clear()
+        }
+        const cursor = that.codemirror.getCursor();
+        const line = cursor.line;
+        let pos = cursor.ch;
+
+        for (let i = 0; i < line; i++) {
+          pos += that.codemirror.getLine(i).length + 1
+        }
+        that.$store.state.cursor = pos
+      }, 500))
+
     },
     components: {codemirror}
   }
