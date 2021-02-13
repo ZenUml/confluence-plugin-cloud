@@ -28,11 +28,11 @@
   // language js
   import 'codemirror/mode/javascript/javascript.js'
   import 'codemirror/addon/display/placeholder.js'
+  import EventBus from '../EventBus'
 
   export default {
     name: 'editor',
     data() {
-
       return {
         helpUrl: 'https://zenuml.atlassian.net/wiki/spaces/Doc/overview',
         cmOptions: {
@@ -83,6 +83,19 @@
           return this.$store.state.diagramType || 'zenuml'
         }
       },
+    },
+    mounted() {
+      const that = this
+      EventBus.$on('highlight', (codeRange) => {
+        if(that.mark) {
+          that.mark.clear()
+        }
+        that.mark = that.codemirror.markText({
+          line: codeRange.start.line-1, ch: codeRange.start.col
+        }, {
+          line: codeRange.stop.line-1, ch: codeRange.stop.col
+        }, {css: 'background: gray'})
+      })
     },
     components: {codemirror}
   }

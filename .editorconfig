@@ -27,7 +27,7 @@ indent_size=4
 
 [{*.ats,*.ts}]
 indent_style=space
-indent_size=4
+indent_size=2
 
 [*.js.map]
 indent_style=space
