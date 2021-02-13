@@ -4,7 +4,7 @@ import Vuex from 'vuex'
 import VueCodeMirror from 'vue-codemirror'
 
 // @ts-ignore
-import { Version, SeqDiagram, Store } from 'vue-sequence'
+import { Version, SeqDiagram } from 'vue-sequence'
 import 'vue-sequence/dist/vue-sequence.css'
 // eslint-disable-next-line
 console.log(Version)
@@ -25,6 +25,7 @@ import 'vue-atlas/dist/vue-atlas.css'
 import 'codemirror/lib/codemirror.css'
 // theme css
 import 'codemirror/theme/base16-dark.css'
+import ExtendedStore from './Store'
 
 Vue.use(Va, 'en')
 
@@ -44,63 +45,6 @@ Vue.component('workspace', Workspace)
 Vue.use(VueCodeMirror)
 
 Vue.use(Vuex)
-const storeConfig = Store()
-const ExtendedStore = {
-  ...storeConfig,
-  mutations: {
-    ...storeConfig.mutations,
-    updateMermaidCode(state: any, payload: any) {
-      state.mermaidCode = payload
-    },
-    updateMermaidDiagram(state: any, payload: any) {
-      state.mermaidSvg = payload
-    },
-    updateDiagramType(state: any, payload: any) {
-      state.diagramType = payload
-    }
-  },
-  actions: {
-    ...storeConfig.actions,
-    updateMermaidCode({commit}: any, payload: any) {
-      commit('updateMermaidCode', payload)
-      try {
-        mermaid.parse(payload);
-        mermaid.mermaidAPI.render('any-id',
-          payload,
-          (svg) => {
-            commit('updateMermaidDiagram', svg);
-          }
-        );
-      } catch (e) {
-        return false;
-      }
-    },
-    updateDiagramType({commit}: any, payload: any) {
-      commit('updateDiagramType', payload)
-    },
-    reloadZenUML({commit, state}: any) {
-      const code = state.code
-      commit('code', '')
-      commit('code', code)
-    }
-  },
-  getters: {
-    ...storeConfig.getters,
-    svg: (state: any) => {
-      return state.mermaidSvg
-    },
-    diagramType: (state: any) => {
-      return state.diagramType?.toLowerCase() || 'zenuml'
-    }
-  },
-  state: {
-    ...storeConfig.state,
-    mermaidCode: 'graph TD; A-->B;',
-    mermaidSvg: '',
-    diagramType: 'zenuml',
-    styles: {}
-  }
-}
 
 const store = new Vuex.Store(ExtendedStore);
 
