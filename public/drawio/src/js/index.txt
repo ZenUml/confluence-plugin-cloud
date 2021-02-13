@@ -205,7 +205,7 @@ Subclassing:
   the superclass by assigning the prototype to an instance of the superclass,
   eg. mxEditor.prototype = new mxEventSource() and redefining the constructor
   field using mxEditor.prototype.constructor = mxEditor. The latter rule is
-  applied so that the type of an object can be retrieved via the name of it’s
+  applied so that the type of an object can be retrieved via the name of itï¿½s
   constructor using mxUtils.getFunctionName(obj.constructor).
 
 Constructor:
@@ -260,7 +260,7 @@ Functions:
   function on the isSelectable function object of the mxGraph prototype, using
   the special this and arguments variables as parameters. Calls to the
   superclass function are only possible if the function is not replaced in the
-  superclass as follows, which is another way of “subclassing” in JavaScript.
+  superclass as follows, which is another way of ï¿½subclassingï¿½ in JavaScript.
 
   (code)
   mxGraph.prototype.isCellSelectable = function(cell)

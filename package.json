@@ -3,19 +3,19 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "start": "VERSION=latest PRODUCT_TYPE=lite vue-cli-service serve --open",
-    "start:full": "VERSION=latest PRODUCT_TYPE=full vue-cli-service serve --open",
     "test:unit": "vue-cli-service test:unit",
     "lint": "vue-cli-service lint",
     "build:full": "PRODUCT_TYPE=full vue-cli-service build",
-    "firebase:serve": "firebase serve --only functions,hosting",
-    "deploy:full:stage": "yarn build:full && firebase deploy --project full:stage",
-    "deploy:full:prod": "yarn build:full && firebase deploy --project full:prod",
     "build:full-win": "set VERSION=v1.3.1&&set PRODUCT_TYPE=full&&vue-cli-service build --no-clean",
     "build:lite": "PRODUCT_TYPE=lite vue-cli-service build",
-    "deploy:lite:stage": "yarn build:lite && firebase deploy --project lite:stage",
+    "build:lite-win": "set VERSION=v1.3.0&&set PRODUCT_TYPE=lite&&vue-cli-service build --no-clean",
+    "deploy:full:prod": "yarn build:full && firebase deploy --project full:prod",
+    "deploy:full:stage": "yarn build:full && firebase deploy --project full:stage",
     "deploy:lite:prod": "yarn build:lite && firebase deploy --project lite:prod",
-    "build:lite-win": "set VERSION=v1.3.0&&set PRODUCT_TYPE=lite&&vue-cli-service build --no-clean"
+    "deploy:lite:stage": "yarn build:lite && firebase deploy --project lite:stage",
+    "firebase:serve": "firebase serve --only functions,hosting",
+    "start": "VERSION=latest PRODUCT_TYPE=lite vue-cli-service serve --open",
+    "start:full": "VERSION=latest PRODUCT_TYPE=full vue-cli-service serve --open"
   },
   "dependencies": {
     "firebase-functions": "^3.7.0",
@@ -33,10 +33,14 @@
   "devDependencies": {
     "@babel/core": "^7.10.3",
     "@babel/preset-env": "^7.10.3",
+    "@types/jest": "^24.0.19",
+    "@types/mermaid": "^8.2.1",
     "@vue/cli-plugin-babel": "^4.4.4",
     "@vue/cli-plugin-eslint": "^3.12.1",
+    "@vue/cli-plugin-typescript": "~4.5.0",
     "@vue/cli-plugin-unit-jest": "~4.4.4",
     "@vue/cli-service": "^4.5.4",
+    "@vue/eslint-config-typescript": "^4.0.0",
     "@vue/test-utils": "1.0.3",
     "babel-cli": "^6.26.0",
     "babel-core": "^7.0.0-bridge.0",
@@ -46,6 +50,7 @@
     "firebase-functions": "^3.3.0",
     "firebase-tools": "^8.0.3",
     "test-lib": "^2.1.2",
+    "typescript": "~3.9.3",
     "vue-jest": "^3.0.5",
     "vue-svg-loader": "^0.16.0",
     "vue-template-compiler": "^2.6.12"
@@ -57,11 +62,12 @@
     },
     "extends": [
       "plugin:vue/essential",
-      "eslint:recommended"
+      "eslint:recommended",
+      "@vue/typescript"
     ],
     "rules": {},
     "parserOptions": {
-      "parser": "babel-eslint"
+      "parser": "@typescript-eslint/parser"
     },
     "overrides": [
       {

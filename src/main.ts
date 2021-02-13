@@ -1,7 +1,9 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
+// @ts-ignore
 import VueCodeMirror from 'vue-codemirror'
 
+// @ts-ignore
 import { Version, SeqDiagram, Store } from 'vue-sequence'
 import 'vue-sequence/dist/vue-sequence.css'
 // eslint-disable-next-line
@@ -9,10 +11,13 @@ console.log(Version)
 
 import MockApConfluence from './utils/MockApConfluence'
 import Macro from './utils/Macro'
+// @ts-ignore
 import Editor from './components/Editor'
+// @ts-ignore
 import Workspace from './components/Workspace'
 import mermaid from 'mermaid'
 
+// @ts-ignore
 import Va from 'vue-atlas'
 import 'vue-atlas/dist/vue-atlas.css'
 
@@ -24,6 +29,7 @@ import 'codemirror/theme/base16-dark.css'
 Vue.use(Va, 'en')
 
 // eslint-disable-next-line
+// @ts-ignore
 window.mermaid = mermaid
 
 mermaid.mermaidAPI.initialize({
@@ -43,19 +49,19 @@ const ExtendedStore = {
   ...storeConfig,
   mutations: {
     ...storeConfig.mutations,
-    updateMermaidCode(state, payload) {
+    updateMermaidCode(state: any, payload: any) {
       state.mermaidCode = payload
     },
-    updateMermaidDiagram(state, payload) {
+    updateMermaidDiagram(state: any, payload: any) {
       state.mermaidSvg = payload
     },
-    updateDiagramType(state, payload) {
+    updateDiagramType(state: any, payload: any) {
       state.diagramType = payload
     }
   },
   actions: {
     ...storeConfig.actions,
-    updateMermaidCode({commit}, payload) {
+    updateMermaidCode({commit}: any, payload: any) {
       commit('updateMermaidCode', payload)
       try {
         mermaid.parse(payload);
@@ -69,10 +75,10 @@ const ExtendedStore = {
         return false;
       }
     },
-    updateDiagramType({commit}, payload) {
+    updateDiagramType({commit}: any, payload: any) {
       commit('updateDiagramType', payload)
     },
-    reloadZenUML({commit, state}) {
+    reloadZenUML({commit, state}: any) {
       const code = state.code
       commit('code', '')
       commit('code', code)
@@ -80,10 +86,10 @@ const ExtendedStore = {
   },
   getters: {
     ...storeConfig.getters,
-    svg: (state) => {
+    svg: (state: any) => {
       return state.mermaidSvg
     },
-    diagramType: (state) => {
+    diagramType: (state: any) => {
       return state.diagramType?.toLowerCase() || 'zenuml'
     }
   },
@@ -102,17 +108,22 @@ new Vue({
   store,
   render: h => h(Workspace) // with this method, we don't need to use full version of vew
 }).$mount('#app')
+// @ts-ignore
 window.store = store
 
 if (window.location.href.includes('localhost')) {
   // eslint-disable-next-line
   console.log('You are using a mocked AP.confluence')
-  window.AP = {
+  // @ts-ignore
+    window.AP = {
     confluence: new MockApConfluence()
   }
 }
 
+// @ts-ignore
 window.Macro = Macro
+// @ts-ignore
 if(window.onAppLoaded) {
-  window.onAppLoaded();
+  // @ts-ignore
+    window.onAppLoaded();
 }
