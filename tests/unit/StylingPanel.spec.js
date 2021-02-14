@@ -5,26 +5,12 @@ import Workspace from "../../src/components/Workspace"
 import StylingPanel from '../../src/components/StylingPanel'
 const localVue = createLocalVue()
 localVue.use(Vuex)
-Store.state.styles = {}
-function cloneDeep (obj) {
-  if (obj == null || typeof (obj) !== 'object') {
-    return obj
-  }
-
-  var temp = new obj.constructor()
-
-  for (var key in obj) {
-    if (obj.hasOwnProperty(key)) {
-      temp[key] = cloneDeep(obj[key])
-    }
-  }
-
-  return temp
-}
 
 describe('StylingPanel', () => {
   it('Should set styles for single Participant', async () => {
-    const store = new Vuex.Store(cloneDeep(Store))
+    const storeConfig = Store()
+    storeConfig.state.styles = {}
+    const store = new Vuex.Store(storeConfig)
     const stylingPanelWrapper = mount(StylingPanel, {store, localVue})
     store.commit('onSelect', 'A')
     // expect(stylingPanelWrapper.html()).toBe('')
@@ -41,7 +27,9 @@ describe('StylingPanel', () => {
   })
 
   it('Should set styles for multiple Participants', async () => {
-    const store = new Vuex.Store(cloneDeep(Store))
+    const storeConfig = Store()
+    storeConfig.state.styles = {}
+    const store = new Vuex.Store(storeConfig)
     const stylingPanelWrapper = mount(StylingPanel, {store, localVue})
     store.commit('onSelect', 'A')
     store.commit('onSelect', 'B')
