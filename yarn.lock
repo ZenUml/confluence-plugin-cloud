@@ -17440,10 +17440,10 @@ vue-loader@^15.9.2:
     vue-hot-reload-api "^2.3.0"
     vue-style-loader "^4.1.0"
 
-vue-sequence@^1.0.117:
-  version "1.0.117"
-  resolved "https://registry.yarnpkg.com/vue-sequence/-/vue-sequence-1.0.117.tgz#79fcf2dd440559c343e09e6aa02b94a1efa2a877"
-  integrity sha512-4grvQW+nPvDXJiX5hee8yEsu0rOsdOuQdBLdrloPUjTApzcElvhnG4rhtpiYPo7mTYWwStBjZwCAZEmgvoFcXg==
+vue-sequence@^1.0.123:
+  version "1.0.123"
+  resolved "https://registry.yarnpkg.com/vue-sequence/-/vue-sequence-1.0.123.tgz#b4e53f685cdb80dd5f6cb189b48fd31642c717d4"
+  integrity sha512-EiJjddLbht1hemRE23QDXA8b3bRC1qav4vW9vxyUeBMP2jL3z7Gnwsx2niOFJk5/hGu99nfp6jqv5dPu/Qw25Q==
   dependencies:
     "@types/assert" "^1.5.4"
     antlr4 "~4.8.0"
