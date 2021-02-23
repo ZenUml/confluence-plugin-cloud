@@ -4,7 +4,7 @@ import LZUTF8 from 'lzutf8';
 const COMPRESS_ENCODING = 'Base64';
 
 class Macro {
-  EXAMPLE = `<<Controller>> OrderController
+  EXAMPLE = `@Lambda OrderController
 <<BFF>> OrderService
 group BusinessService {
   PurchaseService
