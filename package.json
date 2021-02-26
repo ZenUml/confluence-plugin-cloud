@@ -18,7 +18,7 @@
     "start:full": "VERSION=latest PRODUCT_TYPE=full vue-cli-service serve --open"
   },
   "dependencies": {
-    "firebase-functions": "^3.7.0",
+    "firebase-functions": "^3.13.2",
     "lodash": "^4.17.20",
     "lzutf8": "^0.5.6",
     "mermaid": "^8.5.2",
@@ -52,7 +52,7 @@
     "eslint-plugin-vue": "^7.5.0",
     "firebase": "^7.15.3",
     "firebase-admin": "^8.12.1",
-    "firebase-functions": "^3.3.0",
+    "firebase-functions": "^3.13.2",
     "firebase-tools": "^8.0.3",
     "test-lib": "^2.1.2",
     "typescript": "~3.9.3",
