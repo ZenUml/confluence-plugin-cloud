@@ -37,12 +37,12 @@ OrderController.create(payload) {
     return `${macroKey}-${uuid}-body`;
   }
 
-  getMacroBody = () => {
+  getMacroBody() {
     return new Promise((resolve) => {
       try {
-      this._confluence.getMacroBody((body) => {
-        resolve(body)
-      })
+        this._confluence.getMacroBody((body) => {
+          resolve(body)
+        })
       } catch (e) {
         // eslint-disable-next-line
         console.error('Failed to retrieve macro body.', e)
@@ -51,7 +51,7 @@ OrderController.create(payload) {
     })
   }
 
-  getMacroData = () => {
+  getMacroData() {
     return new Promise(((resolve) => {
       try {
         this._confluence.getMacroData((data) => {
@@ -70,11 +70,12 @@ OrderController.create(payload) {
     return matches && matches[1] && decodeURIComponent(matches[1]);
   }
 
-  getContentProperty = async () => {
+  async getContentProperty() {
     const macroData = await this.getMacroData();
 
     // When the macro is edited for the first time, macro data is not available in the preview mode
-    // Fall back to the uuid parameter in the URL. This is defined in the descriptor and is only available for view.html.
+    // Fall back to the uuid parameter in the URL.
+    // This is defined in the descriptor and is only available for view.html.
     const key = macroData?.uuid || this.getUrlParam('uuid')
     return new Promise(resolve => {
       if (!key) {
@@ -95,7 +96,7 @@ OrderController.create(payload) {
     })
   }
 
-  setContentProperty = async (content) => {
+  async setContentProperty(content) {
     return new Promise((resolve, reject) => {
       this._confluence.setContentProperty(content, (result) => {
         if(result.error) {
