@@ -1,6 +1,6 @@
 import uuidv4 from './uuid';
 import LZUTF8 from 'lzutf8';
-import ConfluenceWrapper, { getMacroData } from "@/utils/ConfluenceWrapper";
+import ConfluenceWrapper from "@/utils/ConfluenceWrapper";
 
 const COMPRESS_ENCODING = 'Base64';
 
@@ -21,7 +21,6 @@ OrderController.create(payload) {
     }
   }
 }`
-  _confluence;
   _key;
   _versionNumber;
   _loaded = false;
@@ -29,7 +28,6 @@ OrderController.create(payload) {
 
   // eslint-disable-next-line
   constructor(confluence = AP.confluence, macroIdentifier = 'sequence') {
-    this._confluence = confluence;
     this._confluenceWrapper = new ConfluenceWrapper(confluence);
     this._macroIdentifier = macroIdentifier;
   }
@@ -96,7 +94,7 @@ OrderController.create(payload) {
       throw new Error('You have to call load before calling save()')
     }
     const key = this._key || uuidv4()
-    this._confluence.saveMacro({uuid: key, updatedAt: new Date()}, code);
+    this._confluenceWrapper.saveMacro({uuid: key, updatedAt: new Date()}, code);
     const versionNumber = this._versionNumber;
 
     const compressedCode = LZUTF8.compress(code, {outputEncoding: COMPRESS_ENCODING});
