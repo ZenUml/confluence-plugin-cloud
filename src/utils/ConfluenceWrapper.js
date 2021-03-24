@@ -61,4 +61,7 @@ export default class ConfluenceWrapper {
     })
   }
 
+  saveMacro(params, body) {
+    this._confluence.saveMacro(params, body)
+  }
 }
