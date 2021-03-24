@@ -19,7 +19,10 @@ module.exports = {
       app.get(/uninstalled/, function (req, res) {
         res.status(200).send(`OK`);
       })
-    }
+    },
+    allowedHosts: [
+      '.zenuml.com'
+    ]
   },
   chainWebpack: config => {
     config
