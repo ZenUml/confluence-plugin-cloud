@@ -115,7 +115,7 @@ describe('Macro', () => {
         const contentProperty = await macro.getContentProperty();
         expect(contentProperty.value.code).toBe(code)
         expect(contentProperty.version.number).toBe(1)
-        const data = await macro.getMacroData()
+        const data = await macro._confluenceWrapper.getMacroData()
         expect(data.uuid).toBe('random_uuid')
         expect(data.updatedAt).toBeDefined()
       })
@@ -134,10 +134,10 @@ describe('Macro', () => {
         expect((await macro.load()).code).toBe(newCode)
         const contentProperty = await macro.getContentProperty();
         expect(contentProperty.version.number).toBe(2)
-        const data = await macro.getMacroData()
+        const data = await macro._confluenceWrapper.getMacroData()
         expect(data.uuid).toBe('random_uuid')
         expect(data.updatedAt).toBeDefined()
-        const body = await macro.getMacroBody()
+        const body = await macro._confluenceWrapper.getMacroBody()
         expect(body).toBe('B.method')
       })
     })
