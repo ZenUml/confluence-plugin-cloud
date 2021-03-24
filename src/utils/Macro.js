@@ -51,6 +51,8 @@ OrderController.create(payload) {
     })
   }
 
+  // Each iFrame provides context for only one macro.
+  // getMacroData returns the macro data for the CURRENT macro.
   getMacroData() {
     return new Promise(((resolve) => {
       try {
