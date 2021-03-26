@@ -42,7 +42,7 @@
         "outputType": "block",
         "bodyType": "plain-text",
         "editor": {
-          "url": "/edit.html?update=20200602",
+          "url": "/sequence-launch-full-screen-editor.html?update=20210326",
           "editTitle": {
             "value": "Edit Sequence Diagram"
           },
@@ -106,14 +106,20 @@
         "featured": true
       }
     ],
-    "dialogs": [
+    "generalPages": [
       {
         "url": "/drawio/editor.html",
-        "options": {
-          "size": "fullscreen",
-          "chrome": false
+        "name": {
+          "value": "drawio page"
         },
         "key": "editor-dialog-module-key"
+      },
+      {
+        "url": "/sequence-editor.html?update=03260932",
+        "name": {
+          "value": "sequence page"
+        },
+        "key": "sequence-editor-dialog-module-key"
       }
     ]
   },
