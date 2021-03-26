@@ -1,11 +1,48 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Title</title>
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-114996686-1"></script>
+  <script type="text/javascript" src="js/google-analytics.js"></script>
+  <meta charset="utf-8">
+  <script type="text/javascript" src="js/util.js"></script>
+  <script id="connect-loader">
+
+    async function initializeMacro() {
+      const macro = new Macro(AP.confluence);
+      const {code, styles, mermaidCode, diagramType} = await macro.load();
+      store.commit('code', code);
+      store.state.styles = styles;
+
+      store.dispatch('updateMermaidCode', mermaidCode || store.state.mermaidCode)
+      store.dispatch('updateDiagramType', diagramType)
+
+      AP.require(["confluence", "dialog"], function (confluence, dialog) {
+        async function onSubmit() {
+          await macro.save(store.state.code, store.state.styles, store.state.mermaidCode, store.state.diagramType);
+          confluence.closeMacroEditor();
+          return true;
+        }
+        dialog.getButton("submit").bind(onSubmit);
+      });
+    }
+
+    function loadConnect() {
+      JavaScript.load(getConnectUrl(), initializeMacro);
+    }
+
+    window.onAppLoaded = loadConnect;
+    window.split = true;
+
+  </script>
+  <style>
+    body.root {
+      margin: 0 !important;
+    }
+  </style>
 </head>
-<body>
-Dialog 1
-Sequence Editor
+<body style="height: 100vh;" class="root">
+<div id="app" class="container"></div>
+<!-- built files will be auto injected -->
 </body>
 </html>

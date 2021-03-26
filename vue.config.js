@@ -34,10 +34,10 @@ module.exports = {
         product_type: productType
       }])
     config
-      .plugin('editor-html')
+      .plugin('sequence-editor-html')
       .use(HtmlWebpackPlugin, [{
-        filename: `./edit.html`,
-        template: './public/edit.html',
+        filename: `./sequence-editor.html`,
+        template: './public/sequence-editor.html',
         inject: true,
         product_type: productType
       }])    
@@ -57,16 +57,5 @@ module.exports = {
         inject: true,
         product_type: productType
       }])
-
-    config
-      .plugin('copy')
-      .tap(args => {
-        // constructor parameter for 'CopyWebpackPlugin'
-        args[0][0].ignore.push('view.html');
-        args[0][0].ignore.push('edit.html');
-        args[0][0].ignore.push('viewer.html');
-        args[0][0].ignore.push('editor.html');
-        return args;
-      })
   }
 };

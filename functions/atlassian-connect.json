@@ -42,7 +42,7 @@
         "outputType": "block",
         "bodyType": "plain-text",
         "editor": {
-          "url": "/sequence-launch-full-screen-editor.html?update=20210326",
+          "url": "/sequence-editor-launcher.html?update=20210327",
           "editTitle": {
             "value": "Edit Sequence Diagram"
           },
