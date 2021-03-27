@@ -32,15 +32,27 @@
         },
         "renderModes": {
           "default": {
-            "url": "/attachment?pageId={page.id}&pageVersion={page.version}&macroId={macro.id}&uuid={uuid}"
+            "url": "/attachment?pageId={page.id}&pageVersion={page.version}&macroId={macro.id}&uuid={uuid}&outputType={output.type}"
           }
         },
-        "url": "/view.html?pageId={page.id}&pageVersion={page.version}&macroId={macro.id}&uuid={uuid}",
+        "url": "/view.html?pageId={page.id}&pageVersion={page.version}&macroId={macro.id}&uuid={uuid}&outputType={output.type}",
         "description": {
           "value": "Create a ZenUML Sequence Diagram"
         },
         "outputType": "block",
         "bodyType": "plain-text",
+        "parameters": [
+          {
+          "identifier": "diagramName",
+          "name": {
+            "value": "Diagram name"
+          },
+          "type": "string",
+          "required": true,
+          "multiple": false,
+          "defaultValue": "None"
+          }
+        ],
         "editor": {
           "url": "/edit.html?update=20200602",
           "editTitle": {
@@ -72,10 +84,10 @@
         },
         "renderModes": {
           "default": {
-            "url": "/attachment?pageId={page.id}&pageVersion={page.version}&macroId={macro.id}&uuid={uuid}"
+            "url": "/attachment?pageId={page.id}&pageVersion={page.version}&macroId={macro.id}&uuid={uuid}&outputType={output.type}"
           }
         },
-        "url": "/drawio/viewer.html?pageId={page.id}&pageVersion={page.version}&macroId={macro.id}&uuid={uuid}",
+        "url": "/drawio/viewer.html?pageId={page.id}&pageVersion={page.version}&macroId={macro.id}&uuid={uuid}&outputType={output.type}",
         "description": {
           "value": "Create a ZenUML Graph"
         },
@@ -92,6 +104,18 @@
           "width": "100%",
           "height": "100%"
         },
+        "parameters": [
+          {
+          "identifier": "diagramName",
+          "name": {
+          "value": "Diagram name"
+          },
+          "type": "string",
+          "required": true,
+          "multiple": false,
+          "defaultValue": "None"
+          }
+        ],
         "icon": {
           "width": 16,
           "height": 16,
