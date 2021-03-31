@@ -8,11 +8,11 @@ import {mapState} from "vuex";
 export default {
   name: "SaveAndGoBackButton",
   computed: {
-    ...mapState(['macro', 'code', 'style', 'mermaidCode', 'diagramType']),
+    ...mapState(['macro', 'code', 'styles', 'mermaidCode', 'diagramType']),
   },
   methods: {
     saveAndExit: async function () {
-      await this.macro.save(this.code, this.style, this.mermaidCode, this.diagramType);
+      await this.macro.save(this.code, this.styles, this.mermaidCode, this.diagramType);
       /* eslint-disable no-undef */
       AP.dialog.close();
     }

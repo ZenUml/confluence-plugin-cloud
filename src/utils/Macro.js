@@ -85,12 +85,14 @@ OrderController.create(payload) {
     if(compressed) {
       graphXml = LZUTF8.decompress(graphXml, {inputEncoding: COMPRESS_ENCODING});
     }
+    console.debug('Loaded macro', code, styles, mermaidCode, diagramType);
     return {code, styles, mermaidCode, diagramType, graphXml};
   }
 
   // Warning! Do not call getXXX in save. Do retest if you want to call getXXX.
   // It does not work as of 17th May 2020. That is why we have stored key and version
   async save(code, styles, mermaidCode, diagramType) {
+    console.debug('Saving macro', code, styles, mermaidCode, diagramType);
     if (!this._loaded) {
       throw new Error('You have to call load before calling save()')
     }
