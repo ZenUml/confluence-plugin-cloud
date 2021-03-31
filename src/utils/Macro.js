@@ -47,8 +47,9 @@ OrderController.create(payload) {
 
     // When the macro is edited for the first time, macro data is not available in the preview mode
     // Fall back to the uuid parameter in the URL.
-    // This is defined in the descriptor and is only available for view.html.
+    // This is defined in the descriptor and is only available for sequence-viewer.html.
     const key = macroData?.uuid || this.getUrlParam('uuid');
+    this._key = key;
     return key ? await this._confluenceWrapper.getContentProperty(this.propertyKey(key)) : null;
   }
 

@@ -11,10 +11,8 @@ console.log(Version)
 
 import MockApConfluence from './utils/MockApConfluence'
 import Macro from './utils/Macro'
-// @ts-ignore
-import Editor from './components/Editor'
-// @ts-ignore
-import Workspace from './components/Workspace'
+import Editor from './components/Editor.vue'
+import Workspace from './components/Workspace.vue'
 import mermaid from 'mermaid'
 
 // @ts-ignore
@@ -47,11 +45,12 @@ Vue.use(VueCodeMirror)
 Vue.use(Vuex)
 
 const store = new Vuex.Store(ExtendedStore);
-
-new Vue({
-  store,
-  render: h => h(Workspace) // with this method, we don't need to use full version of vew
-}).$mount('#app')
+if(document.getElementById('app')) {
+    new Vue({
+      store,
+      render: h => h(Workspace) // with this method, we don't need to use full version of vew
+    }).$mount('#app')
+}
 // @ts-ignore
 window.store = store
 
@@ -63,11 +62,21 @@ if (window.location.href.includes('localhost')) {
     confluence: new MockApConfluence()
   }
 }
-
+async function initializeMacro() {
 // @ts-ignore
-window.Macro = Macro
-// @ts-ignore
-if(window.onAppLoaded) {
+  const macro = store.state.macro || new Macro(AP.confluence);
   // @ts-ignore
-    window.onAppLoaded();
+  window.macro = macro;
+  const {code, styles, mermaidCode, diagramType} = await macro.load();
+
+  store.commit('code', code);
+  // @ts-ignore
+  store.state.styles = styles;
+  // @ts-ignore
+  store.dispatch('updateMermaidCode', mermaidCode || store.state.mermaidCode)
+  store.dispatch('updateDiagramType', diagramType)
+  let timing = window.performance.timing;
+  console.debug('ZenUML diagram loading time:%s(ms)', timing.domContentLoadedEventEnd- timing.navigationStart)
 }
+
+initializeMacro();

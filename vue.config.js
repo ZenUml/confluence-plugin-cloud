@@ -1,7 +1,65 @@
-var HtmlWebpackPlugin = require('html-webpack-plugin')
-var productType = process.env.PRODUCT_TYPE
-
 module.exports = {
+  pages: {
+    "sequence-editor": {
+      entry: 'src/sequence-editor.ts',
+      template: 'public/sequence-editor.html',
+      chunks: ['chunk-common', 'chunk-sequence-editor-vendors', 'sequence-editor']
+    },
+    "sequence-viewer": {
+      entry: 'src/sequence-viewer.ts',
+      template: 'public/sequence-viewer.html',
+      chunks: ['chunk-common', 'chunk-sequence-viewer-vendors', 'sequence-viewer']
+    },
+    "graph-editor": {
+      entry: 'src/graph-main-editor.ts',
+      template: 'public/drawio/editor.html',
+      filename: 'drawio/editor.html',
+      chunks: ['chunk-common', 'chunk-graph-editor-vendors', 'graph-editor']
+    },
+    "graph-viewer": {
+      entry: 'src/graph-main-viewer.ts',
+      template: 'public/drawio/viewer.html',
+      filename: 'drawio/viewer.html',
+      chunks: ['chunk-common', 'chunk-graph-viewer-vendors', 'graph-viewer']
+    }
+  },
+  chainWebpack: config => {
+    const options = module.exports
+    const pages = options.pages
+    const pageKeys = Object.keys(pages)
+    const IS_VENDOR = /[\\/]node_modules[\\/]/
+    config.optimization
+      .splitChunks({
+        cacheGroups: {
+          vendors: {
+            name: 'chunk-vendors',
+            priority: -10,
+            chunks: 'initial',
+            minChunks: 1,
+            test: IS_VENDOR,
+            reuseExistingChunk: false, //        <<< THIS
+            enforce: true,
+          },
+          ...pageKeys.map((key) => ({
+            name: `chunk-${key}-vendors`,
+            priority: -1, //                     <<< THIS
+            chunks: (chunk) => chunk.name === key,
+            minChunks: 1,
+            test: IS_VENDOR,
+            reuseExistingChunk: false, //        <<< THIS
+            enforce: true,
+          })),
+          common: {
+            name: 'chunk-common',
+            priority: -20,
+            chunks: 'initial',
+            minChunks: 2,
+            reuseExistingChunk: true,
+            enforce: true,
+          },
+        },
+      });
+  },
   productionSourceMap: false,
   configureWebpack: {
     resolve: {
@@ -23,39 +81,5 @@ module.exports = {
     allowedHosts: [
       '.zenuml.com'
     ]
-  },
-  chainWebpack: config => {
-    config
-      .plugin('viewer-html')
-      .use(HtmlWebpackPlugin, [{
-        filename: `./view.html`,
-        template: './public/view.html',
-        inject: true,
-        product_type: productType
-      }])
-    config
-      .plugin('sequence-editor-html')
-      .use(HtmlWebpackPlugin, [{
-        filename: `./sequence-editor.html`,
-        template: './public/sequence-editor.html',
-        inject: true,
-        product_type: productType
-      }])    
-    config
-      .plugin('drawio-viewer-html')
-      .use(HtmlWebpackPlugin, [{
-        filename: `./drawio/viewer.html`,
-        template: './public/drawio/viewer.html',
-        inject: true,
-        product_type: productType
-      }])
-    config
-      .plugin('drawio-editor-html')
-      .use(HtmlWebpackPlugin, [{
-        filename: `./drawio/editor.html`,
-        template: './public/drawio/editor.html',
-        inject: true,
-        product_type: productType
-      }])
   }
 };

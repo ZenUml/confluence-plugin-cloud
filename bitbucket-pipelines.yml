@@ -1,0 +1,7 @@
+image: node:8
+
+pipelines:
+  default:
+  - step:
+      script:
+      - curl -sSL https://download.sourceclear.com/ci.sh | sh

@@ -1,15 +1,5 @@
 <template>
   <div class="editor">
-    <div class="toolbox">
-      <va-radio-group :vertical="false" v-model="diagramType">
-        <va-radio-btn label="zenuml">ZenUML</va-radio-btn>
-        <va-radio-btn label="mermaid">Mermaid (Beta)</va-radio-btn>
-      </va-radio-group>
-
-      <a class="help" target="_blank" :href="helpUrl">
-        <va-button round type="default"><va-icon type="question-circle" /></va-button>
-      </a>
-    </div>
     <div class="body">
       <codemirror class="dsl-editor"
         ref="myCm"
@@ -37,7 +27,6 @@
     name: 'editor',
     data() {
       return {
-        helpUrl: 'https://zenuml.atlassian.net/wiki/spaces/Doc/overview',
         cmOptions: {
           tabSize: 4,
           mode: 'text/javascript',
@@ -60,11 +49,11 @@
         const isMermaid = this.$store.getters.diagramType === 'mermaid';
 
         if (isMermaid) {
-          this.$store.dispatch('updateMermaidCode', newCode)
+          this.$store.dispatch('updateMermaidCode', newCode);
         } else {
           this.$store.dispatch('updateCode', {code: newCode});
         }
-      }
+      },
     },
     computed: {
       editor() {
@@ -75,17 +64,6 @@
       },
       codemirror() {
         return this.$refs.myCm.codemirror
-      },
-      diagramType: {
-        set(type) {
-          this.$store.dispatch('updateDiagramType', type)
-          if (type === 'zenuml') {
-            this.$store.dispatch('reloadZenUML')
-          }
-        },
-        get() {
-          return this.$store.state.diagramType || 'zenuml'
-        }
       },
     },
     mounted() {
@@ -135,23 +113,6 @@
 
 
 <style scoped>
-  .toolbox {
-    display: flex;
-    padding: 5px;
-    margin: 2px 2px;
-    background: #FFF;
-    box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14), 0 3px 1px -2px rgba(0,0,0,0.12), 0 1px 5px 0 rgba(0,0,0,0.2);
-  }
-
-  .toolbox svg {
-    margin-right: 8px;
-    cursor: pointer;
-  }
-
-  .toolbox .help {
-    margin-left: auto;
-    text-decoration: none;
-  }
 
   .editor {
     display: flex;
