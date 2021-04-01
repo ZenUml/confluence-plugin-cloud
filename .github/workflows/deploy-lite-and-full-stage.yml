@@ -29,4 +29,5 @@ jobs:
       - run: sudo apt-get -y install libkrb5-dev
       - run: npm install
       - run: npm run test:unit
-      - run: yarn deploy:lite:stage --token ${{ secrets.FIREBASE_TOKEN }}
+      - run: npm run deploy:lite:stage --token ${{ secrets.FIREBASE_TOKEN }}
+      - run: npm run deploy:full:stage --token ${{ secrets.FIREBASE_TOKEN }}
