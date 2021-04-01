@@ -2,8 +2,12 @@
 import {Store} from 'vue-sequence'
 import mermaid from "mermaid";
 import EventBus from './EventBus'
+import Macro from "@/utils/Macro";
 
+// @ts-ignore
+const confluence = AP.confluence;
 const storeConfig = Store()
+// @ts-ignore
 export default {
   ...storeConfig,
   mutations: {
@@ -54,6 +58,7 @@ export default {
   },
   state: {
     ...storeConfig.state,
+    macro: new Macro(confluence),
     mermaidCode: 'graph TD; A-->B;',
     mermaidSvg: '',
     diagramType: 'zenuml',

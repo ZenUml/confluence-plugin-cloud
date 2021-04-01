@@ -47,8 +47,9 @@ OrderController.create(payload) {
 
     // When the macro is edited for the first time, macro data is not available in the preview mode
     // Fall back to the uuid parameter in the URL.
-    // This is defined in the descriptor and is only available for view.html.
+    // This is defined in the descriptor and is only available for sequence-viewer.html.
     const key = macroData?.uuid || this.getUrlParam('uuid');
+    this._key = key;
     return key ? await this._confluenceWrapper.getContentProperty(this.propertyKey(key)) : null;
   }
 
@@ -84,12 +85,14 @@ OrderController.create(payload) {
     if(compressed) {
       graphXml = LZUTF8.decompress(graphXml, {inputEncoding: COMPRESS_ENCODING});
     }
+    console.debug('Loaded macro', code, styles, mermaidCode, diagramType);
     return {code, styles, mermaidCode, diagramType, graphXml};
   }
 
   // Warning! Do not call getXXX in save. Do retest if you want to call getXXX.
   // It does not work as of 17th May 2020. That is why we have stored key and version
   async save(code, styles, mermaidCode, diagramType) {
+    console.debug('Saving macro', code, styles, mermaidCode, diagramType);
     if (!this._loaded) {
       throw new Error('You have to call load before calling save()')
     }

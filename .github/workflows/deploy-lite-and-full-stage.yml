@@ -5,7 +5,7 @@ name: Deploy to Stage
 
 on:
   push:
-    branches: [ master ]
+    branches: [ master, test-github-actions-3 ]
   pull_request:
     branches: [ master ]
 
@@ -24,7 +24,11 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node-version }}
-      - run: yarn install
-      - run: yarn test:unit
+      - run: sudo apt-get update
+      - run: sudo apt-get -y install build-essential
+      - run: sudo apt-get -y install libkrb5-dev
+      - run: npm install
+      - run: npm run test:unit
+      # It was failing when we change the following to lines to use npm run
       - run: yarn deploy:lite:stage --token ${{ secrets.FIREBASE_TOKEN }}
       - run: yarn deploy:full:stage --token ${{ secrets.FIREBASE_TOKEN }}
