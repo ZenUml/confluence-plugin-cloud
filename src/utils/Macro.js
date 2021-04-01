@@ -1,5 +1,6 @@
 import uuidv4 from './uuid';
 import LZUTF8 from 'lzutf8';
+import ConfluenceWrapper from "@/utils/ConfluenceWrapper";
 
 const COMPRESS_ENCODING = 'Base64';
 
@@ -20,7 +21,6 @@ OrderController.create(payload) {
     }
   }
 }`
-  _confluence;
   _key;
   _versionNumber;
   _loaded = false;
@@ -28,7 +28,7 @@ OrderController.create(payload) {
 
   // eslint-disable-next-line
   constructor(confluence = AP.confluence, macroIdentifier = 'sequence') {
-    this._confluence = confluence;
+    this._confluenceWrapper = new ConfluenceWrapper(confluence);
     this._macroIdentifier = macroIdentifier;
   }
 
@@ -37,77 +37,21 @@ OrderController.create(payload) {
     return `${macroKey}-${uuid}-body`;
   }
 
-  getMacroBody = () => {
-    return new Promise((resolve) => {
-      try {
-      this._confluence.getMacroBody((body) => {
-        resolve(body)
-      })
-      } catch (e) {
-        // eslint-disable-next-line
-        console.error('Failed to retrieve macro body.', e)
-        resolve(null)
-      }
-    })
-  }
-
-  getMacroData = () => {
-    return new Promise(((resolve) => {
-      try {
-        this._confluence.getMacroData((data) => {
-          resolve(data)
-        })
-      } catch (e) {
-        // eslint-disable-next-line
-        console.error('Failed to retrieve macro data.', e)
-        resolve(null)
-      }
-    }))
-  }
-
   getUrlParam (param) {
     const matches = (new RegExp(param + '=([^&]*)')).exec(window.location.search);
     return matches && matches[1] && decodeURIComponent(matches[1]);
   }
 
-  getContentProperty = async () => {
-    const macroData = await this.getMacroData();
+  async getContentProperty() {
+    const macroData = await this._confluenceWrapper.getMacroData();
 
     // When the macro is edited for the first time, macro data is not available in the preview mode
-    // Fall back to the uuid parameter in the URL. This is defined in the descriptor and is only available for view.html.
-    const key = macroData?.uuid || this.getUrlParam('uuid')
-    return new Promise(resolve => {
-      if (!key) {
-        resolve(null)
-      } else {
-        this._key = key
-        try {
-          this._confluence.getContentProperty(this.propertyKey(key), (cp) => {
-            this._versionNumber = cp?.version?.number
-            resolve(cp)
-          })
-        } catch (e) {
-          // eslint-disable-next-line
-          console.error('Failed to retrieve content property.', e)
-          resolve(null)
-        }
-      }
-    })
+    // Fall back to the uuid parameter in the URL.
+    // This is defined in the descriptor and is only available for view.html.
+    const key = macroData?.uuid || this.getUrlParam('uuid');
+    return key ? await this._confluenceWrapper.getContentProperty(this.propertyKey(key)) : null;
   }
 
-  setContentProperty = async (content) => {
-    return new Promise((resolve, reject) => {
-      this._confluence.setContentProperty(content, (result) => {
-        if(result.error) {
-          // eslint-disable-next-line
-          console.error('Failed to update content property.', result.error)
-          reject(result.error)
-        } else {
-          resolve(true)
-        }
-      })
-    })
-  }
 
   async load() {
     this._loaded = true
@@ -118,6 +62,7 @@ OrderController.create(payload) {
     let diagramType;
     let graphXml;
     let compressed;
+    this._versionNumber = contentProp?.version?.number || 0;
     if(typeof contentProp?.value === 'string') {
       code = contentProp?.value
     } else {
@@ -128,7 +73,7 @@ OrderController.create(payload) {
       graphXml = contentProp?.value?.graphXml
       compressed = contentProp?.value?.compressed
     }
-    code = code || await this.getMacroBody();
+    code = code || await this._confluenceWrapper.getMacroBody();
 
     if(!mermaidCode && !code) {
       code = this.EXAMPLE;
@@ -149,7 +94,7 @@ OrderController.create(payload) {
       throw new Error('You have to call load before calling save()')
     }
     const key = this._key || uuidv4()
-    this._confluence.saveMacro({uuid: key, updatedAt: new Date()}, code);
+    this._confluenceWrapper.saveMacro({uuid: key, updatedAt: new Date()}, code);
     const versionNumber = this._versionNumber;
 
     const compressedCode = LZUTF8.compress(code, {outputEncoding: COMPRESS_ENCODING});
@@ -164,7 +109,7 @@ OrderController.create(payload) {
         number: versionNumber ? versionNumber + 1 : 1
       }
     }
-    await this.setContentProperty(contentProperty)
+    await this._confluenceWrapper.setContentProperty(contentProperty);
   }
 }
 
