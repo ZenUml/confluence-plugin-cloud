@@ -18,7 +18,8 @@
     "deploy:full:prod": "npm run build:full && firebase deploy --project full:prod",
     "deploy:full:stage": "npm run build:full && firebase deploy --project full:stage",
     "deploy:lite:prod": "npm run build:lite && firebase deploy --project lite:prod",
-    "deploy:lite:stage": "npm run build:lite && firebase deploy --project lite:stage",    "watch-server": "nodemon -e js -r esm app.js",
+    "deploy:lite:stage": "npm run build:lite && firebase deploy --project lite:stage",
+    "watch-server": "nodemon -e js -r esm app.js",
     "start": "AC_LOCAL_BASE_URL=https://air.zenuml.com node -r esm app.js",
     "start:vue": "VERSION=latest PRODUCT_TYPE=lite vue-cli-service serve --open",
     "firebase:serve": "firebase serve --only hosting,functions",
@@ -121,7 +122,7 @@
   "postcss": {
     "plugins": {
       "autoprefixer": {}
-  }
+    }
   },
   "browserslist": [
     "> 1%",

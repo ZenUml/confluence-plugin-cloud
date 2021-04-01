@@ -23,7 +23,7 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node-version }}
-      - run: yarn install
-      - run: yarn test:unit
-      - run: yarn deploy:lite:prod --token ${{ secrets.FIREBASE_TOKEN }}
-      - run: yarn deploy:full:prod --token ${{ secrets.FIREBASE_TOKEN }}
+      - run: npm install
+      - run: npm run test:unit
+      - run: npm run deploy:lite:prod --token ${{ secrets.FIREBASE_TOKEN }}
+      - run: npm run deploy:full:prod --token ${{ secrets.FIREBASE_TOKEN }}
