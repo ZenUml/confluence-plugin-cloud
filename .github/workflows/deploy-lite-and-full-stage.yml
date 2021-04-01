@@ -24,6 +24,9 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node-version }}
+      - run: sudo apt-get update
+      - run: sudo apt-get -y install build-essential
+      - run: sudo apt-get -y install libkrb5-dev
       - run: npm install
       - run: npm run test:unit
       #- run: npm run deploy:lite:stage --token ${{ secrets.FIREBASE_TOKEN }}
