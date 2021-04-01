@@ -1,13 +1,12 @@
 # This workflow will do a clean install of node dependencies, build the source code and run tests across different versions of node
 # For more information see: https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
 
-name: Deploy to Stage
+name: Deploy to Prod
 
 on:
   push:
-    branches: [ master, test-github-actions-3 ]
-  pull_request:
-    branches: [ master ]
+    tags:
+      - release-*
 
 jobs:
   build:
@@ -24,11 +23,7 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node-version }}
-      - run: sudo apt-get update
-      - run: sudo apt-get -y install build-essential
-      - run: sudo apt-get -y install libkrb5-dev
-      - run: npm install
-      - run: npm run test:unit
-      # It was failing when we change the following to lines to use npm run
-      - run: yarn deploy:lite:stage --token ${{ secrets.FIREBASE_TOKEN }}
-      - run: yarn deploy:full:stage --token ${{ secrets.FIREBASE_TOKEN }}
+      - run: yarn install
+      - run: yarn test:unit
+      - run: yarn deploy:lite:prod --token ${{ secrets.FIREBASE_TOKEN }}
+      - run: yarn deploy:full:prod --token ${{ secrets.FIREBASE_TOKEN }}
