@@ -8,6 +8,7 @@
   <!-- Global site tag (gtag.js) - Google Analytics -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=UA-114996686-1"></script>
   <script type="text/javascript" src="../js/google-analytics.js"></script>
+  <script type="text/javascript" src="https://connect-cdn.atl-paas.net/all.js"></script>
 
 	<script type="text/javascript" src="../js/util.js"></script>
 
@@ -72,33 +73,21 @@
 			var root = req.getDocumentElement();
 			var dec = new mxCodec(root.ownerDocument);
 			dec.decode(root, graph.stylesheet);
-		};
+		}
 
 		function setGraphXml(data)
 		{
 			var xmlDoc = mxUtils.parseXml(data);
 			var codec = new mxCodec(xmlDoc);
 			codec.decode(xmlDoc.documentElement, graph.getModel());
-		};
-
-		async function initializeMacro() {
-			const macro = new Macro(AP.confluence, 'graph');
-			const {graphXml} = await macro.load();
-
-			if(graphXml) {
-				setGraphStyle('styles/default.xml');
-				setGraphXml(graphXml);
-			}
-
-			setTimeout(function () {
-				let width = document.body.scrollWidth;
-				let height = document.body.scrollHeight;
-				console.log('Resize to ', width, height);
-				AP.resize(width, height);
-			}, 1000);
 		}
 
-		loadConnect(initializeMacro);
-	</script>
+    setTimeout(function () {
+      let width = document.body.scrollWidth;
+      let height = document.body.scrollHeight;
+      console.debug('Resize graph window to ', width, height);
+      AP.resize(width, height);
+    }, 1000);
+  </script>
 </body>
 </html>

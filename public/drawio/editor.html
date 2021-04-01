@@ -11,7 +11,7 @@
     <!-- Global site tag (gtag.js) - Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-114996686-1"></script>
 	<script type="text/javascript" src="../js/google-analytics.js"></script>
-	<script type="text/javascript" src="../js/util.js"></script>
+    <script type="text/javascript" src="https://connect-cdn.atl-paas.net/all.js"></script>
 
 	<script type="text/javascript">
 		mxBasePath = 'src';
@@ -62,8 +62,16 @@
 	<script type="text/javascript" src="js/Menus.js"></script>
 	<script type="text/javascript" src="js/Toolbar.js"></script>
 	<script type="text/javascript" src="js/Dialogs.js"></script>
+  <style>
+    .save-and-exit {
+      position: fixed;
+      z-index: 1000;
+      right: 0;
+    }
+  </style>
 </head>
 <body class="geEditor" style="line-height: unset">
+  <div id="save-and-go-back" style="position: fixed; right: 0">Save and Go back</div>
 	<script type="text/javascript">
 		// Extends EditorUi to update I/O action states based on availability of backend
 		(function()
@@ -89,9 +97,7 @@
 					var doc = mxUtils.parseXml(xml);
 					editor.setGraphXml(doc.documentElement);
 				};
-
-				loadConnect(initializeMacro);
-			};
+      };
 
 			// Adds required resources (disables loading of fallback properties, this can only
 			// be used if we know that all keys are defined in the language specific file)
@@ -118,30 +124,5 @@
 		})();
 	</script>
 
-	<script id="connect-loader" type="text/javascript">
-
-		async function initializeMacro() {
-			const macro = new Macro(AP.confluence, 'graph');
-			const {graphXml} = await macro.load();
-
-			if(graphXml) {
-				setGraphXml(graphXml);
-			}
-
-			AP.require(["confluence", "dialog"], function (confluence, dialog) {
-				async function onSubmit() {
-					const xml = getGraphXml();
-					await macro.save(xml);
-
-					confluence.closeMacroEditor();
-					return true;
-				}
-				dialog.getButton("submit").bind(onSubmit);
-			});
-		}
-
-		// window.onAppLoaded = () => loadConnect(initializeMacro);
-
-	</script>
 </body>
 </html>
