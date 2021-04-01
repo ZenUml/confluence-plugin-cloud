@@ -11,7 +11,7 @@ Open local pages at:
 
 # Release
 The release is done through 
-
+ 
 # Design decisions
 
 1. Both 'view.html' and 'edit.html' will share the same JS file.
