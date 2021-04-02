@@ -10,6 +10,16 @@ module.exports = {
       template: 'public/sequence-viewer.html',
       chunks: ['chunk-common', 'chunk-sequence-viewer-vendors', 'sequence-viewer']
     },
+    "edit": {
+      entry: 'src/sequence-editor.ts',
+      template: 'public/sequence-editor.html',
+      chunks: ['chunk-common', 'chunk-sequence-editor-vendors', 'sequence-editor']
+    },
+    "view": {
+      entry: 'src/sequence-viewer.ts',
+      template: 'public/sequence-viewer.html',
+      chunks: ['chunk-common', 'chunk-sequence-viewer-vendors', 'sequence-viewer']
+    },
     "graph-editor": {
       entry: 'src/graph-main-editor.ts',
       template: 'public/drawio/editor.html',
