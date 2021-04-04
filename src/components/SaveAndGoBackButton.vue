@@ -12,7 +12,8 @@ export default {
   },
   methods: {
     saveAndExit: async function () {
-      await this.macro.save(this.code, this.styles, this.mermaidCode, this.diagramType);
+      const diagram = document.getElementById('workspace-right');
+      await this.macro.save(this.code, this.styles, this.mermaidCode, this.diagramType, diagram && diagram.innerHTML);
       /* eslint-disable no-undef */
       AP.dialog.close();
     }

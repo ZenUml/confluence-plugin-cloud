@@ -57,7 +57,7 @@ OrderController.create(payload) {
   async load() {
     this._loaded = true
     const contentProp = await this.getContentProperty();
-    let code;
+    let code, diagramHtml;
     let styles;
     let mermaidCode;
     let diagramType;
@@ -68,6 +68,7 @@ OrderController.create(payload) {
       code = contentProp?.value
     } else {
       code = contentProp?.value?.code
+      diagramHtml = contentProp?.value?.diagramHtml
       styles = contentProp?.value?.styles
       mermaidCode = contentProp?.value?.mermaidCode
       diagramType = contentProp?.value?.diagramType
@@ -86,12 +87,12 @@ OrderController.create(payload) {
       graphXml = LZUTF8.decompress(graphXml, {inputEncoding: COMPRESS_ENCODING});
     }
     console.debug('Loaded macro', code, styles, mermaidCode, diagramType);
-    return {code, styles, mermaidCode, diagramType, graphXml};
+    return {code, styles, mermaidCode, diagramType, graphXml, diagramHtml};
   }
 
   // Warning! Do not call getXXX in save. Do retest if you want to call getXXX.
   // It does not work as of 17th May 2020. That is why we have stored key and version
-  async save(code, styles, mermaidCode, diagramType) {
+  async save(code, styles, mermaidCode, diagramType, diagramHtml) {
     console.debug('Saving macro', code, styles, mermaidCode, diagramType);
     if (!this._loaded) {
       throw new Error('You have to call load before calling save()')
@@ -103,7 +104,7 @@ OrderController.create(payload) {
     const compressedCode = LZUTF8.compress(code, {outputEncoding: COMPRESS_ENCODING});
 
     const value = this._macroIdentifier === 'graph' ?
-      {graphXml: compressedCode, compressed: true} : {code, styles, mermaidCode, diagramType};
+      {graphXml: compressedCode, compressed: true} : {code, styles, mermaidCode, diagramType, diagramHtml};
 
     const contentProperty = {
       key: this.propertyKey(key),

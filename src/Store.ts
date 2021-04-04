@@ -62,6 +62,7 @@ export default {
     mermaidCode: 'graph TD; A-->B;',
     mermaidSvg: '',
     diagramType: 'zenuml',
+    diagramHtml: '',
     styles: {},
     onElementClick: (codeRange: any) => {
       EventBus.$emit('highlight', codeRange)

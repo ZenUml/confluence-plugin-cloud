@@ -4,7 +4,11 @@
   <mermaid v-show="this.$store.getters.diagramType === 'mermaid'"/>
   <div v-show="this.$store.getters.diagramType === 'zenuml'" @click="deselectAll">
     <styling-panel/>
-    <seq-diagram />
+    
+    <div v-if="this.$store.state.diagramHtml" class="rawDiagram" v-html="this.$store.state.diagramHtml"></div>
+    <div v-else >
+      <seq-diagram />
+    </div>
   </div>
 </div>
 </template>

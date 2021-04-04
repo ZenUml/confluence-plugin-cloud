@@ -41,11 +41,13 @@ async function initializeMacro() {
   const macro = store.state.macro || new Macro(AP.confluence);
   // @ts-ignore
   window.macro = macro;
-  const {code, styles, mermaidCode, diagramType} = await macro.load();
+  const {code, styles, mermaidCode, diagramType, diagramHtml} = await macro.load();
 
   store.commit('code', code);
   // @ts-ignore
   store.state.styles = styles;
+  // @ts-ignore
+  store.state.diagramHtml = diagramHtml;
   // @ts-ignore
   store.dispatch('updateMermaidCode', mermaidCode || store.state.mermaidCode)
   store.dispatch('updateDiagramType', diagramType)
