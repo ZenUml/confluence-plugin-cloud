@@ -1,8 +1,6 @@
 import uuidv4 from './uuid';
-import LZUTF8 from 'lzutf8';
+import {compress, decompress} from './compress';
 import ConfluenceWrapper from "@/utils/ConfluenceWrapper";
-
-const COMPRESS_ENCODING = 'Base64';
 
 class Macro {
   EXAMPLE = `@Lambda OrderController
@@ -68,7 +66,7 @@ OrderController.create(payload) {
       code = contentProp?.value
     } else {
       code = contentProp?.value?.code
-      diagramHtml = contentProp?.value?.diagramHtml
+      diagramHtml = decompress(contentProp?.value?.diagramHtml)
       styles = contentProp?.value?.styles
       mermaidCode = contentProp?.value?.mermaidCode
       diagramType = contentProp?.value?.diagramType
@@ -84,7 +82,7 @@ OrderController.create(payload) {
     styles = styles || {}
 
     if(compressed) {
-      graphXml = LZUTF8.decompress(graphXml, {inputEncoding: COMPRESS_ENCODING});
+      graphXml = decompress(graphXml);
     }
     console.debug('Loaded macro', code, styles, mermaidCode, diagramType);
     return {code, styles, mermaidCode, diagramType, graphXml, diagramHtml};
@@ -92,7 +90,7 @@ OrderController.create(payload) {
 
   // Warning! Do not call getXXX in save. Do retest if you want to call getXXX.
   // It does not work as of 17th May 2020. That is why we have stored key and version
-  async save(code, styles, mermaidCode, diagramType, diagramHtml) {
+  async save(code, styles, mermaidCode, diagramType, rawDiagramHtml) {
     console.debug('Saving macro', code, styles, mermaidCode, diagramType);
     if (!this._loaded) {
       throw new Error('You have to call load before calling save()')
@@ -101,7 +99,8 @@ OrderController.create(payload) {
     this._confluenceWrapper.saveMacro({uuid: key, updatedAt: new Date()}, code);
     const versionNumber = this._versionNumber;
 
-    const compressedCode = LZUTF8.compress(code, {outputEncoding: COMPRESS_ENCODING});
+    const compressedCode = compress(code);
+    const diagramHtml = compress(rawDiagramHtml);
 
     const value = this._macroIdentifier === 'graph' ?
       {graphXml: compressedCode, compressed: true} : {code, styles, mermaidCode, diagramType, diagramHtml};
