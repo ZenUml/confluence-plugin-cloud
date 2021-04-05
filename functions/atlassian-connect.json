@@ -61,7 +61,7 @@
                 }]
             },
             {
-                "key": "zenuml-graph-macro",
+                "key": "zenuml-graph-macro-lite",
                 "name": {
                     "value": "ZenUML Graph"
                 },
@@ -106,6 +106,25 @@
                   "type":"string","required":true,"multiple":false,"defaultValue":"None"
                 }]
             }
+        ],
+        "postInstallPage": 
+        {
+            "key": "postInstall",
+            "url": "/admin.html",
+            "name": {
+                "value": "Admin",
+                "i18n": "admin"
+            }
+        },
+        "adminPages": [
+        {
+            "key": "admin-page",
+            "url": "/admin.html",
+            "name": {
+                "value": "Admin",
+                "i18n": "admin"
+            }
+        }
         ]
     },
     "apiMigrations": {

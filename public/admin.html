@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>Admin</title>
+    <script type="text/javascript" src="https://connect-cdn.atl-paas.net/all.js"></script>
+    <script type="text/javascript">
+      async function doIt() {
+        const data = await AP.request({url: `/rest/api/content`, type: 'GET'});
+        console.log(data);
+      }
+    </script>
+  </head>
+  <body style="height: 100vh;">
+    <script>
+    </script>
+    <h1>Admin</h1>
+    <button onclick="doIt()">Do It!</button>
+  </body>
+</html>
