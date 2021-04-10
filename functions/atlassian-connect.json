@@ -107,8 +107,7 @@
                 }]
             }
         ],
-        "postInstallPage": 
-        {
+        "postInstallPage": {
             "key": "postInstall",
             "url": "/admin.html",
             "name": {
@@ -116,16 +115,25 @@
                 "i18n": "admin"
             }
         },
-        "adminPages": [
-        {
-            "key": "admin-page",
-            "url": "/admin.html",
-            "name": {
-                "value": "Admin",
-                "i18n": "admin"
-            }
-        }
-        ]
+        "adminPages": [ {
+                "key": "admin-page",
+                "url": "/admin.html",
+                "name": {
+                    "value": "Admin",
+                    "i18n": "admin"
+                }
+        } ],
+        "webPanels": [ {
+            "url": "/admin.html?web-panel=atl.footer",
+            "location": "atl.footer",
+            "layout": {
+                "width": "100%",
+                "height": "10px"
+            },
+            "weight": 999,
+            "key": "zenuml-panel-1",
+            "name": { "value": "Web-Panel: atl.footer" }
+        } ]
     },
     "apiMigrations": {
         "gdpr": true
