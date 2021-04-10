@@ -6,10 +6,12 @@
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
     <title>Admin</title>
     <script type="text/javascript" src="https://connect-cdn.atl-paas.net/all.js"></script>
+    <script type="text/javascript" src="./js/util.js"></script>
     <script type="text/javascript">
       async function doIt() {
-        const data = await AP.request({url: `/rest/api/content`, type: 'GET'});
-        console.log(data);
+        const spaceKey = getUrlParam('spaceKey');
+        console.log('all content:', await AP.request({url: `/rest/api/content`, type: 'GET'}));
+        console.log('all space properties:', await AP.request({url: `/rest/api/space/${spaceKey}/property`, type: 'GET'}));
       }
     </script>
   </head>

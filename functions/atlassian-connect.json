@@ -124,7 +124,7 @@
                 }
         } ],
         "webPanels": [ {
-            "url": "/admin.html?web-panel=atl.footer",
+            "url": "/admin.html?web-panel=atl.footer&spaceKey={space.key}",
             "location": "atl.footer",
             "layout": {
                 "width": "100%",
