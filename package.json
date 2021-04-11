@@ -84,7 +84,7 @@
     "longjohn": "^0.2.12",
     "ngrok": "^3.3.0",
     "nodemon": "^2.0.4",
-    "parcel-bundler": "^1.12.4",
+    "parcel-bundler": "^1.12.5",
     "parcel-plugin-externals": "^0.5.1",
     "sqlite3": "^5.0.0",
     "test-lib": "^2.1.2",
