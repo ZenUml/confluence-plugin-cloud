@@ -1,118 +1,134 @@
 {
-    "key": "com.zenuml.confluence-addon",
-    "name": "ZenUML Sequence Diagram",
-    "description": "ZenUML Sequence Diagram add-on",
-    "baseUrl": "{{localBaseUrl}}",
-    "authentication": {
-        "type": "none"
-    },
-    "lifecycle": {
-        "installed": "/installed",
-        "uninstalled": "/uninstalled"
-    },
-    "enableLicensing": true,
-    "links": {
-        "self": "/atlassian-connect.json",
-        "homepage": "https://www.zenuml.com"
-    },
-    "scopes": [
-        "READ",
-        "WRITE"
-    ],
-    "modules": {
-        "dynamicContentMacros": [
-            {
-                "key": "zenuml-sequence-macro",
-                "name": {
-                    "value": "ZenUML Sequence Diagram"
-                },
-                "renderModes": {
-                    "default": {
-                        "url": "/attachment?pageId={page.id}&pageVersion={page.version}&macroId={macro.id}&uuid={uuid}"
-                    }
-                },
-                "url": "/sequence-viewer.html?pageId={page.id}&pageVersion={page.version}&macroId={macro.id}&uuid={uuid}",
-                "description": {
-                    "value": "Create a ZenUML Sequence Diagram"
-                },
-                "outputType": "block",
-                "bodyType": "plain-text",
-                "editor": {
-                    "url": "/sequence-editor.html?update=202103291207",
-                    "width": "100%",
-                    "height": "100%"
-                },
-                "icon": {
-                    "width": 16,
-                    "height": 16,
-                    "url": "image/zenuml_logo.png"
-                },
-                "documentation": {
-                    "url": "https://zenuml.atlassian.net/wiki/spaces/Doc/overview"
-                },
-                "categories": [
-                    "visuals"
-                ],
-                "featured": true,
-                "parameters":[{
-                    "identifier":"diagramName",
-                    "name":{"value":"Diagram name (do not change)","i18n":"diagramName"},
-                    "type":"string","required":true,"multiple":false,"defaultValue":"None"
-                }]
+  "key": "com.zenuml.confluence-addon",
+  "name": "ZenUML Sequence Diagram",
+  "description": "ZenUML Sequence Diagram add-on",
+  "baseUrl": "{{localBaseUrl}}",
+  "authentication": {
+    "type": "none"
+  },
+  "lifecycle": {
+    "installed": "/installed",
+    "uninstalled": "/uninstalled"
+  },
+  "enableLicensing": true,
+  "links": {
+    "self": "/atlassian-connect.json",
+    "homepage": "https://www.zenuml.com"
+  },
+  "scopes": [
+    "READ",
+    "WRITE"
+  ],
+  "modules": {
+    "dynamicContentMacros": [
+      {
+        "key": "zenuml-sequence-macro",
+        "name": {
+          "value": "ZenUML Sequence Diagram"
+        },
+        "renderModes": {
+          "default": {
+            "url": "/attachment?pageId={page.id}&pageVersion={page.version}&macroId={macro.id}&uuid={uuid}"
+          }
+        },
+        "url": "/sequence-viewer.html?pageId={page.id}&pageVersion={page.version}&macroId={macro.id}&uuid={uuid}",
+        "description": {
+          "value": "Create a ZenUML Sequence Diagram"
+        },
+        "outputType": "block",
+        "bodyType": "plain-text",
+        "editor": {
+          "url": "/sequence-editor.html?update=202103291207",
+          "width": "100%",
+          "height": "100%"
+        },
+        "icon": {
+          "width": 16,
+          "height": 16,
+          "url": "image/zenuml_logo.png"
+        },
+        "documentation": {
+          "url": "https://zenuml.atlassian.net/wiki/spaces/Doc/overview"
+        },
+        "categories": [
+          "visuals"
+        ],
+        "featured": true,
+        "parameters": [
+          {
+            "identifier": "diagramName",
+            "name": {
+              "value": "Diagram name (do not change)",
+              "i18n": "diagramName"
             },
-            {
-                "key": "zenuml-graph-macro",
-                "name": {
-                    "value": "ZenUML Graph"
-                },
-                "renderModes": {
-                    "default": {
-                        "url": "/attachment?pageId={page.id}&pageVersion={page.version}&macroId={macro.id}&uuid={uuid}"
-                    }
-                },
-                "url": "/drawio/viewer.html?pageId={page.id}&pageVersion={page.version}&macroId={macro.id}&uuid={uuid}",
-                "description": {
-                    "value": "Create a ZenUML Graph"
-                },
-                "outputType": "block",
-                "bodyType": "none",
-                "editor": {
-                    "url": "/drawio/editor.html",
-                    "editTitle": {
-                        "value": "Edit ZenUML Graph"
-                    },
-                    "insertTitle": {
-                        "value": "Create ZenUML Graph"
-                    },
-                    "width": "100%",
-                    "height": "100%",
-                    "cacheable": true
-                },
-                "icon": {
-                    "width": 16,
-                    "height": 16,
-                    "url": "image/zenuml_logo.png"
-                },
-                "documentation": {
-                    "url": "https://zenuml.atlassian.net/wiki/spaces/Doc/overview"
-                },
-                "categories": [
-                    "visuals"
-                ],
-                "featured": true,
-                "parameters":[{
-                  "identifier":"diagramName",
-                  "name":{"value":"Diagram name (do not change)","i18n":"diagramName"},
-                  "type":"string","required":true,"multiple":false,"defaultValue":"None"
-                }]
-            }
+            "type": "string",
+            "required": true,
+            "multiple": false,
+            "defaultValue": "None"
+          }
         ]
-    },
-    "apiMigrations": {
-        "gdpr": true
-    },
-    "vendor": {
-        "name": "ZenUML",
-        "url": "https://www.zenuml.com/"
-    }
+      },
+      {
+        "key": "zenuml-graph-macro",
+        "name": {
+          "value": "ZenUML Graph"
+        },
+        "renderModes": {
+          "default": {
+            "url": "/attachment?pageId={page.id}&pageVersion={page.version}&macroId={macro.id}&uuid={uuid}"
+          }
+        },
+        "url": "/drawio/viewer.html?pageId={page.id}&pageVersion={page.version}&macroId={macro.id}&uuid={uuid}",
+        "description": {
+          "value": "Create a ZenUML Graph"
+        },
+        "outputType": "block",
+        "bodyType": "none",
+        "editor": {
+          "url": "/drawio/editor.html",
+          "editTitle": {
+            "value": "Edit ZenUML Graph"
+          },
+          "insertTitle": {
+            "value": "Create ZenUML Graph"
+          },
+          "width": "100%",
+          "height": "100%",
+          "cacheable": true
+        },
+        "icon": {
+          "width": 16,
+          "height": 16,
+          "url": "image/zenuml_logo.png"
+        },
+        "documentation": {
+          "url": "https://zenuml.atlassian.net/wiki/spaces/Doc/overview"
+        },
+        "categories": [
+          "visuals"
+        ],
+        "featured": true,
+        "parameters": [
+          {
+            "identifier": "diagramName",
+            "name": {
+              "value": "Diagram name (do not change)",
+              "i18n": "diagramName"
+            },
+            "type": "string",
+            "required": true,
+            "multiple": false,
+            "defaultValue": "None"
+          }
+        ]
+      }
+    ]
+  },
+  "apiMigrations": {
+    "gdpr": true
+  },
+  "vendor": {
+    "name": "ZenUML",
+    "url": "https://www.zenuml.com/"
+  }
 }
