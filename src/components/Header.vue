@@ -1,5 +1,5 @@
 <template>
-  <div class="header">
+  <div class="toolbar header">
     <va-radio-group :vertical="false" v-model="diagramType">
       <va-radio-btn label="zenuml">ZenUML</va-radio-btn>
       <va-radio-btn label="mermaid">Mermaid (Beta)</va-radio-btn>
@@ -60,7 +60,7 @@ export default {
 }
 </style>
 <style>
-.view .header {
+.view .toolbar.header {
   visibility: hidden;
 }
 </style>
