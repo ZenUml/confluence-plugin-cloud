@@ -4,6 +4,17 @@
   <meta charset="UTF-8">
   <title>ZenUML Graph Macro Migrator</title>
   <script type="text/javascript" src="https://connect-cdn.atl-paas.net/all.js"></script>
+  <script type="text/javascript" src="./js/util.js"></script>
+  <script type="text/javascript">
+    async function execute() {
+      const spaceKey = getUrlParam('spaceKey');
+      console.log('all content:', await AP.request({url: `/rest/api/content`, type: 'GET'}));
+      console.log('all space properties:', await AP.request({url: `/rest/api/space/${spaceKey}/property`, type: 'GET'}));
+    }
+
+    execute();
+  </script>
+
 </head>
 <body>
 

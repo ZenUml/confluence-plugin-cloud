@@ -124,7 +124,7 @@
       }
     ],
     "webPanels": [ {
-      "url": "/zenuml-graph-macro-migrator.html?web-panel=atl.footer",
+      "url": "/zenuml-graph-macro-migrator.html?web-panel=atl.footer&spaceKey={space.key}",
       "location": "atl.footer",
       "layout": {
         "width": "100%",
