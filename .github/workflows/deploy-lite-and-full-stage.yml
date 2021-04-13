@@ -5,13 +5,13 @@ name: Deploy to Stage
 
 on:
   push:
-    branches: [ master, test-github-actions-3 ]
+    branches: [ master, staging* ]
   pull_request:
     branches: [ master ]
 
 jobs:
   build:
-
+    name: Build and Test
     runs-on: ubuntu-latest
 
     strategy:
@@ -26,6 +26,35 @@ jobs:
           node-version: ${{ matrix.node-version }}
       - run: npm install
       - run: npm run test:unit
+
+  staging-lite:
+    needs: build
+    name: Deploy to staging full
+    environment:
+      name: staging
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+      - run: npm install
       # It was failing when we change the following to lines to use npm run
       - run: yarn deploy:lite:stage --token ${{ secrets.FIREBASE_TOKEN }}
+
+  staging-full:
+    needs: build
+    name: Deploy to staging full
+    environment:
+      name: staging
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+      - run: npm install
+      # It was failing when we change the following to lines to use npm run
       - run: yarn deploy:full:stage --token ${{ secrets.FIREBASE_TOKEN }}
