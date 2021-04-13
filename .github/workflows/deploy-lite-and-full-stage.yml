@@ -74,4 +74,20 @@ jobs:
           node-version: ${{ matrix.node-version }}
       - run: npm install
       # It was failing when we change the following to lines to use npm run
-      - run: yarn deploy:lite:stage --token ${{ secrets.FIREBASE_TOKEN }}
+      - run: yarn deploy:lite:prod --token ${{ secrets.FIREBASE_TOKEN }}
+
+  prod-full:
+    needs: staging-full
+    name: Deploy to production full
+    environment:
+      name: production
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+      - run: npm install
+      # It was failing when we change the following to lines to use npm run
+      - run: yarn deploy:lite:prod --token ${{ secrets.FIREBASE_TOKEN }}
