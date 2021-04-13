@@ -8,6 +8,7 @@ exports.renderAttachment = functions.https.onRequest((request, response) => {
 });
 
 exports.installedEndpoint = functions.https.onRequest((request, response) => {
+  console.log('version:', request.query.version);
   console.log('request.body.key:', request.body.key);
   console.log('request.body.baseUrl:', request.body.baseUrl);
   let key = request.body.key;
