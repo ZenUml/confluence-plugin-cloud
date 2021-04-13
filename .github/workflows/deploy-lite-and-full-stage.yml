@@ -5,7 +5,8 @@ name: Deploy to Stage
 
 on:
   push:
-    branches: [ master, staging* ]
+    branches: [ master ]
+    tags: [staging-*]
   pull_request:
     branches: [ master ]
 
