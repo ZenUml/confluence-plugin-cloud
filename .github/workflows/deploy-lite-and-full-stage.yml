@@ -29,7 +29,7 @@ jobs:
 
   staging-lite:
     needs: build
-    name: Deploy to staging full
+    name: Deploy to staging lite
     environment:
       name: staging
     runs-on: ubuntu-latest
