@@ -15,7 +15,7 @@
         const pageContent = await AP.request({url: `/rest/api/content/${pageId}/?expand=body.storage`, type: 'GET'});
         let parsedPage = JSON.parse(pageContent.body);
         const storageFormatContent = parsedPage.body.storage.value;
-        if(storageFormatContent.indexOf('ac:name="zenuml-graph-macro"')) {
+        if(storageFormatContent.indexOf('ac:name="zenuml-graph-macro"') >= 0) {
           gtag('event', 'detect', {'event_category' : 'Macro',  'event_label' : pageId});
         }
       } catch (e) {
