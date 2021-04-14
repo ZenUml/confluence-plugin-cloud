@@ -20,6 +20,8 @@
         const storageFormatContent = parsedPage.body.storage.value;
         if(storageFormatContent.indexOf('ac:name="zenuml-graph-macro"') >= 0) {
           gtag('event', 'detect', {'event_category' : 'Macro',  'event_label' : pageId});
+          const converted = storageFormatContent.replace(/ac:name="zenuml-graph-macro"/g, 'ac:name="zenuml-graph-macro-lite"');
+          console.log('converted:', converted);
         }
       } catch (e) {
         if(e.err.indexOf('"statusCode":404') !== -1) {
