@@ -15,13 +15,47 @@
         if(pageId === '') {
           return;
         }
-        const pageContent = await AP.request({url: `/rest/api/content/${pageId}/?expand=body.storage`, type: 'GET'});
+        const pageContent = await AP.request({url: `/rest/api/content/${pageId}/?expand=body.storage,version`, type: 'GET'});
         let parsedPage = JSON.parse(pageContent.body);
         const storageFormatContent = parsedPage.body.storage.value;
+        const version = parsedPage.version.number;
+        const title = parsedPage.title;
+        console.log('title:', title);
+        console.log('version:', version);
+
         if(storageFormatContent.indexOf('ac:name="zenuml-graph-macro"') >= 0) {
+          AP.flag.create({
+            title: 'ZenUML Graph Macro Upgrading',
+            type: 'info',
+          });
+
           gtag('event', 'detect', {'event_category' : 'Macro',  'event_label' : pageId});
           const converted = storageFormatContent.replace(/ac:name="zenuml-graph-macro"/g, 'ac:name="zenuml-graph-macro-lite"');
           console.log('converted:', converted);
+          const putBody = {
+            id: pageId,
+            type: "page",
+            title: title,
+            body: {
+              storage: {
+                value: converted,
+                representation: "storage"
+              }
+            },
+            version: {
+              number: version + 1
+            }
+          };
+          const response = await AP.request({
+            url: `/rest/api/content/${pageId}/`,
+            type: 'PUT',
+            contentType: 'application/json',
+            data: JSON.stringify(putBody)
+          });
+          gtag('event', 'migrate', {'event_category' : 'Macro',  'event_label' : pageId});
+          console.log('response:', response);
+          await AP.navigator.reload();
+          console.log('page reloaded');
         }
       } catch (e) {
         if(e.err.indexOf('"statusCode":404') !== -1) {
