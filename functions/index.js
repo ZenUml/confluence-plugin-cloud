@@ -59,7 +59,11 @@ exports.descriptor = functions.https.onRequest((req, resp) => {
     descriptor.modules.dynamicContentMacros.forEach(macro => {
       if (macro.key === 'zenuml-sequence-macro') {
         macro.key = 'zenuml-sequence-macro-lite';
-        macro.name.value = 'ZenUML Lite';
+        macro.name.value = 'ZenUML Sequence Lite';
+      }
+      if (macro.key === 'zenuml-graph-macro') {
+        macro.key = 'zenuml-graph-macro-lite';
+        macro.name.value = 'ZenUML Graph Lite';
       }
     })
   }
