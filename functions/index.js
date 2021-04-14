@@ -18,6 +18,7 @@ exports.installedEndpoint = functions.https.onRequest((request, response) => {
       ClientSite: request.body.baseUrl,
       AppType: key.includes('lite')? 'Lite': 'Full',
       EventType: 'Install',
+      Version: request.query.version,
       Notes: ''
     }
   ]).then(console.log)
