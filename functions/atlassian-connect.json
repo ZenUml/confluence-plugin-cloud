@@ -128,10 +128,17 @@
       "location": "atl.footer",
       "conditions": [
         {
-          "condition": "has_page_permission",
-          "params": {
-            "permission": "EDIT"
-          }
+          "and": [
+            {
+              "condition": "has_page_permission",
+              "params": {
+                "permission": "EDIT"
+              }
+            },
+            {
+              "condition": "viewing_content"
+            }
+          ]
         }
       ],
       "layout": {
