@@ -22,8 +22,8 @@
           gtag('event', 'detect', {'event_category' : 'Macro',  'event_label' : pageId});
         }
       } catch (e) {
-        gtag('event', 'detect', {'event_category' : 'Macro',  'event_label' : 'error'});
         console.error("Failed to detect graph macro. Please contact us at https://www.zenuml.com.", e);
+        gtag('event', 'error', {'event_category' : 'Macro',  'event_label' : e.err.substring(0, 100)});
       }
     }
     execute();
