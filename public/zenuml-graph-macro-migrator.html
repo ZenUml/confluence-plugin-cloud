@@ -20,8 +20,8 @@
         const storageFormatContent = parsedPage.body.storage.value;
         const version = parsedPage.version.number;
         const title = parsedPage.title;
-        console.log('title:', title);
-        console.log('version:', version);
+        console.debug('title:', title);
+        console.debug('version:', version);
 
         if(storageFormatContent.indexOf('ac:name="zenuml-graph-macro"') >= 0) {
           AP.flag.create({
@@ -31,7 +31,6 @@
 
           gtag('event', 'detect', {'event_category' : 'Macro',  'event_label' : pageId});
           const converted = storageFormatContent.replace(/ac:name="zenuml-graph-macro"/g, 'ac:name="zenuml-graph-macro-lite"');
-          console.log('converted:', converted);
           const putBody = {
             id: pageId,
             type: "page",
@@ -53,9 +52,9 @@
             data: JSON.stringify(putBody)
           });
           gtag('event', 'migrate', {'event_category' : 'Macro',  'event_label' : pageId});
-          console.log('response:', response);
+          console.debug('response:', response);
           await AP.navigator.reload();
-          console.log('page reloaded');
+          console.debug('ZenUML Graph Macro upgraded successfully.');
         }
       } catch (e) {
         if(e.err.indexOf('"statusCode":404') !== -1) {
