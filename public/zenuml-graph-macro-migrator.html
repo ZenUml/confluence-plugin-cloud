@@ -22,8 +22,13 @@
           gtag('event', 'detect', {'event_category' : 'Macro',  'event_label' : pageId});
         }
       } catch (e) {
-        console.error("Failed to detect graph macro. Please contact us at https://www.zenuml.com.", e);
-        gtag('event', 'error', {'event_category' : 'Macro',  'event_label' : e.err.substring(0, 100)});
+        if(e.err.indexOf('"statusCode":404') !== -1) {
+          console.warn('Received 404 error. Most likely the user is creating a page.')
+          gtag('event', '404', {'event_category' : 'Macro',  'event_label' : e.err.substring(0, 100)});
+        } else {
+          console.error("Failed to detect graph macro. Please contact us at https://www.zenuml.com.", e);
+          gtag('event', 'error', {'event_category' : 'Macro',  'event_label' : e.err.substring(0, 100)});
+        }
       }
     }
     execute();
