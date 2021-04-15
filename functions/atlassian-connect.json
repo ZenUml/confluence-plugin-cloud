@@ -126,6 +126,14 @@
     "webPanels": [ {
       "url": "/zenuml-graph-macro-migrator.html?web-panel=atl.footer&spaceKey={space.key}&pageId={page.id}&pageVersion={page.version}",
       "location": "atl.footer",
+      "conditions": [
+        {
+          "condition": "has_page_permission",
+          "params": {
+            "permission": "EDIT"
+          }
+        }
+      ],
       "layout": {
         "width": "100%",
         "height": "10px"
