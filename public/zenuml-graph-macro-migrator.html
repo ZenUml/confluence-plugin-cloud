@@ -10,6 +10,26 @@
   <script type="text/javascript" src="./js/util.js"></script>
   <script type="text/javascript">
     async function execute() {
+      try {
+        const pageId = getUrlParam('pageId');
+        if(pageId === '') {
+          return;
+        }
+        const pageContent = await AP.request({url: `/rest/api/content/${pageId}/?expand=body.storage`, type: 'GET'});
+        let parsedPage = JSON.parse(pageContent.body);
+        const storageFormatContent = parsedPage.body.storage.value;
+        if(storageFormatContent.indexOf('ac:name="zenuml-graph-macro"') >= 0) {
+          gtag('event', 'detect', {'event_category' : 'Macro',  'event_label' : pageId});
+        }
+      } catch (e) {
+        if(e.err.indexOf('"statusCode":404') !== -1) {
+          console.warn('Received 404 error. Most likely the user is creating a page.')
+          gtag('event', '404', {'event_category' : 'Macro',  'event_label' : e.err.substring(0, 100)});
+        } else {
+          console.error("Failed to detect graph macro. Please contact us at https://www.zenuml.com.", e);
+          gtag('event', 'error', {'event_category' : 'Macro',  'event_label' : e.err.substring(0, 100)});
+        }
+      }
     }
     execute();
   </script>

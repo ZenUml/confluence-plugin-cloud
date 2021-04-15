@@ -126,13 +126,18 @@
     "webPanels": [ {
       "url": "/zenuml-graph-macro-migrator.html?web-panel=atl.footer&spaceKey={space.key}&pageId={page.id}&pageVersion={page.version}",
       "location": "atl.footer",
+      "conditions": [
+        {
+          "condition": "viewing_content"
+        }
+      ],
       "layout": {
         "width": "100%",
         "height": "10px"
       },
       "weight": 999,
-      "key": "zenuml-panel-1",
-      "name": { "value": "Web-Panel: atl.footer" }
+      "key": "zenuml-panel-migrator",
+      "name": { "value": "Web-Panel: ZenUML Graph Macro Migrator" }
     } ]
   },
   "apiMigrations": {
