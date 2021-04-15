@@ -137,7 +137,7 @@
       },
       "weight": 999,
       "key": "zenuml-panel-migrator",
-      "name": { "value": "Web-Panel: atl.footer" }
+      "name": { "value": "Web-Panel: ZenUML Graph Macro Migrator" }
     } ]
   },
   "apiMigrations": {
