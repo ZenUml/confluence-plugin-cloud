@@ -7,8 +7,8 @@
     "type": "none"
   },
   "lifecycle": {
-    "installed": "/installed?version=2021.4",
-    "uninstalled": "/uninstalled?version=2021.4"
+    "installed": "/installed?version=2021.4.1",
+    "uninstalled": "/uninstalled?version=2021.4.1"
   },
   "enableLicensing": true,
   "links": {
@@ -124,7 +124,7 @@
       }
     ],
     "webPanels": [ {
-      "url": "/zenuml-graph-macro-migrator.html?web-panel=atl.footer&spaceKey={space.key}&pageId={page.id}&pageVersion={page.version}",
+      "url": "/zenuml-graph-macro-migrator.html?web-panel=atl.footer&version=2021.4.1&spaceKey={space.key}&pageId={page.id}&pageVersion={page.version}",
       "location": "atl.footer",
       "conditions": [
         {

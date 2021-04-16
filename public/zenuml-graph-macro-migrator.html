@@ -13,6 +13,14 @@
       try {
         const pageId = getUrlParam('pageId');
         if(pageId === '') {
+          console.debug('Not on a page. Skipping upgrading...')
+          gtag('event', 'skip', {'event_category' : 'Macro',  'event_label' : window.location.href});
+          return;
+        }
+        const descriptorVersion = getUrlParam('version');
+        if(descriptorVersion !== '2021.4.1') {
+          console.debug('This confluence instance has not been updated. Skipping upgrading...')
+          gtag('event', 'skip', {'event_category' : 'Macro',  'event_label' : pageId});
           return;
         }
         const pageContent = await AP.request({url: `/rest/api/content/${pageId}/?expand=body.storage,version`, type: 'GET'});
@@ -59,9 +67,11 @@
       } catch (e) {
         if(e.err.indexOf('"statusCode":404') !== -1) {
           console.warn('Received 404 error. Most likely the user is creating a page.')
+          gtag('event', '404', {'event_category' : 'Macro',  'event_label' : window.location.href});
           gtag('event', '404', {'event_category' : 'Macro',  'event_label' : e.err.substring(0, 100)});
         } else {
           console.error("Failed to detect graph macro. Please contact us at https://www.zenuml.com.", e);
+          gtag('event', '404', {'event_category' : 'Macro',  'event_label' : window.location.href});
           gtag('event', 'error', {'event_category' : 'Macro',  'event_label' : e.err.substring(0, 100)});
         }
       }
