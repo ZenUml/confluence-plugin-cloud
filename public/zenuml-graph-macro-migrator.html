@@ -14,7 +14,10 @@
         const pageId = getUrlParam('pageId');
         if(pageId === '') {
           console.debug('Not on a page. Skipping upgrading...')
-          gtag('event', 'skip', {'event_category' : 'Macro',  'event_label' : window.location.href});
+          AP.getLocation(function(location){
+            console.debug('Page location:', location);
+            gtag('event', 'skip', {'event_category' : 'Macro',  'event_label' : location});
+          });
           return;
         }
         const descriptorVersion = getUrlParam('version');
@@ -67,13 +70,15 @@
       } catch (e) {
         if(e.err.indexOf('"statusCode":404') !== -1) {
           console.warn('Received 404 error. Most likely the user is creating a page.')
-          gtag('event', '404', {'event_category' : 'Macro',  'event_label' : window.location.href});
           gtag('event', '404', {'event_category' : 'Macro',  'event_label' : e.err.substring(0, 100)});
         } else {
           console.error("Failed to detect graph macro. Please contact us at https://www.zenuml.com.", e);
-          gtag('event', '404', {'event_category' : 'Macro',  'event_label' : window.location.href});
           gtag('event', 'error', {'event_category' : 'Macro',  'event_label' : e.err.substring(0, 100)});
         }
+        AP.getLocation(function(location){
+          console.debug('Page location:', location);
+          gtag('event', 'error', {'event_category' : 'Macro',  'event_label' : location});
+        });
       }
     }
     execute();
