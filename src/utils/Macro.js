@@ -28,7 +28,7 @@ OrderController.create(payload) {
 
   // eslint-disable-next-line
   constructor(ap = AP, macroIdentifier = 'sequence') {
-    this._confluenceWrapper = new ConfluenceWrapper(ap.confluence);
+    this._confluenceWrapper = new ConfluenceWrapper(ap);
     this._macroIdentifier = macroIdentifier;
   }
 

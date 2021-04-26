@@ -11,7 +11,7 @@ class GraphMacroViewer {
 
   // eslint-disable-next-line
   constructor(ap = AP) {
-    this._confluenceWrapper = new ConfluenceWrapper(ap.confluence);
+    this._confluenceWrapper = new ConfluenceWrapper(ap);
   }
 
   propertyKey(uuid) {

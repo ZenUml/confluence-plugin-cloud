@@ -2,9 +2,13 @@
 // getMacroData returns the macro data for the CURRENT macro.
 export default class ConfluenceWrapper {
   _confluence;
-  constructor(confluence) {
-    this._confluence = confluence;
+  _request;
+
+  constructor(ap) {
+    this._confluence = ap.confluence;
+    this._request = ap.request;
   }
+  
   getMacroData() {
     return new Promise(((resolve) => {
       try {
