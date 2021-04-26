@@ -38,7 +38,7 @@ window.store = store
 async function initializeMacro() {
   console.debug('Initializing macro from sequence-viewer.ts');
 // @ts-ignore
-  const macro = store.state.macro || new Macro(AP.confluence);
+  const macro = store.state.macro || new Macro(AP);
   // @ts-ignore
   window.macro = macro;
   const {code, styles, mermaidCode, diagramType} = await macro.load();
@@ -49,8 +49,11 @@ async function initializeMacro() {
   // @ts-ignore
   store.dispatch('updateMermaidCode', mermaidCode || store.state.mermaidCode)
   store.dispatch('updateDiagramType', diagramType)
-  // @ts-ignore
-  await window.createAttachmentIfContentChanged(code);
+
+  if(!macro._standaloneCustomContent) {
+    // @ts-ignore
+    await window.createAttachmentIfContentChanged(code);
+  }
   let timing = window.performance.timing;
   console.debug('ZenUML diagram loading time:%s (ms)', timing.domContentLoadedEventEnd- timing.navigationStart)
 }

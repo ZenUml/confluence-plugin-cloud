@@ -42,31 +42,72 @@ exports.uninstalledEndpoint = functions.https.onRequest((request, response) => {
   response.status(200).send(`OK`);
 });
 
+const liteKeySuffix = '-lite';
+
 exports.descriptor = functions.https.onRequest((req, resp) => {
   const url = req.url;
   const basePath = url.substring(0, url.lastIndexOf('/'));
   const self = url.substring(url.lastIndexOf('/'));
-  descriptor.baseUrl = `${req.protocol}://${req.hostname}${basePath}`;
+  const data = JSON.parse(JSON.stringify(descriptor));
+  data.baseUrl = `${req.protocol}://${req.hostname}${basePath}`;
   // This is not necessary but works as a defense.
-  descriptor.links.self = self;
+  data.links.self = self;
+
+  const replaceUrls = (modules, replaceFunction) => {
+    modules.dynamicContentMacros.forEach(macro => {
+      macro.url = replaceFunction(macro.url, macro);
+      if(macro.editor && macro.editor.url) {
+        macro.editor.url = replaceFunction(macro.editor.url, macro);
+      }
+      if(macro.renderModes && macro.renderModes.default && macro.renderModes.default.url) {
+        macro.renderModes.default.url = replaceFunction(macro.renderModes.default.url, macro);
+      }
+    });
+
+    if(modules.generalPages) {
+      modules.generalPages.forEach(page => {
+        page.url = replaceFunction(page.url, page);
+      });
+    }
+  }
+
+  const getCustomContentKeyForModule = (module, modules) => {
+    const macroType = module.key.includes('sequence') ? 'sequence' : 'graph';
+    const result = modules.customContent.filter(c => c.key.includes(macroType));
+    if(result.length === 0) {
+      console.log(`Custom content not found for module ${macro.key} in ${modules.customContent.map(c => c.key)}`);
+    } else {
+      return result[0].key;
+    }
+  }
 
   const isLite = url.includes('lite');
   if (isLite) {
-    descriptor.key = 'com.zenuml.confluence-addon-lite';
-    descriptor.name = 'ZenUML Lite';
-    descriptor.description = 'ZenUML Lite add-on';
-    descriptor.enableLicensing = false;
-    descriptor.modules.dynamicContentMacros.forEach(macro => {
+    data.key = `${data.key}${liteKeySuffix}`;
+    data.name = 'ZenUML Lite';
+    data.description = 'ZenUML Lite add-on';
+    data.enableLicensing = false;
+
+    data.modules.dynamicContentMacros.forEach(macro => {
       if (macro.key === 'zenuml-sequence-macro') {
-        macro.key = 'zenuml-sequence-macro-lite';
         macro.name.value = 'ZenUML Sequence Lite';
       }
-      if (macro.key === 'zenuml-graph-macro') {
-        macro.key = 'zenuml-graph-macro-lite';
+      else if (macro.key === 'zenuml-graph-macro') {
         macro.name.value = 'ZenUML Graph Lite';
       }
-    })
+      macro.key = `${macro.key}${liteKeySuffix}`;
+    });
+
+    if(data.modules.customContent) {
+      data.modules.customContent.forEach(content => content.key = `${content.key}${liteKeySuffix}`);
+    }
   }
 
-  resp.json(descriptor);
+  replaceUrls(data.modules, (url, module) => {
+    let result = url.replace('__ADDON_KEY__', data.key);
+    const contentKey = getCustomContentKeyForModule(module, data.modules);
+    return result.replace('__CONTENT_KEY__', contentKey);
+  });
+
+  resp.json(data);
 })

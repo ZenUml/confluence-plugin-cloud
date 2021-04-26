@@ -1,10 +1,18 @@
+import { getUrlParam } from './window';
+
 // Each iFrame provides context for only one macro.
 // getMacroData returns the macro data for the CURRENT macro.
 export default class ConfluenceWrapper {
   _confluence;
-  constructor(confluence) {
-    this._confluence = confluence;
+  _request;
+  _navigator;
+
+  constructor(ap) {
+    this._confluence = ap.confluence;
+    this._request = ap.request;
+    this._navigator = ap.navigator;
   }
+
   getMacroData() {
     return new Promise(((resolve) => {
       try {
@@ -19,6 +27,7 @@ export default class ConfluenceWrapper {
     }))
   }
 
+  //FIXME: this method throws error in custom content viewer
   getMacroBody() {
     return new Promise((resolve) => {
       try {
@@ -63,5 +72,114 @@ export default class ConfluenceWrapper {
 
   saveMacro(params, body) {
     this._confluence.saveMacro(params, body)
+  }
+
+  getSpaceKey() { //TODO: cacheable
+    const navigator = this._navigator;
+    return new Promise((resolv) => {
+      navigator.getLocation((data) => {
+        resolv(data.context.spaceKey);
+      });
+    });
+  }
+
+  getPageId() { //TODO: cacheable
+    const navigator = this._navigator;
+    return new Promise((resolv) => {
+      navigator.getLocation((data) => {
+        resolv(data.context.contentId);
+      });
+    });
+  }
+
+  getCustomContentType() {
+    return `ac:${getUrlParam('addonKey')}:${getUrlParam('contentKey')}`;
+  }
+
+  parseCustomContentResponse(response) {
+    return response && response.body && JSON.parse(response.body);
+  }
+
+  async createCustomContent(uuid, content) {
+    const spaceKey = await this.getSpaceKey(); //TODO: cacheable
+    const type = this.getCustomContentType();
+    const bodyData = {
+      "type": type,
+      "title": uuid,
+      "space": {
+        "key": spaceKey
+      },
+      "body": {
+        "raw": {
+          "value": JSON.stringify(content),
+          "representation": "raw"
+        }
+      }
+    };
+
+    const response = await this._request({
+      url: '/rest/api/content',
+      type: 'POST',
+      contentType: 'application/json',
+      data: JSON.stringify(bodyData)
+    });
+    return this.parseCustomContentResponse(response);
+  }
+
+  async updateCustomContent(contentObj, newBody) {
+    const spaceKey = await this.getSpaceKey();
+    const bodyData = {
+      "type": contentObj.type,
+      "title": contentObj.title,
+      "space": {
+        "key": spaceKey
+      },
+      "body": {
+        "raw": {
+          "value": JSON.stringify(newBody),
+          "representation": "raw"
+        }
+      },
+      "version": {
+        "number": contentObj.version.number + 1
+      }
+    };
+
+    const response = await this._request({
+      url: `/rest/api/content/${contentObj.id}`,
+      type: 'PUT',
+      contentType: 'application/json',
+      data: JSON.stringify(bodyData)
+    });
+    return this.parseCustomContentResponse(response);
+  }
+
+  async getCustomContentByTitle(type, title) {
+    const spaceKey = await this.getSpaceKey();
+    const url = `/rest/api/content?type=${type}&title=${title}&spaceKey=${spaceKey}&expand=children,history,version.number`;
+    const results = JSON.parse((await this._request({type: 'GET', url})).body).results;
+    if(results.length > 1) {
+      throw `multiple results found with type ${type}, title ${title}`;
+    }
+    if(results.length === 1) {
+      return results[0];
+    }
+    return null;
+  }
+
+  async getCustomContentById(id) {
+    const url = `/rest/api/content/${id}?expand=body.raw,version.number`;
+    const response = await this._request({type: 'GET', url});
+    const customContent = this.parseCustomContentResponse(response);
+    return Object.assign({}, customContent, {value: JSON.parse(customContent.body.raw.value)});
+  }
+
+  async saveCustomContent(customContentId, uuid, value) {
+    if(customContentId) {
+      const existing = await this.getCustomContentById(customContentId);
+      return await this.updateCustomContent(existing, value);
+    } else {
+      return await this.createCustomContent(uuid, value);
+    }
   }
 }
