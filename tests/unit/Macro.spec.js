@@ -1,52 +1,51 @@
 import MockApConfluence from '../../src/utils/MockApConfluence'
 import Macro from '../../src/utils/Macro'
 
+let mockApConfluence;
+let macro;
+
 jest.mock('../../src/utils/uuid', () => {
   return () => 'random_uuid'
 })
 describe('Macro', () => {
+  beforeEach(() => {
+    mockApConfluence = new MockApConfluence();
+    const mockAp = {confluence: mockApConfluence, request: {}};
+    macro = new Macro(mockAp);
+  });
+
   describe('load content when initialising', () => {
     // no data, no body, no prop
     it('if not initialised uses Example', async () => {
-      const mockApConfluence = new MockApConfluence();
-      const macro = new Macro(mockApConfluence);
       const code = (await macro.load()).code
       expect(code).toBe(macro.EXAMPLE)
     })
 
     // data
     test('data, no body or property', async () => {
-      const mockApConfluence = new MockApConfluence();
       mockApConfluence.saveMacro({uuid: 1234})
-      const macro = new Macro(mockApConfluence);
       const code = (await macro.load()).code;
       expect(code).toBe(macro.EXAMPLE)
     })
 
     // body
     test('or macro body', async () => {
-      const mockApConfluence = new MockApConfluence();
       mockApConfluence.saveMacro({}, 'body')
-      const macro = new Macro(mockApConfluence);
       const code = (await macro.load()).code;
       expect(code).toBe('body')
     })
 
     // data, prop
     test('or content property', async () => {
-      const mockApConfluence = new MockApConfluence();
       mockApConfluence.saveMacro({uuid: '1234'})
       mockApConfluence.setContentProperty({key: 'zenuml-sequence-macro-1234-body', value: 'A.method'})
-      const macro = new Macro(mockApConfluence);
       const code = (await macro.load()).code;
       expect(code).toBe('A.method')
     })
 
     test('or content property as object {code, styles}', async () => {
-      const mockApConfluence = new MockApConfluence();
       mockApConfluence.saveMacro({uuid: '1234'})
       mockApConfluence.setContentProperty({key: 'zenuml-sequence-macro-1234-body', value: {code: 'A.method', styles: {'#A': { backgroundColor: '#FFF'}}}})
-      const macro = new Macro(mockApConfluence);
       const code = (await macro.load()).code;
       expect(code).toBe('A.method')
       const styles = (await macro.load()).styles
@@ -60,9 +59,7 @@ describe('Macro', () => {
       global.window.location = {
         search: '?uuid=1234',
       };
-      const mockApConfluence = new MockApConfluence();
       mockApConfluence.setContentProperty({key: 'zenuml-sequence-macro-1234-body', value: 'A.method'})
-      const macro = new Macro(mockApConfluence);
       const code = (await macro.load()).code;
       expect(code).toBe('A.method')
       global.window.location = {
@@ -72,29 +69,23 @@ describe('Macro', () => {
 
     // data, body
     test('or content property', async () => {
-      const mockApConfluence = new MockApConfluence();
       mockApConfluence.saveMacro({uuid: '1234'}, 'body')
-      const macro = new Macro(mockApConfluence);
       const code = (await macro.load()).code;
       expect(code).toBe('body')
     })
 
     // data, body, prop
     test('or content property', async () => {
-      const mockApConfluence = new MockApConfluence();
       mockApConfluence.saveMacro({uuid: '1234'}, 'body')
       mockApConfluence.setContentProperty({key: 'zenuml-sequence-macro-1234-body', value: 'A.method'})
-      const macro = new Macro(mockApConfluence);
       const code = (await macro.load()).code;
       expect(code).toBe('A.method')
     })
 
     // body, prop
     test('if no macro data', async () => {
-      const mockApConfluence = new MockApConfluence();
       mockApConfluence.saveMacro({}, 'body')
       mockApConfluence.setContentProperty({key: 'zenuml-sequence-macro-1234-body', value: 'A.method'})
-      const macro = new Macro(mockApConfluence);
       const code = (await macro.load()).code;
       expect(code).toBe('body')
     })
@@ -104,8 +95,6 @@ describe('Macro', () => {
     describe('E2E - should save macro data  and content property', () => {
       // TODO: check if saveMacroData({}) will remove macro-body
       it('for the first time', async () => {
-        const mockApConfluence = new MockApConfluence();
-        const macro = new Macro(mockApConfluence);
         await macro.load()
         const code = 'A.method';
         const styles = {'#A': { backgroundColor: '#FFF'}}
@@ -121,10 +110,8 @@ describe('Macro', () => {
       })
 
       it('for the next times', async () => {
-        const mockApConfluence = new MockApConfluence();
         // mockApConfluence.saveMacro({uuid: '1234'}, 'body')
         // mockApConfluence.setContentProperty({key: '1234', value: 'A.method'})
-        const macro = new Macro(mockApConfluence);
         await macro.load()
         const oldCode = 'A.method';
         await macro.save(oldCode)
@@ -144,10 +131,8 @@ describe('Macro', () => {
 
     describe('Mocked data - should save macro data  and content property', () => {
       it('for the next times', async () => {
-        const mockApConfluence = new MockApConfluence();
         mockApConfluence.saveMacro({uuid: '1234'}, 'body')
         mockApConfluence.setContentProperty({key: 'zenuml-sequence-macro-1234-body', value: 'A.method', version: {number: 100}})
-        const macro = new Macro(mockApConfluence);
         // Must load first
         await macro.load()
         const newCode = 'B.method';

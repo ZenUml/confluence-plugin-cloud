@@ -38,7 +38,7 @@ window.store = store
 async function initializeMacro() {
   console.debug('Initializing macro from sequence-viewer.ts');
 // @ts-ignore
-  const macro = store.state.macro || new Macro(AP.confluence);
+  const macro = store.state.macro || new Macro(AP);
   // @ts-ignore
   window.macro = macro;
   const {code, styles, mermaidCode, diagramType} = await macro.load();
