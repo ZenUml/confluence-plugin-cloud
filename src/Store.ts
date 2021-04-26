@@ -5,7 +5,7 @@ import EventBus from './EventBus'
 import Macro from "@/utils/Macro";
 
 // @ts-ignore
-const confluence = AP.confluence;
+const ap = AP;
 const storeConfig = Store()
 // @ts-ignore
 export default {
@@ -58,7 +58,7 @@ export default {
   },
   state: {
     ...storeConfig.state,
-    macro: new Macro(confluence),
+    macro: new Macro(ap),
     mermaidCode: 'graph TD; A-->B;',
     mermaidSvg: '',
     diagramType: 'zenuml',
