@@ -28,17 +28,17 @@
         },
         "renderModes": {
           "default": {
-            "url": "/attachment?pageId={page.id}&pageVersion={page.version}&macroId={macro.id}&uuid={uuid}"
+            "url": "/attachment?spaceKey={space.key}&pageId={page.id}&pageVersion={page.version}&macroId={macro.id}&uuid={uuid}"
           }
         },
-        "url": "/sequence-viewer.html?pageId={page.id}&pageVersion={page.version}&macroId={macro.id}&uuid={uuid}",
+        "url": "/sequence-viewer.html?spaceKey={space.key}&pageId={page.id}&pageVersion={page.version}&macroId={macro.id}&uuid={uuid}",
         "description": {
           "value": "Create a ZenUML Sequence Diagram"
         },
         "outputType": "block",
         "bodyType": "plain-text",
         "editor": {
-          "url": "/sequence-editor.html?update=202103291207",
+          "url": "/sequence-editor.html?spaceKey={space.key}&update=202103291207",
           "width": "100%",
           "height": "100%"
         },
@@ -75,17 +75,17 @@
         },
         "renderModes": {
           "default": {
-            "url": "/attachment?pageId={page.id}&pageVersion={page.version}&macroId={macro.id}&uuid={uuid}"
+            "url": "/attachment?spaceKey={space.key}&pageId={page.id}&pageVersion={page.version}&macroId={macro.id}&uuid={uuid}"
           }
         },
-        "url": "/drawio/viewer.html?pageId={page.id}&pageVersion={page.version}&macroId={macro.id}&uuid={uuid}",
+        "url": "/drawio/viewer.html?spaceKey={space.key}&pageId={page.id}&pageVersion={page.version}&macroId={macro.id}&uuid={uuid}",
         "description": {
           "value": "Create a ZenUML Graph"
         },
         "outputType": "block",
         "bodyType": "none",
         "editor": {
-          "url": "/drawio/editor.html",
+          "url": "/drawio/editor.html?spaceKey={space.key}",
           "editTitle": {
             "value": "Edit ZenUML Graph"
           },
@@ -94,7 +94,7 @@
           },
           "width": "100%",
           "height": "100%",
-          "cacheable": true
+          "cacheable": false
         },
         "icon": {
           "width": 16,
@@ -138,7 +138,66 @@
       "weight": 999,
       "key": "zenuml-panel-migrator",
       "name": { "value": "Web-Panel: ZenUML Graph Macro Migrator" }
-    } ]
+    } ],
+    "customContent": [
+        {
+          "uiSupport": {
+            "contentViewComponent": {
+              "moduleKey": "custom-content-viewer"
+            },
+            "listViewComponent": {
+              "moduleKey": "custom-content-list"
+            },
+            "icons": {
+              "item": {
+                "width": 16,
+                "height": 16,
+                "url": "image/zenuml_logo.png"
+              }
+            }
+          },
+          "apiSupport": {
+            "bodyType": "storage",
+            "supportedContainerTypes": [
+              "space",
+              "page",
+              "blogpost",
+              "comment"
+            ],
+            "supportedChildTypes": [
+              "attachment",
+              "comment"
+            ],
+            "indexing": {
+              "enabled": true
+            }
+          },
+          "name": {
+            "value": "ZenUML Sequence Diagram"
+          },
+          "key": "zenuml-sequence-diagram"
+        }
+      ],
+      "generalPages": [
+        {
+            "key": "custom-content-viewer",
+            "location": "hidden",
+            "url": "/sequence-viewer.html?spaceKey={space.key}&pageId={page.id}&pageVersion={page.version}&macroId={macro.id}&uuid={uuid}",
+            "name": {
+                "value": "ZenUML Sequence Diagram Viewer",
+                "i18n": "zenumlSequenceViewer"
+            }
+        },
+        {
+          "key": "custom-content-list",
+          "location": "hidden",
+          "url": "/list.html?spaceKey={space.key}&pageId={page.id}&pageVersion={page.version}&macroId={macro.id}&uuid={uuid}",
+          "name": {
+              "value": "ZenUML Sequence Diagram List",
+              "i18n": "zenumlSequenceList"
+          }
+      }
+      ]
   },
   "apiMigrations": {
     "gdpr": true

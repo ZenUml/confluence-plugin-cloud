@@ -3,6 +3,7 @@ import LZUTF8 from 'lzutf8';
 import ConfluenceWrapper from "@/utils/ConfluenceWrapper";
 
 const COMPRESS_ENCODING = 'Base64';
+const CUSTOM_CONTENT_TYPE = 'ac:com.zenuml.confluence-addon:zenuml-sequence-diagram';
 
 class Macro {
   EXAMPLE = `@Lambda OrderController
@@ -40,6 +41,10 @@ OrderController.create(payload) {
   getUrlParam (param) {
     const matches = (new RegExp(param + '=([^&]*)')).exec(window.location.search);
     return matches && matches[1] && decodeURIComponent(matches[1]);
+  }
+
+  getSpaceKey() {
+    return this.getUrlParam('spaceKey');
   }
 
   async getContentProperty() {
@@ -113,6 +118,8 @@ OrderController.create(payload) {
       }
     }
     await this._confluenceWrapper.setContentProperty(contentProperty);
+
+    await this._confluenceWrapper.createCustomContent(CUSTOM_CONTENT_TYPE, this.getSpaceKey(), value);
   }
 }
 

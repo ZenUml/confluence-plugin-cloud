@@ -8,7 +8,7 @@ export default class ConfluenceWrapper {
     this._confluence = ap.confluence;
     this._request = ap.request;
   }
-  
+
   getMacroData() {
     return new Promise(((resolve) => {
       try {
@@ -67,5 +67,27 @@ export default class ConfluenceWrapper {
 
   saveMacro(params, body) {
     this._confluence.saveMacro(params, body)
+  }
+
+  async createCustomContent(type, space, content) {
+    const bodyData = `{
+      "type": ${type},
+      "space": {
+        "key": ${space}
+      },
+      "body": {
+        "raw": {
+          "value": "${JSON.stringify(content)}",
+          "representation": "raw"
+        }
+      }
+    }`;
+
+    return await this._request({
+      url: '/rest/api/content',
+      type: 'POST',
+      contentType: 'application/json',
+      data: bodyData
+    });
   }
 }

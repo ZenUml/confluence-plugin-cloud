@@ -10,7 +10,7 @@ jest.mock('../../src/utils/uuid', () => {
 describe('Macro', () => {
   beforeEach(() => {
     mockApConfluence = new MockApConfluence();
-    const mockAp = {confluence: mockApConfluence, request: {}};
+    const mockAp = {confluence: mockApConfluence, request: () => {}};
     macro = new Macro(mockAp);
   });
 
