@@ -10,8 +10,8 @@ class GraphMacroViewer {
   _macroKeyPrefix = `zenuml-graph-macro`;
 
   // eslint-disable-next-line
-  constructor(confluence = AP.confluence) {
-    this._confluenceWrapper = new ConfluenceWrapper(confluence);
+  constructor(ap = AP) {
+    this._confluenceWrapper = new ConfluenceWrapper(ap.confluence);
   }
 
   propertyKey(uuid) {

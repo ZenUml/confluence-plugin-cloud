@@ -11,7 +11,7 @@ if (window.location.href.includes('localhost')) {
 }
 async function initializeMacro() {
   // @ts-ignore
-  const macro = new GraphMacroViewer(AP.confluence);
+  const macro = new GraphMacroViewer(AP);
   // @ts-ignore
   window.macro = macro;
   const {graphXml} = await macro.load();
