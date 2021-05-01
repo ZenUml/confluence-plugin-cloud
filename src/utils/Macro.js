@@ -43,10 +43,6 @@ OrderController.create(payload) {
     return matches && matches[1] && decodeURIComponent(matches[1]);
   }
 
-  getSpaceKey() {
-    return this.getUrlParam('spaceKey');
-  }
-
   async getContentProperty() {
     const macroData = await this._confluenceWrapper.getMacroData();
 
@@ -119,7 +115,7 @@ OrderController.create(payload) {
     }
     await this._confluenceWrapper.setContentProperty(contentProperty);
 
-    await this._confluenceWrapper.createCustomContent(CUSTOM_CONTENT_TYPE, this.getSpaceKey(), value);
+    await this._confluenceWrapper.createCustomContent(CUSTOM_CONTENT_TYPE, value);
   }
 }
 

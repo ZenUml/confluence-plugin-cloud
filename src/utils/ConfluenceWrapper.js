@@ -3,10 +3,12 @@
 export default class ConfluenceWrapper {
   _confluence;
   _request;
+  _navigator;
 
   constructor(ap) {
     this._confluence = ap.confluence;
     this._request = ap.request;
+    this._navigator = ap.navigator;
   }
 
   getMacroData() {
@@ -69,15 +71,26 @@ export default class ConfluenceWrapper {
     this._confluence.saveMacro(params, body)
   }
 
-  async createCustomContent(type, space, content) {
+  getSpaceKey() {
+    const navigator = this._navigator;
+    return new Promise((resolv) => {
+      navigator.getLocation((data) => {
+        resolv(data.context.spaceKey);
+      });
+    });
+  }
+
+  async createCustomContent(type, content) {
+    const spaceKey = await this.getSpaceKey();
     const bodyData = `{
-      "type": ${type},
+      "type": "${type}",
+      "title": "test1",
       "space": {
-        "key": ${space}
+        "key": "${spaceKey}"
       },
       "body": {
         "raw": {
-          "value": "${JSON.stringify(content)}",
+          "value": "${JSON.stringify(content).replaceAll('"', '\\"')}",
           "representation": "raw"
         }
       }

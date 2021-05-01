@@ -38,7 +38,7 @@
         "outputType": "block",
         "bodyType": "plain-text",
         "editor": {
-          "url": "/sequence-editor.html?spaceKey={space.key}&update=202103291207",
+          "url": "/sequence-editor.html?update=202103291207",
           "width": "100%",
           "height": "100%"
         },
@@ -85,7 +85,7 @@
         "outputType": "block",
         "bodyType": "none",
         "editor": {
-          "url": "/drawio/editor.html?spaceKey={space.key}",
+          "url": "/drawio/editor.html",
           "editTitle": {
             "value": "Edit ZenUML Graph"
           },
@@ -157,7 +157,7 @@
             }
           },
           "apiSupport": {
-            "bodyType": "storage",
+            "bodyType": "raw",
             "supportedContainerTypes": [
               "space",
               "page",
