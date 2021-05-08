@@ -71,7 +71,7 @@ export default class ConfluenceWrapper {
     this._confluence.saveMacro(params, body)
   }
 
-  getSpaceKey() {
+  getSpaceKey() { //TODO: cacheable
     const navigator = this._navigator;
     return new Promise((resolv) => {
       navigator.getLocation((data) => {
@@ -80,11 +80,11 @@ export default class ConfluenceWrapper {
     });
   }
 
-  async createCustomContent(type, content) {
-    const spaceKey = await this.getSpaceKey();
+  async createCustomContent(uuid, type, content) {
+    const spaceKey = await this.getSpaceKey(); //TODO: cacheable
     const bodyData = `{
       "type": "${type}",
-      "title": "test1",
+      "title": "${uuid}",
       "space": {
         "key": "${spaceKey}"
       },
@@ -102,5 +102,54 @@ export default class ConfluenceWrapper {
       contentType: 'application/json',
       data: bodyData
     });
+  }
+
+  async updateCustomContent(contentObj, newBody) {
+    const spaceKey = await this.getSpaceKey();
+    const bodyData = `{
+      "type": "${contentObj.type}",
+      "title": "${contentObj.title}",
+      "space": {
+        "key": "${spaceKey}"
+      },
+      "body": {
+        "raw": {
+          "value": "${JSON.stringify(newBody).replaceAll('"', '\\"')}",
+          "representation": "raw"
+        }
+      },
+      "version": {
+        "number": ${contentObj.version.number + 1}
+      }
+    }`;
+
+    return await this._request({
+      url: `/rest/api/content/${contentObj.id}`,
+      type: 'PUT',
+      contentType: 'application/json',
+      data: bodyData
+    });
+  }
+
+  async getCustomContentByTitle(type, title) {
+    const spaceKey = await this.getSpaceKey();
+    const url = `/rest/api/content?type=${type}&title=${title}&spaceKey=${spaceKey}&expand=children,history,version.number`;
+    const results = JSON.parse((await this._request({type: 'GET', url})).body).results;
+    if(results.length > 1) {
+      throw `multiple results found with type ${type}, title ${title}`;
+    }
+    if(results.length === 1) {
+      return results[0];
+    }
+    return null;
+  }
+
+  async saveCustomContent(uuid, type, content) {
+    const existing = await this.getCustomContentByTitle(type, uuid);
+    if(existing) {
+      await this.updateCustomContent(existing, content);
+    } else {
+      await this.createCustomContent(uuid, type, content);
+    }
   }
 }

@@ -115,7 +115,7 @@ OrderController.create(payload) {
     }
     await this._confluenceWrapper.setContentProperty(contentProperty);
 
-    await this._confluenceWrapper.createCustomContent(CUSTOM_CONTENT_TYPE, value);
+    await this._confluenceWrapper.saveCustomContent(key, CUSTOM_CONTENT_TYPE, value);
   }
 }
 
