@@ -1,3 +1,5 @@
+import comp from './compress';
+
 // Each iFrame provides context for only one macro.
 // getMacroData returns the macro data for the CURRENT macro.
 export default class ConfluenceWrapper {
@@ -80,6 +82,18 @@ export default class ConfluenceWrapper {
     });
   }
 
+  parseCustomContentResponse(response) {
+    return response && response.body && JSON.parse(response.body);
+  }
+
+  encodeRawValue(o) {
+    return o && comp.compress(JSON.stringify(o));
+  }
+
+  decodeRawValue(v) {
+    return v && JSON.parse(comp.decompress(v));
+  }
+
   async createCustomContent(uuid, type, content) {
     const spaceKey = await this.getSpaceKey(); //TODO: cacheable
     const bodyData = `{
@@ -90,31 +104,34 @@ export default class ConfluenceWrapper {
       },
       "body": {
         "raw": {
-          "value": "${JSON.stringify(content).replaceAll('"', '\\"')}",
+          "value": "${this.encodeRawValue(content)}",
           "representation": "raw"
         }
       }
     }`;
 
-    return await this._request({
+    const response = await this._request({
       url: '/rest/api/content',
       type: 'POST',
       contentType: 'application/json',
       data: bodyData
     });
+    return this.parseCustomContentResponse(response);
   }
 
   async updateCustomContent(contentObj, newBody) {
+    console.log('updateCustomContent, newBody: ', newBody);
     const spaceKey = await this.getSpaceKey();
     const bodyData = `{
       "type": "${contentObj.type}",
       "title": "${contentObj.title}",
+      "status": "${contentObj.status}",
       "space": {
         "key": "${spaceKey}"
       },
       "body": {
         "raw": {
-          "value": "${JSON.stringify(newBody).replaceAll('"', '\\"')}",
+          "value": "${this.encodeRawValue(newBody)}",
           "representation": "raw"
         }
       },
@@ -123,12 +140,13 @@ export default class ConfluenceWrapper {
       }
     }`;
 
-    return await this._request({
+    const response = await this._request({
       url: `/rest/api/content/${contentObj.id}`,
       type: 'PUT',
       contentType: 'application/json',
       data: bodyData
     });
+    return this.parseCustomContentResponse(response);
   }
 
   async getCustomContentByTitle(type, title) {
@@ -144,12 +162,19 @@ export default class ConfluenceWrapper {
     return null;
   }
 
-  async saveCustomContent(uuid, type, content) {
-    const existing = await this.getCustomContentByTitle(type, uuid);
-    if(existing) {
-      await this.updateCustomContent(existing, content);
+  async getCustomContentById(id) {
+    const url = `/rest/api/content/${id}?expand=body.raw,version.number`;
+    const response = await this._request({type: 'GET', url});
+    const customContent = this.parseCustomContentResponse(response);
+    return Object.assign({}, customContent, {value: this.decodeRawValue(customContent.body.raw.value)});
+  }
+
+  async saveCustomContent(customContentId, uuid, type, value) {
+    if(customContentId) {
+      const existing = await this.getCustomContentById(customContentId);
+      return await this.updateCustomContent(existing, value);
     } else {
-      await this.createCustomContent(uuid, type, content);
+      return await this.createCustomContent(uuid, type, value);
     }
   }
 }

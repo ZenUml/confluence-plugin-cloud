@@ -23,6 +23,7 @@ OrderController.create(payload) {
   }
 }`
   _key;
+  _customContentId;
   _versionNumber;
   _loaded = false;
   _macroIdentifier;
@@ -43,7 +44,7 @@ OrderController.create(payload) {
     return matches && matches[1] && decodeURIComponent(matches[1]);
   }
 
-  async getContentProperty() {
+  async getContent() {
     const macroData = await this._confluenceWrapper.getMacroData();
 
     // When the macro is edited for the first time, macro data is not available in the preview mode
@@ -51,29 +52,35 @@ OrderController.create(payload) {
     // This is defined in the descriptor and is only available for sequence-viewer.html.
     const key = macroData?.uuid || this.getUrlParam('uuid');
     this._key = key;
+    this._customContentId = macroData.customContentId;
+
+    if(this._customContentId) {
+      return await this._confluenceWrapper.getCustomContentById(this._customContentId);
+    }
+
     return key ? await this._confluenceWrapper.getContentProperty(this.propertyKey(key)) : null;
   }
 
 
   async load() {
     this._loaded = true
-    const contentProp = await this.getContentProperty();
+    const payload = await this.getContent();
     let code;
     let styles;
     let mermaidCode;
     let diagramType;
     let graphXml;
     let compressed;
-    this._versionNumber = contentProp?.version?.number || 0;
-    if(typeof contentProp?.value === 'string') {
-      code = contentProp?.value
+    this._versionNumber = payload?.version?.number || 0;
+    if(typeof payload?.value === 'string') {
+      code = payload?.value
     } else {
-      code = contentProp?.value?.code
-      styles = contentProp?.value?.styles
-      mermaidCode = contentProp?.value?.mermaidCode
-      diagramType = contentProp?.value?.diagramType
-      graphXml = contentProp?.value?.graphXml
-      compressed = contentProp?.value?.compressed
+      code = payload?.value?.code
+      styles = payload?.value?.styles
+      mermaidCode = payload?.value?.mermaidCode
+      diagramType = payload?.value?.diagramType
+      graphXml = payload?.value?.graphXml
+      compressed = payload?.value?.compressed
     }
     code = code || await this._confluenceWrapper.getMacroBody();
 
@@ -97,14 +104,17 @@ OrderController.create(payload) {
     if (!this._loaded) {
       throw new Error('You have to call load before calling save()')
     }
-    const key = this._key || uuidv4()
-    this._confluenceWrapper.saveMacro({uuid: key, updatedAt: new Date()}, code);
-    const versionNumber = this._versionNumber;
+    const key = this._key || uuidv4();
 
     const compressedCode = LZUTF8.compress(code, {outputEncoding: COMPRESS_ENCODING});
 
     const value = this._macroIdentifier === 'graph' ?
       {graphXml: compressedCode, compressed: true} : {code, styles, mermaidCode, diagramType};
+
+    const customContent = await this._confluenceWrapper.saveCustomContent(this._customContentId, key, CUSTOM_CONTENT_TYPE, value);
+
+    this._confluenceWrapper.saveMacro({uuid: key, customContentId: customContent.id, updatedAt: new Date()}, code);
+    const versionNumber = this._versionNumber;
 
     const contentProperty = {
       key: this.propertyKey(key),
@@ -115,7 +125,6 @@ OrderController.create(payload) {
     }
     await this._confluenceWrapper.setContentProperty(contentProperty);
 
-    await this._confluenceWrapper.saveCustomContent(key, CUSTOM_CONTENT_TYPE, value);
   }
 }
 
