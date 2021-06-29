@@ -79,7 +79,7 @@
     "concurrently": "^5.3.0",
     "eslint": "^7.10.0",
     "eslint-plugin-vue": "^7.5.0",
-    "firebase-admin": "^8.9.0",
+    "firebase-admin": "^9.10.0",
     "firebase-functions": "^3.3.0",
     "firebase-tools": "^8.20.0",
     "longjohn": "^0.2.12",
