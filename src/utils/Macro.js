@@ -1,8 +1,8 @@
 import uuidv4 from './uuid';
-import LZUTF8 from 'lzutf8';
+import {compress, decompress} from './compress';
+import { getUrlParam } from './window';
 import ConfluenceWrapper from "@/utils/ConfluenceWrapper";
 
-const COMPRESS_ENCODING = 'Base64';
 const CUSTOM_CONTENT_TYPE = 'ac:com.zenuml.confluence-addon:zenuml-sequence-diagram';
 
 class Macro {
@@ -46,18 +46,13 @@ OrderController.create(payload) {
     return `${macroKey}-${uuid}-body`;
   }
 
-  getUrlParam (param) {
-    const matches = (new RegExp(param + '=([^&]*)')).exec(window.location.search);
-    return matches && matches[1] && decodeURIComponent(matches[1]);
-  }
-
   async getContent() {
     const macroData = await this._confluenceWrapper.getMacroData();
 
     // When the macro is edited for the first time, macro data is not available in the preview mode
     // Fall back to the uuid parameter in the URL.
     // This is defined in the descriptor and is only available for sequence-viewer.html.
-    const key = macroData?.uuid || this.getUrlParam('uuid');
+    const key = macroData?.uuid || getUrlParam('uuid');
     this._key = key;
     this._customContentId = macroData.customContentId;
     
@@ -115,7 +110,7 @@ OrderController.create(payload) {
     styles = styles || {}
 
     if(compressed) {
-      graphXml = LZUTF8.decompress(graphXml, {inputEncoding: COMPRESS_ENCODING});
+      graphXml = decompress(graphXml);
     }
 
     this._loaded = true;
@@ -132,7 +127,7 @@ OrderController.create(payload) {
     }
     const key = this._key || uuidv4();
 
-    const compressedCode = LZUTF8.compress(code, {outputEncoding: COMPRESS_ENCODING});
+    const compressedCode = compress(code);
 
     const value = this._macroIdentifier === 'graph' ?
       {graphXml: compressedCode, compressed: true} : {code, styles, mermaidCode, diagramType};

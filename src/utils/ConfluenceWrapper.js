@@ -1,4 +1,3 @@
-import comp from './compress';
 
 // Each iFrame provides context for only one macro.
 // getMacroData returns the macro data for the CURRENT macro.
@@ -93,14 +92,6 @@ export default class ConfluenceWrapper {
 
   parseCustomContentResponse(response) {
     return response && response.body && JSON.parse(response.body);
-  }
-
-  encodeRawValue(o) {
-    return o && comp.compress(JSON.stringify(o));
-  }
-
-  decodeRawValue(v) {
-    return v && JSON.parse(comp.decompress(v));
   }
 
   async createCustomContent(uuid, type, content) {
