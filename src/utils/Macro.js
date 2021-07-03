@@ -27,11 +27,18 @@ OrderController.create(payload) {
   _versionNumber;
   _loaded = false;
   _macroIdentifier;
+  _pageId;
 
   // eslint-disable-next-line
   constructor(ap = AP, macroIdentifier = 'sequence') {
     this._confluenceWrapper = new ConfluenceWrapper(ap);
     this._macroIdentifier = macroIdentifier;
+  }
+
+  async initPageId() {
+    if(!this._pageId) {
+      this._pageId = await this._confluenceWrapper.getPageId();
+    }
   }
 
   propertyKey(uuid) {
@@ -53,17 +60,33 @@ OrderController.create(payload) {
     const key = macroData?.uuid || this.getUrlParam('uuid');
     this._key = key;
     this._customContentId = macroData.customContentId;
-
+    
     if(this._customContentId) {
+      this.fireEvent('load_macro', 'custom_content');
       return await this._confluenceWrapper.getCustomContentById(this._customContentId);
     }
 
-    return key ? await this._confluenceWrapper.getContentProperty(this.propertyKey(key)) : null;
+    return key ? await this.getContentProperty(key) : null;
   }
 
+  async getContentProperty(key) {
+    this.fireEvent('load_macro', 'content_property');
+    return await this._confluenceWrapper.getContentProperty(this.propertyKey(key));
+  }
+
+  async getMacroBody() {
+    this.fireEvent('load_macro', 'macro_body');
+    return await this._confluenceWrapper.getMacroBody();
+  }
+
+  fireEvent(event, category) {
+    /* eslint-disable no-undef */
+    gtag('event', event, {'event_category': category, 'event_label' : this._pageId});
+  }
 
   async load() {
-    this._loaded = true
+    await this.initPageId();
+
     const payload = await this.getContent();
     let code;
     let styles;
@@ -82,9 +105,10 @@ OrderController.create(payload) {
       graphXml = payload?.value?.graphXml
       compressed = payload?.value?.compressed
     }
-    code = code || await this._confluenceWrapper.getMacroBody();
+    code = code || await this.getMacroBody();
 
     if(!mermaidCode && !code) {
+      this.fireEvent('load_macro', 'default_example');
       code = this.EXAMPLE;
     }
 
@@ -93,6 +117,8 @@ OrderController.create(payload) {
     if(compressed) {
       graphXml = LZUTF8.decompress(graphXml, {inputEncoding: COMPRESS_ENCODING});
     }
+
+    this._loaded = true;
     console.debug('Loaded macro', code, styles, mermaidCode, diagramType);
     return {code, styles, mermaidCode, diagramType, graphXml};
   }
@@ -112,8 +138,10 @@ OrderController.create(payload) {
       {graphXml: compressedCode, compressed: true} : {code, styles, mermaidCode, diagramType};
 
     const customContent = await this._confluenceWrapper.saveCustomContent(this._customContentId, key, CUSTOM_CONTENT_TYPE, value);
+    this.fireEvent('save_macro', 'custom_content');
 
     this._confluenceWrapper.saveMacro({uuid: key, customContentId: customContent.id, updatedAt: new Date()}, code);
+    this.fireEvent('save_macro', 'macro_body');
     const versionNumber = this._versionNumber;
 
     const contentProperty = {
@@ -124,6 +152,7 @@ OrderController.create(payload) {
       }
     }
     await this._confluenceWrapper.setContentProperty(contentProperty);
+    this.fireEvent('save_macro', 'content_property');
 
   }
 }

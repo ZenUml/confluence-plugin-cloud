@@ -82,6 +82,15 @@ export default class ConfluenceWrapper {
     });
   }
 
+  getPageId() { //TODO: cacheable
+    const navigator = this._navigator;
+    return new Promise((resolv) => {
+      navigator.getLocation((data) => {
+        resolv(data.context.contentId);
+      });
+    });
+  }
+
   parseCustomContentResponse(response) {
     return response && response.body && JSON.parse(response.body);
   }
@@ -96,25 +105,25 @@ export default class ConfluenceWrapper {
 
   async createCustomContent(uuid, type, content) {
     const spaceKey = await this.getSpaceKey(); //TODO: cacheable
-    const bodyData = `{
-      "type": "${type}",
-      "title": "${uuid}",
+    const bodyData = {
+      "type": type,
+      "title": uuid,
       "space": {
-        "key": "${spaceKey}"
+        "key": spaceKey
       },
       "body": {
         "raw": {
-          "value": "${this.encodeRawValue(content)}",
+          "value": JSON.stringify(content),
           "representation": "raw"
         }
       }
-    }`;
+    };
 
     const response = await this._request({
       url: '/rest/api/content',
       type: 'POST',
       contentType: 'application/json',
-      data: bodyData
+      data: JSON.stringify(bodyData)
     });
     return this.parseCustomContentResponse(response);
   }
@@ -122,29 +131,28 @@ export default class ConfluenceWrapper {
   async updateCustomContent(contentObj, newBody) {
     console.log('updateCustomContent, newBody: ', newBody);
     const spaceKey = await this.getSpaceKey();
-    const bodyData = `{
-      "type": "${contentObj.type}",
-      "title": "${contentObj.title}",
-      "status": "${contentObj.status}",
+    const bodyData = {
+      "type": contentObj.type,
+      "title": contentObj.title,
       "space": {
-        "key": "${spaceKey}"
+        "key": spaceKey
       },
       "body": {
         "raw": {
-          "value": "${this.encodeRawValue(newBody)}",
+          "value": JSON.stringify(newBody),
           "representation": "raw"
         }
       },
       "version": {
-        "number": ${contentObj.version.number + 1}
+        "number": contentObj.version.number + 1
       }
-    }`;
+    };
 
     const response = await this._request({
       url: `/rest/api/content/${contentObj.id}`,
       type: 'PUT',
       contentType: 'application/json',
-      data: bodyData
+      data: JSON.stringify(bodyData)
     });
     return this.parseCustomContentResponse(response);
   }
@@ -166,7 +174,7 @@ export default class ConfluenceWrapper {
     const url = `/rest/api/content/${id}?expand=body.raw,version.number`;
     const response = await this._request({type: 'GET', url});
     const customContent = this.parseCustomContentResponse(response);
-    return Object.assign({}, customContent, {value: this.decodeRawValue(customContent.body.raw.value)});
+    return Object.assign({}, customContent, {value: JSON.parse(customContent.body.raw.value)});
   }
 
   async saveCustomContent(customContentId, uuid, type, value) {
