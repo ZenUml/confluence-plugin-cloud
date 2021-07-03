@@ -20,7 +20,9 @@ new Vue({
 }).$mount('#save-and-go-back');
 async function initializeMacro() {
   // @ts-ignore
-  const macro = new GraphMacroEditor(AP.confluence, 'graph');
+  const macro = new GraphMacroEditor(AP, 'graph');
+
+
   // @ts-ignore
   window.macro = macro;
   const {graphXml} = await macro.load();
