@@ -1,3 +1,4 @@
+import { getUrlParam } from './window';
 
 // Each iFrame provides context for only one macro.
 // getMacroData returns the macro data for the CURRENT macro.
@@ -88,6 +89,10 @@ export default class ConfluenceWrapper {
         resolv(data.context.contentId);
       });
     });
+  }
+
+  getMacroKey() {
+    return getUrlParam('xdm_deprecated_addon_key_do_not_use'); //TODO: deprecated key
   }
 
   parseCustomContentResponse(response) {

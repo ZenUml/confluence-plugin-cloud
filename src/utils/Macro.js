@@ -3,8 +3,6 @@ import {compress, decompress} from './compress';
 import { getUrlParam } from './window';
 import ConfluenceWrapper from "@/utils/ConfluenceWrapper";
 
-const CUSTOM_CONTENT_TYPE = 'ac:com.zenuml.confluence-addon:zenuml-sequence-diagram';
-
 class Macro {
   EXAMPLE = `@Lambda OrderController
 <<BFF>> OrderService
@@ -44,6 +42,10 @@ OrderController.create(payload) {
   propertyKey(uuid) {
     const macroKey = `zenuml-${this._macroIdentifier}-macro`;
     return `${macroKey}-${uuid}-body`;
+  }
+
+  getCustomContentType() {
+    return `ac:${this._confluenceWrapper.getMacroKey()}:zenuml-sequence-diagram`;
   }
 
   async getContent() {
@@ -132,7 +134,7 @@ OrderController.create(payload) {
     const value = this._macroIdentifier === 'graph' ?
       {graphXml: compressedCode, compressed: true} : {code, styles, mermaidCode, diagramType};
 
-    const customContent = await this._confluenceWrapper.saveCustomContent(this._customContentId, key, CUSTOM_CONTENT_TYPE, value);
+    const customContent = await this._confluenceWrapper.saveCustomContent(this._customContentId, key, this.getCustomContentType(), value);
     this.fireEvent('save_macro', 'custom_content');
 
     this._confluenceWrapper.saveMacro({uuid: key, customContentId: customContent.id, updatedAt: new Date()}, code);
