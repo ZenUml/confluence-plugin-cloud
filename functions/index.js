@@ -46,27 +46,34 @@ exports.descriptor = functions.https.onRequest((req, resp) => {
   const url = req.url;
   const basePath = url.substring(0, url.lastIndexOf('/'));
   const self = url.substring(url.lastIndexOf('/'));
-  descriptor.baseUrl = `${req.protocol}://${req.hostname}${basePath}`;
+  const data = JSON.parse(JSON.stringify(descriptor));
+  data.baseUrl = `${req.protocol}://${req.hostname}${basePath}`;
   // This is not necessary but works as a defense.
-  descriptor.links.self = self;
+  data.links.self = self;
 
   const isLite = url.includes('lite');
   if (isLite) {
-    descriptor.key = 'com.zenuml.confluence-addon-lite';
-    descriptor.name = 'ZenUML Lite';
-    descriptor.description = 'ZenUML Lite add-on';
-    descriptor.enableLicensing = false;
-    descriptor.modules.dynamicContentMacros.forEach(macro => {
+    data.key = 'com.zenuml.confluence-addon-lite';
+    data.name = 'ZenUML Lite';
+    data.description = 'ZenUML Lite add-on';
+    data.enableLicensing = false;
+    data.modules.dynamicContentMacros.forEach(macro => {
       if (macro.key === 'zenuml-sequence-macro') {
         macro.key = 'zenuml-sequence-macro-lite';
         macro.name.value = 'ZenUML Sequence Lite';
       }
-      if (macro.key === 'zenuml-graph-macro') {
+      else if (macro.key === 'zenuml-graph-macro') {
         macro.key = 'zenuml-graph-macro-lite';
         macro.name.value = 'ZenUML Graph Lite';
       }
-    })
+    });
   }
 
-  resp.json(descriptor);
+  data.modules.dynamicContentMacros.forEach(macro => {
+    if(macro.editor && macro.editor.url) {
+      macro.editor.url = macro.editor.url.replace('__ADDON_KEY__', data.key);
+    }
+  });
+
+  resp.json(data);
 })

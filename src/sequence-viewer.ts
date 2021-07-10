@@ -49,8 +49,11 @@ async function initializeMacro() {
   // @ts-ignore
   store.dispatch('updateMermaidCode', mermaidCode || store.state.mermaidCode)
   store.dispatch('updateDiagramType', diagramType)
-  // @ts-ignore
-  await window.createAttachmentIfContentChanged(code);
+
+  if(!macro._standaloneCustomContent) {
+    // @ts-ignore
+    await window.createAttachmentIfContentChanged(code);
+  }
   let timing = window.performance.timing;
   console.debug('ZenUML diagram loading time:%s (ms)', timing.domContentLoadedEventEnd- timing.navigationStart)
 }

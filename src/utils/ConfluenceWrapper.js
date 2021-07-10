@@ -27,6 +27,7 @@ export default class ConfluenceWrapper {
     }))
   }
 
+  //FIXME: this method throws error in custom content viewer
   getMacroBody() {
     return new Promise((resolve) => {
       try {
