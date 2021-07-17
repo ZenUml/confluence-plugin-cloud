@@ -99,8 +99,19 @@ exports.descriptor = functions.https.onRequest((req, resp) => {
     });
 
     if(data.modules.customContent) {
-      data.modules.customContent.forEach(content => content.key = `${content.key}${liteKeySuffix}`);
+      data.modules.customContent.forEach(content => {
+        content.key = `${content.key}${liteKeySuffix}`;
+        if(content.name && content.name.value) {
+          content.name.value = `${content.name.value} Lite`;
+        }
+      });
     }
+
+    // if(data.modules.generalPages) {
+    //   data.modules.generalPages.forEach(page => {
+    //     page.key = `${page.key}${liteKeySuffix}`;
+    //   });
+    // }
   }
 
   replaceUrls(data.modules, (url, module) => {

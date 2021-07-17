@@ -92,8 +92,16 @@ export default class ConfluenceWrapper {
     });
   }
 
+  getContentKey() {
+    return getUrlParam('contentKey');
+  }
+
+  hasCustomContent() {
+    return !!(this.getContentKey());
+  }
+
   getCustomContentType() {
-    return `ac:${getUrlParam('addonKey')}:${getUrlParam('contentKey')}`;
+    return `ac:${getUrlParam('addonKey')}:${this.getContentKey()}`;
   }
 
   parseCustomContentResponse(response) {
