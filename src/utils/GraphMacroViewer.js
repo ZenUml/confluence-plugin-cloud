@@ -14,9 +14,6 @@ class GraphMacroViewer extends BaseMacro {
       result.graphXml = decompress(result.graphXml);
     }
 
-    if(result.graphXml !== result.code) {
-      console.warn('WARN-301: The content stored in macro body and in content property are different.')
-    }
     return result;
   }
 }
