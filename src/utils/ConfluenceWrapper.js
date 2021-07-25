@@ -85,9 +85,9 @@ export default class ConfluenceWrapper {
 
   getPageId() { //TODO: cacheable
     const navigator = this._navigator;
-    return new Promise((resolv) => {
+    return new Promise((resolve) => {
       navigator.getLocation((data) => {
-        resolv(data.context.contentId);
+        resolve(data.context.contentId);
       });
     });
   }

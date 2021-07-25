@@ -62,7 +62,7 @@ class BaseMacro {
     // This is defined in the descriptor and is only available for sequence-viewer.html.
     const key = macroData?.uuid || getUrlParam('uuid');
     this._key = key;
-    this._customContentId = macroData.customContentId;
+    this._customContentId = macroData?.customContentId;
     
     if(this._customContentId) {
       return await this.getCustomContent();
@@ -133,7 +133,6 @@ class BaseMacro {
     }
     await this._confluenceWrapper.setContentProperty(contentProperty);
     trackEvent(this._pageId, 'save_macro', 'content_property');
-
   }
 }
 

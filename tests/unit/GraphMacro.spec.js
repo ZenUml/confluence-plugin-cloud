@@ -5,6 +5,6 @@ describe('GraphMacro', () => {
   it('should have macroIdentifier as `graph`', () => {
     const mockApConfluence = new MockApConfluence();
     let graphMacro = new GraphMacroViewer({confluence: mockApConfluence});
-    expect(graphMacro._macroKeyPrefix).toBe('zenuml-graph-macro')
+    expect(graphMacro._macroIdentifier).toBe('graph')
   })
 })
