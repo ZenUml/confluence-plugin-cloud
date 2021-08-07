@@ -4,13 +4,13 @@
   <mermaid v-show="this.$store.getters.diagramType === 'mermaid'"/>
   <div v-show="this.$store.getters.diagramType === 'zenuml'" @click="deselectAll">
     <styling-panel/>
-    <seq-diagram />
+    <frame />
   </div>
 </div>
 </template>
 
 <script>
-import { SeqDiagram } from 'vue-sequence'
+import { Frame } from 'vue-sequence'
 import Mermaid from './Mermaid'
 
 import StylingPanel from "@/components/StylingPanel";
@@ -20,7 +20,7 @@ export default {
   components: {
     Mermaid,
     StylingPanel,
-    SeqDiagram
+    Frame
   },
   computed: {
     styles() {
@@ -47,5 +47,7 @@ export default {
 </script>
 
 <style scoped>
-
+.viewer {
+  margin-left: 5px;
+}
 </style>
