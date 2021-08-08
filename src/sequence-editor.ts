@@ -64,7 +64,7 @@ if (window.location.href.includes('localhost')) {
 }
 async function initializeMacro() {
 // @ts-ignore
-  const macro = store.state.macro || new Macro(AP.confluence);
+  const macro = store.state.macro || new Macro(AP);
   // @ts-ignore
   window.macro = macro;
   const {code, styles, mermaidCode, diagramType} = await macro.load();

@@ -18,6 +18,10 @@ Just re-register should fix it in most times.
 401 is Unauthorized (or actually means Unauthenticated). It does not make sense as all content
 is public. Simply restarting fixes this issue.
 
+### Error: Please install sqlite3 package manually
+1. rm -rf node_modules
+2. yarn install
+
 ### Other errors
 1. Get the descriptor
 1. Validate the descriptor at https://atlassian-connect-validator.herokuapp.com/validate
