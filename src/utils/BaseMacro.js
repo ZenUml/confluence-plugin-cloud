@@ -5,7 +5,6 @@ import ConfluenceWrapper from "@/utils/ConfluenceWrapper";
 class BaseMacro {
   _key;
   _customContentId;
-  _versionNumber;
   _loaded = false;
   _macroIdentifier;
   _pageId;
@@ -81,7 +80,6 @@ class BaseMacro {
     let diagramType;
     let graphXml;
     let compressed;
-    this._versionNumber = payload?.version?.number || 0;
     if(typeof payload?.value === 'string') {
       code = payload?.value
     } else {
@@ -122,17 +120,6 @@ class BaseMacro {
 
     this._confluenceWrapper.saveMacro(macroParam, value.code);
     trackEvent(this._pageId, 'save_macro', 'macro_body');
-    const versionNumber = this._versionNumber;
-
-    const contentProperty = {
-      key: this.propertyKey(key),
-      value: value,
-      version: {
-        number: versionNumber ? versionNumber + 1 : 1
-      }
-    }
-    await this._confluenceWrapper.setContentProperty(contentProperty);
-    trackEvent(this._pageId, 'save_macro', 'content_property');
   }
 }
 
