@@ -11,6 +11,7 @@ import Macro from './utils/Macro'
 import mermaid from 'mermaid'
 
 import ExtendedStore from './Store'
+import EventBus from './EventBus'
 import Viewer from "@/components/Viewer.vue";
 
 // eslint-disable-next-line
@@ -36,8 +37,9 @@ if(document.getElementById('app')) {
 window.store = store
 
 async function initializeMacro() {
-  console.debug('Initializing macro from sequence-viewer.ts');
-// @ts-ignore
+  // @ts-ignore
+  console.debug('Initializing macro from sequence-viewer.ts', store.state.macro);
+  // @ts-ignore
   const macro = store.state.macro || new Macro(AP);
   // @ts-ignore
   window.macro = macro;
@@ -57,5 +59,31 @@ async function initializeMacro() {
   let timing = window.performance.timing;
   console.debug('ZenUML diagram loading time:%s (ms)', timing.domContentLoadedEventEnd- timing.navigationStart)
 }
+
+EventBus.$on('edit', () => {
+  // @ts-ignore
+  AP.dialog.create(
+    {
+      key: 'zenuml-content-sequence-editor',
+        // @ts-ignore
+        customData: {'content.id': store.state.macro._customContentId},
+        chrome: false,
+        width: "100%",
+        height: "100%",
+    }).on('close', initializeMacro);
+});
+
+EventBus.$on('fullscreen', () => {
+  // @ts-ignore
+  AP.dialog.create(
+    {
+      key: 'zenuml-content-sequence-viewer',
+        // @ts-ignore
+        customData: {'content.id': store.state.macro._customContentId},
+        chrome: true,
+        width: "100%",
+        height: "100%",
+    });
+});
 
 initializeMacro();

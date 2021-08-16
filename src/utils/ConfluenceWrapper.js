@@ -6,11 +6,13 @@ export default class ConfluenceWrapper {
   _confluence;
   _request;
   _navigator;
+  _dialog;
 
   constructor(ap) {
     this._confluence = ap.confluence;
     this._request = ap.request;
     this._navigator = ap.navigator;
+    this._dialog = ap.dialog;
   }
 
   getMacroData() {
@@ -189,5 +191,26 @@ export default class ConfluenceWrapper {
     } else {
       return await this.createCustomContent(uuid, value);
     }
+  }
+
+  getDialogCustomData() {
+    const dialog = this._dialog;
+    return new Promise((resolv) => {
+      try {
+        dialog.getCustomData(data => {
+          // eslint-disable-next-line
+          console.log('custom data:', data);
+          resolv(data);
+        });
+      } catch(e) {
+        // eslint-disable-next-line
+        console.error('error getting custom data:', e);
+        resolv();
+      }
+    });
+  }
+
+  isDisplayMode() {
+    return getUrlParam('outputType') === 'display';
   }
 }

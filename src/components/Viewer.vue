@@ -1,5 +1,9 @@
 <template>
 <div class="viewer">
+  <div class="actions" v-show="this.$store.getters.isDisplayMode">
+    <button @click="edit">Edit</button>
+    <button @click="fullscreen">Fullscreen</button>
+  </div>
   <div v-html="styles"></div>
   <mermaid v-show="this.$store.getters.diagramType === 'mermaid'"/>
   <div v-show="this.$store.getters.diagramType === 'zenuml'" @click="deselectAll">
@@ -12,6 +16,7 @@
 <script>
 import { Frame } from 'vue-sequence'
 import Mermaid from './Mermaid'
+import EventBus from '../EventBus'
 
 import StylingPanel from "@/components/StylingPanel";
 
@@ -42,6 +47,12 @@ export default {
       }
       this.$store.state.selected = []
     },
+    edit() {
+      EventBus.$emit('edit');
+    },
+    fullscreen() {
+      EventBus.$emit('fullscreen');
+    },
   },
 }
 </script>
@@ -49,5 +60,8 @@ export default {
 <style scoped>
 .viewer {
   margin-left: 5px;
+}
+.actions {
+  float: right
 }
 </style>
