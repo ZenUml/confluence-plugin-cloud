@@ -112,10 +112,11 @@ describe('Macro', () => {
         const styles = {'#A': { backgroundColor: '#FFF'}}
         await macro.save(code, styles)
         expect((await macro.load()).code).toBe(code)
-        expect((await macro.load()).styles['#A'].backgroundColor).toBe('#FFF')
-        const contentProperty = await macro.getContentProperty('random_uuid');
-        expect(contentProperty.value.code).toBe(code)
-        expect(contentProperty.version.number).toBe(1)
+        // Style is only available in custom content
+        // expect((await macro.load()).styles['#A'].backgroundColor).toBe('#FFF')
+        // const contentProperty = await macro.getContentProperty('random_uuid');
+        // expect(contentProperty.value.code).toBe(code)
+        // expect(contentProperty.version.number).toBe(1)
         const data = await macro._confluenceWrapper.getMacroData()
         expect(data.uuid).toBe('random_uuid')
         expect(data.updatedAt).toBeDefined()
@@ -131,8 +132,6 @@ describe('Macro', () => {
         const newCode = 'B.method';
         await macro.save(newCode)
         expect((await macro.load()).code).toBe(newCode)
-        const contentProperty = await macro.getContentProperty('random_uuid');
-        expect(contentProperty.version.number).toBe(2)
         const data = await macro._confluenceWrapper.getMacroData()
         expect(data.uuid).toBe('random_uuid')
         expect(data.updatedAt).toBeDefined()
@@ -141,18 +140,5 @@ describe('Macro', () => {
       })
     })
 
-    describe('Mocked data - should save macro data and content property', () => {
-      it('for the next times', async () => {
-        mockApConfluence.saveMacro({uuid: '1234'}, 'body')
-        mockApConfluence.setContentProperty({key: 'zenuml-sequence-macro-1234-body', value: 'A.method', version: {number: 100}})
-        // Must load first
-        await macro.load()
-        const newCode = 'B.method';
-        await macro.save(newCode)
-        expect((await macro.load()).code).toBe(newCode)
-        const contentProperty = await macro.getContentProperty('1234');
-        expect(contentProperty.version.number).toBe(101)
-      })
-    })
   })
 })
