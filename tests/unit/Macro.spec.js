@@ -114,9 +114,9 @@ describe('Macro', () => {
         expect((await macro.load()).code).toBe(code)
         // Style is only available in custom content
         // expect((await macro.load()).styles['#A'].backgroundColor).toBe('#FFF')
-        const contentProperty = await macro.getContentProperty('random_uuid');
-        expect(contentProperty.value.code).toBe(code)
-        expect(contentProperty.version.number).toBe(1)
+        // const contentProperty = await macro.getContentProperty('random_uuid');
+        // expect(contentProperty.value.code).toBe(code)
+        // expect(contentProperty.version.number).toBe(1)
         const data = await macro._confluenceWrapper.getMacroData()
         expect(data.uuid).toBe('random_uuid')
         expect(data.updatedAt).toBeDefined()
