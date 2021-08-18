@@ -1,31 +1,36 @@
 <template>
 <div class="viewer">
-  <div class="actions" v-show="this.$store.getters.isDisplayMode">
-    <button @click="edit">Edit</button>
-    <button @click="fullscreen">Fullscreen</button>
-  </div>
   <div v-html="styles"></div>
   <mermaid v-show="this.$store.getters.diagramType === 'mermaid'"/>
   <div v-show="this.$store.getters.diagramType === 'zenuml'" @click="deselectAll">
     <styling-panel/>
-    <frame />
+    <seq-frame>
+      <div class="actions" v-show="this.$store.getters.isDisplayMode">
+        <button @click="edit">Edit</button>
+        <button @click="fullscreen">Fullscreen</button>
+      </div>
+    </seq-frame>
   </div>
 </div>
 </template>
 
 <script>
+import Vue from 'vue'
+
 import { Frame } from 'vue-sequence'
 import Mermaid from './Mermaid'
 import EventBus from '../EventBus'
 
 import StylingPanel from "@/components/StylingPanel";
+let SeqFrame = Frame
+Vue.component('seq-frame', SeqFrame)
 
 export default {
   name: "Viewer",
   components: {
     Mermaid,
     StylingPanel,
-    Frame
+    SeqFrame
   },
   computed: {
     styles() {

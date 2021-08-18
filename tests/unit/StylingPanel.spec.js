@@ -1,7 +1,6 @@
 import { mount, createLocalVue } from "@vue/test-utils"
 import Vuex from 'vuex'
 import { Store } from 'vue-sequence'
-import Workspace from "../../src/components/Workspace"
 import StylingPanel from '../../src/components/StylingPanel'
 const localVue = createLocalVue()
 localVue.use(Vuex)

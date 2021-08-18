@@ -3,8 +3,9 @@ import Vuex from 'vuex'
 // @ts-ignore
 import VueCodeMirror from 'vue-codemirror'
 
+import './assets/tailwind.css'
 // @ts-ignore
-import { Version, SeqDiagram } from 'vue-sequence'
+import { Version, SeqDiagram, Frame } from 'vue-sequence'
 import 'vue-sequence/dist/vue-sequence.css'
 // eslint-disable-next-line
 console.log(Version)
@@ -37,6 +38,7 @@ mermaid.mermaidAPI.initialize({
 
 Vue.config.productionTip = false
 
+Vue.component('seq-frame', Frame)
 Vue.component('seq-diagram', SeqDiagram)
 Vue.component('editor', Editor)
 Vue.component('workspace', Workspace)
