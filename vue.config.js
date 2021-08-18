@@ -1,5 +1,10 @@
 module.exports = {
   pages: {
+    "index": {
+      entry: 'src/main.ts',
+      template: 'public/index.html',
+      chunks: ['chunk-common', 'chunk-sequence-editor-vendors', 'sequence-editor']
+    },
     "sequence-editor": {
       entry: 'src/sequence-editor.ts',
       template: 'public/sequence-editor.html',

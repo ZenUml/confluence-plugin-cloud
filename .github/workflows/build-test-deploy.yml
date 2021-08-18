@@ -3,12 +3,7 @@
 
 name: Build, Test and Deploy
 
-on:
-  push:
-    branches: [ master ]
-    tags: [staging-*, release-*]
-  pull_request:
-    branches: [ master ]
+on: [push, pull_request]
 
 jobs:
   build:
