@@ -17151,10 +17151,10 @@ vue-loader@^15.9.2:
     vue-hot-reload-api "^2.3.0"
     vue-style-loader "^4.1.0"
 
-vue-sequence@^1.0.169:
-  version "1.0.169"
-  resolved "https://registry.yarnpkg.com/vue-sequence/-/vue-sequence-1.0.169.tgz#a199016d112f379753bdff3ab1abf793c7ccec92"
-  integrity sha512-m7dguDKddqh5Yp/IZ/XA71E13Z1F3M0y/MTpKApfBq4gf0ux/97DAxw9qnTSQAjxRf1WbyTwEk6fcc1tbh+WCw==
+vue-sequence@^1.0.171:
+  version "1.0.171"
+  resolved "https://registry.yarnpkg.com/vue-sequence/-/vue-sequence-1.0.171.tgz#523df43ccba1cfac1de5bf2a9720326f8181e5c6"
+  integrity sha512-vLGd6L2+gw/Uxa3G5oTwB5xOjKr7w7Tamg39q9I9ZVENmzIoSyhJx+0jZ5EUlU5+vcFhLz0ejmkUc9n48kEWLw==
   dependencies:
     "@tailwindcss/postcss7-compat" "^2.0.2"
     "@types/assert" "^1.5.4"

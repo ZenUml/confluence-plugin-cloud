@@ -4,6 +4,7 @@ node_modules
 firebase-debug.log
 
 dist
+.cache
 
 # local env files
 .env.local
