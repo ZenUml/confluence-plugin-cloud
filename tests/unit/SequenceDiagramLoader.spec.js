@@ -1,14 +1,6 @@
-class SequenceDiagramLoader {
-  apWrapper;
-  constructor(apWrapper) {
-    this.apWrapper = apWrapper;
-  }
-
-  async load() {
-    let code = await this.apWrapper.getMacroBody();
-    return {code};
-  }
-}
+import {SequenceDiagramLoader} from "./SequenceDiagramLoader";
+import MockApConfluence from '../../src/utils/MockApConfluence'
+import Macro from '../../src/utils/Macro'
 
 class MockApWrapper {
   _param;
@@ -37,9 +29,6 @@ describe('SequenceDiagramLoader', () => {
 
   it('Load from custom content by uuid from macro data')
 })
-
-import MockApConfluence from '../../src/utils/MockApConfluence'
-import Macro from '../../src/utils/Macro'
 
 let mockApConfluence;
 let macro;

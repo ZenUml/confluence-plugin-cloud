@@ -1,0 +1,1 @@
+console.log('From sequence viewer dialog')

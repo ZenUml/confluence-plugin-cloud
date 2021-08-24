@@ -15,6 +15,11 @@ module.exports = {
       template: 'public/sequence-viewer.html',
       chunks: ['chunk-common', 'chunk-sequence-viewer-vendors', 'sequence-viewer']
     },
+    "sequence-viewer-dialog": {
+      entry: 'src/sequence-viewer-dialog.ts',
+      template: 'public/sequence-viewer.html',
+      chunks: ['chunk-common', 'chunk-sequence-viewer-dialog-vendors', 'sequence-viewer-dialog']
+    },
     "edit": {
       entry: 'src/sequence-editor.ts',
       template: 'public/sequence-editor.html',

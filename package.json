@@ -15,7 +15,7 @@
     "deploy:full:stage": "npm run build:full && firebase deploy --project full:stage",
     "deploy:lite:prod": "npm run build:lite && firebase deploy --project lite:prod",
     "deploy:lite:stage": "npm run build:lite && firebase deploy --project lite:stage",
-    "firebase:serve": "firebase serve --only hosting,functions",
+    "firebase:serve": "firebase emulators:start --only hosting,functions",
     "lint:vue": "vue-cli-service lint",
     "start": "node -r esm app.js",
     "start:air": "AC_LOCAL_BASE_URL=https://air.zenuml.com node -r esm app.js",

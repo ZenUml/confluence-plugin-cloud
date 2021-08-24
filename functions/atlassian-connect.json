@@ -196,6 +196,14 @@
       ],
       "generalPages": [
         {
+            "key": "zenuml-content-sequence-viewer-dialog",
+            "location": "none",
+            "url": "/sequence-viewer-dialog.html",
+            "name": {
+                "value": "ZenUML Sequence Viewer Dialog"
+            }
+        },
+        {
             "key": "zenuml-content-sequence-viewer",
             "location": "none",
             "url": "/sequence-viewer.html?spaceKey={space.key}&content.id={content.id}&content.version={content.version}&addonKey=__ADDON_KEY__&contentKey=__CONTENT_KEY__",

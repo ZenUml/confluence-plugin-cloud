@@ -77,12 +77,10 @@ EventBus.$on('fullscreen', () => {
   // @ts-ignore
   AP.dialog.create(
     {
-      key: 'zenuml-content-sequence-viewer',
-        // @ts-ignore
-        customData: {'content.id': store.state.macro._customContentId},
-        chrome: true,
-        width: "100%",
-        height: "100%",
+      key: 'zenuml-content-sequence-viewer-dialog',
+      chrome: true,
+      width: "100%",
+      height: "100%",
     });
 });
 
