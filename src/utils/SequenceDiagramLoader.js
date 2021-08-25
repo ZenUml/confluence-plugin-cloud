@@ -1,4 +1,4 @@
-export class SequenceDiagramLoader {
+export default class SequenceDiagramLoader {
   apWrapper;
 
   constructor(apWrapper) {

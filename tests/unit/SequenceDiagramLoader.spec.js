@@ -1,4 +1,4 @@
-import {SequenceDiagramLoader} from "./SequenceDiagramLoader";
+import SequenceDiagramLoader from "@/utils/SequenceDiagramLoader";
 import MockApConfluence from '../../src/utils/MockApConfluence'
 import Macro from '../../src/utils/Macro'
 
@@ -13,7 +13,6 @@ class MockApWrapper {
   async getMacroBody() {
     return this._code;
   }
-
 }
 
 describe('SequenceDiagramLoader', () => {
@@ -25,9 +24,13 @@ describe('SequenceDiagramLoader', () => {
     expect(diagram.code).toBe('A.method1')
   })
 
-  it('Load from content property by uuid from macro data')
+  it('Load from content property by uuid from macro data', () => {
 
-  it('Load from custom content by uuid from macro data')
+  })
+
+  it('Load from custom content by uuid from macro data', () => {
+
+  })
 })
 
 let mockApConfluence;

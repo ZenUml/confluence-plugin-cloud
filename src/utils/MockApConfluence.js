@@ -36,7 +36,8 @@ if (window.location.href.includes('localhost')) {
   console.log('You are using a mocked AP.confluence')
   let mockApConfluence = new MockApConfluence();
   window.AP = {
-    confluence: mockApConfluence
+    confluence: mockApConfluence,
+    resize() {}
   }
 }
 

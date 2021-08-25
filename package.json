@@ -3,6 +3,7 @@
   "version": "1.1.0",
   "private": true,
   "scripts": {
+    "engine": "use yarn to install",
     "build": "concurrently -i 'npm:build-*'",
     "test:unit": "vue-cli-service test:unit",
     "lint": "eslint app.js routes",
