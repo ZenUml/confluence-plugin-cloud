@@ -1,5 +1,5 @@
 import SequenceDiagramLoader from "@/utils/SequenceDiagramLoader";
-import MockApConfluence from '../../src/utils/MockApConfluence'
+import MockApConfluence from '@/utils/MockApConfluence'
 import Macro from '../../src/utils/Macro'
 
 class MockApWrapper {

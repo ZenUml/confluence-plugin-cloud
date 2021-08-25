@@ -1,9 +1,9 @@
 import SequenceDiagramLoader from './utils/SequenceDiagramLoader'
 import ConfluenceWrapper from "@/utils/ConfluenceWrapper";
-import MockApConfluence from "@/utils/MockApConfluence";
-console.log('From sequence viewer dialog1');
+import MockAp from "@/utils/MockAp.ts"
+console.log('From sequence viewer dialog');
 // @ts-ignore
-const localAp = AP || { confluence: new MockApConfluence()};
+const localAp = AP || new MockAp();
 let confluenceWrapper = new ConfluenceWrapper(localAp);
 let sequenceDiagramLoader = new SequenceDiagramLoader(confluenceWrapper);
 async function main() {
