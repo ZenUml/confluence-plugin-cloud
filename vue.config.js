@@ -89,6 +89,14 @@ module.exports = {
     }
   },
   devServer: {
+    disableHostCheck: true,
+    historyApiFallback: true,
+    hot: true,
+    public: 'air.zenuml.com',
+    host: 'localhost',
+    port: 8080,
+    sockHost: 'air.zenuml.com',
+    sockPort: 443,
     compress: true,  // This reduces the app.js from 4.8MB to 1.2MB
     before: function (app) {
       app.get(/installed/, function (req, res) {
