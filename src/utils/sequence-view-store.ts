@@ -4,14 +4,14 @@ import Vuex from 'vuex'
 // @ts-ignore
 import {Store} from 'vue-sequence'
 
-import ApWrapper from "@/utils/ApWrapper";
+import ApWrapper2 from "./ApWrapper2";
 import AP from "@/utils/AP";
 import SequenceDiagramLoader from "@/utils/SequenceDiagramLoader";
 Vue.use(Vuex)
 
 async function getCode() {
   // @ts-ignore
-  const confluenceWrapper = new ApWrapper(AP, 'sequence')
+  const confluenceWrapper = new ApWrapper2(AP, 'sequence')
   let sequenceDiagramLoader = new SequenceDiagramLoader(confluenceWrapper);
   // @ts-ignore
   window.sequenceDiagramLoader = sequenceDiagramLoader

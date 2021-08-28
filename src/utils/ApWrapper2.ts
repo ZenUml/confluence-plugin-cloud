@@ -1,8 +1,9 @@
-import { getUrlParam } from './window';
+import {getUrlParam} from './window';
+import {Diagram} from "@/utils/Diagram";
 
 // Each iFrame provides context for only one macro.
 // getMacroData returns the macro data for the CURRENT macro.
-// ApWrapper converts callback to Promise and also encapsulates
+// ApWrapper2 converts callback to Promise and also encapsulates
 interface Confluence {
   getMacroData: (arg0: (data: any) => void) => void;
   getMacroBody: (arg0: (body: any) => void) => void;
@@ -37,7 +38,7 @@ interface MacroParams {
 }
 
 // custom content APIs.
-export default class ApWrapper {
+export default class ApWrapper2 {
   _confluence: Confluence;
   _request: ApRequestFunc;
   _navigator: any;
@@ -87,7 +88,7 @@ export default class ApWrapper {
     return `${macroKey}-${uuid}-body`;
   }
 
-  async getContentProperty2() {
+  async getContentProperty2(): Promise<Diagram> {
     let macroData = await this.getMacroData();
     const uuid = macroData?.uuid;
     if(!uuid) {

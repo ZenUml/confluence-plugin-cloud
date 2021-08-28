@@ -1,6 +1,6 @@
 import uuidv4 from './uuid';
 import { getUrlParam, trackEvent } from './window';
-import ApWrapper from "@/utils/ApWrapper";
+import ApWrapper2 from "./ApWrapper2";
 
 class BaseMacro {
   _key;
@@ -11,7 +11,7 @@ class BaseMacro {
   _standaloneCustomContent;
 
   constructor(ap, macroIdentifier) {
-    this._confluenceWrapper = new ApWrapper(ap, macroIdentifier);
+    this._confluenceWrapper = new ApWrapper2(ap, macroIdentifier);
     this._macroIdentifier = macroIdentifier;
   }
 
