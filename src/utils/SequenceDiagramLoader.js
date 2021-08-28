@@ -6,7 +6,10 @@ export default class SequenceDiagramLoader {
   }
 
   async load() {
-    let code = await this.apWrapper.getMacroBody();
-    return {code};
+    let content = await this.apWrapper.getContentProperty2();
+    if(!content) {
+      content = await this.apWrapper.getMacroBody();
+    }
+    return {code: content.code};
   }
 }

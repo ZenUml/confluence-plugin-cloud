@@ -13,6 +13,14 @@ class MockApWrapper {
   async getMacroBody() {
     return this._code;
   }
+
+  setup_saveContentProperty(content) {
+    this._code = content.value;
+  }
+  // Note: we do not need key for this method.
+  async getContentProperty2() {
+    return {code: this._code};
+  }
 }
 
 describe('SequenceDiagramLoader', () => {
@@ -24,8 +32,15 @@ describe('SequenceDiagramLoader', () => {
     expect(diagram.code).toBe('A.method1')
   })
 
-  it('Load from content property by uuid from macro data', () => {
-
+  it('Load from content property by uuid from macro data', async () => {
+    let mockApWrapper = new MockApWrapper();
+    mockApWrapper.setUp_saveMacro({
+      uuid: 'uuid_1234'
+    });
+    mockApWrapper.setup_saveContentProperty({key: 'zenuml-sequence-macro-1234-body', value: 'A.method'})
+    let sequenceDiagramLoader = new SequenceDiagramLoader(mockApWrapper);
+    let diagram = await sequenceDiagramLoader.load();
+    expect(diagram.code).toBe('A.method')
   })
 
   it('Load from custom content by uuid from macro data', () => {
