@@ -119,10 +119,9 @@ class BaseMacro {
       macroParam.customContentId = customContent.id;
     }
 
-    if(this._key) {
-      this._confluenceWrapper.saveMacro(macroParam, value.code);
-      trackEvent(this._pageId, 'save_macro', 'macro_body');
-    }
+    //TODO: Edit issue when editing content property based macro in viewer
+    this._confluenceWrapper.saveMacro(macroParam, value.code);
+    trackEvent(this._pageId, 'save_macro', 'macro_body');
   }
 }
 

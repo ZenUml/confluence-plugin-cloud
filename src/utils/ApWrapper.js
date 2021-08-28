@@ -10,6 +10,7 @@ export default class ApWrapper {
   _navigator;
   _dialog;
   _macroIdentifier;
+  _locationContext;
 
   constructor(ap, macroIdentifier) {
     this._macroIdentifier = macroIdentifier;
@@ -85,22 +86,26 @@ export default class ApWrapper {
     this._confluence.saveMacro(params, body)
   }
 
-  getSpaceKey() { //TODO: cacheable
-    const navigator = this._navigator;
-    return new Promise((resolv) => {
-      navigator.getLocation((data) => {
-        resolv(data.context.spaceKey);
+  getLocationContext() {
+    if(this._locationContext) {
+      return Promise.resolve(this._locationContext);
+    }
+
+    const self = this;
+    return new Promise((resolve) => {
+      self._navigator.getLocation((data) => {
+        self._locationContext = data.context;
+        resolve(data.context);
       });
     });
   }
 
-  getPageId() { //TODO: cacheable
-    const navigator = this._navigator;
-    return new Promise((resolve) => {
-      navigator.getLocation((data) => {
-        resolve(data.context.contentId);
-      });
-    });
+  async getSpaceKey() {
+    return (await this.getLocationContext().spaceKey);
+  }
+
+  async getPageId() {
+    return (await this.getLocationContext().contentId);
   }
 
   getContentKey() {
@@ -120,14 +125,16 @@ export default class ApWrapper {
   }
 
   async createCustomContent(uuid, content) {
-    const spaceKey = await this.getSpaceKey(); //TODO: cacheable
+    const context = await this.getLocationContext();
     const type = this.getCustomContentType();
+    const container = {id: context.contentId, type: context.contentType};
     const bodyData = {
       "type": type,
       "title": uuid,
       "space": {
-        "key": spaceKey
+        "key": context.spaceKey
       },
+      "container": container,
       "body": {
         "raw": {
           "value": JSON.stringify(content),
@@ -146,13 +153,13 @@ export default class ApWrapper {
   }
 
   async updateCustomContent(contentObj, newBody) {
-    const spaceKey = await this.getSpaceKey();
     const bodyData = {
       "type": contentObj.type,
       "title": contentObj.title,
       "space": {
-        "key": spaceKey
+        "key": contentObj.space.key
       },
+      "container": contentObj.container,
       "body": {
         "raw": {
           "value": JSON.stringify(newBody),
@@ -173,21 +180,8 @@ export default class ApWrapper {
     return this.parseCustomContentResponse(response);
   }
 
-  async getCustomContentByTitle(type, title) {
-    const spaceKey = await this.getSpaceKey();
-    const url = `/rest/api/content?type=${type}&title=${title}&spaceKey=${spaceKey}&expand=children,history,version.number`;
-    const results = JSON.parse((await this._request({type: 'GET', url})).body).results;
-    if(results.length > 1) {
-      throw `multiple results found with type ${type}, title ${title}`;
-    }
-    if(results.length === 1) {
-      return results[0];
-    }
-    return null;
-  }
-
   async getCustomContentById(id) {
-    const url = `/rest/api/content/${id}?expand=body.raw,version.number`;
+    const url = `/rest/api/content/${id}?expand=body.raw,version.number,container,space`;
     const response = await this._request({type: 'GET', url});
     const customContent = this.parseCustomContentResponse(response);
     return Object.assign({}, customContent, {value: JSON.parse(customContent.body.raw.value)});
