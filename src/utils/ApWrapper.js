@@ -2,7 +2,9 @@ import { getUrlParam } from './window';
 
 // Each iFrame provides context for only one macro.
 // getMacroData returns the macro data for the CURRENT macro.
-export default class ConfluenceWrapper {
+// ApWrapper converts callback to Promise and also encapsulates
+// custom content APIs.
+export default class ApWrapper {
   _confluence;
   _request;
   _navigator;
