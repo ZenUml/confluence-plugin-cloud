@@ -17,9 +17,8 @@ class BaseMacro {
 
   async initPageId() {
     if(!this._pageId) {
-      const customData = await this._confluenceWrapper.getDialogCustomData();
-      console.debug('custom data: ', customData);
-      this._customContentId = customData && customData['content.id'] || getUrlParam('content.id');
+      // for dialog opened from list
+      this._customContentId = getUrlParam('content.id');
       console.debug('custom content id: ', this._customContentId);
       this._standaloneCustomContent = !!this._customContentId;
       this._pageId = this._customContentId || (await this._confluenceWrapper.getPageId());

@@ -65,8 +65,6 @@ EventBus.$on('edit', () => {
   AP.dialog.create(
     {
       key: 'zenuml-content-sequence-editor',
-        // @ts-ignore
-        customData: {'content.id': store.state.macro._customContentId},
         chrome: false,
         width: "100%",
         height: "100%",

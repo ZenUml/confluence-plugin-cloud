@@ -202,23 +202,6 @@ export default class ApWrapper {
     }
   }
 
-  getDialogCustomData() {
-    const dialog = this._dialog;
-    return new Promise((resolv) => {
-      try {
-        dialog.getCustomData(data => {
-          // eslint-disable-next-line
-          console.log('custom data:', data);
-          resolv(data);
-        });
-      } catch(e) {
-        // eslint-disable-next-line
-        console.error('error getting custom data:', e);
-        resolv();
-      }
-    });
-  }
-
   isDisplayMode() {
     return getUrlParam('outputType') === 'display';
   }
