@@ -26,6 +26,8 @@ if (window.location.href.includes('localhost') || window.location.href.includes(
 }
 let sequenceDiagramLoader = new SequenceDiagramLoader(confluenceWrapper);
 let code = 'A.method1';
+// @ts-ignore
+window.sequenceDiagramLoader = sequenceDiagramLoader
 async function main() {
   let content = await sequenceDiagramLoader.load();
   code = content.code || 'B.method2';
