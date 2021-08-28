@@ -9,21 +9,15 @@ import 'vue-sequence/dist/vue-sequence.css'
 // @ts-ignore
 import Va from 'vue-atlas'
 import 'vue-atlas/dist/vue-atlas.css'
-
+import AP from './utils/AP'
 import SequenceDiagramLoader from './utils/SequenceDiagramLoader'
 import ConfluenceWrapper from "@/utils/ConfluenceWrapper";
-import MockAp from "@/utils/MockAp";
+
 Vue.use(Vuex)
 Vue.use(Va)
-Vue.component('seq-diagram', SeqDiagram)
 
 console.log('From sequence viewer dialog');
-// @ts-ignore
-let confluenceWrapper = new ConfluenceWrapper(window.AP);
-// Don't replace this with testing `window.AP`. `window.AP` is available as long as all.js is included.
-if (window.location.href.includes('localhost')) {
-  confluenceWrapper = new ConfluenceWrapper(new MockAp());
-}
+const confluenceWrapper = new ConfluenceWrapper(AP)
 let sequenceDiagramLoader = new SequenceDiagramLoader(confluenceWrapper);
 let code = 'A.method1';
 // @ts-ignore
