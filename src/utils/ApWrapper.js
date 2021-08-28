@@ -9,8 +9,10 @@ export default class ApWrapper {
   _request;
   _navigator;
   _dialog;
+  _macroIdentifier;
 
-  constructor(ap) {
+  constructor(ap, macroIdentifier) {
+    this._macroIdentifier = macroIdentifier;
     this._confluence = ap.confluence;
     this._request = ap.request;
     this._navigator = ap.navigator;
@@ -44,6 +46,18 @@ export default class ApWrapper {
         resolve(null)
       }
     })
+  }
+
+  propertyKey(uuid) {
+    const macroKey = `zenuml-${this._macroIdentifier}-macro`;
+    return `${macroKey}-${uuid}-body`;
+  }
+
+  async getContentProperty2() {
+    let macroData = await this.getMacroData();
+    const uuid = macroData.uuid;
+    let {value} = await this.getContentProperty(this.propertyKey(uuid));
+    return {code: value.code};
   }
 
   getContentProperty(key) {

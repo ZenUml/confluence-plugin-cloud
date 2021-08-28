@@ -11,7 +11,7 @@ class BaseMacro {
   _standaloneCustomContent;
 
   constructor(ap, macroIdentifier) {
-    this._confluenceWrapper = new ApWrapper(ap);
+    this._confluenceWrapper = new ApWrapper(ap, macroIdentifier);
     this._macroIdentifier = macroIdentifier;
   }
 

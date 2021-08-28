@@ -10,7 +10,8 @@ import SequenceDiagramLoader from "@/utils/SequenceDiagramLoader";
 Vue.use(Vuex)
 
 async function getCode() {
-  const confluenceWrapper = new ApWrapper(AP)
+  // @ts-ignore
+  const confluenceWrapper = new ApWrapper(AP, 'sequence')
   let sequenceDiagramLoader = new SequenceDiagramLoader(confluenceWrapper);
   // @ts-ignore
   window.sequenceDiagramLoader = sequenceDiagramLoader
