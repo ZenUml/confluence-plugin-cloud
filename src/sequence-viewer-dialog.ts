@@ -21,7 +21,7 @@ console.log('From sequence viewer dialog');
 // @ts-ignore
 let confluenceWrapper = new ConfluenceWrapper(window.AP);
 // Don't replace this with testing `window.AP`. `window.AP` is available as long as all.js is included.
-if (window.location.href.includes('localhost') || window.location.href.includes('air.zenuml.com')) {
+if (window.location.href.includes('localhost')) {
   confluenceWrapper = new ConfluenceWrapper(new MockAp());
 }
 let sequenceDiagramLoader = new SequenceDiagramLoader(confluenceWrapper);
