@@ -92,7 +92,7 @@ module.exports = {
     disableHostCheck: true,
     historyApiFallback: true,
     hot: true,
-    public: 'air.zenuml.com',
+    public: process.env.DEV_SERVER_PUBLIC,
     host: 'localhost',
     port: 8080,
     sockHost: 'air.zenuml.com',
