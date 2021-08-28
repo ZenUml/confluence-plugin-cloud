@@ -18,7 +18,7 @@
     },
     computed: {
       show() {
-        return this.$store.state.selected.length > 0
+        return this.$store.state?.selected?.length > 0
       }
     },
     methods: {

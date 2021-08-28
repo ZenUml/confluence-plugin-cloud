@@ -38,7 +38,7 @@ export default {
   },
   computed: {
     styles() {
-      const stylesInStore = this.$store.state.styles;
+      const stylesInStore = this.$store.state.styles || {};
       const statements = Object.keys(stylesInStore)
           .map(k => `${k} .participant { background: ${stylesInStore[k].backgroundColor}; }`)
           .join('\n');
