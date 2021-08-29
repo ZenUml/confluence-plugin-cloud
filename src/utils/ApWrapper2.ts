@@ -83,7 +83,7 @@ export default class ApWrapper2 implements IApWrapper {
     return `${macroKey}-${uuid}-body`;
   }
 
-  async getContentProperty2(): Promise<Diagram> {
+  async getContentProperty2(): Promise<IContentProperty | null> {
     let macroData = await this.getMacroData();
     const uuid = macroData?.uuid;
     if (!uuid) {
@@ -94,8 +94,7 @@ export default class ApWrapper2 implements IApWrapper {
     if (!property) {
       throw 'property is not find with key:' + key;
     }
-    let {value} = property;
-    return {code: value.code};
+    return property;
   }
 
   getContentProperty(key: any): Promise<IContentProperty|null> {

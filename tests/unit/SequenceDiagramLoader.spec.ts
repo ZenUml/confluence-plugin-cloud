@@ -5,6 +5,7 @@ import {IMacroData} from "@/utils/IMacroData";
 class MockApWrapper implements IApWrapper {
   private _param: any;
   private _code: any;
+  private _key: string | undefined;
   setUp_saveMacro(param: { uuid: string; } | null, code: string | undefined) {
     this._param = param;
     this._code = code;
@@ -15,11 +16,15 @@ class MockApWrapper implements IApWrapper {
   }
 
   setup_saveContentProperty(content: { key?: string; value: any; }) {
+    this._key = content.key;
     this._code = content.value;
   }
   // Note: we do not need key for this method.
   async getContentProperty2() {
-    return {code: this._code};
+    if(!this._key) {
+      return null;
+    }
+    return {value: {code: this._code}};
   }
 
   getMacroData(): Promise<IMacroData | null> {
