@@ -3,6 +3,7 @@ import {Diagram} from "@/utils/Diagram";
 import {IApWrapper} from "@/utils/IApWrapper";
 import {IMacroData} from "@/utils/IMacroData";
 import {IContentProperty} from "@/utils/IContentProperty";
+import {ICustomContent} from "@/utils/ICustomContent";
 
 // Each iFrame provides context for only one macro.
 // getMacroData returns the macro data for the CURRENT macro.
@@ -265,5 +266,9 @@ export default class ApWrapper2 implements IApWrapper {
 
   isDisplayMode() {
     return getUrlParam('outputType') === 'display';
+  }
+
+  getCustomContent(): Promise<ICustomContent | null> {
+    return Promise.resolve(null);
   }
 }

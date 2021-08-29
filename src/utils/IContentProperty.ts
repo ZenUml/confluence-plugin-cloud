@@ -1,3 +1,3 @@
 export interface IContentProperty {
-  value: { code: string }
+  value: { code: string | undefined }
 }

@@ -9,6 +9,10 @@ export default class SequenceDiagramLoader {
   }
 
   async load() : Promise<Diagram>{
+    let customContent = await this.apWrapper.getCustomContent();
+    if (customContent) {
+      return { code: customContent.value.code }
+    }
     let contentProperty = await this.apWrapper.getContentProperty2();
     if(!contentProperty) {
       console.log('contentProperty is empty. Load from macro body.');

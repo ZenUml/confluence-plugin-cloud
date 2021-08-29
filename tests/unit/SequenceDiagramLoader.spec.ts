@@ -1,12 +1,13 @@
 import SequenceDiagramLoader from "@/utils/SequenceDiagramLoader";
 import {IApWrapper} from "@/utils/IApWrapper";
-import {IMacroData} from "@/utils/IMacroData";
 
 class MockApWrapper implements IApWrapper {
   private _param: any;
-  private _code: any;
+  private _code: string | undefined;
   private _key: string | undefined;
-  setUp_saveMacro(param: { uuid: string; } | null, code: string | undefined) {
+  private _hasCustomContent: boolean = false;
+  private _hasContentProperty: boolean = false;
+  setUp_saveMacro(param: { uuid?: string, contentId?: string; } | null, code: string | undefined) {
     this._param = param;
     this._code = code;
   }
@@ -17,18 +18,31 @@ class MockApWrapper implements IApWrapper {
 
   setup_saveContentProperty(content: { key?: string; value: any; }) {
     this._key = content.key;
+    this._hasContentProperty = true;
     this._code = content.value;
   }
   // Note: we do not need key for this method.
   async getContentProperty2() {
-    if(!this._key) {
-      return null;
+    if(!this._hasContentProperty) {
+      return undefined;
     }
     return {value: {code: this._code}};
   }
 
-  getMacroData(): Promise<IMacroData | null> {
-    return Promise.resolve(null);
+  async getMacroData() {
+    return Promise.resolve(undefined);
+  }
+
+  setUp_saveCustomContent(code: string) {
+    this._hasCustomContent = true;
+    this._code = code;
+  }
+
+  async getCustomContent() {
+    if(this._hasCustomContent) {
+      return {value: { code: this._code }};
+    }
+    return undefined;
   }
 }
 
@@ -46,13 +60,21 @@ describe('SequenceDiagramLoader', () => {
     mockApWrapper.setUp_saveMacro({
       uuid: 'uuid_1234'
     }, '');
-    mockApWrapper.setup_saveContentProperty({key: 'zenuml-sequence-macro-1234-body', value: 'A.method'})
+    mockApWrapper.setup_saveContentProperty({key: 'zenuml-sequence-macro-1234-body', value: 'A.method2'})
     let sequenceDiagramLoader = new SequenceDiagramLoader(mockApWrapper);
     let diagram = await sequenceDiagramLoader.load();
-    expect(diagram.code).toBe('A.method')
+    expect(diagram.code).toBe('A.method2')
   })
 
-  it('Load from custom content by uuid from macro data', () => {
+  it('Load from custom content by uuid from macro data', async () => {
+    let mockApWrapper = new MockApWrapper();
+    mockApWrapper.setUp_saveMacro({
+      contentId: 'content_1234'
+    }, '');
+    mockApWrapper.setUp_saveCustomContent('A.method3')
+    let sequenceDiagramLoader = new SequenceDiagramLoader(mockApWrapper);
+    let diagram = await sequenceDiagramLoader.load();
+    expect(diagram.code).toBe('A.method3')
 
   })
 })
