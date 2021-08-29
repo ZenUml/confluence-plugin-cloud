@@ -1,10 +1,10 @@
-import ApWrapper2 from "./ApWrapper2";
 import {Diagram} from "@/utils/Diagram";
+import {IApWrapper} from "@/utils/IApWrapper";
 
 export default class SequenceDiagramLoader {
-  apWrapper: ApWrapper2;
+  apWrapper: IApWrapper;
 
-  constructor(apWrapper: ApWrapper2) {
+  constructor(apWrapper: IApWrapper) {
     this.apWrapper = apWrapper;
   }
 

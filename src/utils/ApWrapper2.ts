@@ -1,5 +1,8 @@
 import {getUrlParam} from './window';
 import {Diagram} from "@/utils/Diagram";
+import {IApWrapper} from "@/utils/IApWrapper";
+import {IMacroData} from "@/utils/IMacroData";
+import {IContentProperty} from "@/utils/IContentProperty";
 
 // Each iFrame provides context for only one macro.
 // getMacroData returns the macro data for the CURRENT macro.
@@ -23,14 +26,6 @@ interface AP {
   dialog: any;
 }
 
-interface MacroData {
-  uuid: string
-}
-
-interface ContentProperty {
-  value: { code: string }
-}
-
 interface ContentPropertyIn {
 }
 
@@ -38,7 +33,7 @@ interface MacroParams {
 }
 
 // custom content APIs.
-export default class ApWrapper2 {
+export default class ApWrapper2 implements IApWrapper {
   _confluence: Confluence;
   _request: ApRequestFunc;
   _navigator: any;
@@ -53,7 +48,7 @@ export default class ApWrapper2 {
     this._dialog = ap.dialog;
   }
 
-  getMacroData(): Promise<MacroData|null> {
+  getMacroData(): Promise<IMacroData | null> {
     return new Promise(((resolve) => {
       try {
         this._confluence.getMacroData((data) => {
@@ -69,7 +64,7 @@ export default class ApWrapper2 {
   }
 
   //FIXME: this method throws error in custom content viewer
-  getMacroBody(): Promise<string|null> {
+  getMacroBody(): Promise<string | null> {
     return new Promise((resolve) => {
       try {
         this._confluence.getMacroBody((body) => {
@@ -91,19 +86,19 @@ export default class ApWrapper2 {
   async getContentProperty2(): Promise<Diagram> {
     let macroData = await this.getMacroData();
     const uuid = macroData?.uuid;
-    if(!uuid) {
+    if (!uuid) {
       throw '`uuid` is empty. This diagram was not properly saved.'
     }
     let key = this.propertyKey(uuid);
     let property = await this.getContentProperty(key);
-    if(!property) {
+    if (!property) {
       throw 'property is not find with key:' + key;
     }
     let {value} = property;
     return {code: value.code};
   }
 
-  getContentProperty(key: any): Promise<ContentProperty|null> {
+  getContentProperty(key: any): Promise<IContentProperty|null> {
     return new Promise(resolve => {
       try {
         this._confluence.getContentProperty(key, (cp) => {
