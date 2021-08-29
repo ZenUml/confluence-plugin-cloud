@@ -74,7 +74,6 @@ describe('SequenceDiagramLoader', () => {
     mockApWrapper.setUp_saveCustomContent('A.method3')
     let sequenceDiagramLoader = new SequenceDiagramLoader(mockApWrapper);
     let diagram = await sequenceDiagramLoader.load();
-    expect(diagram.code).toBe('A.method3')
-
+    expect(diagram.code).toBe('A.method3');
   })
 })

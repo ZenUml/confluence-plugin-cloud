@@ -1,3 +1,4 @@
 export interface IMacroData {
-  uuid: string
+  customContentId?: string;
+  uuid?: string
 }

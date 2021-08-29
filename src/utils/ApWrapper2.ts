@@ -1,5 +1,4 @@
 import {getUrlParam} from './window';
-import {Diagram} from "@/utils/Diagram";
 import {IApWrapper} from "@/utils/IApWrapper";
 import {IMacroData} from "@/utils/IMacroData";
 import {IContentProperty} from "@/utils/IContentProperty";
@@ -49,7 +48,7 @@ export default class ApWrapper2 implements IApWrapper {
     this._dialog = ap.dialog;
   }
 
-  getMacroData(): Promise<IMacroData | null> {
+  getMacroData(): Promise<IMacroData | undefined> {
     return new Promise(((resolve) => {
       try {
         this._confluence.getMacroData((data) => {
@@ -59,13 +58,13 @@ export default class ApWrapper2 implements IApWrapper {
       } catch (e) {
         // eslint-disable-next-line
         console.error('Failed to retrieve macro data.', e)
-        resolve(null)
+        resolve(undefined)
       }
     }))
   }
 
   //FIXME: this method throws error in custom content viewer
-  getMacroBody(): Promise<string | null> {
+  getMacroBody(): Promise<string | undefined> {
     return new Promise((resolve) => {
       try {
         this._confluence.getMacroBody((body) => {
@@ -74,7 +73,7 @@ export default class ApWrapper2 implements IApWrapper {
       } catch (e) {
         // eslint-disable-next-line
         console.error('Failed to retrieve macro body.', e)
-        resolve(null)
+        resolve(undefined)
       }
     })
   }
@@ -84,7 +83,7 @@ export default class ApWrapper2 implements IApWrapper {
     return `${macroKey}-${uuid}-body`;
   }
 
-  async getContentProperty2(): Promise<IContentProperty | null> {
+  async getContentProperty2(): Promise<IContentProperty | undefined> {
     let macroData = await this.getMacroData();
     const uuid = macroData?.uuid;
     if (!uuid) {
@@ -190,8 +189,13 @@ export default class ApWrapper2 implements IApWrapper {
     return this.parseCustomContentResponse(response);
   }
 
-  async updateCustomContent(contentObj: { type: any; title: any; version: { number: number; }; id: any; }, newBody: any) {
+  async updateCustomContent(contentObj: ICustomContent, newBody: any) {
     const spaceKey = await this.getSpaceKey();
+    let newVersionNumber = 1;
+
+    if(contentObj.version?.number) {
+      newVersionNumber += contentObj.version?.number
+    }
     const bodyData = {
       "type": contentObj.type,
       "title": contentObj.title,
@@ -205,7 +209,7 @@ export default class ApWrapper2 implements IApWrapper {
         }
       },
       "version": {
-        "number": contentObj.version.number + 1
+        "number": newVersionNumber
       }
     };
 
@@ -231,17 +235,22 @@ export default class ApWrapper2 implements IApWrapper {
     return null;
   }
 
-  async getCustomContentById(id: string) {
+  async getCustomContentById(id: string): Promise<ICustomContent|undefined> {
     const url = `/rest/api/content/${id}?expand=body.raw,version.number`;
     const response = await this._request({type: 'GET', url});
     const customContent = this.parseCustomContentResponse(response);
+    console.debug(`Loaded custom content by id ${id}.`);
     return Object.assign({}, customContent, {value: JSON.parse(customContent.body.raw.value)});
   }
 
   async saveCustomContent(customContentId: string, uuid: string, value: object) {
     if(customContentId) {
       const existing = await this.getCustomContentById(customContentId);
-      return await this.updateCustomContent(existing, value);
+      if(existing) {
+        return await this.updateCustomContent(existing, value);
+      } else {
+        return await this.createCustomContent(uuid, value);
+      }
     } else {
       return await this.createCustomContent(uuid, value);
     }
@@ -268,7 +277,11 @@ export default class ApWrapper2 implements IApWrapper {
     return getUrlParam('outputType') === 'display';
   }
 
-  getCustomContent(): Promise<ICustomContent | null> {
-    return Promise.resolve(null);
+  async getCustomContent(): Promise<ICustomContent | undefined> {
+    const macroData = await this.getMacroData();
+    if(macroData && macroData.customContentId) {
+      return this.getCustomContentById(macroData.customContentId);
+    }
+    return undefined;
   }
 }
