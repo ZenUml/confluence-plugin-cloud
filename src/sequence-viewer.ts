@@ -3,6 +3,7 @@ import Vuex from 'vuex'
 // @ts-ignore
 import { Version, SeqDiagram } from 'vue-sequence'
 import 'vue-sequence/dist/vue-sequence.css'
+import './assets/tailwind.css'
 // eslint-disable-next-line
 console.log(Version)
 
