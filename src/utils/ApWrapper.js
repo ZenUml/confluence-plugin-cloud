@@ -11,6 +11,7 @@ export default class ApWrapper {
   _dialog;
   _macroIdentifier;
   _locationContext;
+  _user;
 
   constructor(ap, macroIdentifier) {
     this._macroIdentifier = macroIdentifier;
@@ -18,6 +19,7 @@ export default class ApWrapper {
     this._request = ap.request;
     this._navigator = ap.navigator;
     this._dialog = ap.dialog;
+    this._user = ap.user;
   }
 
   getMacroData() {
@@ -198,5 +200,26 @@ export default class ApWrapper {
 
   isDisplayMode() {
     return getUrlParam('outputType') === 'display';
+  }
+
+  getCurrentUser() {
+    return new Promise(resolv => this._user.getCurrentUser(user => resolv(user)));
+  }
+
+  canUserEdit() {
+    return new Promise(resolv =>
+      Promise.all([
+        this.getPageId(),
+        this.getCurrentUser()
+      ]).then((pageId, user) => 
+        this._request({
+          type: 'GET',
+          url: `/rest/api/content/${pageId}/restriction/byOperation/update/user?accountId=${user.atlassianAccountId}`,
+          contentType: 'application/json;charset=UTF-8',
+          success: () => resolv(true),
+          error: () => resolv(false)
+        })
+      )
+    );
   }
 }

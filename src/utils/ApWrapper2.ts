@@ -16,7 +16,7 @@ interface Confluence {
 }
 
 interface ApRequestFunc {
-  (arg0: { url: string; type: string; contentType?: string; data?: string; }): any
+  (arg0: { url: string; type: string; contentType?: string; data?: string; success?: any; error?: any }): any
 }
 
 interface AP {
@@ -24,6 +24,7 @@ interface AP {
   request: ApRequestFunc;
   navigator: any;
   dialog: any;
+  user: any;
 }
 
 interface ContentPropertyIn {
@@ -39,6 +40,7 @@ export default class ApWrapper2 implements IApWrapper {
   _navigator: any;
   _dialog: any;
   _macroIdentifier: string;
+  _user: any;
 
   constructor(ap: AP, macroIdentifier: string) {
     this._macroIdentifier = macroIdentifier;
@@ -46,6 +48,7 @@ export default class ApWrapper2 implements IApWrapper {
     this._request = ap.request;
     this._navigator = ap.navigator;
     this._dialog = ap.dialog;
+    this._user = ap.user;
   }
 
   getMacroData(): Promise<IMacroData | undefined> {
@@ -283,5 +286,27 @@ export default class ApWrapper2 implements IApWrapper {
       return this.getCustomContentById(macroData.customContentId);
     }
     return undefined;
+  }
+
+  
+  getCurrentUser() {
+    return new Promise(resolv => this._user.getCurrentUser((user: any) => resolv(user)));
+  }
+
+  canUserEdit() {
+    return new Promise(resolv =>
+      Promise.all([
+        this.getPageId(),
+        this.getCurrentUser()
+      ]).then(([pageId, user]) => 
+        this._request({
+          type: 'GET',
+          url: `/rest/api/content/${pageId}/restriction/byOperation/update/user?accountId=${(user as any).atlassianAccountId}`,
+          contentType: 'application/json;charset=UTF-8',
+          success: () => resolv(true),
+          error: () => resolv(false)
+        })
+      )
+    );
   }
 }

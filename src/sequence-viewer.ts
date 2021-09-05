@@ -5,7 +5,7 @@ import { Version, SeqDiagram } from 'vue-sequence'
 import 'vue-sequence/dist/vue-sequence.css'
 import './assets/tailwind.css'
 // eslint-disable-next-line
-console.log(Version)
+console.log(`vue-sequence version: ${Version}`)
 
 import './utils/MockApConfluence'
 import Macro from './utils/Macro'
