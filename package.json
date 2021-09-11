@@ -4,11 +4,7 @@
   "private": true,
   "scripts": {
     "engine": "use yarn to install",
-    "build": "concurrently -i 'npm:build-*'",
     "test:unit": "vue-cli-service test:unit",
-    "lint": "eslint app.js routes",
-    "build-jsx-browser": "parcel build --log-level 1 --global __root_component --out-dir views views/*.jsx",
-    "build-jsx-node": "parcel build --log-level 1 --no-minify --target node --out-dir views/node views/*.jsx",
     "build:full": "PRODUCT_TYPE=full vue-cli-service build --mode production",
     "build:full:watch": "PRODUCT_TYPE=full vue-cli-service build --watch",
     "build:lite": "PRODUCT_TYPE=lite vue-cli-service build",
@@ -22,12 +18,7 @@
     "lint:vue": "vue-cli-service lint",
     "start:local": "VERSION=latest PRODUCT_TYPE=lite vue-cli-service serve --open",
     "start:vue:sit": "VERSION=latest PRODUCT_TYPE=lite vue-cli-service serve --open --mode test",
-    "start:sit": "concurrently \"yarn firebase:serve\" \"yarn start:vue:sit\" \"yarn cloudflare:8080\"",
-    "watch": "concurrently -i 'npm:watch-server' 'npm:watch-jsx-browser' 'npm:watch-jsx-node'",
-    "watch-jsx": "concurrently 'npm:watch-jsx-browser' 'npm:watch-jsx-node'",
-    "watch-jsx-browser": "parcel watch --log-level 1 --no-hmr --global __root_component --out-dir views views/*.jsx",
-    "watch-jsx-node": "parcel watch --log-level 1 --target node --out-dir views/node views/*.jsx",
-    "watch-server": "nodemon -e js -r esm app.js"
+    "start:sit": "concurrently \"yarn firebase:serve\" \"yarn start:vue:sit\" \"yarn cloudflare:8080\""
   },
   "dependencies": {
     "@atlaskit/button": "^15.1.0",
