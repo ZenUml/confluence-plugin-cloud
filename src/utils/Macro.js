@@ -2,7 +2,7 @@ import { trackEvent } from './window';
 import BaseMacro from './BaseMacro';
 
 class Macro extends BaseMacro {
-  EXAMPLE = `title Order Service
+  EXAMPLE = `title Order Service (Example)
 @Lambda OrderController
 <<BFF>> OrderService
 group BusinessService {
