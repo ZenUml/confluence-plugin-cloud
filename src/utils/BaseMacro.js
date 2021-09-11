@@ -50,6 +50,12 @@ class BaseMacro {
   }
 
   async getContent() {
+    if(getUrlParam('rendered.for') === 'custom-content-native') {
+      console.debug('rendering for custom content native viewer.');
+      this._customContentId = getUrlParam('content.id');
+      console.debug('custom content id:', this._customContentId);
+      return await this.getCustomContent();
+    }
     const macroData = await this._confluenceWrapper.getMacroData();
     console.debug('macro data loaded:', macroData);
 
