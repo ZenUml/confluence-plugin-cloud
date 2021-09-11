@@ -3,7 +3,7 @@
 1. Start firebase functions + hosting at 5000: `yarn firebase:serve`
 2. Expose 5000 on air.zenuml.com: `yarn cloudflare:5000`
 3. Install https://air.zenuml.com/atlassian-connect.json
-4. Start vue server at 8080: `yarn start:vue`
+4. Start vue server at 8080: `yarn start:vue:sit`
 5. Expose 8080 on air.zenuml.com: `yarn cloudflare:8080`
 6. Open the page with ZenUML macro
    
