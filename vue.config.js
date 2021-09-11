@@ -97,6 +97,11 @@ module.exports = {
     port: 8080,
     sockHost: 'air.zenuml.com',
     sockPort: 443,
+    proxy: {
+      '/atlassian-connect.json': {
+        target: 'http://localhost:5001/zenuml-conf-stg-full/us-central1/descriptor'
+      }
+    },
     compress: true,  // This reduces the app.js from 4.8MB to 1.2MB
     before: function (app) {
       app.get(/installed/, function (req, res) {

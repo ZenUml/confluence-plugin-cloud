@@ -1,11 +1,11 @@
 # Development
 ## How to do integration test?
-1. Create a tunnel: <br> 
-   `cloudflared --hostname air.zenuml.com --url http://localhost:3000`
-   <br>Note that a. the local server must be started at port 3000;
-   b. it has been given a hostname `air.zenuml.com`.
-1. Start the local server with auto-registration:<br>
-   `AC_LOCAL_BASE_URL=https://air.zenuml.com npm start`
+1. Start firebase functions + hosting at 5000: `yarn firebase:serve`
+2. Expose 5000 on air.zenuml.com: `yarn cloudflare:5000`
+3. Install https://air.zenuml.com/atlassian-connect.json
+4. Start vue server at 8080: `yarn start:vue`
+5. Expose 8080 on air.zenuml.com: `yarn cloudflare:8080`
+6. Open the page with ZenUML macro
    
 # Errors
 ## Addon not registered; no compatible hosts detected
