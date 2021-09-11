@@ -3,8 +3,8 @@
 1. Start firebase functions + hosting at 5000: `yarn firebase:serve`
 2. Start vue server at 8080 and proxy to 5000 for descriptor: `yarn start:vue:sit`
 3. Expose 8080 on air.zenuml.com: `yarn cloudflare:8080`
-3. Install https://air.zenuml.com/atlassian-connect.json
-4. Open the page with ZenUML macro
+4. Install https://air.zenuml.com/atlassian-connect.json
+5. Open the page with ZenUML macro
    
 # Errors
 ## Addon not registered; no compatible hosts detected
