@@ -40,6 +40,7 @@ export default class ApWrapper2 implements IApWrapper {
   _navigator: any;
   _dialog: any;
   _macroIdentifier: string;
+  _locationContext: any;
   _user: any;
 
   constructor(ap: AP, macroIdentifier: string) {
@@ -133,22 +134,28 @@ export default class ApWrapper2 implements IApWrapper {
     this._confluence.saveMacro(params, body)
   }
 
-  getSpaceKey() { //TODO: cacheable
-    const navigator = this._navigator;
-    return new Promise((resolv) => {
-      navigator.getLocation((data: any) => {
-        resolv(data.context.spaceKey);
+  getLocationContext() {
+    if(this._locationContext) {
+      return Promise.resolve(this._locationContext);
+    }
+
+    const self = this;
+    return new Promise((resolve) => {
+      self._navigator.getLocation((data: any) => {
+        self._locationContext = data.context;
+        resolve(data.context);
       });
     });
   }
 
-  getPageId() { //TODO: cacheable
-    const navigator = this._navigator;
-    return new Promise((resolve) => {
-      navigator.getLocation((data: { context: { contentId: unknown; }; }) => {
-        resolve(data.context.contentId);
-      });
-    });
+  async getSpaceKey() {
+    // @ts-ignore
+    return (await this.getLocationContext().spaceKey);
+  }
+
+  async getPageId() {
+    // @ts-ignore
+    return (await this.getLocationContext().contentId);
   }
 
   getContentKey() {
@@ -168,14 +175,16 @@ export default class ApWrapper2 implements IApWrapper {
   }
 
   async createCustomContent(uuid: string, content: object) {
-    const spaceKey = await this.getSpaceKey(); //TODO: cacheable
+    const context = await this.getLocationContext();
     const type = this.getCustomContentType();
+    const container = {id: context.contentId, type: context.contentType};
     const bodyData = {
       "type": type,
       "title": uuid,
       "space": {
-        "key": spaceKey
+        "key": context.spaceKey
       },
+      "container": container,
       "body": {
         "raw": {
           "value": JSON.stringify(content),
@@ -194,7 +203,6 @@ export default class ApWrapper2 implements IApWrapper {
   }
 
   async updateCustomContent(contentObj: ICustomContent, newBody: any) {
-    const spaceKey = await this.getSpaceKey();
     let newVersionNumber = 1;
 
     if(contentObj.version?.number) {
@@ -204,8 +212,9 @@ export default class ApWrapper2 implements IApWrapper {
       "type": contentObj.type,
       "title": contentObj.title,
       "space": {
-        "key": spaceKey
+        "key": contentObj.space.key
       },
+      "container": contentObj.container,
       "body": {
         "raw": {
           "value": JSON.stringify(newBody),
@@ -240,7 +249,7 @@ export default class ApWrapper2 implements IApWrapper {
   }
 
   async getCustomContentById(id: string): Promise<ICustomContent|undefined> {
-    const url = `/rest/api/content/${id}?expand=body.raw,version.number`;
+    const url = `/rest/api/content/${id}?expand=body.raw,version.number,container,space`;
     const response = await this._request({type: 'GET', url});
     const customContent = this.parseCustomContentResponse(response);
     console.debug(`Loaded custom content by id ${id}.`);
