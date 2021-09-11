@@ -65,7 +65,8 @@ export default {
       this.$store.state.selected = []
     },
     checkUserCanEdit() {
-      this.$store.state.macro._confluenceWrapper.canUserEdit().then(b => this.canEdit = b);
+      // TODO: Add this back. It works fine. But we will not release it for the moment.
+      // this.$store.state.macro._confluenceWrapper.canUserEdit().then(b => this.canEdit = b);
     },
     edit() {
       EventBus.$emit('edit');

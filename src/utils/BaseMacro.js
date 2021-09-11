@@ -50,10 +50,6 @@ class BaseMacro {
   }
 
   async getContent() {
-    if(this._customContentId) {
-      return await this.getCustomContent();
-    }
-
     const macroData = await this._confluenceWrapper.getMacroData();
     console.debug('macro data loaded:', macroData);
 
@@ -62,7 +58,7 @@ class BaseMacro {
     // This is defined in the descriptor and is only available for sequence-viewer.html.
     const key = macroData?.uuid || getUrlParam('uuid');
     this._key = key;
-    this._customContentId = macroData?.customContentId;
+    this._customContentId = macroData?.customContentId || this._pageId;
     
     if(this._customContentId) {
       return await this.getCustomContent();
