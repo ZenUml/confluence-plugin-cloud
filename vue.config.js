@@ -99,7 +99,24 @@ module.exports = {
     sockPort: 443,
     proxy: {
       '/atlassian-connect.json': {
-        target: 'http://localhost:5001/zenuml-conf-stg-full/us-central1/descriptor'
+        target: 'http://localhost:5000/',
+        changeOrigin: true
+      },
+      '/atlassian-connect-lite.json': {
+        target: 'http://localhost:5000/',
+        changeOrigin: true
+      },
+      '/installed': {
+        target: 'http://localhost:5000/',
+        changeOrigin: true
+      },
+      '/uninstalled': {
+        target: 'http://localhost:5000/',
+        changeOrigin: true
+      },
+      '/attachment': {
+        target: 'http://localhost:5000/',
+        changeOrigin: true
       }
     },
     compress: true,  // This reduces the app.js from 4.8MB to 1.2MB
