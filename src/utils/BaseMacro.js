@@ -1,6 +1,6 @@
 import uuidv4 from './uuid';
 import { getUrlParam, trackEvent } from './window';
-import ConfluenceWrapper from "@/utils/ConfluenceWrapper";
+import ApWrapper2 from "./ApWrapper2";
 
 class BaseMacro {
   _key;
@@ -11,16 +11,14 @@ class BaseMacro {
   _standaloneCustomContent;
 
   constructor(ap, macroIdentifier) {
-    this._confluenceWrapper = new ConfluenceWrapper(ap);
+    this._confluenceWrapper = new ApWrapper2(ap, macroIdentifier);
     this._macroIdentifier = macroIdentifier;
+    this._standaloneCustomContent = getUrlParam('rendered.for') === 'custom-content-native';
   }
 
   async initPageId() {
     if(!this._pageId) {
-      this._customContentId = getUrlParam('content.id');
-      console.debug('custom content id: ', this._customContentId);
-      this._standaloneCustomContent = !!this._customContentId;
-      this._pageId = this._customContentId || (await this._confluenceWrapper.getPageId());
+      this._pageId = getUrlParam('content.id') || (await this._confluenceWrapper.getPageId());
     }
   }
 
@@ -49,10 +47,12 @@ class BaseMacro {
   }
 
   async getContent() {
-    if(this._customContentId) {
+    if(this._standaloneCustomContent) {
+      console.debug('rendering for custom content native viewer.');
+      this._customContentId = getUrlParam('content.id');
+      console.debug('custom content id:', this._customContentId);
       return await this.getCustomContent();
     }
-
     const macroData = await this._confluenceWrapper.getMacroData();
     console.debug('macro data loaded:', macroData);
 
@@ -118,6 +118,7 @@ class BaseMacro {
       macroParam.customContentId = customContent.id;
     }
 
+    //TODO: Edit issue when editing content property based macro in viewer
     this._confluenceWrapper.saveMacro(macroParam, value.code);
     trackEvent(this._pageId, 'save_macro', 'macro_body');
   }

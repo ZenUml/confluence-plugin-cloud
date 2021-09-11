@@ -1,4 +1,4 @@
-import MockApConfluence from '../../src/utils/MockApConfluence'
+import MockApConfluence from '@/utils/MockApConfluence'
 import Macro from '../../src/utils/Macro'
 
 let mockApConfluence;
@@ -101,44 +101,5 @@ describe('Macro', () => {
       const code = (await macro.load()).code;
       expect(code).toBe('body')
     })
-  })
-
-  describe('when submitting', () => {
-    describe('E2E - should save macro data  and content property', () => {
-      // TODO: check if saveMacroData({}) will remove macro-body
-      it('for the first time', async () => {
-        await macro.load()
-        const code = 'A.method';
-        const styles = {'#A': { backgroundColor: '#FFF'}}
-        await macro.save(code, styles)
-        expect((await macro.load()).code).toBe(code)
-        // Style is only available in custom content
-        // expect((await macro.load()).styles['#A'].backgroundColor).toBe('#FFF')
-        // const contentProperty = await macro.getContentProperty('random_uuid');
-        // expect(contentProperty.value.code).toBe(code)
-        // expect(contentProperty.version.number).toBe(1)
-        const data = await macro._confluenceWrapper.getMacroData()
-        expect(data.uuid).toBe('random_uuid')
-        expect(data.updatedAt).toBeDefined()
-      })
-
-      it('for the next times', async () => {
-        // mockApConfluence.saveMacro({uuid: '1234'}, 'body')
-        // mockApConfluence.setContentProperty({key: '1234', value: 'A.method'})
-        await macro.load()
-        const oldCode = 'A.method';
-        await macro.save(oldCode)
-        await macro.load()
-        const newCode = 'B.method';
-        await macro.save(newCode)
-        expect((await macro.load()).code).toBe(newCode)
-        const data = await macro._confluenceWrapper.getMacroData()
-        expect(data.uuid).toBe('random_uuid')
-        expect(data.updatedAt).toBeDefined()
-        const body = await macro._confluenceWrapper.getMacroBody()
-        expect(body).toBe('B.method')
-      })
-    })
-
   })
 })

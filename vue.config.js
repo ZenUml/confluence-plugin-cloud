@@ -1,5 +1,10 @@
 module.exports = {
   pages: {
+    "index": {
+      entry: 'src/main.ts',
+      template: 'public/index.html',
+      chunks: ['chunk-common', 'chunk-sequence-editor-vendors', 'sequence-editor']
+    },
     "sequence-editor": {
       entry: 'src/sequence-editor.ts',
       template: 'public/sequence-editor.html',
@@ -9,6 +14,11 @@ module.exports = {
       entry: 'src/sequence-viewer.ts',
       template: 'public/sequence-viewer.html',
       chunks: ['chunk-common', 'chunk-sequence-viewer-vendors', 'sequence-viewer']
+    },
+    "sequence-viewer-dialog": {
+      entry: 'src/sequence-viewer-dialog.ts',
+      template: 'public/sequence-viewer-dialog.html',
+      chunks: ['chunk-common', 'chunk-sequence-viewer-dialog-vendors', 'sequence-viewer-dialog']
     },
     "edit": {
       entry: 'src/sequence-editor.ts',
@@ -79,6 +89,36 @@ module.exports = {
     }
   },
   devServer: {
+    disableHostCheck: true,
+    historyApiFallback: true,
+    hot: true,
+    public: process.env.DEV_SERVER_PUBLIC,
+    host: 'localhost',
+    port: 8080,
+    sockHost: 'air.zenuml.com',
+    sockPort: 443,
+    proxy: {
+      '/atlassian-connect.json': {
+        target: 'http://localhost:5000/',
+        changeOrigin: true
+      },
+      '/atlassian-connect-lite.json': {
+        target: 'http://localhost:5000/',
+        changeOrigin: true
+      },
+      '/installed': {
+        target: 'http://localhost:5000/',
+        changeOrigin: true
+      },
+      '/uninstalled': {
+        target: 'http://localhost:5000/',
+        changeOrigin: true
+      },
+      '/attachment': {
+        target: 'http://localhost:5000/',
+        changeOrigin: true
+      }
+    },
     compress: true,  // This reduces the app.js from 4.8MB to 1.2MB
     before: function (app) {
       app.get(/installed/, function (req, res) {

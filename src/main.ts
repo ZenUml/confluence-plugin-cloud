@@ -10,6 +10,7 @@ import 'vue-sequence/dist/vue-sequence.css'
 // eslint-disable-next-line
 console.log(Version)
 
+// @ts-ignore
 import MockApConfluence from './utils/MockApConfluence'
 import Macro from './utils/Macro'
 import Editor from './components/Editor.vue'

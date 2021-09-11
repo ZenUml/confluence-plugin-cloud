@@ -2,16 +2,9 @@
   "name": "confluence-plugin",
   "version": "1.1.0",
   "private": true,
-  "externals": {
-    "react": "React",
-    "react-dom": "ReactDOM"
-  },
   "scripts": {
+    "engine": "use yarn to install",
     "test:unit": "vue-cli-service test:unit",
-    "lint:vue": "vue-cli-service lint",
-    "build-jsx-browser": "parcel build --log-level 1 --global __root_component --out-dir views views/*.jsx",
-    "build-jsx-node": "parcel build --log-level 1 --no-minify --target node --out-dir views/node views/*.jsx",
-    "build": "concurrently -i 'npm:build-*'",
     "build:full": "PRODUCT_TYPE=full vue-cli-service build --mode production",
     "build:full:watch": "PRODUCT_TYPE=full vue-cli-service build --watch",
     "build:lite": "PRODUCT_TYPE=lite vue-cli-service build",
@@ -19,22 +12,21 @@
     "deploy:full:stage": "npm run build:full && firebase deploy --project full:stage",
     "deploy:lite:prod": "npm run build:lite && firebase deploy --project lite:prod",
     "deploy:lite:stage": "npm run build:lite && firebase deploy --project lite:stage",
-    "watch-server": "nodemon -e js -r esm app.js",
-    "start:air": "AC_LOCAL_BASE_URL=https://air.zenuml.com node -r esm app.js",
-    "start": "node -r esm app.js",
-    "start:vue": "VERSION=latest PRODUCT_TYPE=lite vue-cli-service serve --open",
-    "firebase:serve": "firebase serve --only hosting,functions",
-    "watch-jsx-browser": "parcel watch --log-level 1 --no-hmr --global __root_component --out-dir views views/*.jsx",
-    "watch-jsx-node": "parcel watch --log-level 1 --target node --out-dir views/node views/*.jsx",
-    "watch-jsx": "concurrently 'npm:watch-jsx-browser' 'npm:watch-jsx-node'",
-    "watch": "concurrently -i 'npm:watch-server' 'npm:watch-jsx-browser' 'npm:watch-jsx-node'",
-    "lint": "eslint app.js routes"
+    "firebase:serve": "firebase emulators:start --only hosting,functions",
+    "firebase:serve:functions": "firebase emulators:start --only functions",
+    "cloudflare:8080": "cloudflared --hostname air.zenuml.com --url http://localhost:8080",
+    "lint:vue": "vue-cli-service lint",
+    "start:local": "VERSION=latest PRODUCT_TYPE=lite vue-cli-service serve --open",
+    "start:vue:sit": "VERSION=latest PRODUCT_TYPE=lite vue-cli-service serve --open --mode test",
+    "start:sit": "concurrently \"yarn firebase:serve\" \"yarn start:vue:sit\" \"yarn cloudflare:8080\""
   },
   "dependencies": {
     "@atlaskit/button": "^15.1.0",
     "@atlaskit/section-message": "^5.0.7",
+    "@tailwindcss/postcss7-compat": "^2.0.2",
     "@vue/babel-preset-app": "^4.5.13",
     "atlassian-connect-express": "^6.5.0",
+    "autoprefixer": "^9",
     "babel-core": "^7.0.0-bridge.0",
     "babel-loader": "^8.2.2",
     "body-parser": "^1.19.0",
@@ -51,16 +43,18 @@
     "mermaid": "^8.5.2",
     "morgan": "^1.10.0",
     "nocache": "^2.1.0",
+    "postcss": "^7",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "sequelize": "^6.3.5",
     "split.js": "^1.6.2",
     "stein-js-client": "^0.0.2",
     "styled-components": "^5.2.0",
+    "tailwindcss": "npm:@tailwindcss/postcss7-compat@^2.0.2",
     "vue": "^2.6.12",
     "vue-atlas": "^2.1.8",
     "vue-codemirror": "^4.0.6",
-    "vue-sequence": "^1.0.166",
+    "vue-sequence": "^1.0.175",
     "vuex": "^3.5.1"
   },
   "devDependencies": {
@@ -80,12 +74,12 @@
     "@vue/test-utils": "^1.0.3",
     "babel-jest": "25.0.0",
     "babel-plugin-styled-components": "^1.11.1",
-    "concurrently": "^5.3.0",
+    "concurrently": "^6.2.1",
     "eslint": "^7.10.0",
     "eslint-plugin-vue": "^7.5.0",
     "firebase-admin": "^8.9.0",
     "firebase-functions": "^3.3.0",
-    "firebase-tools": "^8.20.0",
+    "firebase-tools": "^9.16.6",
     "longjohn": "^0.2.12",
     "ngrok": "^3.3.0",
     "nodemon": "^2.0.4",
@@ -94,6 +88,7 @@
     "sqlite3": "^5.0.0",
     "test-lib": "^2.1.2",
     "typescript": "~3.9.3",
+    "vue-cli-plugin-tailwind": "~2.0.6",
     "vue-jest": "^3.0.5",
     "vue-svg-loader": "^0.16.0",
     "vue-template-compiler": "^2.6.12"
@@ -126,6 +121,7 @@
   },
   "postcss": {
     "plugins": {
+      "tailwindcss": {},
       "autoprefixer": {}
     }
   },
@@ -133,5 +129,12 @@
     "> 1%",
     "last 2 versions",
     "not ie <= 8"
-  ]
+  ],
+  "externals": {
+    "react": "React",
+    "react-dom": "ReactDOM"
+  },
+  "engines": {
+    "node": ">=14"
+  }
 }

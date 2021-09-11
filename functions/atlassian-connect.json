@@ -31,7 +31,7 @@
             "url": "/attachment?spaceKey={space.key}&pageId={page.id}&pageVersion={page.version}&macroId={macro.id}&uuid={uuid}&addonKey=__ADDON_KEY__&contentKey=__CONTENT_KEY__"
           }
         },
-        "url": "/sequence-viewer.html?spaceKey={space.key}&pageId={page.id}&pageVersion={page.version}&macroId={macro.id}&uuid={uuid}&addonKey=__ADDON_KEY__&contentKey=__CONTENT_KEY__",
+        "url": "/sequence-viewer.html?spaceKey={space.key}&pageId={page.id}&pageVersion={page.version}&macroId={macro.id}&uuid={uuid}&outputType={output.type}&addonKey=__ADDON_KEY__&contentKey=__CONTENT_KEY__",
         "description": {
           "value": "Create a ZenUML Sequence Diagram"
         },
@@ -79,7 +79,7 @@
             "url": "/attachment?spaceKey={space.key}&pageId={page.id}&pageVersion={page.version}&macroId={macro.id}&uuid={uuid}&addonKey=__ADDON_KEY__&contentKey=__CONTENT_KEY__"
           }
         },
-        "url": "/drawio/viewer.html?spaceKey={space.key}&pageId={page.id}&pageVersion={page.version}&macroId={macro.id}&uuid={uuid}&addonKey=__ADDON_KEY__&contentKey=__CONTENT_KEY__",
+        "url": "/drawio/viewer.html?spaceKey={space.key}&pageId={page.id}&pageVersion={page.version}&macroId={macro.id}&uuid={uuid}&outputType={output.type}&addonKey=__ADDON_KEY__&contentKey=__CONTENT_KEY__",
         "description": {
           "value": "Create a ZenUML Graph"
         },
@@ -196,17 +196,33 @@
       ],
       "generalPages": [
         {
+            "key": "zenuml-content-sequence-viewer-dialog",
+            "location": "none",
+            "url": "/sequence-viewer-dialog.html",
+            "name": {
+                "value": "ZenUML Sequence Viewer Dialog"
+            }
+        },
+        {
             "key": "zenuml-content-sequence-viewer",
             "location": "none",
-            "url": "/sequence-viewer.html?spaceKey={space.key}&content.id={content.id}&content.version={content.version}&addonKey=__ADDON_KEY__&contentKey=__CONTENT_KEY__",
+            "url": "/sequence-viewer.html?rendered.for=custom-content-native&spaceKey={space.key}&content.id={content.id}&content.version={content.version}&addonKey=__ADDON_KEY__&contentKey=__CONTENT_KEY__",
             "name": {
                 "value": "ZenUML Sequence Viewer"
             }
         },
         {
+            "key": "zenuml-content-sequence-editor",
+            "location": "none",
+            "url": "/sequence-editor.html?spaceKey={space.key}&content.id={content.id}&content.version={content.version}&addonKey=__ADDON_KEY__&contentKey=__CONTENT_KEY__",
+            "name": {
+                "value": "ZenUML Sequence Editor"
+            }
+        },
+        {
             "key": "zenuml-content-graph-viewer",
             "location": "none",
-            "url": "/drawio/viewer.html?spaceKey={space.key}&content.id={content.id}&content.version={content.version}&addonKey=__ADDON_KEY__&contentKey=__CONTENT_KEY__",
+            "url": "/drawio/viewer.html?rendered.for=custom-content-native&spaceKey={space.key}&content.id={content.id}&content.version={content.version}&addonKey=__ADDON_KEY__&contentKey=__CONTENT_KEY__",
             "name": {
                 "value": "ZenUML Graph Viewer"
             }

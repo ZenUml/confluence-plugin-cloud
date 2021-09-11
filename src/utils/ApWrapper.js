@@ -2,15 +2,24 @@ import { getUrlParam } from './window';
 
 // Each iFrame provides context for only one macro.
 // getMacroData returns the macro data for the CURRENT macro.
-export default class ConfluenceWrapper {
+// ApWrapper converts callback to Promise and also encapsulates
+// custom content APIs.
+export default class ApWrapper {
   _confluence;
   _request;
   _navigator;
+  _dialog;
+  _macroIdentifier;
+  _locationContext;
+  _user;
 
-  constructor(ap) {
+  constructor(ap, macroIdentifier) {
+    this._macroIdentifier = macroIdentifier;
     this._confluence = ap.confluence;
     this._request = ap.request;
     this._navigator = ap.navigator;
+    this._dialog = ap.dialog;
+    this._user = ap.user;
   }
 
   getMacroData() {
@@ -40,6 +49,11 @@ export default class ConfluenceWrapper {
         resolve(null)
       }
     })
+  }
+
+  propertyKey(uuid) {
+    const macroKey = `zenuml-${this._macroIdentifier}-macro`;
+    return `${macroKey}-${uuid}-body`;
   }
 
   getContentProperty(key) {
@@ -74,22 +88,26 @@ export default class ConfluenceWrapper {
     this._confluence.saveMacro(params, body)
   }
 
-  getSpaceKey() { //TODO: cacheable
-    const navigator = this._navigator;
-    return new Promise((resolv) => {
-      navigator.getLocation((data) => {
-        resolv(data.context.spaceKey);
+  getLocationContext() {
+    if(this._locationContext) {
+      return Promise.resolve(this._locationContext);
+    }
+
+    const self = this;
+    return new Promise((resolve) => {
+      self._navigator.getLocation((data) => {
+        self._locationContext = data.context;
+        resolve(data.context);
       });
     });
   }
 
-  getPageId() { //TODO: cacheable
-    const navigator = this._navigator;
-    return new Promise((resolve) => {
-      navigator.getLocation((data) => {
-        resolve(data.context.contentId);
-      });
-    });
+  async getSpaceKey() {
+    return (await this.getLocationContext().spaceKey);
+  }
+
+  async getPageId() {
+    return (await this.getLocationContext().contentId);
   }
 
   getContentKey() {
@@ -109,14 +127,16 @@ export default class ConfluenceWrapper {
   }
 
   async createCustomContent(uuid, content) {
-    const spaceKey = await this.getSpaceKey(); //TODO: cacheable
+    const context = await this.getLocationContext();
     const type = this.getCustomContentType();
+    const container = {id: context.contentId, type: context.contentType};
     const bodyData = {
       "type": type,
       "title": uuid,
       "space": {
-        "key": spaceKey
+        "key": context.spaceKey
       },
+      "container": container,
       "body": {
         "raw": {
           "value": JSON.stringify(content),
@@ -135,13 +155,13 @@ export default class ConfluenceWrapper {
   }
 
   async updateCustomContent(contentObj, newBody) {
-    const spaceKey = await this.getSpaceKey();
     const bodyData = {
       "type": contentObj.type,
       "title": contentObj.title,
       "space": {
-        "key": spaceKey
+        "key": contentObj.space.key
       },
+      "container": contentObj.container,
       "body": {
         "raw": {
           "value": JSON.stringify(newBody),
@@ -162,21 +182,8 @@ export default class ConfluenceWrapper {
     return this.parseCustomContentResponse(response);
   }
 
-  async getCustomContentByTitle(type, title) {
-    const spaceKey = await this.getSpaceKey();
-    const url = `/rest/api/content?type=${type}&title=${title}&spaceKey=${spaceKey}&expand=children,history,version.number`;
-    const results = JSON.parse((await this._request({type: 'GET', url})).body).results;
-    if(results.length > 1) {
-      throw `multiple results found with type ${type}, title ${title}`;
-    }
-    if(results.length === 1) {
-      return results[0];
-    }
-    return null;
-  }
-
   async getCustomContentById(id) {
-    const url = `/rest/api/content/${id}?expand=body.raw,version.number`;
+    const url = `/rest/api/content/${id}?expand=body.raw,version.number,container,space`;
     const response = await this._request({type: 'GET', url});
     const customContent = this.parseCustomContentResponse(response);
     return Object.assign({}, customContent, {value: JSON.parse(customContent.body.raw.value)});
@@ -189,5 +196,30 @@ export default class ConfluenceWrapper {
     } else {
       return await this.createCustomContent(uuid, value);
     }
+  }
+
+  isDisplayMode() {
+    return getUrlParam('outputType') === 'display';
+  }
+
+  getCurrentUser() {
+    return new Promise(resolv => this._user.getCurrentUser(user => resolv(user)));
+  }
+
+  canUserEdit() {
+    return new Promise(resolv =>
+      Promise.all([
+        this.getPageId(),
+        this.getCurrentUser()
+      ]).then((pageId, user) => 
+        this._request({
+          type: 'GET',
+          url: `/rest/api/content/${pageId}/restriction/byOperation/update/user?accountId=${user.atlassianAccountId}`,
+          contentType: 'application/json;charset=UTF-8',
+          success: () => resolv(true),
+          error: () => resolv(false)
+        })
+      )
+    );
   }
 }

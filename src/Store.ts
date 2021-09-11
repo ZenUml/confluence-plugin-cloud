@@ -54,7 +54,8 @@ export default {
     },
     diagramType: (state: any) => {
       return state.diagramType?.toLowerCase() || 'zenuml'
-    }
+    },
+    isDisplayMode: (state: any) => state.macro._confluenceWrapper.isDisplayMode()
   },
   state: {
     ...storeConfig.state,
