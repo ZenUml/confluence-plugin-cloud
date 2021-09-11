@@ -1,5 +1,6 @@
 import {DataSource, Diagram} from "@/utils/Diagram";
 import {IApWrapper} from "@/utils/IApWrapper";
+import Example from "@/utils/sequence/Example";
 
 export default class SequenceDiagramLoader {
   apWrapper: IApWrapper;
@@ -16,10 +17,16 @@ export default class SequenceDiagramLoader {
     console.debug('contentProperty is empty. Loading from content property.');
     let contentProperty = await this.apWrapper.getContentProperty2();
     if (contentProperty) {
-      console.log('loaded contentProperty', contentProperty);
+      console.log('loaded from contentProperty', contentProperty);
       return {code: contentProperty.value.code, source: DataSource.ContentProperty};
     }
     console.log('contentProperty is empty. Loading from macro body.');
-    return {code: await this.apWrapper.getMacroBody() || '', source: DataSource.MacroBody};
+    let macroBody = await this.apWrapper.getMacroBody();
+    if (macroBody) {
+      console.log('loaded from macro body', macroBody)
+      return {code: macroBody, source: DataSource.MacroBody};
+    }
+    console.log('macro body is empty. Use example.');
+    return {code: Example, source: DataSource.Example};
   }
 }

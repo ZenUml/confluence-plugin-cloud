@@ -1,24 +1,9 @@
 import { trackEvent } from './window';
 import BaseMacro from './BaseMacro';
+import Example from './sequence/Example'
 
 class Macro extends BaseMacro {
-  EXAMPLE = `title Order Service (Example)
-@Lambda OrderController
-<<BFF>> OrderService
-group BusinessService {
-  PurchaseService
-  InvoiceService
-}
-//\`POST /orders\`
-OrderController.create(payload) {
-  OrderService.create(payload) {
-    order = new Order(payload)
-    par {
-      PurchaseService.createPO(order)
-      InvoiceService.createInvoice(order)      
-    }
-  }
-}`;
+  EXAMPLE = Example;
 
   // eslint-disable-next-line
   constructor(ap = AP) {

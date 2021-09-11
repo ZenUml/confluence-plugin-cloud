@@ -90,7 +90,8 @@ export default class ApWrapper2 implements IApWrapper {
     let macroData = await this.getMacroData();
     const uuid = macroData?.uuid;
     if (!uuid) {
-      throw '`uuid` is empty. This diagram was not properly saved.'
+      console.debug('`uuid` is empty. This diagram has not been initialised. Most likely it has not been edited.')
+      return undefined;
     }
     let key = this.propertyKey(uuid);
     let property = await this.getContentProperty(key);

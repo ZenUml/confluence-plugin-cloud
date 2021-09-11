@@ -1,7 +1,8 @@
 export enum DataSource {
   MacroBody,
   ContentProperty,
-  CustomContent
+  CustomContent,
+  Example
 }
 export interface Diagram {
   code: string | undefined,
