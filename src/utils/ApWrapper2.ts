@@ -159,13 +159,14 @@ export default class ApWrapper2 implements IApWrapper {
   }
 
   async getSpaceKey() {
-    // @ts-ignore
-    return (await this.getLocationContext().spaceKey);
+    const locationContext = await this.getLocationContext();
+    return (locationContext.spaceKey);
   }
 
   async getPageId() {
     // @ts-ignore
-    return (await this.getLocationContext().contentId);
+    const locationContext = await this.getLocationContext();
+    return (locationContext.contentId);
   }
 
   getContentKey() {

@@ -1,5 +1,6 @@
 import SequenceDiagramLoader from "@/utils/SequenceDiagramLoader";
 import {IApWrapper} from "@/utils/IApWrapper";
+import {ICustomContent} from "@/utils/ICustomContent";
 
 class MockApWrapper implements IApWrapper {
   private _param: any;
@@ -38,9 +39,9 @@ class MockApWrapper implements IApWrapper {
     this._code = code;
   }
 
-  async getCustomContent() {
+  async getCustomContent(): Promise<ICustomContent | undefined> {
     if(this._hasCustomContent) {
-      return {value: { code: this._code }};
+      return {container: {id: "", type: ""}, id: "", space: {key: ""}, title: "", type: "", version: {number: 0}, value: { code: this._code }};
     }
     return undefined;
   }
