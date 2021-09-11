@@ -33,6 +33,16 @@ interface ContentPropertyIn {
 interface MacroParams {
 }
 
+interface ILocationContext {
+  spaceKey: string;
+  contentType: string;
+  contentId: string;
+}
+
+interface IUser {
+  atlassianAccountId: string;
+}
+
 // custom content APIs.
 export default class ApWrapper2 implements IApWrapper {
   _confluence: Confluence;
@@ -134,7 +144,7 @@ export default class ApWrapper2 implements IApWrapper {
     this._confluence.saveMacro(params, body)
   }
 
-  getLocationContext() {
+  getLocationContext(): Promise<ILocationContext> {
     if(this._locationContext) {
       return Promise.resolve(this._locationContext);
     }
@@ -298,20 +308,20 @@ export default class ApWrapper2 implements IApWrapper {
     return undefined;
   }
 
-  
-  getCurrentUser() {
-    return new Promise(resolv => this._user.getCurrentUser((user: any) => resolv(user)));
+
+  _getCurrentUser(): Promise<IUser> {
+    return new Promise(resolv => this._user.getCurrentUser((user: IUser) => resolv(user)));
   }
 
   canUserEdit() {
     return new Promise(resolv =>
       Promise.all([
         this.getPageId(),
-        this.getCurrentUser()
+        this._getCurrentUser()
       ]).then(([pageId, user]) => 
         this._request({
           type: 'GET',
-          url: `/rest/api/content/${pageId}/restriction/byOperation/update/user?accountId=${(user as any).atlassianAccountId}`,
+          url: `/rest/api/content/${pageId}/restriction/byOperation/update/user?accountId=${(user as IUser).atlassianAccountId}`,
           contentType: 'application/json;charset=UTF-8',
           success: () => resolv(true),
           error: () => resolv(false)
