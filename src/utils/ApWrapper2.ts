@@ -321,7 +321,7 @@ export default class ApWrapper2 implements IApWrapper {
       ]).then(([pageId, user]) => 
         this._request({
           type: 'GET',
-          url: `/rest/api/content/${pageId}/restriction/byOperation/update/user?accountId=${(user as IUser).atlassianAccountId}`,
+          url: `/rest/api/content/${pageId}/restriction/byOperation/update/user?accountId=${user.atlassianAccountId}`,
           contentType: 'application/json;charset=UTF-8',
           success: () => resolv(true),
           error: () => resolv(false)
