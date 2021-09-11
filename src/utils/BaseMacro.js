@@ -13,15 +13,12 @@ class BaseMacro {
   constructor(ap, macroIdentifier) {
     this._confluenceWrapper = new ApWrapper2(ap, macroIdentifier);
     this._macroIdentifier = macroIdentifier;
+    this._standaloneCustomContent = getUrlParam('rendered.for') === 'custom-content-native';
   }
 
   async initPageId() {
     if(!this._pageId) {
-      // for dialog opened from list
-      this._customContentId = getUrlParam('content.id');
-      console.debug('custom content id: ', this._customContentId);
-      this._standaloneCustomContent = !!this._customContentId;
-      this._pageId = this._customContentId || (await this._confluenceWrapper.getPageId());
+      this._pageId = getUrlParam('content.id') || (await this._confluenceWrapper.getPageId());
     }
   }
 
@@ -50,7 +47,7 @@ class BaseMacro {
   }
 
   async getContent() {
-    if(getUrlParam('rendered.for') === 'custom-content-native') {
+    if(this._standaloneCustomContent) {
       console.debug('rendering for custom content native viewer.');
       this._customContentId = getUrlParam('content.id');
       console.debug('custom content id:', this._customContentId);
@@ -64,7 +61,7 @@ class BaseMacro {
     // This is defined in the descriptor and is only available for sequence-viewer.html.
     const key = macroData?.uuid || getUrlParam('uuid');
     this._key = key;
-    this._customContentId = macroData?.customContentId || this._pageId;
+    this._customContentId = macroData?.customContentId;
     
     if(this._customContentId) {
       return await this.getCustomContent();
