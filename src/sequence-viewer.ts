@@ -8,7 +8,7 @@ import './assets/tailwind.css'
 console.log(`vue-sequence version: ${Version}`)
 
 import './utils/MockApConfluence'
-import Macro from './utils/Macro'
+import Macro from './utils/model/Macro'
 import mermaid from 'mermaid'
 
 import ExtendedStore from './Store'

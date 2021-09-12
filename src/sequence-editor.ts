@@ -11,7 +11,7 @@ import 'vue-sequence/dist/vue-sequence.css'
 console.log(Version)
 
 import MockApConfluence from './utils/MockApConfluence'
-import Macro from './utils/Macro'
+import Macro from './utils/model/Macro'
 import Editor from './components/Editor.vue'
 import Workspace from './components/Workspace.vue'
 import mermaid from 'mermaid'
