@@ -12,16 +12,16 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [12.x]
+        node-version: [14.x]
 
     steps:
       - uses: actions/checkout@v2
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v1
+      - uses: actions/setup-node@v2
         with:
           node-version: ${{ matrix.node-version }}
-      - run: npm install
-      - run: npm run test:unit
+          cache: 'yarn'
+      - run: yarn install
+      - run: yarn test:unit
 
   staging-lite:
     needs: build
@@ -31,11 +31,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v1
+      - uses: actions/setup-node@v2
         with:
           node-version: ${{ matrix.node-version }}
-      - run: npm install
+          cache: 'yarn'
+      - run: yarn install
       # It was failing when we change the following to lines to use npm run
       - run: yarn deploy:lite:stage --token ${{ secrets.FIREBASE_TOKEN }}
 
@@ -47,11 +47,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v1
+      - uses: actions/setup-node@v2
         with:
           node-version: ${{ matrix.node-version }}
-      - run: npm install
+          cache: 'yarn'
+      - run: yarn install
       # It was failing when we change the following to lines to use npm run
       - run: yarn deploy:full:stage --token ${{ secrets.FIREBASE_TOKEN }}
 
@@ -63,11 +63,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v1
+      - uses: actions/setup-node@v2
         with:
           node-version: ${{ matrix.node-version }}
-      - run: npm install
+          cache: 'yarn'
+      - run: yarn install
       # It was failing when we change the following to lines to use npm run
       - run: yarn deploy:lite:prod --token ${{ secrets.FIREBASE_TOKEN }}
 
@@ -79,10 +79,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v1
+      - uses: actions/setup-node@v2
         with:
           node-version: ${{ matrix.node-version }}
-      - run: npm install
+          cache: 'yarn'
+      - run: yarn install
       # It was failing when we change the following to lines to use npm run
       - run: yarn deploy:full:prod --token ${{ secrets.FIREBASE_TOKEN }}

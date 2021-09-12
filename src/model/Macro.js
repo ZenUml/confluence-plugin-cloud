@@ -1,14 +1,9 @@
 import { trackEvent } from '@/utils/window';
-import BaseMacro from './BaseMacro';
+import BaseMacro2 from './BaseMacro2';
 import Example from '../utils/sequence/Example'
 
-class Macro extends BaseMacro {
+class Macro extends BaseMacro2 {
   EXAMPLE = Example;
-
-  // eslint-disable-next-line
-  constructor(ap = AP) {
-    super(ap, 'sequence');
-  }
 
   async load() {
     const result = await super.load();

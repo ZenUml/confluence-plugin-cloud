@@ -1,6 +1,9 @@
 import SequenceDiagramLoader from "@/model/SequenceDiagramLoader";
 import {IApWrapper} from "@/model/IApWrapper";
 import {ICustomContent} from "@/model/ICustomContent";
+import {IContentProperty} from "@/model/IContentProperty";
+import {MacroIdentifier} from "@/model/MacroIdentifier";
+import {IMacroData} from "@/model/IMacroData";
 
 class MockApWrapper implements IApWrapper {
   private _param: any;
@@ -23,7 +26,7 @@ class MockApWrapper implements IApWrapper {
     this._code = content.value;
   }
   // Note: we do not need key for this method.
-  async getContentProperty2() {
+  async getContentProperty2(): Promise<IContentProperty | undefined> {
     if(!this._hasContentProperty) {
       return undefined;
     }
@@ -44,6 +47,31 @@ class MockApWrapper implements IApWrapper {
       return {container: {id: "", type: ""}, id: "", space: {key: ""}, title: "", type: "", version: {number: 0}, value: { code: this._code }};
     }
     return undefined;
+  }
+
+  isLite(): boolean {
+    return false;
+  }
+
+  _macroIdentifier: MacroIdentifier = MacroIdentifier.Sequence;
+
+  getCustomContentById(id: string): Promise<ICustomContent | undefined> {
+    return Promise.resolve(undefined);
+  }
+
+  getPageId(): Promise<string> {
+    return Promise.resolve("");
+  }
+
+  hasCustomContent(): boolean {
+    return false;
+  }
+
+  saveCustomContent(customContentId: string, uuid: string, value: object): Promise<any> {
+    return Promise.resolve(undefined);
+  }
+
+  saveMacro(params: IMacroData, body: string): void {
   }
 }
 

@@ -6,11 +6,9 @@ import {ICustomContent} from "@/model/ICustomContent";
 import {IUser} from "@/model/IUser";
 import {IConfluence} from "@/model/IConfluence";
 import {IAp} from "@/model/IAp";
+import {MacroIdentifier} from "@/model/MacroIdentifier";
 
 interface ContentPropertyIn {
-}
-
-interface MacroParams {
 }
 
 interface ILocationContext {
@@ -27,14 +25,28 @@ export default class ApWrapper2 implements IApWrapper {
   };
   _navigator: any;
   _dialog: any;
-  _macroIdentifier: string;
+  public _macroIdentifier: MacroIdentifier;
   _locationContext: any;
   _user: any;
 
-  constructor(ap: IAp, macroIdentifier: string) {
+  constructor(ap: IAp) {
+    let macroIdentifier: MacroIdentifier;
+    const contentKey = getUrlParam('contentKey');
+    if (!contentKey) {
+      console.error('contentKey URL parameter must be provided. It can be `sequence` or `graph`.')
+    }
+    if (contentKey?.includes('sequence')) {
+      macroIdentifier = MacroIdentifier.Sequence;
+    } else if (contentKey?.includes('graph')) {
+      macroIdentifier = MacroIdentifier.Graph
+    } else {
+      console.error('Wrong value in contentKey URL parameter. Fall back to `sequence`.')
+      macroIdentifier = MacroIdentifier.Sequence;
+    }
+
     this._macroIdentifier = macroIdentifier;
     this._confluence = ap.confluence;
-    this._requestFn = ap.requestFn;
+    this._requestFn = ap.request;
     this._navigator = ap.navigator;
     this._dialog = ap.dialog;
     this._user = ap.user;
@@ -85,12 +97,12 @@ export default class ApWrapper2 implements IApWrapper {
     let key = this.propertyKey(uuid);
     let property = await this.getContentProperty(key);
     if (!property) {
-      throw 'property is not find with key:' + key;
+      console.debug('property is not find with key:' + key);
     }
     return property;
   }
 
-  getContentProperty(key: any): Promise<IContentProperty|null> {
+  getContentProperty(key: any): Promise<IContentProperty|undefined> {
     return new Promise(resolve => {
       try {
         this._confluence.getContentProperty(key, (cp) => {
@@ -99,7 +111,7 @@ export default class ApWrapper2 implements IApWrapper {
       } catch (e) {
         // eslint-disable-next-line
         console.error('Failed to retrieve content property.', e)
-        resolve(null)
+        resolve(undefined)
       }
     })
   }
@@ -118,7 +130,7 @@ export default class ApWrapper2 implements IApWrapper {
     })
   }
 
-  saveMacro(params: MacroParams, body: string) {
+  saveMacro(params: IMacroData, body: string) {
     this._confluence.saveMacro(params, body)
   }
 
@@ -237,7 +249,7 @@ export default class ApWrapper2 implements IApWrapper {
     return null;
   }
 
-  async getCustomContentById(id: string): Promise<ICustomContent|undefined> {
+  async getCustomContentById(id: string): Promise<ICustomContent | undefined> {
     const url = `/rest/api/content/${id}?expand=body.raw,version.number,container,space`;
     const response = await this._requestFn({type: 'GET', url});
     const customContent = this.parseCustomContentResponse(response);
@@ -246,9 +258,9 @@ export default class ApWrapper2 implements IApWrapper {
   }
 
   async saveCustomContent(customContentId: string, uuid: string, value: object) {
-    if(customContentId) {
+    if (customContentId) {
       const existing = await this.getCustomContentById(customContentId);
-      if(existing) {
+      if (existing) {
         return await this.updateCustomContent(existing, value);
       } else {
         return await this.createCustomContent(uuid, value);
@@ -307,5 +319,10 @@ export default class ApWrapper2 implements IApWrapper {
         })
       )
     );
+  }
+
+  isLite(): boolean {
+    // @ts-ignore
+    return getUrlParam('addonKey')?.includes('lite');
   }
 }

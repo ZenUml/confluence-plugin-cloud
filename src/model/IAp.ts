@@ -2,7 +2,7 @@ import {IConfluence} from "@/model/IConfluence";
 
 export interface IAp {
   confluence: IConfluence;
-  requestFn: {
+  request: {
     (req: IApRequest): any
   };
   navigator: any;

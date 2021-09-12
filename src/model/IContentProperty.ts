@@ -1,3 +1,10 @@
 export interface IContentProperty {
-  value: { code: string | undefined }
+  value: {
+    styles?: string;
+    code: string | undefined;
+    mermaidCode?: string | undefined;
+    diagramType?: string | undefined;
+    graphXml?: string | undefined;
+    compressed?: boolean | undefined;
+  }
 }

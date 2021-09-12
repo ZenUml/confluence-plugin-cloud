@@ -64,21 +64,6 @@ describe('Macro', () => {
       expect(styles['#A'].backgroundColor).toBe('#FFF')
     })
 
-    // data, prop
-    test('or content property, but uuid from window.location.search', async () => {
-      delete global.window.location;
-      global.window = Object.create(window);
-      global.window.location = {
-        search: '?uuid=1234',
-      };
-      mockApConfluence.setContentProperty({key: 'zenuml-sequence-macro-1234-body', value: 'A.method'})
-      const code = (await macro.load()).code;
-      expect(code).toBe('A.method')
-      global.window.location = {
-        search: '',
-      };
-    })
-
     // data, body
     test('or content property', async () => {
       mockApConfluence.saveMacro({uuid: '1234'}, 'body')
