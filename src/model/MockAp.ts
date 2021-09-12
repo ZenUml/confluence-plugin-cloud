@@ -6,11 +6,12 @@ export default class MockAp implements IAp{
 
   constructor() {
     this.confluence = new MockApConfluence();
-    this.requestFn = _ => {}
+    this.request = _ => {}
   }
+
+  request: (req: IApRequest) => any;
 
   dialog: any;
   navigator: any;
-  requestFn: { (req: IApRequest): any };
   user: any;
 }
