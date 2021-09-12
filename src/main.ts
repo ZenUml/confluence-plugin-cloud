@@ -25,7 +25,7 @@ import 'vue-atlas/dist/vue-atlas.css'
 import 'codemirror/lib/codemirror.css'
 // theme css
 import 'codemirror/theme/base16-dark.css'
-import ExtendedStore from './Store'
+import ExtendedStore from './model/Store'
 
 Vue.use(Va, 'en')
 

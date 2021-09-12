@@ -11,7 +11,7 @@ import './model/MockApConfluence'
 import Macro from './model/Macro'
 import mermaid from 'mermaid'
 
-import ExtendedStore from './Store'
+import ExtendedStore from './model/Store'
 import EventBus from './EventBus'
 import Viewer from "@/components/Viewer.vue";
 

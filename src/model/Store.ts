@@ -1,7 +1,7 @@
 // @ts-ignore
 import {Store} from 'vue-sequence'
 import mermaid from "mermaid";
-import EventBus from './EventBus'
+import EventBus from '../EventBus'
 import Macro from "@/model/Macro";
 import AP from "@/model/AP";
 
