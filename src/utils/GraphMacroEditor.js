@@ -1,7 +1,7 @@
 import {compress} from './compress';
-import GraphMacroViewer from "@/utils/GraphMacroViewer";
+import GraphMacro from "@/model/GraphMacro";
 
-class GraphMacroEditor extends GraphMacroViewer {
+class GraphMacroEditor extends GraphMacro {
 
   async save(code) {
     const compressedCode = compress(code);
