@@ -6,6 +6,9 @@
     <styling-panel/>
     <diagram-frame>
       <div class="actions flex" v-show="this.$store.getters.isDisplayMode">
+        <div class="p-1" v-show="this.$store.state.macro._confluenceWrapper.isLite()">
+          <div class="p-1 text-xs font-bold leading-none text-gray-300 bg-gray-100 rounded">Lite</div>
+        </div>
         <button @click="edit" v-show="this.canEdit" class="p-1">
           <svg width="17" height="17" viewBox="0 0 17 17" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path fill-rule="evenodd" clip-rule="evenodd" d="M0.0200123 15.23C-0.0130986 15.392 -0.00552525 15.5597 0.0420541 15.718C0.0896335 15.8764 0.175734 16.0205 0.292649 16.1374C0.409564 16.2543 0.553645 16.3404 0.711994 16.388C0.870343 16.4355 1.03802 16.4431 1.20001 16.41L5.01001 15.63L0.800013 11.42L0.0200123 15.23ZM5.94101 12.61L3.82101 10.49L12.306 2H12.308L14.429 4.121L5.94001 12.611L5.94101 12.61ZM15.844 2.707L13.724 0.585004C13.5381 0.399083 13.3173 0.251699 13.0743 0.15131C12.8314 0.0509205 12.5709 -0.000498213 12.308 3.63842e-06C11.796 3.63842e-06 11.284 0.195004 10.893 0.585004L1.13601 10.343L6.08601 15.293L15.843 5.535C16.218 5.15995 16.4286 4.65133 16.4286 4.121C16.4286 3.59068 16.218 3.08206 15.843 2.707H15.844Z" fill="#47566F"/>
