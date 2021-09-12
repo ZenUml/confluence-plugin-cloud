@@ -1,5 +1,5 @@
 import MockApConfluence from './model/MockApConfluence'
-import GraphMacro from './utils/GraphMacro'
+import GraphMacro from './model/GraphMacro'
 console.debug('Running graph main viewer');
 if (window.location.href.includes('localhost')) {
   // eslint-disable-next-line

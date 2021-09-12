@@ -34,7 +34,7 @@ export default class ApWrapper2 implements IApWrapper {
   constructor(ap: IAp, macroIdentifier: string) {
     this._macroIdentifier = macroIdentifier;
     this._confluence = ap.confluence;
-    this._requestFn = ap.requestFn;
+    this._requestFn = ap.request;
     this._navigator = ap.navigator;
     this._dialog = ap.dialog;
     this._user = ap.user;

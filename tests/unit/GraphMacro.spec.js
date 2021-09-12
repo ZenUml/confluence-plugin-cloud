@@ -1,4 +1,4 @@
-import GraphMacro from "@/utils/GraphMacro";
+import GraphMacro from "@/model/GraphMacro";
 import MockApConfluence from "@/model/MockApConfluence";
 
 describe('GraphMacro', () => {
