@@ -1,4 +1,4 @@
-import {getUrlParam} from './window';
+import {getUrlParam} from '../window';
 import {IApWrapper} from "@/utils/IApWrapper";
 import {IMacroData} from "@/utils/IMacroData";
 import {IContentProperty} from "@/utils/IContentProperty";

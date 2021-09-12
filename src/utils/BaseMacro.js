@@ -1,6 +1,6 @@
 import uuidv4 from './uuid';
 import { getUrlParam, trackEvent } from './window';
-import ApWrapper2 from "./ApWrapper2";
+import ApWrapper2 from "./model/ApWrapper2";
 
 class BaseMacro {
   _key;
