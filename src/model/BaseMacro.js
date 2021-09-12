@@ -10,9 +10,10 @@ class BaseMacro {
   _pageId;
   _standaloneCustomContent;
 
-  constructor(ap, macroIdentifier) {
+  constructor(ap) {
     this._confluenceWrapper = new ApWrapper2(ap);
-    this._macroIdentifier = macroIdentifier;
+    console.debug('Loading Graph data with BaseMacro.');
+    this._macroIdentifier = this._confluenceWrapper._macroIdentifier;
     this._standaloneCustomContent = getUrlParam('rendered.for') === 'custom-content-native';
   }
 
