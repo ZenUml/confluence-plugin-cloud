@@ -1,4 +1,4 @@
-import BaseMacro from './BaseMacro';
+import BaseMacro from './model/BaseMacro';
 import {decompress} from './compress';
 
 class GraphMacroViewer extends BaseMacro {
