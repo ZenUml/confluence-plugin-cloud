@@ -3,7 +3,16 @@ import {Store} from 'vue-sequence'
 import mermaid from "mermaid";
 import EventBus from './EventBus'
 import Macro from "@/utils/Macro";
+import MockApConfluence from "@/utils/MockApConfluence";
 
+if (window.location.href.includes('localhost')) {
+  // eslint-disable-next-line
+  console.log('You are using a mocked AP.confluence')
+  // @ts-ignore
+  window.AP = {
+    confluence: new MockApConfluence()
+  }
+}
 // @ts-ignore
 const ap = AP;
 const storeConfig = Store()
