@@ -6,7 +6,7 @@ import {Store} from 'vue-sequence'
 
 import ApWrapper2 from "./model/ApWrapper2";
 import AP from "@/utils/model/AP";
-import SequenceDiagramLoader from "@/utils/SequenceDiagramLoader";
+import SequenceDiagramLoader from "@/utils/model/SequenceDiagramLoader";
 Vue.use(Vuex)
 
 async function getCode() {

@@ -1,4 +1,4 @@
-import SequenceDiagramLoader from "@/utils/SequenceDiagramLoader";
+import SequenceDiagramLoader from "@/utils/model/SequenceDiagramLoader";
 import {IApWrapper} from "@/utils/IApWrapper";
 import {ICustomContent} from "@/utils/ICustomContent";
 
