@@ -1,31 +1,11 @@
-import {getUrlParam} from './window';
-import {IApWrapper} from "@/utils/IApWrapper";
-import {IMacroData} from "@/utils/IMacroData";
-import {IContentProperty} from "@/utils/IContentProperty";
-import {ICustomContent} from "@/utils/ICustomContent";
-
-// Each iFrame provides context for only one macro.
-// getMacroData returns the macro data for the CURRENT macro.
-// ApWrapper2 converts callback to Promise and also encapsulates
-interface Confluence {
-  getMacroData: (arg0: (data: any) => void) => void;
-  getMacroBody: (arg0: (body: any) => void) => void;
-  getContentProperty: (arg0: any, arg1: (cp: any) => void) => void;
-  setContentProperty: (arg0: any, arg1: (result: any) => void) => void;
-  saveMacro: (arg0: any, arg1: any) => void;
-}
-
-interface ApRequestFunc {
-  (arg0: { url: string; type: string; contentType?: string; data?: string; success?: any; error?: any }): any
-}
-
-interface AP {
-  confluence: Confluence;
-  request: ApRequestFunc;
-  navigator: any;
-  dialog: any;
-  user: any;
-}
+import {getUrlParam} from '@/utils/window';
+import {IApWrapper} from "@/model/IApWrapper";
+import {IMacroData} from "@/model/IMacroData";
+import {IContentProperty} from "@/model/IContentProperty";
+import {ICustomContent} from "@/model/ICustomContent";
+import {IUser} from "@/model/IUser";
+import {IConfluence} from "@/model/IConfluence";
+import {IAp} from "@/model/IAp";
 
 interface ContentPropertyIn {
 }
@@ -39,24 +19,22 @@ interface ILocationContext {
   contentId: string;
 }
 
-interface IUser {
-  atlassianAccountId: string;
-}
-
 // custom content APIs.
 export default class ApWrapper2 implements IApWrapper {
-  _confluence: Confluence;
-  _request: ApRequestFunc;
+  _confluence: IConfluence;
+  _requestFn: {
+    (req: IApRequest): any
+  };
   _navigator: any;
   _dialog: any;
   _macroIdentifier: string;
   _locationContext: any;
   _user: any;
 
-  constructor(ap: AP, macroIdentifier: string) {
+  constructor(ap: IAp, macroIdentifier: string) {
     this._macroIdentifier = macroIdentifier;
     this._confluence = ap.confluence;
-    this._request = ap.request;
+    this._requestFn = ap.requestFn;
     this._navigator = ap.navigator;
     this._dialog = ap.dialog;
     this._user = ap.user;
@@ -204,7 +182,7 @@ export default class ApWrapper2 implements IApWrapper {
       }
     };
 
-    const response = await this._request({
+    const response = await this._requestFn({
       url: '/rest/api/content',
       type: 'POST',
       contentType: 'application/json',
@@ -237,7 +215,7 @@ export default class ApWrapper2 implements IApWrapper {
       }
     };
 
-    const response = await this._request({
+    const response = await this._requestFn({
       url: `/rest/api/content/${contentObj.id}`,
       type: 'PUT',
       contentType: 'application/json',
@@ -249,7 +227,7 @@ export default class ApWrapper2 implements IApWrapper {
   async getCustomContentByTitle(type: any, title: any) {
     const spaceKey = await this.getSpaceKey();
     const url = `/rest/api/content?type=${type}&title=${title}&spaceKey=${spaceKey}&expand=children,history,version.number`;
-    const results = JSON.parse((await this._request({type: 'GET', url})).body).results;
+    const results = JSON.parse((await this._requestFn({type: 'GET', url})).body).results;
     if(results.length > 1) {
       throw `multiple results found with type ${type}, title ${title}`;
     }
@@ -261,7 +239,7 @@ export default class ApWrapper2 implements IApWrapper {
 
   async getCustomContentById(id: string): Promise<ICustomContent|undefined> {
     const url = `/rest/api/content/${id}?expand=body.raw,version.number,container,space`;
-    const response = await this._request({type: 'GET', url});
+    const response = await this._requestFn({type: 'GET', url});
     const customContent = this.parseCustomContentResponse(response);
     console.debug(`Loaded custom content by id ${id}.`);
     return Object.assign({}, customContent, {value: JSON.parse(customContent.body.raw.value)});
@@ -320,7 +298,7 @@ export default class ApWrapper2 implements IApWrapper {
         this.getPageId(),
         this._getCurrentUser()
       ]).then(([pageId, user]) => 
-        this._request({
+        this._requestFn({
           type: 'GET',
           url: `/rest/api/content/${pageId}/restriction/byOperation/update/user?accountId=${user.atlassianAccountId}`,
           contentType: 'application/json;charset=UTF-8',

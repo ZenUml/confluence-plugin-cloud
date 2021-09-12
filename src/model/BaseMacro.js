@@ -1,5 +1,5 @@
-import uuidv4 from './uuid';
-import { getUrlParam, trackEvent } from './window';
+import uuidv4 from '../utils/uuid';
+import { getUrlParam, trackEvent } from '@/utils/window';
 import ApWrapper2 from "./ApWrapper2";
 
 class BaseMacro {

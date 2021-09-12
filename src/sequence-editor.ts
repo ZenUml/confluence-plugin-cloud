@@ -10,8 +10,8 @@ import 'vue-sequence/dist/vue-sequence.css'
 // eslint-disable-next-line
 console.log(Version)
 
-import MockApConfluence from './utils/MockApConfluence'
-import Macro from './utils/Macro'
+import MockApConfluence from './model/MockApConfluence'
+import Macro from './model/Macro'
 import Editor from './components/Editor.vue'
 import Workspace from './components/Workspace.vue'
 import mermaid from 'mermaid'
@@ -24,7 +24,7 @@ import 'vue-atlas/dist/vue-atlas.css'
 import 'codemirror/lib/codemirror.css'
 // theme css
 import 'codemirror/theme/base16-dark.css'
-import ExtendedStore from './Store'
+import ExtendedStore from './model/Store'
 
 Vue.use(Va, 'en')
 

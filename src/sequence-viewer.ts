@@ -7,11 +7,11 @@ import './assets/tailwind.css'
 // eslint-disable-next-line
 console.log(`vue-sequence version: ${Version}`)
 
-import './utils/MockApConfluence'
-import Macro from './utils/Macro'
+import './model/MockApConfluence'
+import Macro from './model/Macro'
 import mermaid from 'mermaid'
 
-import ExtendedStore from './Store'
+import ExtendedStore from './model/Store'
 import EventBus from './EventBus'
 import Viewer from "@/components/Viewer.vue";
 

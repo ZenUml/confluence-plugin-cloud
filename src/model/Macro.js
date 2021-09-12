@@ -1,6 +1,6 @@
-import { trackEvent } from './window';
+import { trackEvent } from '@/utils/window';
 import BaseMacro from './BaseMacro';
-import Example from './sequence/Example'
+import Example from '../utils/sequence/Example'
 
 class Macro extends BaseMacro {
   EXAMPLE = Example;

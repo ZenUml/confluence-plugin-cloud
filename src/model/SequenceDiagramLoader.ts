@@ -1,5 +1,5 @@
-import {DataSource, Diagram} from "@/utils/Diagram";
-import {IApWrapper} from "@/utils/IApWrapper";
+import {DataSource, Diagram} from "@/model/Diagram";
+import {IApWrapper} from "@/model/IApWrapper";
 import Example from "@/utils/sequence/Example";
 
 export default class SequenceDiagramLoader {
