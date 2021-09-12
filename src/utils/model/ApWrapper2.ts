@@ -1,8 +1,8 @@
 import {getUrlParam} from '../window';
-import {IApWrapper} from "@/utils/IApWrapper";
-import {IMacroData} from "@/utils/IMacroData";
-import {IContentProperty} from "@/utils/IContentProperty";
-import {ICustomContent} from "@/utils/ICustomContent";
+import {IApWrapper} from "@/utils/model/IApWrapper";
+import {IMacroData} from "@/utils/model/IMacroData";
+import {IContentProperty} from "@/utils/model/IContentProperty";
+import {ICustomContent} from "@/utils/model/ICustomContent";
 
 // Each iFrame provides context for only one macro.
 // getMacroData returns the macro data for the CURRENT macro.

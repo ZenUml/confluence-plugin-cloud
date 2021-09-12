@@ -1,6 +1,6 @@
-import {IMacroData} from "@/utils/IMacroData";
-import {IContentProperty} from "@/utils/IContentProperty";
-import {ICustomContent} from "@/utils/ICustomContent";
+import {IMacroData} from "@/utils/model/IMacroData";
+import {IContentProperty} from "@/utils/model/IContentProperty";
+import {ICustomContent} from "@/utils/model/ICustomContent";
 
 export interface IApWrapper {
   getMacroData(): Promise<IMacroData | undefined>;
