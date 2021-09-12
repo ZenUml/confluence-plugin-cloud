@@ -3,24 +3,15 @@ import {IApWrapper} from "@/model/IApWrapper";
 import {IMacroData} from "@/model/IMacroData";
 import {IContentProperty} from "@/model/IContentProperty";
 import {ICustomContent} from "@/model/ICustomContent";
-
-// Each iFrame provides context for only one macro.
-// getMacroData returns the macro data for the CURRENT macro.
-// ApWrapper2 converts callback to Promise and also encapsulates
-interface Confluence {
-  getMacroData: (arg0: (data: any) => void) => void;
-  getMacroBody: (arg0: (body: any) => void) => void;
-  getContentProperty: (arg0: any, arg1: (cp: any) => void) => void;
-  setContentProperty: (arg0: any, arg1: (result: any) => void) => void;
-  saveMacro: (arg0: any, arg1: any) => void;
-}
+import {IUser} from "@/model/IUser";
+import {IConfluence} from "@/model/IConfluence";
 
 interface ApRequestFunc {
-  (arg0: { url: string; type: string; contentType?: string; data?: string; success?: any; error?: any }): any
+  (arg0: IApRequest): any
 }
 
-interface AP {
-  confluence: Confluence;
+interface IAp {
+  confluence: IConfluence;
   request: ApRequestFunc;
   navigator: any;
   dialog: any;
@@ -39,13 +30,9 @@ interface ILocationContext {
   contentId: string;
 }
 
-interface IUser {
-  atlassianAccountId: string;
-}
-
 // custom content APIs.
 export default class ApWrapper2 implements IApWrapper {
-  _confluence: Confluence;
+  _confluence: IConfluence;
   _request: ApRequestFunc;
   _navigator: any;
   _dialog: any;
@@ -53,7 +40,7 @@ export default class ApWrapper2 implements IApWrapper {
   _locationContext: any;
   _user: any;
 
-  constructor(ap: AP, macroIdentifier: string) {
+  constructor(ap: IAp, macroIdentifier: string) {
     this._macroIdentifier = macroIdentifier;
     this._confluence = ap.confluence;
     this._request = ap.request;
