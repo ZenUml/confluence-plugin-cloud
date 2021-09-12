@@ -1,4 +1,4 @@
-import MockApConfluence from "@/utils/model/MockApConfluence.ts";
+import MockApConfluence from "@/model/MockApConfluence.ts";
 
 export default class MockAp {
   public confluence: any

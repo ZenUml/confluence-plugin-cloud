@@ -1,6 +1,6 @@
-import SequenceDiagramLoader from "@/utils/model/SequenceDiagramLoader";
-import {IApWrapper} from "@/utils/model/IApWrapper";
-import {ICustomContent} from "@/utils/model/ICustomContent";
+import SequenceDiagramLoader from "@/model/SequenceDiagramLoader";
+import {IApWrapper} from "@/model/IApWrapper";
+import {ICustomContent} from "@/model/ICustomContent";
 
 class MockApWrapper implements IApWrapper {
   private _param: any;

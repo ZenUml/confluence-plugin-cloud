@@ -2,8 +2,8 @@
 import {Store} from 'vue-sequence'
 import mermaid from "mermaid";
 import EventBus from './EventBus'
-import Macro from "@/utils/model/Macro";
-import AP from "@/utils/model/AP";
+import Macro from "@/model/Macro";
+import AP from "@/model/AP";
 
 // @ts-ignore
 const ap = AP;
