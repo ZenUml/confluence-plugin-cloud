@@ -80,12 +80,3 @@ export default {
   },
 }
 </script>
-
-<style scoped>
-.viewer {
-  margin-left: 5px;
-}
-.actions {
-  float: right
-}
-</style>
