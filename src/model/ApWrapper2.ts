@@ -6,6 +6,7 @@ import {ICustomContent} from "@/model/ICustomContent";
 import {IUser} from "@/model/IUser";
 import {IConfluence} from "@/model/IConfluence";
 import {IAp} from "@/model/IAp";
+import {MacroIdentifier} from "@/model/MacroIdentifier";
 
 interface ContentPropertyIn {
 }
@@ -28,7 +29,21 @@ export default class ApWrapper2 implements IApWrapper {
   _locationContext: any;
   _user: any;
 
-  constructor(ap: IAp, macroIdentifier: string) {
+  constructor(ap: IAp) {
+    let macroIdentifier: MacroIdentifier;
+    const contentKey = getUrlParam('contentKey');
+    if (!contentKey) {
+      console.error('contentKey URL parameter must be provided. It can be `sequence` or `graph`.')
+    }
+    if (contentKey?.includes('sequence')) {
+      macroIdentifier = MacroIdentifier.Sequence;
+    } else if (contentKey?.includes('graph')) {
+      macroIdentifier = MacroIdentifier.Graph
+    } else {
+      console.error('Wrong value in contentKey URL parameter. Fall back to `sequence`.')
+      macroIdentifier = MacroIdentifier.Sequence;
+    }
+
     this._macroIdentifier = macroIdentifier;
     this._confluence = ap.confluence;
     this._requestFn = ap.request;

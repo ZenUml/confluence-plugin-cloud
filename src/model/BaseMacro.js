@@ -11,7 +11,7 @@ class BaseMacro {
   _standaloneCustomContent;
 
   constructor(ap, macroIdentifier) {
-    this._confluenceWrapper = new ApWrapper2(ap, macroIdentifier);
+    this._confluenceWrapper = new ApWrapper2(ap);
     this._macroIdentifier = macroIdentifier;
     this._standaloneCustomContent = getUrlParam('rendered.for') === 'custom-content-native';
   }

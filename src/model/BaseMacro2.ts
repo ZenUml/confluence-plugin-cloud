@@ -6,6 +6,7 @@ import {IApWrapper} from "@/model/IApWrapper";
 import {IContentProperty} from "@/model/IContentProperty";
 import {ICustomContent} from "@/model/ICustomContent";
 import {IMacroData} from "@/model/IMacroData";
+import {MacroIdentifier} from "@/model/MacroIdentifier";
 
 class BaseMacro2 {
   _key: any;
@@ -16,8 +17,8 @@ class BaseMacro2 {
   _standaloneCustomContent: boolean;
   private _confluenceWrapper: IApWrapper;
 
-  constructor(ap: IAp, macroIdentifier: string) {
-    this._confluenceWrapper = new ApWrapper2(ap, macroIdentifier);
+  constructor(ap: IAp, macroIdentifier: MacroIdentifier) {
+    this._confluenceWrapper = new ApWrapper2(ap);
     this._macroIdentifier = macroIdentifier;
     this._standaloneCustomContent = getUrlParam('rendered.for') === 'custom-content-native';
   }

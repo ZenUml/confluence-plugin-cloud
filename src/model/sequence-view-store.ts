@@ -11,7 +11,7 @@ Vue.use(Vuex)
 
 async function getCode() {
   // @ts-ignore
-  const confluenceWrapper = new ApWrapper2(AP, 'sequence')
+  const confluenceWrapper = new ApWrapper2(AP)
   let sequenceDiagramLoader = new SequenceDiagramLoader(confluenceWrapper);
   // @ts-ignore
   window.sequenceDiagramLoader = sequenceDiagramLoader
