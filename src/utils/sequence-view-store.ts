@@ -5,7 +5,7 @@ import Vuex from 'vuex'
 import {Store} from 'vue-sequence'
 
 import ApWrapper2 from "./ApWrapper2";
-import AP from "@/utils/AP";
+import AP from "@/utils/model/AP";
 import SequenceDiagramLoader from "@/utils/SequenceDiagramLoader";
 Vue.use(Vuex)
 
