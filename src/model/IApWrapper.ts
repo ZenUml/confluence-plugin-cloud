@@ -1,8 +1,11 @@
 import {IMacroData} from "@/model/IMacroData";
 import {IContentProperty} from "@/model/IContentProperty";
 import {ICustomContent} from "@/model/ICustomContent";
+import {MacroIdentifier} from "@/model/MacroIdentifier";
 
 export interface IApWrapper {
+  _macroIdentifier: MacroIdentifier;
+
   isLite(): boolean;
 
   getMacroData(): Promise<IMacroData | undefined>;
