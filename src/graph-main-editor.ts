@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import MockApConfluence from './model/MockApConfluence'
-import GraphMacroEditor from './utils/GraphMacroEditor'
+import GraphMacro from "@/model/GraphMacro";
 import SaveAndGoBackButtonGraph from "@/components/SaveAndGoBackButtonGraph.vue";
 // @ts-ignore
 import Va from 'vue-atlas'
@@ -20,7 +20,7 @@ new Vue({
 }).$mount('#save-and-go-back');
 async function initializeMacro() {
   // @ts-ignore
-  const macro = new GraphMacroEditor(AP);
+  const macro = new GraphMacro(AP);
 
 
   // @ts-ignore

@@ -1,5 +1,5 @@
 import BaseMacro from './BaseMacro2';
-import {decompress} from '@/utils/compress';
+import {compress, decompress} from '@/utils/compress';
 
 class GraphMacro extends BaseMacro {
 
@@ -15,6 +15,11 @@ class GraphMacro extends BaseMacro {
     }
 
     return result;
+  }
+
+  async save(code) {
+    const compressedCode = compress(code);
+    return super.save({graphXml: compressedCode, compressed: true});
   }
 }
 
