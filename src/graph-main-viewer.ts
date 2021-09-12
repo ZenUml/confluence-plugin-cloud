@@ -1,4 +1,4 @@
-import MockApConfluence from './utils/MockApConfluence'
+import MockApConfluence from './utils/model/MockApConfluence'
 import GraphMacroViewer from './utils/GraphMacroViewer'
 console.debug('Running graph main viewer');
 if (window.location.href.includes('localhost')) {

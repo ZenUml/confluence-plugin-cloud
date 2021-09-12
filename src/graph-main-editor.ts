@@ -1,5 +1,5 @@
 import Vue from 'vue'
-import MockApConfluence from './utils/MockApConfluence'
+import MockApConfluence from './utils/model/MockApConfluence'
 import GraphMacroEditor from './utils/GraphMacroEditor'
 import SaveAndGoBackButtonGraph from "@/components/SaveAndGoBackButtonGraph.vue";
 // @ts-ignore

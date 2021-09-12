@@ -1,4 +1,4 @@
-import MockApConfluence from '@/utils/MockApConfluence'
+import MockApConfluence from '@/utils/model/MockApConfluence'
 import Macro from '@/utils/model/Macro'
 
 let mockApConfluence;

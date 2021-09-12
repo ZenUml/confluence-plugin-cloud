@@ -1,5 +1,5 @@
 import GraphMacroViewer from "@/utils/GraphMacroViewer";
-import MockApConfluence from "@/utils/MockApConfluence";
+import MockApConfluence from "@/utils/model/MockApConfluence";
 
 describe('GraphMacro', () => {
   it('should have macroIdentifier as `graph`', () => {

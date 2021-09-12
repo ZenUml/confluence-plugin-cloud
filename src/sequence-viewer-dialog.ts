@@ -4,7 +4,7 @@ import './assets/tailwind.css'
 import {DiagramFrame} from 'vue-sequence'
 import 'vue-sequence/dist/vue-sequence.css'
 
-import configStoreAsyncFn from "./utils/sequence-view-store";
+import configStoreAsyncFn from "./utils/model/sequence-view-store";
 console.log('From sequence viewer dialog');
 
 function mountDiagramFrame(store: any, id: string) {
