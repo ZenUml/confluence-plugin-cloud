@@ -1,12 +1,12 @@
 <template>
 <div class="viewer">
   <div v-html="styles"></div>
-  <mermaid v-show="this.$store.getters.diagramType === 'mermaid'"/>
-  <div v-show="this.$store.getters.diagramType === 'zenuml'" @click="deselectAll">
+  <mermaid v-show="diagramType === 'mermaid'"/>
+  <div v-show="diagramType === 'zenuml'" @click="deselectAll">
     <styling-panel/>
     <diagram-frame>
-      <div class="actions flex" v-show="this.$store.getters.isDisplayMode">
-        <div class="p-1" v-show="this.$store.state.macro._confluenceWrapper.isLite()">
+      <div class="actions flex" v-show="isDisplayMode">
+        <div class="p-1" v-show="isLite">
           <div class="p-1 text-xs font-bold leading-none text-gray-300 bg-gray-100 rounded">Lite</div>
         </div>
         <button @click="edit" v-show="this.canEdit" class="p-1">
@@ -26,6 +26,7 @@
 </template>
 
 <script>
+import {mapGetters} from "vuex";
 import { DiagramFrame } from 'vue-sequence'
 import Mermaid from './Mermaid'
 import EventBus from '../EventBus'
@@ -40,6 +41,10 @@ export default {
     DiagramFrame
   },
   computed: {
+    ...mapGetters({isDisplayMode: 'isDisplayMode', diagramType: 'diagramType'}),
+    isLite() {
+      return this.$store.state.macro._confluenceWrapper.isLite();
+    },
     styles() {
       const stylesInStore = this.$store.state.styles || {};
       const statements = Object.keys(stylesInStore)
