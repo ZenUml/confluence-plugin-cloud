@@ -5,18 +5,7 @@ import {IContentProperty} from "@/model/IContentProperty";
 import {ICustomContent} from "@/model/ICustomContent";
 import {IUser} from "@/model/IUser";
 import {IConfluence} from "@/model/IConfluence";
-
-interface ApRequestFunc {
-  (arg0: IApRequest): any
-}
-
-interface IAp {
-  confluence: IConfluence;
-  request: ApRequestFunc;
-  navigator: any;
-  dialog: any;
-  user: any;
-}
+import {IAp} from "@/model/IAp";
 
 interface ContentPropertyIn {
 }
@@ -33,7 +22,9 @@ interface ILocationContext {
 // custom content APIs.
 export default class ApWrapper2 implements IApWrapper {
   _confluence: IConfluence;
-  _request: ApRequestFunc;
+  _requestFn: {
+    (req: IApRequest): any
+  };
   _navigator: any;
   _dialog: any;
   _macroIdentifier: string;
@@ -43,7 +34,7 @@ export default class ApWrapper2 implements IApWrapper {
   constructor(ap: IAp, macroIdentifier: string) {
     this._macroIdentifier = macroIdentifier;
     this._confluence = ap.confluence;
-    this._request = ap.request;
+    this._requestFn = ap.requestFn;
     this._navigator = ap.navigator;
     this._dialog = ap.dialog;
     this._user = ap.user;
@@ -191,7 +182,7 @@ export default class ApWrapper2 implements IApWrapper {
       }
     };
 
-    const response = await this._request({
+    const response = await this._requestFn({
       url: '/rest/api/content',
       type: 'POST',
       contentType: 'application/json',
@@ -224,7 +215,7 @@ export default class ApWrapper2 implements IApWrapper {
       }
     };
 
-    const response = await this._request({
+    const response = await this._requestFn({
       url: `/rest/api/content/${contentObj.id}`,
       type: 'PUT',
       contentType: 'application/json',
@@ -236,7 +227,7 @@ export default class ApWrapper2 implements IApWrapper {
   async getCustomContentByTitle(type: any, title: any) {
     const spaceKey = await this.getSpaceKey();
     const url = `/rest/api/content?type=${type}&title=${title}&spaceKey=${spaceKey}&expand=children,history,version.number`;
-    const results = JSON.parse((await this._request({type: 'GET', url})).body).results;
+    const results = JSON.parse((await this._requestFn({type: 'GET', url})).body).results;
     if(results.length > 1) {
       throw `multiple results found with type ${type}, title ${title}`;
     }
@@ -248,7 +239,7 @@ export default class ApWrapper2 implements IApWrapper {
 
   async getCustomContentById(id: string): Promise<ICustomContent|undefined> {
     const url = `/rest/api/content/${id}?expand=body.raw,version.number,container,space`;
-    const response = await this._request({type: 'GET', url});
+    const response = await this._requestFn({type: 'GET', url});
     const customContent = this.parseCustomContentResponse(response);
     console.debug(`Loaded custom content by id ${id}.`);
     return Object.assign({}, customContent, {value: JSON.parse(customContent.body.raw.value)});
@@ -307,7 +298,7 @@ export default class ApWrapper2 implements IApWrapper {
         this.getPageId(),
         this._getCurrentUser()
       ]).then(([pageId, user]) => 
-        this._request({
+        this._requestFn({
           type: 'GET',
           url: `/rest/api/content/${pageId}/restriction/byOperation/update/user?accountId=${user.atlassianAccountId}`,
           contentType: 'application/json;charset=UTF-8',
