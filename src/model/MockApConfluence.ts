@@ -24,10 +24,11 @@ export default class MockApConfluence {
   }
 
   getContentProperty(key: any, cb: (arg0: null) => void) {
-    if (this.key === key) {
-      cb(this.contentProperty)
-    } else {
-      cb(null)
+    if (this.key !== key) {
+      console.error('Retrieving content property with a different key.');
+      console.error('This mock instance returns the content regardless, but it might be an error.');
     }
+    cb(this.contentProperty)
+
   }
 }

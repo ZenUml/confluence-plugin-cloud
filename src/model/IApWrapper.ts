@@ -12,4 +12,14 @@ export interface IApWrapper {
   getContentProperty2(): Promise<IContentProperty | undefined>;
 
   getCustomContent(): Promise<ICustomContent | undefined>;
+
+  getCustomContentById(id: string): Promise<ICustomContent | undefined>;
+
+  getPageId(): Promise<string>;
+
+  hasCustomContent(): boolean;
+
+  saveCustomContent(customContentId: string, uuid: string, value: object): Promise<any>;
+
+  saveMacro(params: IMacroData, body: string): void;
 }

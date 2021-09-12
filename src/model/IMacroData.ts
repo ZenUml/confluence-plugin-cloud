@@ -1,4 +1,5 @@
 export interface IMacroData {
   customContentId?: string;
-  uuid?: string
+  uuid?: string;
+  updatedAt?: Date;
 }
