@@ -1,12 +1,7 @@
-import BaseMacro from '../model/BaseMacro';
 import {decompress} from './compress';
+import BaseMacro2 from "@/model/BaseMacro2";
 
-class GraphMacroViewer extends BaseMacro {
-
-  // eslint-disable-next-line
-  constructor(ap = AP) {
-    super(ap, 'graph');
-  }
+class GraphMacroViewer extends BaseMacro2 {
 
   async load() {
     const result = await super.load();

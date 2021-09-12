@@ -6,7 +6,6 @@ import {IApWrapper} from "@/model/IApWrapper";
 import {IContentProperty} from "@/model/IContentProperty";
 import {ICustomContent} from "@/model/ICustomContent";
 import {IMacroData} from "@/model/IMacroData";
-import {MacroIdentifier} from "@/model/MacroIdentifier";
 
 class BaseMacro2 {
   _key: any;
