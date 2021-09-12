@@ -3,6 +3,8 @@ import {IContentProperty} from "@/model/IContentProperty";
 import {ICustomContent} from "@/model/ICustomContent";
 
 export interface IApWrapper {
+  isLite(): boolean;
+
   getMacroData(): Promise<IMacroData | undefined>;
 
   getMacroBody(): Promise<string | undefined>;

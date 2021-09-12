@@ -45,6 +45,10 @@ class MockApWrapper implements IApWrapper {
     }
     return undefined;
   }
+
+  isLite(): boolean {
+    return false;
+  }
 }
 
 describe('SequenceDiagramLoader', () => {

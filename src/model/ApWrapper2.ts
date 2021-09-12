@@ -308,4 +308,9 @@ export default class ApWrapper2 implements IApWrapper {
       )
     );
   }
+
+  isLite(): boolean {
+    // @ts-ignore
+    return getUrlParam('addonKey')?.includes('lite');
+  }
 }
