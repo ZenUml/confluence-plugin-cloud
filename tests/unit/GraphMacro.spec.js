@@ -1,4 +1,4 @@
-import GraphMacroViewer from "@/utils/GraphMacroViewer";
+import GraphMacro from "@/model/GraphMacro";
 import MockApConfluence from "@/model/MockApConfluence";
 
 describe('GraphMacro', () => {
@@ -7,7 +7,7 @@ describe('GraphMacro', () => {
     delete window.location;
     // @ts-ignore
     window.location = new URL('https://zenuml.com/?contentKey=zenuml-content-graph')
-    let graphMacro = new GraphMacroViewer({confluence: mockApConfluence});
+    let graphMacro = new GraphMacro({confluence: mockApConfluence});
     expect(graphMacro._macroIdentifier).toBe('graph')
   })
 })
