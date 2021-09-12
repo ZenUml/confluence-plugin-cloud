@@ -1,10 +1,10 @@
-import GraphMacroViewer from "@/utils/GraphMacroViewer";
+import GraphMacro from "@/utils/GraphMacro";
 import MockApConfluence from "@/model/MockApConfluence";
 
 describe('GraphMacro', () => {
   it('should have macroIdentifier as `graph`', () => {
     const mockApConfluence = new MockApConfluence();
-    let graphMacro = new GraphMacroViewer({confluence: mockApConfluence});
+    let graphMacro = new GraphMacro({confluence: mockApConfluence});
     expect(graphMacro._macroIdentifier).toBe('graph')
   })
 })

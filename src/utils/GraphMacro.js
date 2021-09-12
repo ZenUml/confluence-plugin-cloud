@@ -1,7 +1,7 @@
 import BaseMacro from '../model/BaseMacro';
 import {decompress} from './compress';
 
-class GraphMacroViewer extends BaseMacro {
+class GraphMacro extends BaseMacro {
 
   // eslint-disable-next-line
   constructor(ap = AP) {
@@ -18,4 +18,4 @@ class GraphMacroViewer extends BaseMacro {
   }
 }
 
-export default GraphMacroViewer
+export default GraphMacro
