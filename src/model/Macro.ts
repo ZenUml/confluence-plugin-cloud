@@ -16,7 +16,7 @@ class Macro extends BaseMacro2 {
     return result;
   }
 
-  async save(code, styles, mermaidCode, diagramType) {
+  async save2(code: string, styles: any, mermaidCode: any, diagramType: any) {
     return await super.save({code, styles, mermaidCode, diagramType});
   }
 }

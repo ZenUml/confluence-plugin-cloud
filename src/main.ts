@@ -12,7 +12,7 @@ console.log(Version)
 
 // @ts-ignore
 import MockApConfluence from './model/MockApConfluence'
-import Macro from './model/Macro'
+import Macro from "@/model/Macro";
 import Editor from './components/Editor.vue'
 import Workspace from './components/Workspace.vue'
 import mermaid from 'mermaid'
