@@ -85,7 +85,6 @@
     "eslint": "^7.10.0",
     "eslint-plugin-vue": "^7.5.0",
     "firebase-admin": "^9.11.1",
-    "firebase-functions": "^3.3.0",
     "firebase-tools": "^9.18.0",
     "longjohn": "^0.2.12",
     "ngrok": "^3.3.0",
