@@ -1,36 +1,35 @@
-import MockApConfluence from '@/model/MockApConfluence'
+import MockAp from '@/model/MockAp'
 import Macro from '@/model/Macro'
 
-let mockApConfluence;
+let mockAp, mockApConfluence;
 let macro;
 
 jest.mock('../../src/utils/uuid', () => {
   return () => 'random_uuid'
 })
 describe('Macro', () => {
+  let gtag;
+  const contentId = 'abcd'
+
   beforeEach(() => {
-    mockApConfluence = new MockApConfluence();
-    const mockAp = {
-      confluence: mockApConfluence,
-      request: () => {},
-      navigator: {
-        getLocation: (cb) => { cb(
-          {
-            context: {
-              contentId: 'abcd'
-            }
-          }
-        ) }
-      }
-    };
+    mockAp = new MockAp(contentId);
+    mockApConfluence = mockAp.confluence;
     macro = new Macro(mockAp);
+
+    gtag = jest.fn();
+    window.gtag = gtag;
   });
 
   describe('load content when initialising', () => {
     // no data, no body, no prop
-    it('if not initialised uses Example', async () => {
+    it('should default to example', async () => {
       const code = (await macro.load()).code
       expect(code).toBe(macro.EXAMPLE)
+
+      expect(gtag.mock.calls).toEqual([
+        ['event', 'load_macro', {event_category: 'macro_body', event_label: contentId}],
+        ['event', 'load_macro', {event_category: 'default_example', event_label: contentId}]
+      ])
     })
 
     // data
@@ -45,6 +44,10 @@ describe('Macro', () => {
       mockApConfluence.saveMacro({}, 'body')
       const code = (await macro.load()).code;
       expect(code).toBe('body')
+
+      expect(gtag.mock.calls).toEqual([
+        ['event', 'load_macro', {event_category: 'macro_body', event_label: contentId}],
+      ])
     })
 
     // data, prop
@@ -53,6 +56,10 @@ describe('Macro', () => {
       mockApConfluence.setContentProperty({key: 'zenuml-sequence-macro-1234-body', value: 'A.method'})
       const code = (await macro.load()).code;
       expect(code).toBe('A.method')
+
+      expect(gtag.mock.calls).toEqual([
+        ['event', 'load_macro', {event_category: 'content_property', event_label: contentId}],
+      ])
     })
 
     test('or content property as object {code, styles}', async () => {
@@ -86,5 +93,13 @@ describe('Macro', () => {
       const code = (await macro.load()).code;
       expect(code).toBe('body')
     })
+
+    test('should load from custom content', async () => {
+      mockApConfluence.saveMacro({customContentId: 1234})
+      mockAp.setCustomContent(1234, 'body')
+      const code = (await macro.load()).code;
+      expect(code).toBe('body')
+    })
+
   })
 })
