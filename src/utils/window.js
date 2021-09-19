@@ -1,4 +1,3 @@
-const gtag = window.gtag;
 
 export function getUrlParam (param) {
     const matches = (new RegExp(param + '=([^&]*)')).exec(window.location.search);
@@ -7,5 +6,5 @@ export function getUrlParam (param) {
 
 export function trackEvent(pageId, event, category) {
     /* eslint-disable no-undef */
-    gtag && gtag('event', event, {'event_category': category, 'event_label' : pageId});
+    window.gtag && window.gtag('event', event, {'event_category': category, 'event_label' : pageId});
 }
