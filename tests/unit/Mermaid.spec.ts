@@ -26,6 +26,6 @@ describe('Mermaid', () => {
     }
     mockAp.setCustomContent(1234, diagram);
     const mermaidCode = (await macro.load()).mermaidCode;
-    expect(mermaidCode).toBe('graph TD; A-->B11;');
+    expect(mermaidCode).toBe('graph TD; A-->B1;');
   })
 })
