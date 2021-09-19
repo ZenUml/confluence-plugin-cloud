@@ -1,10 +1,10 @@
 import {createLocalVue, mount} from '@vue/test-utils'
 import Vuex from 'vuex'
-import { Store } from 'vue-sequence'
+import { VueSequence } from 'vue-sequence'
 import Workspace from "../../src/components/Workspace"
 const localVue = createLocalVue()
 localVue.use(Vuex)
-const storeConfig = Store()
+const storeConfig = VueSequence.Store()
 storeConfig.state.styles = {}
 global.document = {}
 global.document.body.createTextRange = jest.fn()

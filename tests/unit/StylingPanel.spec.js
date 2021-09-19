@@ -1,13 +1,13 @@
 import { mount, createLocalVue } from "@vue/test-utils"
 import Vuex from 'vuex'
-import { Store } from 'vue-sequence'
+import { VueSequence } from 'vue-sequence'
 import StylingPanel from '../../src/components/StylingPanel'
 const localVue = createLocalVue()
 localVue.use(Vuex)
 
 describe('StylingPanel', () => {
   it('Should set styles for single Participant', async () => {
-    const storeConfig = Store()
+    const storeConfig = VueSequence.Store()
     storeConfig.state.styles = {}
     const store = new Vuex.Store(storeConfig)
     const stylingPanelWrapper = mount(StylingPanel, {store, localVue})
@@ -26,7 +26,7 @@ describe('StylingPanel', () => {
   })
 
   it('Should set styles for multiple Participants', async () => {
-    const storeConfig = Store()
+    const storeConfig = VueSequence.Store()
     storeConfig.state.styles = {}
     const store = new Vuex.Store(storeConfig)
     const stylingPanelWrapper = mount(StylingPanel, {store, localVue})
