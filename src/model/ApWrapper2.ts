@@ -140,6 +140,7 @@ export default class ApWrapper2 implements IApWrapper {
     }
 
     const self = this;
+
     return new Promise((resolve) => {
       self._navigator.getLocation((data: any) => {
         self._locationContext = data.context;

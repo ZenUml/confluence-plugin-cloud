@@ -1,7 +1,6 @@
 import Vue from 'vue'
 import './assets/tailwind.css'
-// @ts-ignore
-import {DiagramFrame} from 'vue-sequence'
+import {VueSequence} from 'vue-sequence'
 import 'vue-sequence/dist/vue-sequence.css'
 
 import configStoreAsyncFn from "./model/sequence-view-store";
@@ -9,9 +8,11 @@ console.log('From sequence viewer dialog');
 
 function mountDiagramFrame(store: any, id: string) {
   if (document.getElementById(id)) {
+    let component = VueSequence.DiagramFrame;
+    const render = (h: Function) => h(component)
     new Vue({
       store,
-      render: h => h(DiagramFrame) // with this method, we don't need to use full version of vew
+      render // with this method, we don't need to use full version of vew
     }).$mount(`#${id}`)
   }
 }

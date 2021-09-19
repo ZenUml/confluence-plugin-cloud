@@ -1,11 +1,9 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-// @ts-ignore
-import { Version, SeqDiagram } from 'vue-sequence'
+import { VueSequence } from 'vue-sequence'
 import 'vue-sequence/dist/vue-sequence.css'
 import './assets/tailwind.css'
-// eslint-disable-next-line
-console.log(`vue-sequence version: ${Version}`)
+console.log(`vue-sequence version: ${VueSequence.Version}`)
 
 import './model/MockApConfluence'
 import Macro from './model/Macro'
@@ -24,7 +22,7 @@ mermaid.mermaidAPI.initialize({
 })
 
 Vue.config.productionTip = false
-Vue.component('seq-diagram', SeqDiagram)
+Vue.component('seq-diagram', VueSequence.SeqDiagram)
 Vue.use(Vuex)
 
 const store = new Vuex.Store(ExtendedStore);

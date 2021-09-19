@@ -9,7 +9,7 @@ export default {
   methods: {
     saveAndExit: async function () {
       // eslint-disable-next-line no-undef
-      await window.macro.save(getGraphXml());
+      await window.macro.save2(getGraphXml());
       /* eslint-disable no-undef */
       AP.dialog.close();
     }

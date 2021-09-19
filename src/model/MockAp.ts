@@ -27,6 +27,9 @@ export default class MockAp implements IAp{
 
   constructor(_contentId: any = null) {
     this.confluence = new MockApConfluence();
+    this.navigator = {
+      getLocation: (_: any) => {}
+    }
     this.contentId = _contentId;
     this.navigator = {
       getLocation: (cb: any) => cb({

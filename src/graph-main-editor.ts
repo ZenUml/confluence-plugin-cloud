@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import MockApConfluence from './model/MockApConfluence'
-import GraphMacro from "@/model/GraphMacro";
+import GraphMacro from "@/model/GraphMacro.ts";
 import SaveAndGoBackButtonGraph from "@/components/SaveAndGoBackButtonGraph.vue";
 // @ts-ignore
 import Va from 'vue-atlas'
