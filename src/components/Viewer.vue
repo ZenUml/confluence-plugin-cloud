@@ -27,12 +27,12 @@
 
 <script>
 import {mapGetters} from "vuex";
-import { DiagramFrame } from 'vue-sequence'
+import { VueSequence } from 'vue-sequence'
 import Mermaid from './Mermaid'
 import EventBus from '../EventBus'
 
 import StylingPanel from "@/components/StylingPanel";
-
+const DiagramFrame = VueSequence.DiagramFrame;
 export default {
   name: "Viewer",
   components: {

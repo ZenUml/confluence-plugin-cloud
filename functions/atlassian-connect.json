@@ -198,7 +198,7 @@
         {
             "key": "zenuml-content-sequence-viewer-dialog",
             "location": "none",
-            "url": "/sequence-viewer-dialog.html",
+            "url": "/sequence-viewer-dialog.html?&addonKey=__ADDON_KEY__&contentKey=__CONTENT_KEY__",
             "name": {
                 "value": "ZenUML Sequence Viewer Dialog"
             }

@@ -1,8 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 
-// @ts-ignore
-import {Store} from 'vue-sequence'
+import {VueSequence} from 'vue-sequence'
 
 import ApWrapper2 from "./ApWrapper2";
 import AP from "@/model/AP";
@@ -20,7 +19,7 @@ async function getCode() {
 }
 
 async function configStoreAsyncFn() {
-  let storeInstance = Store();
+  let storeInstance = VueSequence.Store();
   const store = new Vuex.Store(storeInstance);
   store.commit('code', await getCode());
   return store;

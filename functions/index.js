@@ -49,7 +49,7 @@ exports.descriptor = functions.https.onRequest((req, resp) => {
   const basePath = url.substring(0, url.lastIndexOf('/'));
   const self = url.substring(url.lastIndexOf('/'));
   const data = JSON.parse(JSON.stringify(descriptor));
-  data.baseUrl = `${req.protocol}://${req.hostname}${basePath}`;
+  data.baseUrl = `${req.protocol}://${req.hostname}${basePath}/`;
   // This is not necessary but works as a defense.
   data.links.self = self;
 

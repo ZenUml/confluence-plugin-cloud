@@ -4,11 +4,9 @@ import Vuex from 'vuex'
 import VueCodeMirror from 'vue-codemirror'
 
 import './assets/tailwind.css'
-// @ts-ignore
-import { Version, SeqDiagram, Frame } from 'vue-sequence'
+import {VueSequence} from 'vue-sequence'
 import 'vue-sequence/dist/vue-sequence.css'
-// eslint-disable-next-line
-console.log(Version)
+console.log(VueSequence.Version)
 
 // @ts-ignore
 import MockApConfluence from './model/MockApConfluence'
@@ -38,9 +36,8 @@ mermaid.mermaidAPI.initialize({
 })
 
 Vue.config.productionTip = false
-
-Vue.component('seq-frame', Frame)
-Vue.component('seq-diagram', SeqDiagram)
+Vue.component('diagram-frame', VueSequence.DiagramFrame)
+Vue.component('seq-diagram', VueSequence.SeqDiagram)
 Vue.component('editor', Editor)
 Vue.component('workspace', Workspace)
 Vue.use(VueCodeMirror)
