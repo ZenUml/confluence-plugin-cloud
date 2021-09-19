@@ -123,7 +123,7 @@ class BaseMacro2 {
     const macroParam = {uuid: key, updatedAt: new Date()} as IMacroData;
 
     //make sure it's compatible with old descriptor
-    if(this._confluenceWrapper.hasCustomContent() && this._customContentId) {
+    if(this._confluenceWrapper.hasCustomContent()) {
       const customContent = await this._confluenceWrapper.saveCustomContent(this._customContentId, key, value);
       trackEvent(this._pageId, 'save_macro', 'custom_content');
       macroParam.customContentId = customContent.id;

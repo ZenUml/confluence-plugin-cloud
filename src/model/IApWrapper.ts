@@ -22,7 +22,7 @@ export interface IApWrapper {
 
   hasCustomContent(): boolean;
 
-  saveCustomContent(customContentId: string, uuid: string, value: object): Promise<any>;
+  saveCustomContent(customContentId: string | undefined, uuid: string, value: object): Promise<any>;
 
   saveMacro(params: IMacroData, body: string): void;
 }
