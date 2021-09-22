@@ -133,6 +133,7 @@ class BaseMacro2 {
     // @ts-ignore
     this._confluenceWrapper.saveMacro(macroParam, value.code);
     trackEvent(this._pageId, 'save_macro', 'macro_body');
+    return macroParam.customContentId;
   }
 }
 
