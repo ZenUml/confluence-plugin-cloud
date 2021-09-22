@@ -27,6 +27,6 @@ describe('BaseMacro2', () => {
     window.location = new URL('https://zenuml.com/?contentKey=zenuml-content-graph')
 
     const customContentId = await macro.save({});
-    // expect(customContentId).toBe(contentId);
+    expect(customContentId).toBe(1234);
   })
 })
