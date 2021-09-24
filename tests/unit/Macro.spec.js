@@ -33,10 +33,12 @@ describe('Macro', () => {
     })
 
     // data
-    test('data, no body or property', async () => {
-      mockApConfluence.saveMacro({uuid: 1234})
-      const code = (await macro.load()).code;
-      expect(code).toBe(macro.EXAMPLE)
+    test('A macro with only uuid must have content property', async () => {
+      mockApConfluence.saveMacro({uuid: 1234});
+      expect(macro.load()).rejects.toThrowError('A macro with only uuid must have content property.');
+
+      mockApConfluence.saveMacro({uuid: '1234'}, 'body')
+      expect(macro.load()).rejects.toThrowError();
     })
 
     // body
@@ -69,13 +71,6 @@ describe('Macro', () => {
       expect(code).toBe('A.method')
       const styles = (await macro.load()).styles
       expect(styles['#A'].backgroundColor).toBe('#FFF')
-    })
-
-    // data, body
-    test('or content property', async () => {
-      mockApConfluence.saveMacro({uuid: '1234'}, 'body')
-      const code = (await macro.load()).code;
-      expect(code).toBe('body')
     })
 
     // data, body, prop
