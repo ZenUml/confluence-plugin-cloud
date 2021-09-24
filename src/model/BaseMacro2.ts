@@ -1,12 +1,12 @@
 import uuidv4 from '../utils/uuid';
-import { getUrlParam, trackEvent } from '@/utils/window';
+import {getUrlParam, trackEvent} from '@/utils/window';
 import ApWrapper2 from "./ApWrapper2";
 import {IAp} from "@/model/IAp";
 import {IApWrapper} from "@/model/IApWrapper";
 import {IContentProperty} from "@/model/IContentProperty";
 import {ICustomContent} from "@/model/ICustomContent";
 import {IMacroData} from "@/model/IMacroData";
-import {Diagram} from "@/model/Diagram";
+import {DataSource, Diagram, DiagramType} from "@/model/Diagram";
 
 class BaseMacro2 {
   _key: any;
@@ -41,9 +41,19 @@ class BaseMacro2 {
     }
   }
 
-  async getContentProperty(key: string) {
-    trackEvent(this._pageId, 'load_macro', 'content_property');
-    return await this._confluenceWrapper.getContentProperty2();
+  async getContentProperty(key: string): Promise<IContentProperty | undefined> {
+    let content = await this._confluenceWrapper.getContentProperty2();
+    if(typeof content?.value === 'string') {
+      trackEvent(this._pageId, 'load_macro', 'content_property_old');
+      content.value = {
+        diagramType: DiagramType.Sequence,
+        code: content.value,
+        source: DataSource.ContentProperty
+      }
+    } else {
+      trackEvent(this._pageId, 'load_macro', 'content_property');
+    }
+    return content;
   }
 
   async getMacroBody() {
@@ -83,36 +93,30 @@ class BaseMacro2 {
   async load(): Promise<Diagram> {
     await this.initPageId();
 
+    let diagram;
     const payload = await this.getContent();
-    let code;
-    let styles;
-    let mermaidCode;
-    let diagramType;
-    let graphXml;
-    let compressed;
-    let source;
-    // only for very old version
-    if(typeof payload?.value === 'string') {
-      code = payload?.value
-    } else {
-      const contentProp = payload as IContentProperty;
-      code = contentProp?.value?.code
-      styles = contentProp?.value.styles
-      mermaidCode = contentProp?.value?.mermaidCode
-      diagramType = contentProp?.value?.diagramType
-      graphXml = contentProp?.value?.graphXml
-      compressed = contentProp?.value?.compressed
-      source = contentProp?.value.source
-    }
-    code = code || await this.getMacroBody();
 
-    styles = styles || {}
+    if(!payload || !payload.value) {
+      diagram = {
+        diagramType: DiagramType.Sequence,
+        code: await this.getMacroBody(),
+        source: DataSource.MacroBody
+      }
+    } else if(typeof payload?.value === 'string') {
+      trackEvent(this._pageId, 'load_macro', 'content_property_old')
+      diagram = {
+        diagramType: DiagramType.Sequence,
+        code: payload?.value,
+        source: DataSource.ContentProperty
+      }
+    } else {
+      diagram = payload?.value as Diagram;
+    }
 
     this._loaded = true;
-    const result = {code, styles, mermaidCode, diagramType, graphXml, compressed, source} as Diagram;
 
-    console.debug('Loaded macro', result);
-    return result;
+    console.debug('Loaded macro', diagram);
+    return diagram;
   }
 
   // Warning! Do not call getXXX in save. Do retest if you want to call getXXX.

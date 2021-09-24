@@ -58,7 +58,7 @@ describe('Macro', () => {
       expect(code).toBe('A.method')
 
       expect(gtag.mock.calls).toEqual([
-        ['event', 'load_macro', {event_category: 'content_property', event_label: contentId}],
+        ['event', 'load_macro', {event_category: 'content_property_old', event_label: contentId}],
       ])
     })
 
