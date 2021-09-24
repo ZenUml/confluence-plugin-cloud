@@ -208,7 +208,7 @@ export default class ApWrapper2 implements IApWrapper {
   async updateCustomContent(contentObj: ICustomContent, newBody: Diagram) {
     let newVersionNumber = 1;
 
-    if(contentObj.version?.number) {
+    if (contentObj.version?.number) {
       newVersionNumber += contentObj.version?.number
     }
     const bodyData = {
@@ -260,16 +260,15 @@ export default class ApWrapper2 implements IApWrapper {
   }
 
   async saveCustomContent(customContentId: string, title: string, value: Diagram) {
-    if (customContentId) {
-      const existing = await this.getCustomContentById(customContentId);
-      if (existing) {
-        return await this.updateCustomContent(existing, value);
-      } else {
-        return await this.createCustomContent(title, value);
-      }
+    let result;
+    // TODO: Do we really need to check whether it exists?
+    const existing = await this.getCustomContentById(customContentId);
+    if (existing) {
+      result = await this.updateCustomContent(existing, value);
     } else {
-      return await this.createCustomContent(title, value);
+      result = await this.createCustomContent(title, value);
     }
+    return result
   }
 
   getDialogCustomData() {

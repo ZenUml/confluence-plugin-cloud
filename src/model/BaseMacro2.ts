@@ -127,7 +127,12 @@ class BaseMacro2 {
       throw new Error('You have to call load before calling save()')
     }
     const key = this._key || uuidv4();
-    const customContent = await this._confluenceWrapper.saveCustomContent(this._customContentId, key, value);
+    let customContent;
+    if(this._customContentId) {
+      customContent = await this._confluenceWrapper.saveCustomContent(this._customContentId, key, value);
+    } else {
+      customContent = await this._confluenceWrapper.createCustomContent(key, value);
+    }
 
     trackEvent(this._pageId, 'save_macro', 'custom_content');
     const macroParam = {uuid: key, updatedAt: new Date()} as IMacroData;
