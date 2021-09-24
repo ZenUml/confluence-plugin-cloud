@@ -41,7 +41,7 @@ class BaseMacro2 {
     }
   }
 
-  async getContentProperty(key: string): Promise<IContentProperty | undefined> {
+  async getContentProperty(): Promise<IContentProperty | undefined> {
     let content = await this._apWrapper.getContentProperty2();
     if(typeof content?.value === 'string') {
       trackEvent(this._pageId, 'load_macro', 'content_property_old');
@@ -79,15 +79,14 @@ class BaseMacro2 {
     // When the macro is edited for the first time, macro data is not available in the preview mode
     // Fall back to the uuid parameter in the URL.
     // This is defined in the descriptor and is only available for sequence-viewer.html.
-    const key = macroData?.uuid || getUrlParam('uuid');
-    this._key = key;
+    this._key = macroData?.uuid || getUrlParam('uuid');
     this._customContentId = macroData?.customContentId;
     
     if(this._customContentId) {
       return await this.getCustomContent();
     }
 
-    return key ? await this.getContentProperty(key) : undefined;
+    return await this.getContentProperty();
   }
 
   async load(): Promise<Diagram> {

@@ -107,6 +107,9 @@ export default class ApWrapper2 implements IApWrapper {
         data: macroData
       }
     }
+    if(typeof property.value === "object") {
+      property.value.source = DataSource.ContentProperty;
+    }
     return property;
   }
 
