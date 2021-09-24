@@ -4,7 +4,7 @@
   <error-boundary>
   <div v-html="styles"></div>
   <mermaid v-show="diagramType === 'mermaid'"/>
-  <div v-show="diagramType === 'zenuml'" @click="deselectAll">
+  <div v-show="diagramType === 'sequence'" @click="deselectAll">
     <styling-panel/>
     <diagram-frame>
       <div class="actions flex" v-show="isDisplayMode">

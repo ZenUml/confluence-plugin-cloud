@@ -3,6 +3,7 @@ import mermaid from "mermaid";
 import EventBus from '../EventBus'
 import Macro from "@/model/Macro";
 import AP from "@/model/AP";
+import {DiagramType} from "@/model/Diagram";
 
 const ap = AP;
 const storeConfig = VueSequence.Store()
@@ -36,7 +37,7 @@ export default {
         return false;
       }
     },
-    updateDiagramType({commit}: any, payload: any) {
+    updateDiagramType({commit}: any, payload: DiagramType) {
       commit('updateDiagramType', payload)
     },
     reloadZenUML({commit, state}: any) {
@@ -51,7 +52,7 @@ export default {
       return state.mermaidSvg
     },
     diagramType: (state: any) => {
-      return state.diagramType?.toLowerCase() || 'zenuml'
+      return state.diagramType?.toLowerCase() || DiagramType.Sequence
     },
     isDisplayMode: (state: any) => state.macro._confluenceWrapper.isDisplayMode()
   },
@@ -60,7 +61,7 @@ export default {
     macro: new Macro(ap),
     mermaidCode: 'graph TD; A-->B;',
     mermaidSvg: '',
-    diagramType: 'zenuml',
+    diagramType: DiagramType.Sequence,
     styles: {},
     error: null,
     onElementClick: (codeRange: any) => {
