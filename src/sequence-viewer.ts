@@ -26,10 +26,14 @@ Vue.component('seq-diagram', VueSequence.SeqDiagram)
 Vue.use(Vuex)
 
 const store = new Vuex.Store(ExtendedStore);
+
+let render = (h: Function) => h(Viewer);
+
 if(document.getElementById('app')) {
-    new Vue({
+    // @ts-ignore
+  new Vue({
       store,
-      render: h => h(Viewer) // with this method, we don't need to use full version of vue
+      render // with this method, we don't need to use full version of vue
     }).$mount('#app')
 }
 // @ts-ignore
