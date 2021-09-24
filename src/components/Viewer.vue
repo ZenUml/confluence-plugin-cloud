@@ -1,5 +1,6 @@
 <template>
 <div class="viewer">
+  <div v-show="debug">Data source: {{diagram.source}}</div>
   <error-boundary>
   <div v-html="styles"></div>
   <mermaid v-show="diagramType === 'mermaid'"/>
@@ -48,6 +49,13 @@ export default {
     ...mapGetters({isDisplayMode: 'isDisplayMode', diagramType: 'diagramType'}),
     isLite() {
       return this.$store.state.macro._confluenceWrapper.isLite();
+    },
+    debug() {
+      return !!localStorage.zenumlDebug;
+    },
+    diagram() {
+      console.log('_diagram', this.$store.state.macro._diagram);
+      return this.$store.state.macro._diagram || {};
     },
     styles() {
       const stylesInStore = this.$store.state.styles || {};

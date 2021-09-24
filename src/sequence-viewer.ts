@@ -43,14 +43,16 @@ async function initializeMacro() {
   // @ts-ignore
   console.debug('Initializing macro from sequence-viewer.ts', store.state.macro);
   // @ts-ignore
-  const macro = store.state.macro || new Macro(AP);
+  const macro = store.state.macro;
   // @ts-ignore
   window.macro = macro;
   try {
-    const {code, styles, mermaidCode, diagramType} = await macro.load();
+    const {code, styles, mermaidCode, diagramType, source} = await macro.load();
     store.commit('code', code);
     // @ts-ignore
     store.state.styles = styles;
+    // @ts-ignore
+    store.state.macro = Object.assign({}, macro);
     // @ts-ignore
     store.dispatch('updateMermaidCode', mermaidCode || store.state.mermaidCode)
     store.dispatch('updateDiagramType', diagramType)

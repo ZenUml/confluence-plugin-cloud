@@ -7,7 +7,7 @@ import {IUser} from "@/model/IUser";
 import {IConfluence} from "@/model/IConfluence";
 import {IAp} from "@/model/IAp";
 import {MacroIdentifier} from "@/model/MacroIdentifier";
-import {Diagram} from "@/model/Diagram";
+import {DataSource, Diagram} from "@/model/Diagram";
 
 interface ContentPropertyIn {
 }
@@ -261,7 +261,9 @@ export default class ApWrapper2 implements IApWrapper {
     const response = await this._requestFn({type: 'GET', url});
     const customContent = this.parseCustomContentResponse(response);
     console.debug(`Loaded custom content by id ${id}.`);
-    return Object.assign({}, customContent, {value: JSON.parse(customContent.body.raw.value)});
+    let diagram = JSON.parse(customContent.body.raw.value);
+    diagram.source = DataSource.CustomContent;
+    return Object.assign({}, customContent, {value: diagram});
   }
 
   async saveCustomContent(customContentId: string, title: string, value: Diagram) {

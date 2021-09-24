@@ -9,6 +9,7 @@ import {IMacroData} from "@/model/IMacroData";
 import {DataSource, Diagram, DiagramType} from "@/model/Diagram";
 
 class BaseMacro2 {
+  _diagram?: Diagram;
   _key: any;
   _customContentId: string | undefined;
   _loaded = false;
@@ -116,6 +117,7 @@ class BaseMacro2 {
     this._loaded = true;
 
     console.debug('Loaded macro', diagram);
+    this._diagram = diagram;
     return diagram;
   }
 

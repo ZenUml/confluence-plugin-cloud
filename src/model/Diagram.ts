@@ -1,8 +1,8 @@
 export enum DataSource {
-  MacroBody,
-  ContentProperty,
-  CustomContent,
-  Example
+  MacroBody = 'macro-body',
+  ContentProperty = 'content-property',
+  CustomContent = 'custom-content',
+  Example = 'example'
 }
 
 export enum DiagramType {
