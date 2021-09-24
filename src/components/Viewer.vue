@@ -48,7 +48,7 @@ export default {
   computed: {
     ...mapGetters({isDisplayMode: 'isDisplayMode', diagramType: 'diagramType'}),
     isLite() {
-      return this.$store.state.macro._confluenceWrapper.isLite();
+      return this.$store.state.macro._apWrapper.isLite();
     },
     debug() {
       return !!localStorage.zenumlDebug;
@@ -86,7 +86,7 @@ export default {
     },
     checkUserCanEdit() {
       // TODO: Add this back. It works fine. But we will not release it for the moment.
-      // this.$store.state.macro._confluenceWrapper.canUserEdit().then(b => this.canEdit = b);
+      // this.$store.state.macro._apWrapper.canUserEdit().then(b => this.canEdit = b);
     },
     edit() {
       EventBus.$emit('edit');

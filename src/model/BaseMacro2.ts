@@ -16,17 +16,17 @@ class BaseMacro2 {
   _macroIdentifier: any;
   _pageId: any;
   _standaloneCustomContent: boolean;
-  private _confluenceWrapper: IApWrapper;
+  private _apWrapper: IApWrapper;
 
   constructor(ap: IAp) {
-    this._confluenceWrapper = new ApWrapper2(ap);
-    this._macroIdentifier = this._confluenceWrapper._macroIdentifier;
+    this._apWrapper = new ApWrapper2(ap);
+    this._macroIdentifier = this._apWrapper._macroIdentifier;
     this._standaloneCustomContent = getUrlParam('rendered.for') === 'custom-content-native';
   }
 
   async initPageId() {
     if(!this._pageId) {
-      this._pageId = getUrlParam('content.id') || (await this._confluenceWrapper.getPageId());
+      this._pageId = getUrlParam('content.id') || (await this._apWrapper.getPageId());
     }
   }
 
@@ -38,12 +38,12 @@ class BaseMacro2 {
   async getCustomContent() {
     trackEvent(this._pageId, 'load_macro', 'custom_content');
     if(this._customContentId) {
-      return await this._confluenceWrapper.getCustomContentById(this._customContentId);
+      return await this._apWrapper.getCustomContentById(this._customContentId);
     }
   }
 
   async getContentProperty(key: string): Promise<IContentProperty | undefined> {
-    let content = await this._confluenceWrapper.getContentProperty2();
+    let content = await this._apWrapper.getContentProperty2();
     if(typeof content?.value === 'string') {
       trackEvent(this._pageId, 'load_macro', 'content_property_old');
       content.value = {
@@ -63,7 +63,7 @@ class BaseMacro2 {
     }
     
     trackEvent(this._pageId, 'load_macro', 'macro_body');
-    return await this._confluenceWrapper.getMacroBody();
+    return await this._apWrapper.getMacroBody();
   }
 
   async getContent(): Promise<IContentProperty | ICustomContent | undefined> {
@@ -74,7 +74,7 @@ class BaseMacro2 {
       console.debug('custom content id:', this._customContentId);
       return await this.getCustomContent();
     }
-    const macroData = await this._confluenceWrapper.getMacroData();
+    const macroData = await this._apWrapper.getMacroData();
     console.debug('macro data loaded:', macroData);
 
     // When the macro is edited for the first time, macro data is not available in the preview mode
@@ -131,9 +131,9 @@ class BaseMacro2 {
     const key = this._key || uuidv4();
     let customContent;
     if(this._customContentId) {
-      customContent = await this._confluenceWrapper.saveCustomContent(this._customContentId, key, value);
+      customContent = await this._apWrapper.saveCustomContent(this._customContentId, key, value);
     } else {
-      customContent = await this._confluenceWrapper.createCustomContent(key, value);
+      customContent = await this._apWrapper.createCustomContent(key, value);
     }
 
     trackEvent(this._pageId, 'save_macro', 'custom_content');
@@ -143,7 +143,7 @@ class BaseMacro2 {
     //TODO: Edit issue when editing content property based macro in viewer
     // Saving core data to body for disaster recovery
     let body = BaseMacro2.getCoreData(value);
-    this._confluenceWrapper.saveMacro(macroParam, body);
+    this._apWrapper.saveMacro(macroParam, body);
     trackEvent(this._pageId, 'save_macro', 'macro_body');
     return macroParam.customContentId;
   }

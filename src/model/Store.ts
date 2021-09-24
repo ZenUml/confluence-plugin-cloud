@@ -54,7 +54,7 @@ export default {
     diagramType: (state: any) => {
       return state.diagramType?.toLowerCase() || DiagramType.Sequence
     },
-    isDisplayMode: (state: any) => state.macro._confluenceWrapper.isDisplayMode()
+    isDisplayMode: (state: any) => state.macro._apWrapper.isDisplayMode()
   },
   state: {
     ...storeConfig.state,
