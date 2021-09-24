@@ -2,6 +2,7 @@ import {IMacroData} from "@/model/IMacroData";
 import {IContentProperty} from "@/model/IContentProperty";
 import {ICustomContent} from "@/model/ICustomContent";
 import {MacroIdentifier} from "@/model/MacroIdentifier";
+import {Diagram} from "@/model/Diagram";
 
 export interface IApWrapper {
   _macroIdentifier: MacroIdentifier;
@@ -22,7 +23,7 @@ export interface IApWrapper {
 
   hasCustomContent(): boolean;
 
-  saveCustomContent(customContentId: string | undefined, uuid: string, value: object): Promise<any>;
+  saveCustomContent(customContentId: string | undefined, uuid: string, value: Diagram): Promise<any>;
 
   saveMacro(params: IMacroData, body: string): void;
 }
