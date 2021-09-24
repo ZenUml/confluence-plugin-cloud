@@ -47,18 +47,18 @@ async function initializeMacro() {
   // @ts-ignore
   window.macro = macro;
   try {
-    const {code, styles, mermaidCode, diagramType, source} = await macro.load();
-    store.commit('code', code);
+    const diagram = await macro.load();
+    store.commit('code', diagram.code);
     // @ts-ignore
-    store.state.styles = styles;
+    store.state.styles = diagram.styles;
     // @ts-ignore
     store.state.macro = Object.assign({}, macro);
     // @ts-ignore
-    store.dispatch('updateMermaidCode', mermaidCode || store.state.mermaidCode)
-    store.dispatch('updateDiagramType', diagramType)
+    store.dispatch('updateMermaidCode', diagram.mermaidCode || store.state.mermaidCode)
+    store.dispatch('updateDiagramType', diagram.diagramType)
     if(!macro._standaloneCustomContent) {
       // @ts-ignore
-      await window.createAttachmentIfContentChanged(code);
+      await window.createAttachmentIfContentChanged(diagram.code);
     }
   } catch (e) {
     // @ts-ignore
