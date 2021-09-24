@@ -7,6 +7,7 @@ import {IUser} from "@/model/IUser";
 import {IConfluence} from "@/model/IConfluence";
 import {IAp} from "@/model/IAp";
 import {MacroIdentifier} from "@/model/MacroIdentifier";
+import {Diagram} from "@/model/Diagram";
 
 interface ContentPropertyIn {
 }
@@ -176,7 +177,7 @@ export default class ApWrapper2 implements IApWrapper {
     return response && response.body && JSON.parse(response.body);
   }
 
-  async createCustomContent(uuid: string, content: object) {
+  async createCustomContent(uuid: string, content: Diagram) {
     const context = await this.getLocationContext();
     const type = this.getCustomContentType();
     const container = {id: context.contentId, type: context.contentType};
@@ -204,7 +205,7 @@ export default class ApWrapper2 implements IApWrapper {
     return this.parseCustomContentResponse(response);
   }
 
-  async updateCustomContent(contentObj: ICustomContent, newBody: any) {
+  async updateCustomContent(contentObj: ICustomContent, newBody: Diagram) {
     let newVersionNumber = 1;
 
     if(contentObj.version?.number) {
@@ -258,7 +259,7 @@ export default class ApWrapper2 implements IApWrapper {
     return Object.assign({}, customContent, {value: JSON.parse(customContent.body.raw.value)});
   }
 
-  async saveCustomContent(customContentId: string, uuid: string, value: object) {
+  async saveCustomContent(customContentId: string, uuid: string, value: Diagram) {
     if (customContentId) {
       const existing = await this.getCustomContentById(customContentId);
       if (existing) {

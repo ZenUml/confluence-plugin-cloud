@@ -80,7 +80,7 @@ class BaseMacro2 {
     return key ? await this.getContentProperty(key) : undefined;
   }
 
-  async load() {
+  async load(): Promise<Diagram> {
     await this.initPageId();
 
     const payload = await this.getContent();
@@ -90,6 +90,7 @@ class BaseMacro2 {
     let diagramType;
     let graphXml;
     let compressed;
+    let source;
     // only for very old version
     if(typeof payload?.value === 'string') {
       code = payload?.value
@@ -101,13 +102,14 @@ class BaseMacro2 {
       diagramType = contentProp?.value?.diagramType
       graphXml = contentProp?.value?.graphXml
       compressed = contentProp?.value?.compressed
+      source = contentProp?.value.source
     }
     code = code || await this.getMacroBody();
 
     styles = styles || {}
 
     this._loaded = true;
-    const result = {code, styles, mermaidCode, diagramType, graphXml, compressed};
+    const result = {code, styles, mermaidCode, diagramType, graphXml, compressed, source} as Diagram;
 
     console.debug('Loaded macro', result);
     return result;
