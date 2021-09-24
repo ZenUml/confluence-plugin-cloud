@@ -127,20 +127,34 @@ class BaseMacro2 {
       throw new Error('You have to call load before calling save()')
     }
     const key = this._key || uuidv4();
-    const macroParam = {uuid: key, updatedAt: new Date()} as IMacroData;
+    const customContent = await this._confluenceWrapper.saveCustomContent(this._customContentId, key, value);
 
-    //make sure it's compatible with old descriptor
-    if(this._confluenceWrapper.hasCustomContent()) {
-      const customContent = await this._confluenceWrapper.saveCustomContent(this._customContentId, key, value);
-      trackEvent(this._pageId, 'save_macro', 'custom_content');
-      macroParam.customContentId = customContent.id;
-    }
+    trackEvent(this._pageId, 'save_macro', 'custom_content');
+    const macroParam = {uuid: key, updatedAt: new Date()} as IMacroData;
+    macroParam.customContentId = customContent.id;
 
     //TODO: Edit issue when editing content property based macro in viewer
-    // @ts-ignore
-    this._confluenceWrapper.saveMacro(macroParam, value.code);
+    // Saving core data to body for disaster recovery
+    let body = BaseMacro2.getCoreData(value);
+    this._confluenceWrapper.saveMacro(macroParam, body);
     trackEvent(this._pageId, 'save_macro', 'macro_body');
     return macroParam.customContentId;
+  }
+
+  private static getCoreData(value: Diagram) {
+    let body;
+    switch (value.diagramType) {
+      case DiagramType.Sequence:
+        body = value.code || '';
+        break;
+      case DiagramType.Mermaid:
+        body = value.mermaidCode || '';
+        break;
+      case DiagramType.Graph:
+        body = value.graphXml || '';
+        break;
+    }
+    return body;
   }
 }
 
