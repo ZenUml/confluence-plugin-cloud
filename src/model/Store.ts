@@ -64,6 +64,7 @@ export default {
     mermaidSvg: '',
     diagramType: 'zenuml',
     styles: {},
+    error: null,
     onElementClick: (codeRange: any) => {
       EventBus.$emit('highlight', codeRange)
     }

@@ -1,5 +1,6 @@
 <template>
 <div class="viewer">
+  <error-boundary>
   <div v-html="styles"></div>
   <mermaid v-show="diagramType === 'mermaid'"/>
   <div v-show="diagramType === 'zenuml'" @click="deselectAll">
@@ -22,6 +23,7 @@
       </div>
     </diagram-frame>
   </div>
+  </error-boundary>
 </div>
 </template>
 
@@ -32,10 +34,12 @@ import Mermaid from './Mermaid'
 import EventBus from '../EventBus'
 
 import StylingPanel from "@/components/StylingPanel";
+import ErrorBoundary from "@/components/ErrorBoundary";
 const DiagramFrame = VueSequence.DiagramFrame;
 export default {
   name: "Viewer",
   components: {
+    ErrorBoundary,
     Mermaid,
     StylingPanel,
     DiagramFrame
