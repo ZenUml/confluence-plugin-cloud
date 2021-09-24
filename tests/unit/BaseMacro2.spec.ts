@@ -1,6 +1,7 @@
 import BaseMacro2 from "@/model/BaseMacro2";
 import MockAp from '@/model/MockAp'
 import {IConfluence} from "@/model/IConfluence";
+import {DataSource, DiagramType} from "@/model/Diagram";
 
 let mockAp: MockAp;
 let mockApConfluence: IConfluence;
@@ -24,9 +25,27 @@ describe('BaseMacro2', () => {
     await macro.load();
     delete window.location;
     // @ts-ignore
-    window.location = new URL('https://zenuml.com/?contentKey=zenuml-content-graph')
+    window.location = new URL('https://zenuml.com/?contentKey=zenuml-content-sequence')
 
-    const customContentId = await macro.save({});
+    const customContentId = await macro.save({
+      diagramType: DiagramType.Sequence,
+      code: 'A.m',
+      source: DataSource.CustomContent
+    });
+    expect(customContentId).toBe(1234);
+  })
+
+  it('update custom content if _customContentId is not null', async () => {
+    await macro.load();
+    delete window.location;
+    // @ts-ignore
+    window.location = new URL('https://zenuml.com/?contentKey=zenuml-content-sequence')
+
+    const customContentId = await macro.save({
+      diagramType: DiagramType.Sequence,
+      code: 'A.m',
+      source: DataSource.CustomContent
+    });
     expect(customContentId).toBe(1234);
   })
 })

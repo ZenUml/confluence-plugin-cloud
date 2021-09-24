@@ -6,6 +6,7 @@ import {IApWrapper} from "@/model/IApWrapper";
 import {IContentProperty} from "@/model/IContentProperty";
 import {ICustomContent} from "@/model/ICustomContent";
 import {IMacroData} from "@/model/IMacroData";
+import {Diagram} from "@/model/Diagram";
 
 class BaseMacro2 {
   _key: any;
@@ -114,7 +115,7 @@ class BaseMacro2 {
 
   // Warning! Do not call getXXX in save. Do retest if you want to call getXXX.
   // It does not work as of 17th May 2020. That is why we have stored key and version
-  async save(value: object) {
+  async save(value: Diagram) {
     console.debug('Saving macro', value);
     if (!this._loaded) {
       throw new Error('You have to call load before calling save()')

@@ -4,7 +4,19 @@ export enum DataSource {
   CustomContent,
   Example
 }
+
+export enum DiagramType {
+  Sequence = 'sequence',
+  Mermaid = 'mermaid',
+  Graph = 'graph'
+}
+
 export interface Diagram {
-  code: string | undefined,
+  diagramType: DiagramType,
+  code?: string,
+  styles?: object,
+  mermaidCode?: string,
+  graphXml?: string,
+  compressed?: boolean,
   source: DataSource
 }
