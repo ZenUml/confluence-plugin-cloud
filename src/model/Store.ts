@@ -4,10 +4,8 @@ import EventBus from '../EventBus'
 import Macro from "@/model/Macro";
 import AP from "@/model/AP";
 
-// @ts-ignore
 const ap = AP;
 const storeConfig = VueSequence.Store()
-// @ts-ignore
 export default {
   ...storeConfig,
   mutations: {

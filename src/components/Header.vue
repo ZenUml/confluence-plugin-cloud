@@ -13,7 +13,6 @@
 </template>
 
 <script>
-// import Macro from "@/utils/Macro";
 import {mapState} from 'vuex';
 import SaveAndGoBackButton from "@/components/SaveAndGoBackButton";
 export default {
