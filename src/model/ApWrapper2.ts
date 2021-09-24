@@ -1,5 +1,5 @@
 import {getUrlParam} from '@/utils/window';
-import {IApWrapper} from "@/model/IApWrapper";
+import {IApWrapper, VersionType} from "@/model/IApWrapper";
 import {IMacroData} from "@/model/IMacroData";
 import {IContentProperty} from "@/model/IContentProperty";
 import {ICustomContent} from "@/model/ICustomContent";
@@ -20,6 +20,7 @@ interface ILocationContext {
 
 // custom content APIs.
 export default class ApWrapper2 implements IApWrapper {
+  versionType: VersionType;
   _confluence: IConfluence;
   _requestFn: {
     (req: IApRequest): any
@@ -31,6 +32,7 @@ export default class ApWrapper2 implements IApWrapper {
   _user: any;
 
   constructor(ap: IAp) {
+    this.versionType = this.isLite() ? VersionType.Lite : VersionType.Full;
     let macroIdentifier: MacroIdentifier;
     const contentKey = getUrlParam('contentKey');
     if (!contentKey) {

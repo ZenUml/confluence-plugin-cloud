@@ -4,8 +4,14 @@ import {ICustomContent} from "@/model/ICustomContent";
 import {MacroIdentifier} from "@/model/MacroIdentifier";
 import {Diagram} from "@/model/Diagram";
 
+export enum VersionType {
+  Lite = 'lite',
+  Full = 'full'
+}
+
 export interface IApWrapper {
   _macroIdentifier: MacroIdentifier;
+  versionType: VersionType;
 
   isLite(): boolean;
 
