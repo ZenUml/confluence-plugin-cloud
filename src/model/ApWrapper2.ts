@@ -177,13 +177,13 @@ export default class ApWrapper2 implements IApWrapper {
     return response && response.body && JSON.parse(response.body);
   }
 
-  async createCustomContent(uuid: string, content: Diagram) {
+  async createCustomContent(title: string, content: Diagram) {
     const context = await this.getLocationContext();
     const type = this.getCustomContentType();
     const container = {id: context.contentId, type: context.contentType};
     const bodyData = {
       "type": type,
-      "title": uuid,
+      "title": title,
       "space": {
         "key": context.spaceKey
       },
@@ -259,16 +259,16 @@ export default class ApWrapper2 implements IApWrapper {
     return Object.assign({}, customContent, {value: JSON.parse(customContent.body.raw.value)});
   }
 
-  async saveCustomContent(customContentId: string, uuid: string, value: Diagram) {
+  async saveCustomContent(customContentId: string, title: string, value: Diagram) {
     if (customContentId) {
       const existing = await this.getCustomContentById(customContentId);
       if (existing) {
         return await this.updateCustomContent(existing, value);
       } else {
-        return await this.createCustomContent(uuid, value);
+        return await this.createCustomContent(title, value);
       }
     } else {
-      return await this.createCustomContent(uuid, value);
+      return await this.createCustomContent(title, value);
     }
   }
 
