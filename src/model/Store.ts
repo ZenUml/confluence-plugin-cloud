@@ -4,6 +4,7 @@ import EventBus from '../EventBus'
 import Macro from "@/model/Macro";
 import AP from "@/model/AP";
 import {DiagramType} from "@/model/Diagram";
+import ApWrapper2 from "@/model/ApWrapper2";
 
 const ap = AP;
 const storeConfig = VueSequence.Store()
@@ -58,7 +59,7 @@ export default {
   },
   state: {
     ...storeConfig.state,
-    macro: new Macro(ap),
+    macro: new Macro(new ApWrapper2(ap)),
     mermaidCode: 'graph TD; A-->B;',
     mermaidSvg: '',
     diagramType: DiagramType.Sequence,

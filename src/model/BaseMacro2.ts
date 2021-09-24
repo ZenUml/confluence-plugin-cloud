@@ -1,7 +1,6 @@
 import uuidv4 from '../utils/uuid';
 import {getUrlParam, trackEvent} from '@/utils/window';
 import ApWrapper2 from "./ApWrapper2";
-import {IAp} from "@/model/IAp";
 import {IApWrapper} from "@/model/IApWrapper";
 import {IContentProperty} from "@/model/IContentProperty";
 import {ICustomContent} from "@/model/ICustomContent";
@@ -18,8 +17,8 @@ class BaseMacro2 {
   _standaloneCustomContent: boolean;
   private _apWrapper: IApWrapper;
 
-  constructor(ap: IAp) {
-    this._apWrapper = new ApWrapper2(ap);
+  constructor(apWrapper2: ApWrapper2) {
+    this._apWrapper = apWrapper2;
     this._macroIdentifier = this._apWrapper._macroIdentifier;
     this._standaloneCustomContent = getUrlParam('rendered.for') === 'custom-content-native';
   }

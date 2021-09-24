@@ -2,6 +2,7 @@ import BaseMacro2 from "@/model/BaseMacro2";
 import MockAp from '@/model/MockAp'
 import {IConfluence} from "@/model/IConfluence";
 import {DataSource, DiagramType} from "@/model/Diagram";
+import ApWrapper2 from "@/model/ApWrapper2";
 
 let mockAp: MockAp;
 let mockApConfluence: IConfluence;
@@ -17,7 +18,7 @@ describe('BaseMacro2', () => {
   beforeEach(() => {
     mockAp = new MockAp(contentId);
     mockApConfluence = mockAp.confluence;
-    macro = new BaseMacro2(mockAp);
+    macro = new BaseMacro2(new ApWrapper2(mockAp));
   });
 
 

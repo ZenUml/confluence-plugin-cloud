@@ -20,7 +20,7 @@ new Vue({
 }).$mount('#save-and-go-back');
 async function initializeMacro() {
   // @ts-ignore
-  const macro = new GraphMacro(AP);
+  const macro = new GraphMacro(new ApWrapper2(AP));
 
 
   // @ts-ignore
