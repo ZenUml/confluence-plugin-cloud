@@ -1,7 +1,7 @@
 import SequenceDiagramLoader from "@/model/SequenceDiagramLoader";
 import {IApWrapper, VersionType} from "@/model/IApWrapper";
 import {ICustomContent} from "@/model/ICustomContent";
-import {IContentProperty} from "@/model/IContentProperty";
+import {IContentPropertyNormalised} from "@/model/IContentProperty";
 import {MacroIdentifier} from "@/model/MacroIdentifier";
 import {IMacroData} from "@/model/IMacroData";
 import {DataSource, Diagram, DiagramType} from '@/model/Diagram';
@@ -35,7 +35,7 @@ class MockApWrapper implements IApWrapper {
     this._code = content.value;
   }
   // Note: we do not need key for this method.
-  async getContentProperty2(): Promise<IContentProperty | undefined> {
+  async getContentProperty2(): Promise<IContentPropertyNormalised | undefined> {
     if(!this._hasContentProperty) {
       return undefined;
     }

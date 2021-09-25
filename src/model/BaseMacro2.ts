@@ -2,7 +2,7 @@ import uuidv4 from '../utils/uuid';
 import {getUrlParam, trackEvent} from '@/utils/window';
 import ApWrapper2 from "./ApWrapper2";
 import {IApWrapper} from "@/model/IApWrapper";
-import {IContentProperty} from "@/model/IContentProperty";
+import {IContentProperty, IContentPropertyNormalised} from "@/model/IContentProperty";
 import {ICustomContent} from "@/model/ICustomContent";
 import {IMacroData} from "@/model/IMacroData";
 import {DataSource, Diagram, DiagramType} from "@/model/Diagram";
@@ -41,7 +41,7 @@ class BaseMacro2 {
     }
   }
 
-  async getContentProperty(): Promise<IContentProperty | undefined> {
+  async getContentProperty(): Promise<IContentPropertyNormalised | undefined> {
     let content = await this._apWrapper.getContentProperty2();
     if(content?.value.source === DataSource.ContentPropertyOld) {
       trackEvent(this._pageId, 'load_macro', 'content_property_old');
@@ -60,7 +60,7 @@ class BaseMacro2 {
     return await this._apWrapper.getMacroBody();
   }
 
-  async getContent(): Promise<IContentProperty | ICustomContent | undefined> {
+  async getContent(): Promise<IContentPropertyNormalised | ICustomContent | undefined> {
     if(this._standaloneCustomContent) {
       console.debug('rendering for custom content native viewer.');
       // @ts-ignore
@@ -97,13 +97,6 @@ class BaseMacro2 {
         diagramType: DiagramType.Sequence,
         code: await this.getMacroBody(),
         source: DataSource.MacroBody
-      }
-    } else if(typeof payload?.value === 'string') {
-      trackEvent(this._pageId, 'load_macro', 'content_property_old')
-      diagram = {
-        diagramType: DiagramType.Sequence,
-        code: payload?.value,
-        source: DataSource.ContentProperty
       }
     } else {
       diagram = payload?.value as Diagram;
