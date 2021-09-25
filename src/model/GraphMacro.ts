@@ -1,5 +1,6 @@
 import BaseMacro from './BaseMacro2';
 import {compress, decompress} from '@/utils/compress';
+import {DataSource, DiagramType} from "@/model/Diagram";
 
 class GraphMacro extends BaseMacro {
   async load() {
@@ -13,7 +14,7 @@ class GraphMacro extends BaseMacro {
 
   async save2(code: string) {
     const compressedCode = compress(code);
-    return super.save({graphXml: compressedCode, compressed: true});
+    return super.save({diagramType: DiagramType.Graph, source: DataSource.CustomContent, graphXml: compressedCode, compressed: true});
   }
 }
 

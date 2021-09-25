@@ -3,11 +3,11 @@ import mermaid from "mermaid";
 import EventBus from '../EventBus'
 import Macro from "@/model/Macro";
 import AP from "@/model/AP";
+import {DiagramType} from "@/model/Diagram";
+import ApWrapper2 from "@/model/ApWrapper2";
 
-// @ts-ignore
 const ap = AP;
 const storeConfig = VueSequence.Store()
-// @ts-ignore
 export default {
   ...storeConfig,
   mutations: {
@@ -38,7 +38,7 @@ export default {
         return false;
       }
     },
-    updateDiagramType({commit}: any, payload: any) {
+    updateDiagramType({commit}: any, payload: DiagramType) {
       commit('updateDiagramType', payload)
     },
     reloadZenUML({commit, state}: any) {
@@ -53,17 +53,18 @@ export default {
       return state.mermaidSvg
     },
     diagramType: (state: any) => {
-      return state.diagramType?.toLowerCase() || 'zenuml'
+      return state.diagramType?.toLowerCase() || DiagramType.Sequence
     },
-    isDisplayMode: (state: any) => state.macro._confluenceWrapper.isDisplayMode()
+    isDisplayMode: (state: any) => state.macro._apWrapper.isDisplayMode()
   },
   state: {
     ...storeConfig.state,
-    macro: new Macro(ap),
+    macro: new Macro(new ApWrapper2(ap)),
     mermaidCode: 'graph TD; A-->B;',
     mermaidSvg: '',
-    diagramType: 'zenuml',
+    diagramType: DiagramType.Sequence,
     styles: {},
+    error: null,
     onElementClick: (codeRange: any) => {
       EventBus.$emit('highlight', codeRange)
     }

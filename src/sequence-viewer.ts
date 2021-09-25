@@ -26,10 +26,14 @@ Vue.component('seq-diagram', VueSequence.SeqDiagram)
 Vue.use(Vuex)
 
 const store = new Vuex.Store(ExtendedStore);
+
+let render = (h: Function) => h(Viewer);
+
 if(document.getElementById('app')) {
-    new Vue({
+    // @ts-ignore
+  new Vue({
       store,
-      render: h => h(Viewer) // with this method, we don't need to use full version of vew
+      render // with this method, we don't need to use full version of vue
     }).$mount('#app')
 }
 // @ts-ignore
@@ -39,22 +43,29 @@ async function initializeMacro() {
   // @ts-ignore
   console.debug('Initializing macro from sequence-viewer.ts', store.state.macro);
   // @ts-ignore
-  const macro = store.state.macro || new Macro(AP);
+  const macro = store.state.macro;
   // @ts-ignore
   window.macro = macro;
-  const {code, styles, mermaidCode, diagramType} = await macro.load();
-
-  store.commit('code', code);
-  // @ts-ignore
-  store.state.styles = styles;
-  // @ts-ignore
-  store.dispatch('updateMermaidCode', mermaidCode || store.state.mermaidCode)
-  store.dispatch('updateDiagramType', diagramType)
-
-  if(!macro._standaloneCustomContent) {
+  try {
+    const diagram = await macro.load();
+    store.commit('code', diagram.code);
     // @ts-ignore
-    await window.createAttachmentIfContentChanged(code);
+    store.state.styles = diagram.styles;
+    // @ts-ignore
+    store.state.macro = Object.assign({}, macro);
+    // @ts-ignore
+    store.dispatch('updateMermaidCode', diagram.mermaidCode || store.state.mermaidCode)
+    store.dispatch('updateDiagramType', diagram.diagramType)
+    if(!macro._standaloneCustomContent) {
+      // @ts-ignore
+      await window.createAttachmentIfContentChanged(diagram.code);
+    }
+  } catch (e) {
+    // @ts-ignore
+    store.state.error = e;
   }
+
+
   let timing = window.performance.timing;
   console.debug('ZenUML diagram loading time:%s (ms)', timing.domContentLoadedEventEnd- timing.navigationStart)
 }

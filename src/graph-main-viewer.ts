@@ -1,5 +1,7 @@
 import MockApConfluence from './model/MockApConfluence'
 import GraphMacro from './model/GraphMacro'
+import AP from "@/model/AP";
+import ApWrapper2 from "@/model/ApWrapper2";
 console.debug('Running graph main viewer');
 if (window.location.href.includes('localhost')) {
   // eslint-disable-next-line
@@ -10,8 +12,7 @@ if (window.location.href.includes('localhost')) {
   }
 }
 async function initializeMacro() {
-  // @ts-ignore
-  const macro = new GraphMacro(AP);
+  const macro = new GraphMacro(new ApWrapper2(AP));
   // @ts-ignore
   window.macro = macro;
   const {graphXml} = await macro.load();

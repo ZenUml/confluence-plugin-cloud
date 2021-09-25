@@ -1,10 +1,23 @@
 export enum DataSource {
-  MacroBody,
-  ContentProperty,
-  CustomContent,
-  Example
+  MacroBody = 'macro-body',
+  ContentProperty = 'content-property',
+  ContentPropertyOld = 'content-property-old',
+  CustomContent = 'custom-content',
+  Example = 'example'
 }
+
+export enum DiagramType {
+  Sequence = 'sequence',
+  Mermaid = 'mermaid',
+  Graph = 'graph'
+}
+
 export interface Diagram {
-  code: string | undefined,
+  diagramType: DiagramType,
+  code?: string,
+  styles?: object,
+  mermaidCode?: string,
+  graphXml?: string,
+  compressed?: boolean,
   source: DataSource
 }

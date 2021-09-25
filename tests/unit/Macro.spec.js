@@ -1,5 +1,6 @@
 import MockAp from '@/model/MockAp'
 import Macro from '@/model/Macro'
+import ApWrapper2 from "@/model/ApWrapper2";
 
 let mockAp, mockApConfluence;
 let macro;
@@ -14,7 +15,7 @@ describe('Macro', () => {
   beforeEach(() => {
     mockAp = new MockAp(contentId);
     mockApConfluence = mockAp.confluence;
-    macro = new Macro(mockAp);
+    macro = new Macro(new ApWrapper2(mockAp));
 
     gtag = jest.fn();
     window.gtag = gtag;
@@ -33,10 +34,12 @@ describe('Macro', () => {
     })
 
     // data
-    test('data, no body or property', async () => {
-      mockApConfluence.saveMacro({uuid: 1234})
-      const code = (await macro.load()).code;
-      expect(code).toBe(macro.EXAMPLE)
+    test('A macro with only uuid must have content property', async () => {
+      mockApConfluence.saveMacro({uuid: 1234});
+      expect(macro.load()).rejects.toThrowError('A macro with only uuid must have content property.');
+
+      mockApConfluence.saveMacro({uuid: '1234'}, 'body')
+      expect(macro.load()).rejects.toThrowError();
     })
 
     // body
@@ -58,7 +61,7 @@ describe('Macro', () => {
       expect(code).toBe('A.method')
 
       expect(gtag.mock.calls).toEqual([
-        ['event', 'load_macro', {event_category: 'content_property', event_label: contentId}],
+        ['event', 'load_macro', {event_category: 'content_property_old', event_label: contentId}],
       ])
     })
 
@@ -69,13 +72,6 @@ describe('Macro', () => {
       expect(code).toBe('A.method')
       const styles = (await macro.load()).styles
       expect(styles['#A'].backgroundColor).toBe('#FFF')
-    })
-
-    // data, body
-    test('or content property', async () => {
-      mockApConfluence.saveMacro({uuid: '1234'}, 'body')
-      const code = (await macro.load()).code;
-      expect(code).toBe('body')
     })
 
     // data, body, prop
@@ -96,9 +92,9 @@ describe('Macro', () => {
 
     test('should load from custom content', async () => {
       mockApConfluence.saveMacro({customContentId: 1234})
-      mockAp.setCustomContent(1234, 'body')
+      mockAp.setCustomContent(1234, {code: 'A.m'})
       const code = (await macro.load()).code;
-      expect(code).toBe('body')
+      expect(code).toBe('A.m')
     })
 
   })

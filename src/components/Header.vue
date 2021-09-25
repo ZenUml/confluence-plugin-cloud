@@ -1,7 +1,7 @@
 <template>
   <div class="toolbar header">
     <va-radio-group :vertical="false" v-model="diagramType">
-      <va-radio-btn label="zenuml">ZenUML</va-radio-btn>
+      <va-radio-btn label="sequence">ZenUML</va-radio-btn>
       <va-radio-btn label="mermaid">Mermaid (Beta)</va-radio-btn>
     </va-radio-group>
 
@@ -13,9 +13,9 @@
 </template>
 
 <script>
-// import Macro from "@/utils/Macro";
 import {mapState} from 'vuex';
 import SaveAndGoBackButton from "@/components/SaveAndGoBackButton";
+import {DiagramType} from "@/model/Diagram";
 export default {
   name: "Header",
   components: {SaveAndGoBackButton},
@@ -29,12 +29,12 @@ export default {
     diagramType: {
       set(type) {
         this.$store.dispatch('updateDiagramType', type)
-        if (type === 'zenuml') {
+        if (type === DiagramType.Sequence) {
           this.$store.dispatch('reloadZenUML')
         }
       },
       get() {
-        return this.$store.state.diagramType || 'zenuml'
+        return this.$store.state.diagramType || DiagramType.Sequence
       }
     }
   },

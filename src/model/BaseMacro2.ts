@@ -1,30 +1,31 @@
 import uuidv4 from '../utils/uuid';
-import { getUrlParam, trackEvent } from '@/utils/window';
+import {getUrlParam, trackEvent} from '@/utils/window';
 import ApWrapper2 from "./ApWrapper2";
-import {IAp} from "@/model/IAp";
 import {IApWrapper} from "@/model/IApWrapper";
-import {IContentProperty} from "@/model/IContentProperty";
+import {IContentProperty, IContentPropertyNormalised} from "@/model/IContentProperty";
 import {ICustomContent} from "@/model/ICustomContent";
 import {IMacroData} from "@/model/IMacroData";
+import {DataSource, Diagram, DiagramType} from "@/model/Diagram";
 
 class BaseMacro2 {
+  _diagram?: Diagram;
   _key: any;
   _customContentId: string | undefined;
   _loaded = false;
   _macroIdentifier: any;
   _pageId: any;
   _standaloneCustomContent: boolean;
-  private _confluenceWrapper: IApWrapper;
+  private _apWrapper: IApWrapper;
 
-  constructor(ap: IAp) {
-    this._confluenceWrapper = new ApWrapper2(ap);
-    this._macroIdentifier = this._confluenceWrapper._macroIdentifier;
+  constructor(apWrapper2: ApWrapper2) {
+    this._apWrapper = apWrapper2;
+    this._macroIdentifier = this._apWrapper._macroIdentifier;
     this._standaloneCustomContent = getUrlParam('rendered.for') === 'custom-content-native';
   }
 
   async initPageId() {
     if(!this._pageId) {
-      this._pageId = getUrlParam('content.id') || (await this._confluenceWrapper.getPageId());
+      this._pageId = getUrlParam('content.id') || (await this._apWrapper.getPageId());
     }
   }
 
@@ -36,13 +37,18 @@ class BaseMacro2 {
   async getCustomContent() {
     trackEvent(this._pageId, 'load_macro', 'custom_content');
     if(this._customContentId) {
-      return await this._confluenceWrapper.getCustomContentById(this._customContentId);
+      return await this._apWrapper.getCustomContentById(this._customContentId);
     }
   }
 
-  async getContentProperty(key: string) {
-    trackEvent(this._pageId, 'load_macro', 'content_property');
-    return await this._confluenceWrapper.getContentProperty2();
+  async getContentProperty(): Promise<IContentPropertyNormalised | undefined> {
+    let content = await this._apWrapper.getContentProperty2();
+    if(content?.value.source === DataSource.ContentPropertyOld) {
+      trackEvent(this._pageId, 'load_macro', 'content_property_old');
+    } else {
+      trackEvent(this._pageId, 'load_macro', 'content_property');
+    }
+    return content;
   }
 
   async getMacroBody() {
@@ -51,10 +57,10 @@ class BaseMacro2 {
     }
     
     trackEvent(this._pageId, 'load_macro', 'macro_body');
-    return await this._confluenceWrapper.getMacroBody();
+    return await this._apWrapper.getMacroBody();
   }
 
-  async getContent(): Promise<IContentProperty | ICustomContent | undefined> {
+  async getContent(): Promise<IContentPropertyNormalised | ICustomContent | undefined> {
     if(this._standaloneCustomContent) {
       console.debug('rendering for custom content native viewer.');
       // @ts-ignore
@@ -62,77 +68,88 @@ class BaseMacro2 {
       console.debug('custom content id:', this._customContentId);
       return await this.getCustomContent();
     }
-    const macroData = await this._confluenceWrapper.getMacroData();
+    const macroData = await this._apWrapper.getMacroData();
     console.debug('macro data loaded:', macroData);
 
     // When the macro is edited for the first time, macro data is not available in the preview mode
     // Fall back to the uuid parameter in the URL.
     // This is defined in the descriptor and is only available for sequence-viewer.html.
-    const key = macroData?.uuid || getUrlParam('uuid');
-    this._key = key;
+    this._key = macroData?.uuid || getUrlParam('uuid');
     this._customContentId = macroData?.customContentId;
     
     if(this._customContentId) {
       return await this.getCustomContent();
     }
-
-    return key ? await this.getContentProperty(key) : undefined;
+    if(this._key) {
+      return await this.getContentProperty();
+    }
+    return undefined;
   }
 
-  async load() {
+  async load(): Promise<Diagram> {
     await this.initPageId();
 
+    let diagram;
     const payload = await this.getContent();
-    let code;
-    let styles;
-    let mermaidCode;
-    let diagramType;
-    let graphXml;
-    let compressed;
-    // only for very old version
-    if(typeof payload?.value === 'string') {
-      code = payload?.value
-    } else {
-      const contentProp = payload as IContentProperty;
-      code = contentProp?.value?.code
-      styles = contentProp?.value.styles
-      mermaidCode = contentProp?.value?.mermaidCode
-      diagramType = contentProp?.value?.diagramType
-      graphXml = contentProp?.value?.graphXml
-      compressed = contentProp?.value?.compressed
-    }
-    code = code || await this.getMacroBody();
 
-    styles = styles || {}
+    if(!payload || !payload.value) {
+      diagram = {
+        diagramType: DiagramType.Sequence,
+        code: await this.getMacroBody(),
+        source: DataSource.MacroBody
+      }
+    } else {
+      diagram = payload?.value as Diagram;
+    }
 
     this._loaded = true;
-    const result = {code, styles, mermaidCode, diagramType, graphXml, compressed};
 
-    console.debug('Loaded macro', result);
-    return result;
+    console.debug('Loaded macro', diagram);
+    this._diagram = diagram;
+    return diagram;
   }
 
   // Warning! Do not call getXXX in save. Do retest if you want to call getXXX.
   // It does not work as of 17th May 2020. That is why we have stored key and version
-  async save(value: object) {
+  async save(value: Diagram) {
     console.debug('Saving macro', value);
     if (!this._loaded) {
       throw new Error('You have to call load before calling save()')
     }
     const key = this._key || uuidv4();
-    const macroParam = {uuid: key, updatedAt: new Date()} as IMacroData;
-
-    //make sure it's compatible with old descriptor
-    if(this._confluenceWrapper.hasCustomContent() && this._customContentId) {
-      const customContent = await this._confluenceWrapper.saveCustomContent(this._customContentId, key, value);
-      trackEvent(this._pageId, 'save_macro', 'custom_content');
-      macroParam.customContentId = customContent.id;
+    let customContent;
+    if(this._customContentId) {
+      customContent = await this._apWrapper.saveCustomContent(this._customContentId, key, value);
+    } else {
+      customContent = await this._apWrapper.createCustomContent(key, value);
     }
 
+    trackEvent(this._pageId, 'save_macro', 'custom_content');
+    const macroParam = {uuid: key, updatedAt: new Date()} as IMacroData;
+    macroParam.customContentId = customContent.id;
+
     //TODO: Edit issue when editing content property based macro in viewer
-    // @ts-ignore
-    this._confluenceWrapper.saveMacro(macroParam, value.code);
+    // Saving core data to body for disaster recovery
+    let body = BaseMacro2.getCoreData(value);
+    this._apWrapper.saveMacro(macroParam, body);
     trackEvent(this._pageId, 'save_macro', 'macro_body');
+    return macroParam.customContentId;
+  }
+
+  private static getCoreData(value: Diagram) {
+    let body;
+    switch (value.diagramType) {
+      case DiagramType.Sequence:
+        body = value.code || '';
+        break;
+      case DiagramType.Mermaid:
+        body = value.mermaidCode || '';
+        break;
+      case DiagramType.Graph:
+        body = value.graphXml || '';
+        break;
+    }
+    return body;
   }
 }
 

@@ -1,8 +1,10 @@
 <template>
 <div class="viewer">
+  <div v-show="debug">Data source: {{diagram.source}}</div>
+  <error-boundary>
   <div v-html="styles"></div>
   <mermaid v-show="diagramType === 'mermaid'"/>
-  <div v-show="diagramType === 'zenuml'" @click="deselectAll">
+  <div v-show="diagramType === 'sequence'" @click="deselectAll">
     <styling-panel/>
     <diagram-frame>
       <div class="actions flex" v-show="isDisplayMode">
@@ -22,6 +24,7 @@
       </div>
     </diagram-frame>
   </div>
+  </error-boundary>
 </div>
 </template>
 
@@ -32,10 +35,12 @@ import Mermaid from './Mermaid'
 import EventBus from '../EventBus'
 
 import StylingPanel from "@/components/StylingPanel";
+import ErrorBoundary from "@/components/ErrorBoundary";
 const DiagramFrame = VueSequence.DiagramFrame;
 export default {
   name: "Viewer",
   components: {
+    ErrorBoundary,
     Mermaid,
     StylingPanel,
     DiagramFrame
@@ -43,7 +48,14 @@ export default {
   computed: {
     ...mapGetters({isDisplayMode: 'isDisplayMode', diagramType: 'diagramType'}),
     isLite() {
-      return this.$store.state.macro._confluenceWrapper.isLite();
+      return this.$store.state.macro._apWrapper.isLite();
+    },
+    debug() {
+      return !!localStorage.zenumlDebug;
+    },
+    diagram() {
+      console.log('_diagram', this.$store.state.macro._diagram);
+      return this.$store.state.macro._diagram || {};
     },
     styles() {
       const stylesInStore = this.$store.state.styles || {};
@@ -74,7 +86,7 @@ export default {
     },
     checkUserCanEdit() {
       // TODO: Add this back. It works fine. But we will not release it for the moment.
-      // this.$store.state.macro._confluenceWrapper.canUserEdit().then(b => this.canEdit = b);
+      // this.$store.state.macro._apWrapper.canUserEdit().then(b => this.canEdit = b);
     },
     edit() {
       EventBus.$emit('edit');

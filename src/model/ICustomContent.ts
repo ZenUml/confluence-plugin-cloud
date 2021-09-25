@@ -1,3 +1,5 @@
+import {Diagram} from "@/model/Diagram";
+
 export interface ICustomContent {
   container?: { id: string, type: string };
   space: { key: string };
@@ -5,5 +7,5 @@ export interface ICustomContent {
   version?: { number: number };
   title?: string;
   type?: string;
-  value: { code: string | undefined };
+  value: Diagram;
 }

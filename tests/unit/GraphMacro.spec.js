@@ -1,5 +1,6 @@
 import GraphMacro from "@/model/GraphMacro";
 import MockApConfluence from "@/model/MockApConfluence";
+import ApWrapper2 from "@/model/ApWrapper2";
 
 describe('GraphMacro', () => {
   it('should have macroIdentifier as `graph`', () => {
@@ -7,7 +8,8 @@ describe('GraphMacro', () => {
     delete window.location;
     // @ts-ignore
     window.location = new URL('https://zenuml.com/?contentKey=zenuml-content-graph')
-    let graphMacro = new GraphMacro({confluence: mockApConfluence});
+    let ap = {confluence: mockApConfluence};
+    let graphMacro = new GraphMacro(new ApWrapper2(ap));
     expect(graphMacro._macroIdentifier).toBe('graph')
   })
 })

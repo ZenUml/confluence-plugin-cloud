@@ -1,6 +1,7 @@
-import { trackEvent } from '@/utils/window';
+import {trackEvent} from '@/utils/window';
 import BaseMacro2 from './BaseMacro2';
 import Example from '../utils/sequence/Example'
+import {DataSource} from "@/model/Diagram";
 
 class Macro extends BaseMacro2 {
   EXAMPLE = Example;
@@ -17,7 +18,7 @@ class Macro extends BaseMacro2 {
   }
 
   async save2(code: string, styles: any, mermaidCode: any, diagramType: any) {
-    return await super.save({code, styles, mermaidCode, diagramType});
+    return await super.save({code, styles, mermaidCode, diagramType, source: DataSource.CustomContent});
   }
 }
 

@@ -1,12 +1,13 @@
 import {getUrlParam} from '@/utils/window';
-import {IApWrapper} from "@/model/IApWrapper";
+import {IApWrapper, VersionType} from "@/model/IApWrapper";
 import {IMacroData} from "@/model/IMacroData";
-import {IContentProperty} from "@/model/IContentProperty";
+import {IContentProperty, IContentPropertyNormalised} from "@/model/IContentProperty";
 import {ICustomContent} from "@/model/ICustomContent";
 import {IUser} from "@/model/IUser";
 import {IConfluence} from "@/model/IConfluence";
 import {IAp} from "@/model/IAp";
 import {MacroIdentifier} from "@/model/MacroIdentifier";
+import {DataSource, Diagram, DiagramType} from "@/model/Diagram";
 
 interface ContentPropertyIn {
 }
@@ -19,6 +20,7 @@ interface ILocationContext {
 
 // custom content APIs.
 export default class ApWrapper2 implements IApWrapper {
+  versionType: VersionType;
   _confluence: IConfluence;
   _requestFn: {
     (req: IApRequest): any
@@ -30,6 +32,7 @@ export default class ApWrapper2 implements IApWrapper {
   _user: any;
 
   constructor(ap: IAp) {
+    this.versionType = this.isLite() ? VersionType.Lite : VersionType.Full;
     let macroIdentifier: MacroIdentifier;
     const contentKey = getUrlParam('contentKey');
     if (!contentKey) {
@@ -87,7 +90,7 @@ export default class ApWrapper2 implements IApWrapper {
     return `${macroKey}-${uuid}-body`;
   }
 
-  async getContentProperty2(): Promise<IContentProperty | undefined> {
+  async getContentProperty2(): Promise<IContentPropertyNormalised | undefined> {
     let macroData = await this.getMacroData();
     const uuid = macroData?.uuid;
     if (!uuid) {
@@ -97,9 +100,24 @@ export default class ApWrapper2 implements IApWrapper {
     let key = this.propertyKey(uuid);
     let property = await this.getContentProperty(key);
     if (!property) {
-      console.debug('property is not find with key:' + key);
+      let message = 'property is not find with key:' + key;
+      console.error(message);
+      throw {
+        message: message,
+        data: macroData
+      }
     }
-    return property;
+    let result = Object.assign({}, property) as IContentPropertyNormalised;
+    if(typeof property.value === "string") {
+      result.value = {
+        diagramType: DiagramType.Sequence,
+        source: DataSource.ContentPropertyOld,
+        code: property.value
+      }
+    } else {
+      result.value.source = DataSource.ContentProperty;
+    }
+    return result;
   }
 
   getContentProperty(key: any): Promise<IContentProperty|undefined> {
@@ -176,13 +194,13 @@ export default class ApWrapper2 implements IApWrapper {
     return response && response.body && JSON.parse(response.body);
   }
 
-  async createCustomContent(uuid: string, content: object) {
+  async createCustomContent(title: string, content: Diagram) {
     const context = await this.getLocationContext();
     const type = this.getCustomContentType();
     const container = {id: context.contentId, type: context.contentType};
     const bodyData = {
       "type": type,
-      "title": uuid,
+      "title": title,
       "space": {
         "key": context.spaceKey
       },
@@ -204,10 +222,10 @@ export default class ApWrapper2 implements IApWrapper {
     return this.parseCustomContentResponse(response);
   }
 
-  async updateCustomContent(contentObj: ICustomContent, newBody: any) {
+  async updateCustomContent(contentObj: ICustomContent, newBody: Diagram) {
     let newVersionNumber = 1;
 
-    if(contentObj.version?.number) {
+    if (contentObj.version?.number) {
       newVersionNumber += contentObj.version?.number
     }
     const bodyData = {
@@ -255,20 +273,21 @@ export default class ApWrapper2 implements IApWrapper {
     const response = await this._requestFn({type: 'GET', url});
     const customContent = this.parseCustomContentResponse(response);
     console.debug(`Loaded custom content by id ${id}.`);
-    return Object.assign({}, customContent, {value: JSON.parse(customContent.body.raw.value)});
+    let diagram = JSON.parse(customContent.body.raw.value);
+    diagram.source = DataSource.CustomContent;
+    return Object.assign({}, customContent, {value: diagram});
   }
 
-  async saveCustomContent(customContentId: string, uuid: string, value: object) {
-    if (customContentId) {
-      const existing = await this.getCustomContentById(customContentId);
-      if (existing) {
-        return await this.updateCustomContent(existing, value);
-      } else {
-        return await this.createCustomContent(uuid, value);
-      }
+  async saveCustomContent(customContentId: string, title: string, value: Diagram) {
+    let result;
+    // TODO: Do we really need to check whether it exists?
+    const existing = await this.getCustomContentById(customContentId);
+    if (existing) {
+      result = await this.updateCustomContent(existing, value);
     } else {
-      return await this.createCustomContent(uuid, value);
+      result = await this.createCustomContent(title, value);
     }
+    return result
   }
 
   getDialogCustomData() {

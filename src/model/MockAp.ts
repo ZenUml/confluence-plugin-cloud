@@ -2,7 +2,8 @@ import MockApConfluence from "@/model/MockApConfluence.ts";
 import {IAp} from "@/model/IAp";
 
 const CONTRACT: any = {
-  customContent: {method: 'get', URL: /\/rest\/api\/content\/(\d+)/}
+  customContent: {method: 'get', URL: /\/rest\/api\/content\/(\d+)/},
+  createCustomContent: { method: 'post', URL: /\/rest\/api\/content/}
 };
 
 const matchContract = (request: any, api: string): any => {
@@ -37,12 +38,17 @@ export default class MockAp implements IAp{
         }
       )
     };
-    this.request = jest.fn(request => {
+    // @ts-ignore
+    this.requestHandlers.push({match: r => {
+        const result = matchContract(r, 'createCustomContent');
+        return !!result;
+      }, handle: r => ({body: JSON.stringify({id: 1234, body: {raw: {value: JSON.stringify('content')}}})})});
+    this.request = (request: any) => {
       const handler = this.requestHandlers.find(h => h.match(request));
       if(handler) {
         return handler.handle(request);
       }
-    });
+    };
   }
 
   setCustomContent(customContentId: any, content: any) {

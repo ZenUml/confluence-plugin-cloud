@@ -1,11 +1,20 @@
 import SequenceDiagramLoader from "@/model/SequenceDiagramLoader";
-import {IApWrapper} from "@/model/IApWrapper";
+import {IApWrapper, VersionType} from "@/model/IApWrapper";
 import {ICustomContent} from "@/model/ICustomContent";
-import {IContentProperty} from "@/model/IContentProperty";
+import {IContentPropertyNormalised} from "@/model/IContentProperty";
 import {MacroIdentifier} from "@/model/MacroIdentifier";
 import {IMacroData} from "@/model/IMacroData";
+import {DataSource, Diagram, DiagramType} from '@/model/Diagram';
 
 class MockApWrapper implements IApWrapper {
+  versionType: VersionType = VersionType.Lite;
+
+  createCustomContent(title: string, content: Diagram): Promise<any> {
+      throw new Error("Method not implemented.");
+  }
+  updateCustomContent(contentObj: ICustomContent, newBody: Diagram): Promise<any> {
+      throw new Error("Method not implemented.");
+  }
   private _param: any;
   private _code: string | undefined;
   private _key: string | undefined;
@@ -26,11 +35,11 @@ class MockApWrapper implements IApWrapper {
     this._code = content.value;
   }
   // Note: we do not need key for this method.
-  async getContentProperty2(): Promise<IContentProperty | undefined> {
+  async getContentProperty2(): Promise<IContentPropertyNormalised | undefined> {
     if(!this._hasContentProperty) {
       return undefined;
     }
-    return {value: {code: this._code}};
+    return {value: {code: this._code, diagramType: DiagramType.Sequence, source: DataSource.ContentProperty}};
   }
 
   async getMacroData() {
@@ -44,7 +53,8 @@ class MockApWrapper implements IApWrapper {
 
   async getCustomContent(): Promise<ICustomContent | undefined> {
     if(this._hasCustomContent) {
-      return {container: {id: "", type: ""}, id: "", space: {key: ""}, title: "", type: "", version: {number: 0}, value: { code: this._code }};
+      return {container: {id: "", type: ""}, id: "", space: {key: ""}, title: "", type: "", version: {number: 0},
+        value: { code: this._code, diagramType: DiagramType.Sequence, source: DataSource.CustomContent }};
     }
     return undefined;
   }
