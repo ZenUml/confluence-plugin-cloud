@@ -1,6 +1,7 @@
 export enum DataSource {
   MacroBody = 'macro-body',
   ContentProperty = 'content-property',
+  ContentPropertyOld = 'content-property-old',
   CustomContent = 'custom-content',
   Example = 'example'
 }

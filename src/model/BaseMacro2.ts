@@ -43,13 +43,8 @@ class BaseMacro2 {
 
   async getContentProperty(): Promise<IContentProperty | undefined> {
     let content = await this._apWrapper.getContentProperty2();
-    if(typeof content?.value === 'string') {
+    if(content?.value.source === DataSource.ContentPropertyOld) {
       trackEvent(this._pageId, 'load_macro', 'content_property_old');
-      content.value = {
-        diagramType: DiagramType.Sequence,
-        code: content.value,
-        source: DataSource.ContentProperty
-      }
     } else {
       trackEvent(this._pageId, 'load_macro', 'content_property');
     }

@@ -4,3 +4,7 @@ export interface IContentProperty {
   // 'value: string' is for very old macros.
   value: Diagram | string
 }
+
+export interface IContentPropertyNormalised {
+  value: Diagram
+}

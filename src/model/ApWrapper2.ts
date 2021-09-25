@@ -1,7 +1,7 @@
 import {getUrlParam} from '@/utils/window';
 import {IApWrapper, VersionType} from "@/model/IApWrapper";
 import {IMacroData} from "@/model/IMacroData";
-import {IContentProperty} from "@/model/IContentProperty";
+import {IContentProperty, IContentPropertyNormalised} from "@/model/IContentProperty";
 import {ICustomContent} from "@/model/ICustomContent";
 import {IUser} from "@/model/IUser";
 import {IConfluence} from "@/model/IConfluence";
@@ -90,7 +90,7 @@ export default class ApWrapper2 implements IApWrapper {
     return `${macroKey}-${uuid}-body`;
   }
 
-  async getContentProperty2(): Promise<IContentProperty | undefined> {
+  async getContentProperty2(): Promise<IContentPropertyNormalised | undefined> {
     let macroData = await this.getMacroData();
     const uuid = macroData?.uuid;
     if (!uuid) {
@@ -107,10 +107,17 @@ export default class ApWrapper2 implements IApWrapper {
         data: macroData
       }
     }
-    if(typeof property.value === "object") {
-      property.value.source = DataSource.ContentProperty;
+    let result = Object.assign({}, property) as IContentPropertyNormalised;
+    if(typeof property.value === "string") {
+      result.value = {
+        diagramType: DiagramType.Sequence,
+        source: DataSource.ContentPropertyOld,
+        code: property.value
+      }
+    } else {
+      result.value.source = DataSource.ContentProperty;
     }
-    return property;
+    return result;
   }
 
   getContentProperty(key: any): Promise<IContentProperty|undefined> {
