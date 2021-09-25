@@ -52,10 +52,6 @@ class BaseMacro2 {
   }
 
   async getMacroBody() {
-    if(this._standaloneCustomContent) {
-      return;
-    }
-    
     trackEvent(this._pageId, 'load_macro', 'macro_body');
     return await this._apWrapper.getMacroBody();
   }
