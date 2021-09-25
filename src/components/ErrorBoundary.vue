@@ -5,7 +5,7 @@
     <p class="sm:inline">{{error && error.message}}</p>
     <p class="code">{{error && error.data}}</p>
     <p>To get support, submit a ticket at
-      <a class="font-bold underline" href="https://zenuml.atlassian.net/servicedesk/customer/portals">our help desk</a>.
+      <a target="_blank" class="font-bold underline" href="https://zenuml.atlassian.net/servicedesk/customer/portals">our help desk</a>.
       Please include the above error message in your ticket.
     </p>
   </div>
