@@ -1,5 +1,5 @@
 import SequenceDiagramLoader from "@/model/SequenceDiagramLoader";
-import {IApWrapper} from "@/model/IApWrapper";
+import {IApWrapper, VersionType} from "@/model/IApWrapper";
 import {ICustomContent} from "@/model/ICustomContent";
 import {IContentProperty} from "@/model/IContentProperty";
 import {MacroIdentifier} from "@/model/MacroIdentifier";
@@ -7,6 +7,8 @@ import {IMacroData} from "@/model/IMacroData";
 import {DataSource, Diagram, DiagramType} from '@/model/Diagram';
 
 class MockApWrapper implements IApWrapper {
+  versionType: VersionType = VersionType.Lite;
+
   createCustomContent(title: string, content: Diagram): Promise<any> {
       throw new Error("Method not implemented.");
   }
