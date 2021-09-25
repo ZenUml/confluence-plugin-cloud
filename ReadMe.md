@@ -1,3 +1,17 @@
+# Pre-release check
+1. https://zenuml-stg.atlassian.net/wiki/spaces/ZS/pages/33152/Testing+Lite+1
+   1. All content loads properly except for the second one.
+2. (Lite) https://zenuml-stg.atlassian.net/wiki/display/ZS/customcontent/list/ac%3Acom.zenuml.confluence-addon-lite%3Azenuml-content-sequence
+   1. Open a diagram and it should load fine
+3. (Lite) https://zenuml-stg.atlassian.net/wiki/display/ZS/customcontent/list/ac%3Acom.zenuml.confluence-addon-lite%3Azenuml-content-graph
+   1. Open a draw io diagram and it should load fine
+4. (Full) https://zenuml-stg.atlassian.net/wiki/display/ZS/customcontent/list/ac%3Acom.zenuml.confluence-addon%3Azenuml-content-sequence
+   1. Open a diagram and it should load fine
+5. (Full) https://zenuml-stg.atlassian.net/wiki/display/ZS/customcontent/list/ac%3Acom.zenuml.confluence-addon%3Azenuml-content-graph
+   1. Open a draw io diagram and it should load fine
+6. https://zenuml-stg.atlassian.net/wiki/spaces/ZS/pages/31260964/VVVff
+   1. Some diagrams have data source as content-property
+7. Create a new page and add a sequence, a mermaid, a draw io diagram
 # Development
 ## How to do integration test?
 1. Start firebase functions + hosting at 5000: `yarn firebase:serve`

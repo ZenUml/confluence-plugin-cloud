@@ -5,6 +5,8 @@ import SaveAndGoBackButtonGraph from "@/components/SaveAndGoBackButtonGraph.vue"
 // @ts-ignore
 import Va from 'vue-atlas'
 import 'vue-atlas/dist/vue-atlas.css'
+import ApWrapper2 from "@/model/ApWrapper2";
+import AP from "@/model/AP";
 Vue.use(Va, 'en')
 
 if (window.location.href.includes('localhost')) {
@@ -19,9 +21,7 @@ new Vue({
   render: h => h(SaveAndGoBackButtonGraph)
 }).$mount('#save-and-go-back');
 async function initializeMacro() {
-  // @ts-ignore
   const macro = new GraphMacro(new ApWrapper2(AP));
-
 
   // @ts-ignore
   window.macro = macro;
