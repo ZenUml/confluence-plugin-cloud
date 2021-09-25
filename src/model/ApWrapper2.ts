@@ -7,7 +7,7 @@ import {IUser} from "@/model/IUser";
 import {IConfluence} from "@/model/IConfluence";
 import {IAp} from "@/model/IAp";
 import {MacroIdentifier} from "@/model/MacroIdentifier";
-import {DataSource, Diagram} from "@/model/Diagram";
+import {DataSource, Diagram, DiagramType} from "@/model/Diagram";
 
 interface ContentPropertyIn {
 }
@@ -267,6 +267,12 @@ export default class ApWrapper2 implements IApWrapper {
     const customContent = this.parseCustomContentResponse(response);
     console.debug(`Loaded custom content by id ${id}.`);
     let diagram = JSON.parse(customContent.body.raw.value);
+    if(typeof diagram === "string") {
+      diagram = {
+        code: diagram,
+        diagramType: DiagramType.Sequence
+      }
+    }
     diagram.source = DataSource.CustomContent;
     return Object.assign({}, customContent, {value: diagram});
   }

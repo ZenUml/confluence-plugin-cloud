@@ -1,5 +1,6 @@
 import MockAp from '@/model/MockAp'
 import Macro from '@/model/Macro'
+import ApWrapper2 from "@/model/ApWrapper2";
 
 let mockAp, mockApConfluence;
 let macro;
@@ -14,7 +15,7 @@ describe('Macro', () => {
   beforeEach(() => {
     mockAp = new MockAp(contentId);
     mockApConfluence = mockAp.confluence;
-    macro = new Macro(mockAp);
+    macro = new Macro(new ApWrapper2(mockAp));
 
     gtag = jest.fn();
     window.gtag = gtag;

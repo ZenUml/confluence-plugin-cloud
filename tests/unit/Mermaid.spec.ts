@@ -1,6 +1,7 @@
 import MockAp from '@/model/MockAp'
 import Macro from '@/model/Macro'
 import {IConfluence} from "@/model/IConfluence";
+import ApWrapper2 from "@/model/ApWrapper2";
 
 let mockAp: MockAp;
 let mockApConfluence: IConfluence;
@@ -13,7 +14,7 @@ describe('Mermaid', () => {
   beforeEach(() => {
     mockAp = new MockAp(contentId);
     mockApConfluence = mockAp.confluence;
-    macro = new Macro(mockAp);
+    macro = new Macro(new ApWrapper2(mockAp));
   });
 
   it('saved in custom content', async () => {

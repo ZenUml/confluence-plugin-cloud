@@ -85,8 +85,10 @@ class BaseMacro2 {
     if(this._customContentId) {
       return await this.getCustomContent();
     }
-
-    return await this.getContentProperty();
+    if(this._key) {
+      return await this.getContentProperty();
+    }
+    return undefined;
   }
 
   async load(): Promise<Diagram> {
