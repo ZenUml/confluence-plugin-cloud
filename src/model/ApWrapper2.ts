@@ -267,12 +267,6 @@ export default class ApWrapper2 implements IApWrapper {
     const customContent = this.parseCustomContentResponse(response);
     console.debug(`Loaded custom content by id ${id}.`);
     let diagram = JSON.parse(customContent.body.raw.value);
-    if(typeof diagram === "string") {
-      diagram = {
-        code: diagram,
-        diagramType: DiagramType.Sequence
-      }
-    }
     diagram.source = DataSource.CustomContent;
     return Object.assign({}, customContent, {value: diagram});
   }

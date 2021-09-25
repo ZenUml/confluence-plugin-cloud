@@ -92,9 +92,9 @@ describe('Macro', () => {
 
     test('should load from custom content', async () => {
       mockApConfluence.saveMacro({customContentId: 1234})
-      mockAp.setCustomContent(1234, 'body')
+      mockAp.setCustomContent(1234, {code: 'A.m'})
       const code = (await macro.load()).code;
-      expect(code).toBe('body')
+      expect(code).toBe('A.m')
     })
 
   })
