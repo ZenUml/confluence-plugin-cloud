@@ -1,5 +1,4 @@
 import Vue from 'vue'
-import MockApConfluence from './model/MockApConfluence'
 import GraphMacro from "@/model/GraphMacro.ts";
 import SaveAndGoBackButtonGraph from "@/components/SaveAndGoBackButtonGraph.vue";
 // @ts-ignore
@@ -9,14 +8,6 @@ import ApWrapper2 from "@/model/ApWrapper2";
 import AP from "@/model/AP";
 Vue.use(Va, 'en')
 
-if (window.location.href.includes('localhost')) {
-  // eslint-disable-next-line
-  console.log('You are using a mocked AP.confluence')
-  // @ts-ignore
-    window.AP = {
-    confluence: new MockApConfluence()
-  }
-}
 new Vue({
   render: h => h(SaveAndGoBackButtonGraph)
 }).$mount('#save-and-go-back');
