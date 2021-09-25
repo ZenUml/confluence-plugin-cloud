@@ -2,7 +2,7 @@ import uuidv4 from '../utils/uuid';
 import {getUrlParam, trackEvent} from '@/utils/window';
 import ApWrapper2 from "./ApWrapper2";
 import {IApWrapper} from "@/model/IApWrapper";
-import {IContentProperty, IContentPropertyNormalised} from "@/model/IContentProperty";
+import {IContentPropertyNormalised} from "@/model/IContentProperty";
 import {ICustomContent} from "@/model/ICustomContent";
 import {IMacroData} from "@/model/IMacroData";
 import {DataSource, Diagram, DiagramType} from "@/model/Diagram";
@@ -52,10 +52,6 @@ class BaseMacro2 {
   }
 
   async getMacroBody() {
-    if(this._standaloneCustomContent) {
-      return;
-    }
-    
     trackEvent(this._pageId, 'load_macro', 'macro_body');
     return await this._apWrapper.getMacroBody();
   }
