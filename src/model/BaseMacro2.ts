@@ -34,25 +34,43 @@ class BaseMacro2 {
     return `${macroKey}-${uuid}-body`;
   }
 
+  getDiagramType(diagram: Diagram | undefined): string {
+    if(diagram?.code) {
+      return 'sequence';
+    }
+    if(diagram?.mermaidCode) {
+      return 'mermaid';
+    }
+    if(diagram?.graphXml) {
+      return 'graph';
+    }
+    return '';
+  }
+
+  trackDiagramEvent(diagram: Diagram | undefined, event: string, category: string) {
+    trackEvent(this.getDiagramType(diagram), event, category);
+  }
+
   async getCustomContent() {
-    trackEvent(this._pageId, 'load_macro', 'custom_content');
     if(this._customContentId) {
-      return await this._apWrapper.getCustomContentById(this._customContentId);
+      const result = await this._apWrapper.getCustomContentById(this._customContentId);
+      this.trackDiagramEvent(result?.value, 'load_macro', 'custom_content');
+      return result;
     }
   }
 
   async getContentProperty(): Promise<IContentPropertyNormalised | undefined> {
     let content = await this._apWrapper.getContentProperty2();
     if(content?.value.source === DataSource.ContentPropertyOld) {
-      trackEvent(this._pageId, 'load_macro', 'content_property_old');
+      this.trackDiagramEvent(content?.value, 'load_macro', 'content_property_old');
     } else {
-      trackEvent(this._pageId, 'load_macro', 'content_property');
+      this.trackDiagramEvent(content?.value, 'load_macro', 'content_property');
     }
     return content;
   }
 
   async getMacroBody() {
-    trackEvent(this._pageId, 'load_macro', 'macro_body');
+    trackEvent('sequence', 'load_macro', 'macro_body');
     return await this._apWrapper.getMacroBody();
   }
 
@@ -120,7 +138,7 @@ class BaseMacro2 {
       customContent = await this._apWrapper.createCustomContent(key, value);
     }
 
-    trackEvent(this._pageId, 'save_macro', 'custom_content');
+    this.trackDiagramEvent(value, 'save_macro', 'custom_content');
     const macroParam = {uuid: key, updatedAt: new Date()} as IMacroData;
     macroParam.customContentId = customContent.id;
 
@@ -128,7 +146,7 @@ class BaseMacro2 {
     // Saving core data to body for disaster recovery
     let body = BaseMacro2.getCoreData(value);
     this._apWrapper.saveMacro(macroParam, body);
-    trackEvent(this._pageId, 'save_macro', 'macro_body');
+    this.trackDiagramEvent(value, 'save_macro', 'macro_body');
     return macroParam.customContentId;
   }
 

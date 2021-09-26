@@ -7,7 +7,7 @@ export function getUrlParam (param: string): string | undefined {
   }
 }
 
-export function trackEvent(pageId: string, event: string, category: string) {
+export function trackEvent(label: string, event: string, category: string) {
     // @ts-ignore
-  window.gtag && window.gtag('event', event, {'event_category': category, 'event_label' : pageId});
+  window.gtag && window.gtag('event', event, {'event_category': category, 'event_label' : label});
 }

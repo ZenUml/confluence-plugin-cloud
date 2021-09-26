@@ -28,8 +28,8 @@ describe('Macro', () => {
       expect(code).toBe(macro.EXAMPLE)
 
       expect(gtag.mock.calls).toEqual([
-        ['event', 'load_macro', {event_category: 'macro_body', event_label: contentId}],
-        ['event', 'load_macro', {event_category: 'default_example', event_label: contentId}]
+        ['event', 'load_macro', {event_category: 'macro_body', event_label: 'sequence'}],
+        ['event', 'load_macro', {event_category: 'default_example', event_label: 'sequence'}]
       ])
     })
 
@@ -49,19 +49,30 @@ describe('Macro', () => {
       expect(code).toBe('body')
 
       expect(gtag.mock.calls).toEqual([
-        ['event', 'load_macro', {event_category: 'macro_body', event_label: contentId}],
+        ['event', 'load_macro', {event_category: 'macro_body', event_label: 'sequence'}],
       ])
     })
 
-    // data, prop
-    test('or content property', async () => {
+    test('or content property old', async () => {
       mockApConfluence.saveMacro({uuid: '1234'})
       mockApConfluence.setContentProperty({key: 'zenuml-sequence-macro-1234-body', value: 'A.method'})
       const code = (await macro.load()).code;
       expect(code).toBe('A.method')
 
       expect(gtag.mock.calls).toEqual([
-        ['event', 'load_macro', {event_category: 'content_property_old', event_label: contentId}],
+        ['event', 'load_macro', {event_category: 'content_property_old', event_label: 'sequence'}],
+      ])
+    })
+
+    // data, prop
+    test('or content property', async () => {
+      mockApConfluence.saveMacro({uuid: '1234'})
+      mockApConfluence.setContentProperty({key: 'zenuml-sequence-macro-1234-body', value: {code: 'A.method'}})
+      const code = (await macro.load()).code;
+      expect(code).toBe('A.method')
+
+      expect(gtag.mock.calls).toEqual([
+        ['event', 'load_macro', {event_category: 'content_property', event_label: 'sequence'}],
       ])
     })
 
