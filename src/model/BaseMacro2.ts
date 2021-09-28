@@ -34,21 +34,22 @@ class BaseMacro2 {
     return `${macroKey}-${uuid}-body`;
   }
 
+  // deprecated: We should rely on diagram.diagramType. For old diagrams we do not have that saved.
   getDiagramType(diagram: Diagram | undefined): string {
     if(diagram?.code) {
-      return 'sequence';
+      return '_sequence';
     }
     if(diagram?.mermaidCode) {
-      return 'mermaid';
+      return '_mermaid';
     }
     if(diagram?.graphXml) {
-      return 'graph';
+      return '_graph';
     }
-    return '';
+    return '_unknown';
   }
 
   trackDiagramEvent(diagram: Diagram | undefined, event: string, category: string) {
-    trackEvent(this.getDiagramType(diagram), event, category);
+    trackEvent(diagram?.diagramType || this.getDiagramType(diagram), event, category);
   }
 
   async getCustomContent() {

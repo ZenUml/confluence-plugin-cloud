@@ -1,3 +1,5 @@
+import {DiagramType} from "@/model/Diagram";
+
 export function getUrlParam (param: string): string | undefined {
   try {
     const matches = (new RegExp(param + '=([^&]*)')).exec(window.location.search);
@@ -7,7 +9,7 @@ export function getUrlParam (param: string): string | undefined {
   }
 }
 
-export function trackEvent(label: string, event: string, category: string) {
+export function trackEvent(label: DiagramType | string, event: string, category: string) {
     // @ts-ignore
   window.gtag && window.gtag('event', event, {'event_category': category, 'event_label' : label});
 }
