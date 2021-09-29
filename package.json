@@ -11,7 +11,7 @@
     "deploy:full:prod": "npm run build:full && firebase deploy --project full:prod",
     "deploy:full:stage": "npm run build:full && firebase deploy --project full:stage",
     "deploy:lite:prod": "npm run build:lite && firebase deploy --project lite:prod",
-    "deploy:lite:stage": "npm run build:lite && firebase deploy --project lite:stage",
+    "deploy:lite:stage": "npm run build:lite && firebase deploy --debug --project lite:stage",
     "firebase:serve": "firebase emulators:start --only hosting,functions",
     "firebase:serve:functions": "firebase emulators:start --only functions",
     "cloudflare:8080": "cloudflared --hostname air.zenuml.com --url http://localhost:8080",
