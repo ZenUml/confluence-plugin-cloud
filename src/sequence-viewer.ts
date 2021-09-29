@@ -57,8 +57,13 @@ async function initializeMacro() {
     store.dispatch('updateMermaidCode', diagram.mermaidCode || store.state.mermaidCode)
     store.dispatch('updateDiagramType', diagram.diagramType)
     if(!macro._standaloneCustomContent) {
-      // @ts-ignore
-      await window.createAttachmentIfContentChanged(diagram.code);
+      try {
+        // @ts-ignore
+        await window.createAttachmentIfContentChanged(diagram.code);
+      } catch (e) {
+        // Do not re-throw the error
+        console.debug('Error when creating attachment', e);
+      }
     }
   } catch (e) {
     // @ts-ignore
