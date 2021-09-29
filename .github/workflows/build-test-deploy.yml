@@ -27,7 +27,7 @@ jobs:
     needs: build
     name: Deploy to staging lite
     environment:
-      name: staging
+      name: staging-lite
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -43,7 +43,7 @@ jobs:
     needs: build
     name: Deploy to staging full
     environment:
-      name: staging
+      name: staging-full
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
