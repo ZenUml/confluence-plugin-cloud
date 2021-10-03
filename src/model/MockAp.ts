@@ -23,7 +23,7 @@ export default class MockAp implements IAp{
   public dialog: any;
   public user: any;
 
-  private contentId: any
+  public contentId: any
   private requestHandlers: Array<RequestHandler> = []
 
   constructor(_contentId: any = null) {
