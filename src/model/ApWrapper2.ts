@@ -8,10 +8,7 @@ import {IConfluence} from "@/model/IConfluence";
 import {IAp} from "@/model/IAp";
 import {MacroIdentifier} from "@/model/MacroIdentifier";
 import {DataSource, Diagram, DiagramType} from "@/model/Diagram";
-
-interface ContentPropertyIn {
-}
-
+import {ContentProperty} from "@/model/ContentProperty";
 interface ILocationContext {
   spaceKey: string;
   contentType: string;
@@ -134,7 +131,7 @@ export default class ApWrapper2 implements IApWrapper {
     })
   }
 
-  async setContentProperty(content: ContentPropertyIn) {
+  async setContentProperty(content: ContentProperty) {
     return new Promise((resolve, reject) => {
       this._confluence.setContentProperty(content, (result) => {
         if(result.error) {

@@ -1,5 +1,6 @@
 import MockApConfluence from "@/model/MockApConfluence.ts";
 import {IAp} from "@/model/IAp";
+import {IConfluence} from "@/model/IConfluence";
 
 const CONTRACT: any = {
   customContent: {method: 'get', URL: /\/rest\/api\/content\/(\d+)/},
@@ -17,7 +18,7 @@ interface RequestHandler {
 }
 
 export default class MockAp implements IAp{
-  public confluence: any
+  public confluence: IConfluence
   public request: any
   public navigator: any
   public dialog: any;
