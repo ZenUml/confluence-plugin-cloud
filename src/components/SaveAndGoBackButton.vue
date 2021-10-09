@@ -12,7 +12,7 @@ export default {
   },
   methods: {
     saveAndExit: async function () {
-      await this.macro.save2(this.code, this.styles, this.mermaidCode, this.diagramType);
+      await this.macro.save2(this.code, this.styles, this.mermaidCode, this.diagramType, this.$store.getters.title);
       /* eslint-disable no-undef */
       AP.dialog.close();
     }

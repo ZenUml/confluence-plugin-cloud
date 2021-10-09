@@ -200,7 +200,7 @@ export default class ApWrapper2 implements IApWrapper {
     const container = {id: context.contentId, type: context.contentType};
     const bodyData = {
       "type": type,
-      "title": title,
+      "title": content.title || `Untitled ${new Date().toISOString()}`,
       "space": {
         "key": context.spaceKey
       },

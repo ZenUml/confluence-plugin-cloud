@@ -15,6 +15,7 @@ export enum DiagramType {
 export interface Diagram {
   diagramType: DiagramType,
   code?: string,
+  title?: string,
   styles?: object,
   mermaidCode?: string,
   graphXml?: string,
