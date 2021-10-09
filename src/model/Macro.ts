@@ -10,7 +10,7 @@ class Macro extends BaseMacro2 {
     const result = await super.load();
 
     if(!result.mermaidCode && !result.code) {
-      trackEvent('sequence', 'new_macro', '');
+      trackEvent('sequence', 'new_macro', 'custom_content');
       result.code = this.EXAMPLE;
     }
 
