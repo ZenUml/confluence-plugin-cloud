@@ -92,7 +92,12 @@
 				this.actions.get('export').setEnabled(false);
 				this.actions.get('help').setEnabled(false);
 
-				window.getGraphXml = () => mxUtils.getXml(editor.getGraphXml());
+				window.getGraphXml = () => {
+					if(editor.graph.isEditing()) {
+						editor.graph.stopEditing();
+					}
+					return mxUtils.getXml(editor.getGraphXml());
+				};
 				window.setGraphXml = (xml) => {
 					var doc = mxUtils.parseXml(xml);
 					editor.setGraphXml(doc.documentElement);
