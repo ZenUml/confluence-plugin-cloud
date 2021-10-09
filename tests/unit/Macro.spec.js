@@ -28,7 +28,6 @@ describe('Macro', () => {
       expect(code).toBe(macro.EXAMPLE)
 
       expect(gtag.mock.calls).toEqual([
-        ['event', 'load_macro', {event_category: 'macro_body', event_label: 'sequence'}],
         ['event', 'load_macro', {event_category: 'default_example', event_label: 'sequence'}]
       ])
     })

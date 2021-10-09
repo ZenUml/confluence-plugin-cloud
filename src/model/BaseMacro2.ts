@@ -71,8 +71,11 @@ class BaseMacro2 {
   }
 
   async getMacroBody() {
-    trackEvent('sequence', 'load_macro', 'macro_body');
-    return await this._apWrapper.getMacroBody();
+    const body = await this._apWrapper.getMacroBody();
+    if(body) {
+      trackEvent('sequence', 'load_macro', 'macro_body');
+    }
+    return body;
   }
 
   async getContent(): Promise<IContentPropertyNormalised | ICustomContent | undefined> {
@@ -84,12 +87,13 @@ class BaseMacro2 {
       return await this.getCustomContent();
     }
     const macroData = await this._apWrapper.getMacroData();
-    console.debug('macro data loaded:', macroData);
 
     // When the macro is edited for the first time, macro data is not available in the preview mode
     // Fall back to the uuid parameter in the URL.
     // This is defined in the descriptor and is only available for sequence-viewer.html.
     this._key = macroData?.uuid || getUrlParam('uuid');
+    console.debug('Macro UUID:', this._key);
+    
     this._customContentId = macroData?.customContentId;
     
     if(this._customContentId) {
