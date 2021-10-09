@@ -138,9 +138,9 @@ class BaseMacro2 {
     const key = this._key || uuidv4();
     let customContent;
     if(this._customContentId) {
-      customContent = await this._apWrapper.saveCustomContent(this._customContentId, key, value);
+      customContent = await this._apWrapper.saveCustomContent(this._customContentId, value);
     } else {
-      customContent = await this._apWrapper.createCustomContent(key, value);
+      customContent = await this._apWrapper.createCustomContent(value);
     }
 
     this.trackDiagramEvent(value, 'save_macro', 'custom_content');

@@ -9,7 +9,7 @@ import {DataSource, Diagram, DiagramType} from '@/model/Diagram';
 class MockApWrapper implements IApWrapper {
   versionType: VersionType = VersionType.Lite;
 
-  createCustomContent(title: string, content: Diagram): Promise<any> {
+  createCustomContent(content: Diagram): Promise<any> {
       throw new Error("Method not implemented.");
   }
   updateCustomContent(contentObj: ICustomContent, newBody: Diagram): Promise<any> {
@@ -77,7 +77,7 @@ class MockApWrapper implements IApWrapper {
     return false;
   }
 
-  saveCustomContent(customContentId: string, uuid: string, value: object): Promise<any> {
+  saveCustomContent(customContentId: string, value: object): Promise<any> {
     return Promise.resolve(undefined);
   }
 
