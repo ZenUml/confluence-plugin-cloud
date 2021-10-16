@@ -134,7 +134,7 @@ export default class ApWrapper2 implements IApWrapper {
     })
   }
 
-  async setContentProperty(content: ContentPropertyIn) {
+  async setContentProperty(content: IContentPropertyNormalised) {
     return new Promise((resolve, reject) => {
       this._confluence.setContentProperty(content, (result) => {
         if(result.error) {

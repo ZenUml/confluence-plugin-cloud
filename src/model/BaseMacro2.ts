@@ -9,6 +9,7 @@ import {DataSource, Diagram, DiagramType} from "@/model/Diagram";
 
 class BaseMacro2 {
   _diagram?: Diagram;
+  _payload?: any;
   _key: any;
   _customContentId: string | undefined;
   _loaded = false;
@@ -113,21 +114,21 @@ class BaseMacro2 {
     await this.initPageId();
 
     let diagram;
-    const payload = await this.getContent();
+    this._payload = await this.getContent();
+    console.debug('Loaded payload', this._payload);
 
-    if(!payload || !payload.value) {
+    if(!this._payload || !this._payload.value) {
       diagram = {
         diagramType: DiagramType.Sequence,
         code: await this.getMacroBody(),
         source: DataSource.MacroBody
       }
     } else {
-      diagram = payload?.value as Diagram;
+      diagram = this._payload?.value as Diagram;
     }
 
     this._loaded = true;
 
-    console.debug('Loaded macro', diagram);
     this._diagram = diagram;
     return diagram;
   }
@@ -140,6 +141,22 @@ class BaseMacro2 {
       throw new Error('You have to call load before calling save()')
     }
     const key = this._key || uuidv4();
+
+    if(this._isGeneralEditor && this._diagram?.source === DataSource.ContentProperty) {
+      const contentProperty = {
+        key: this.propertyKey(key),
+        value: value,
+        version: {
+          number: (this._payload?.version?.number || 0) + 1
+        }
+      }
+    
+      console.debug('Saving content property', contentProperty);
+      await this._apWrapper.setContentProperty(contentProperty as IContentPropertyNormalised);
+      this.trackDiagramEvent(value, 'save_macro', 'content_property');
+      return;
+    }
+
     let customContent;
     if(this._customContentId) {
       customContent = await this._apWrapper.saveCustomContent(this._customContentId, value);
@@ -149,19 +166,17 @@ class BaseMacro2 {
 
     this.trackDiagramEvent(value, 'save_macro', 'custom_content');
 
-    if(this._isGeneralEditor) {
-      return customContent.id;
+    if(!this._isGeneralEditor) {
+      const macroParam = {uuid: key, updatedAt: new Date()} as IMacroData;
+      macroParam.customContentId = customContent.id;
+  
+      // Saving core data to body for disaster recovery
+      let body = BaseMacro2.getCoreData(value);
+      this._apWrapper.saveMacro(macroParam, body);
+      this.trackDiagramEvent(value, 'save_macro', 'macro_body');
     }
 
-    const macroParam = {uuid: key, updatedAt: new Date()} as IMacroData;
-    macroParam.customContentId = customContent.id;
-
-    //TODO: Edit issue when editing content property based macro in viewer
-    // Saving core data to body for disaster recovery
-    let body = BaseMacro2.getCoreData(value);
-    this._apWrapper.saveMacro(macroParam, body);
-    this.trackDiagramEvent(value, 'save_macro', 'macro_body');
-    return macroParam.customContentId;
+    return customContent.id;
   }
 
   private static getCoreData(value: Diagram) {

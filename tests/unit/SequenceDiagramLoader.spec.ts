@@ -42,6 +42,8 @@ class MockApWrapper implements IApWrapper {
     return {value: {code: this._code, diagramType: DiagramType.Sequence, source: DataSource.ContentProperty}};
   }
 
+  async setContentProperty(property: IContentPropertyNormalised) {}
+
   async getMacroData() {
     return Promise.resolve(undefined);
   }
