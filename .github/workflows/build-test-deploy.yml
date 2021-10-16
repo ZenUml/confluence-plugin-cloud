@@ -36,7 +36,7 @@ jobs:
           node-version: ${{ matrix.node-version }}
           cache: 'yarn'
       - run: yarn install
-      - name: Bump version and push tag
+      - name: Bump version and push tag1
         id: tag_version
         uses: mathieudutour/github-tag-action@v5.6
         with:
