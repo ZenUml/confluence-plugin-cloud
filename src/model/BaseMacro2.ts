@@ -15,12 +15,16 @@ class BaseMacro2 {
   _macroIdentifier: any;
   _pageId: any;
   _standaloneCustomContent: boolean;
+  _isGeneralEditor: boolean;
   private _apWrapper: IApWrapper;
 
   constructor(apWrapper2: ApWrapper2) {
     this._apWrapper = apWrapper2;
     this._macroIdentifier = this._apWrapper._macroIdentifier;
-    this._standaloneCustomContent = getUrlParam('rendered.for') === 'custom-content-native';
+
+    const renderedFor = getUrlParam('rendered.for');
+    this._standaloneCustomContent = renderedFor === 'custom-content-native';
+    this._isGeneralEditor = renderedFor === 'general-editor';
   }
 
   async initPageId() {
@@ -144,6 +148,11 @@ class BaseMacro2 {
     }
 
     this.trackDiagramEvent(value, 'save_macro', 'custom_content');
+
+    if(this._isGeneralEditor) {
+      return customContent.id;
+    }
+
     const macroParam = {uuid: key, updatedAt: new Date()} as IMacroData;
     macroParam.customContentId = customContent.id;
 

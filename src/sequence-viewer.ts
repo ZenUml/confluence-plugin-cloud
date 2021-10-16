@@ -43,7 +43,7 @@ async function initializeMacro() {
   // @ts-ignore
   console.debug('Initializing macro from sequence-viewer.ts', store.state.macro);
   // @ts-ignore
-  const macro = store.state.macro;
+  const macro = window.macro || store.state.macro;
   // @ts-ignore
   window.macro = macro;
   try {
@@ -67,9 +67,10 @@ async function initializeMacro() {
     }
   } catch (e) {
     // @ts-ignore
+    console.log('Error on initializing macro:', e);
+    // @ts-ignore
     store.state.error = e;
   }
-
 
   let timing = window.performance.timing;
   console.debug('ZenUML diagram loading time:%s (ms)', timing.domContentLoadedEventEnd- timing.navigationStart)
