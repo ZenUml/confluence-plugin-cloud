@@ -27,12 +27,11 @@ export default class MockAp implements IAp{
   public contentId: any
   private requestHandlers: Array<RequestHandler> = []
 
-  constructor(_contentId: any = null) {
+  constructor() {
     this.confluence = new MockApConfluence();
-    this.contentId = _contentId;
     this.navigator = {
       getLocation: (cb: any) => cb({
-          context: { contentId: this.contentId }
+          context: { contentId: '' }
         }
       )
     };

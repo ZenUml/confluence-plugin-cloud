@@ -10,10 +10,9 @@ jest.mock('../../src/utils/uuid', () => {
 })
 describe('Macro', () => {
   let gtag;
-  const contentId = 'abcd'
 
   beforeEach(() => {
-    mockAp = new MockAp(contentId);
+    mockAp = new MockAp();
     mockApConfluence = mockAp.confluence;
     macro = new Macro(new ApWrapper2(mockAp));
 
