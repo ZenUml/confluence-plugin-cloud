@@ -31,7 +31,7 @@ export default class MockAp implements IAp{
     this.confluence = new MockApConfluence();
     this.navigator = {
       getLocation: (cb: any) => cb({
-          context: { contentId: '' }
+          context: { }
         }
       )
     };
