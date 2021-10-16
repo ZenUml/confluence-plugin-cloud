@@ -36,12 +36,6 @@ jobs:
           node-version: ${{ matrix.node-version }}
           cache: 'yarn'
       - run: yarn install
-      - name: Bump version and push tag1
-        id: tag_version
-        uses: mathieudutour/github-tag-action@v5.6
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          tag_prefix: v-lite
       # It was failing when we change the following to lines to use npm run
       - run: yarn deploy:lite:stage --token ${{ secrets.FIREBASE_TOKEN }}
 
@@ -76,6 +70,12 @@ jobs:
       - run: yarn install
       # It was failing when we change the following to lines to use npm run
       - run: yarn deploy:lite:prod --token ${{ secrets.FIREBASE_TOKEN }}
+      - name: Bump version and push tag1
+        id: tag_version
+        uses: mathieudutour/github-tag-action@v5.6
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          tag_prefix: v-lite-
 
   prod-full:
     needs: staging-full
@@ -92,3 +92,9 @@ jobs:
       - run: yarn install
       # It was failing when we change the following to lines to use npm run
       - run: yarn deploy:full:prod --token ${{ secrets.FIREBASE_TOKEN }}
+      - name: Bump version and push tag1
+        id: tag_version
+        uses: mathieudutour/github-tag-action@v5.6
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          tag_prefix: v-full-
