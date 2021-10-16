@@ -6,6 +6,14 @@ describe('MockAp', () => {
     let mockAp = new MockAp();
     expect(mockAp.confluence).toBeDefined();
   })
+
+  it('setup mock/stub for request', async () => {
+    let mockAp = new MockAp();
+    mockAp.whenRequestThenRespond('customContent', {body: '{key: "value"}'});
+
+    let response = await mockAp.request({type: 'GET', url: 'customContent'});
+    expect(response.body).toBe('{key: "value"}');
+  })
 })
 
 // For ContentProperty see https://developer.atlassian.com/cloud/confluence/jsapi/classes/contentproperty/

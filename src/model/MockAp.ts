@@ -25,8 +25,8 @@ export default class MockAp implements IAp{
   public user: any;
 
   public contentId: any
-  private requestHandlers: Array<RequestHandler> = []
-
+  private requestHandlers: Array<RequestHandler> = [];
+  private requestResponseMap: any = {};
   constructor() {
     this.confluence = new MockApConfluence();
     this.navigator = {
@@ -44,6 +44,8 @@ export default class MockAp implements IAp{
       const handler = this.requestHandlers.find(h => h.match(request));
       if(handler) {
         return handler.handle(request);
+      } else {
+        return this.requestResponseMap[request.url];
       }
     };
   }
@@ -57,4 +59,7 @@ export default class MockAp implements IAp{
     }, handle: r => ({body: JSON.stringify({body: {raw: {value: JSON.stringify(content)}}})})} as RequestHandler);
   }
 
+  whenRequestThenRespond(url: string, response: object) {
+    this.requestResponseMap[url] = response;
+  }
 }
