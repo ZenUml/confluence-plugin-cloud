@@ -194,13 +194,13 @@ export default class ApWrapper2 implements IApWrapper {
     return response && response.body && JSON.parse(response.body);
   }
 
-  async createCustomContent(title: string, content: Diagram) {
+  async createCustomContent(content: Diagram) {
     const context = await this.getLocationContext();
     const type = this.getCustomContentType();
     const container = {id: context.contentId, type: context.contentType};
     const bodyData = {
       "type": type,
-      "title": title,
+      "title": content.title || `Untitled ${new Date().toISOString()}`,
       "space": {
         "key": context.spaceKey
       },
@@ -278,14 +278,14 @@ export default class ApWrapper2 implements IApWrapper {
     return Object.assign({}, customContent, {value: diagram});
   }
 
-  async saveCustomContent(customContentId: string, title: string, value: Diagram) {
+  async saveCustomContent(customContentId: string, value: Diagram) {
     let result;
     // TODO: Do we really need to check whether it exists?
     const existing = await this.getCustomContentById(customContentId);
     if (existing) {
       result = await this.updateCustomContent(existing, value);
     } else {
-      result = await this.createCustomContent(title, value);
+      result = await this.createCustomContent(value);
     }
     return result
   }

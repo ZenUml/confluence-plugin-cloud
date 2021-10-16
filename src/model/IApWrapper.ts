@@ -29,11 +29,11 @@ export interface IApWrapper {
 
   hasCustomContent(): boolean;
 
-  saveCustomContent(customContentId: string, title: string, value: Diagram): Promise<any>;
+  saveCustomContent(customContentId: string, value: Diagram): Promise<any>;
 
   saveMacro(params: IMacroData, body: string): void;
 
-  createCustomContent(title: string, content: Diagram): Promise<any>;
+  createCustomContent(content: Diagram): Promise<any>;
 
   updateCustomContent(contentObj: ICustomContent, newBody: Diagram): Promise<any>;
 }
