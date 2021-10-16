@@ -36,6 +36,11 @@ jobs:
           node-version: ${{ matrix.node-version }}
           cache: 'yarn'
       - run: yarn install
+      - name: Bump version and push tag
+        id: tag_version
+        uses: mathieudutour/github-tag-action@v5.6
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
       # It was failing when we change the following to lines to use npm run
       - run: yarn deploy:lite:stage --token ${{ secrets.FIREBASE_TOKEN }}
 
