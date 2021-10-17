@@ -9,7 +9,9 @@ describe('MockAp', () => {
 
   it('setup mock/stub for request', async () => {
     let mockAp = new MockAp();
-    mockAp.whenRequestThenRespond('customContent', {body: '{key: "value"}'});
+    mockAp.whenRequestThenRespond(() => {
+      return true;
+    }, {body: '{key: "value"}'});
 
     let response = await mockAp.request({type: 'GET', url: 'customContent'});
     expect(response.body).toBe('{key: "value"}');

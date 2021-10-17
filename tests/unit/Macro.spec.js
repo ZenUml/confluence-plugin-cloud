@@ -1,6 +1,7 @@
 import MockAp from '@/model/MockAp'
 import Macro from '@/model/Macro'
 import ApWrapper2 from "@/model/ApWrapper2";
+import {response} from "express";
 
 let mockAp, mockApConfluence;
 let macro;
@@ -102,10 +103,18 @@ describe('Macro', () => {
 
     test('should load from custom content', async () => {
       mockApConfluence.saveMacro({customContentId: 1234})
-      mockAp.setCustomContent(1234, {code: 'A.m'})
+      // mockAp.setCustomContent(1234, {code: 'A.m'})
+      let matcher = (req) => {
+        return req.type === 'GET' && req.url.startsWith('/rest/api/content/1234')
+      }
+      let code1 = JSON.stringify({code: 'A.m'});
+      let body = JSON.stringify({body: { raw: {value: code1}}});
+      mockAp.whenRequestThenRespond(matcher, {body});
       const code = (await macro.load()).code;
       expect(code).toBe('A.m')
     })
+
+    // let a = {"body": { "raw": { "value" : {"code": "A.m"} }}};
 
   })
 })
