@@ -9,14 +9,14 @@ import {DataSource, Diagram, DiagramType} from "@/model/Diagram";
 
 class BaseMacro2 {
   _diagram?: Diagram;
-  _payload?: any;
+  _version?: number;
   _key: any;
   _customContentId: string | undefined;
   _loaded = false;
   _macroIdentifier: any;
   _pageId: any;
   _standaloneCustomContent: boolean;
-  _isGeneralEditor: boolean;
+  _isDialogEditor: boolean;
   private _apWrapper: IApWrapper;
 
   constructor(apWrapper2: ApWrapper2) {
@@ -25,7 +25,7 @@ class BaseMacro2 {
 
     const renderedFor = getUrlParam('rendered.for');
     this._standaloneCustomContent = renderedFor === 'custom-content-native';
-    this._isGeneralEditor = renderedFor === 'general-editor';
+    this._isDialogEditor = renderedFor === 'dialog-editor';
   }
 
   async initPageId() {
@@ -114,22 +114,23 @@ class BaseMacro2 {
     await this.initPageId();
 
     let diagram;
-    this._payload = await this.getContent();
-    console.debug('Loaded payload', this._payload);
+    const payload = await this.getContent();
+    console.debug('Loaded payload', payload);
 
-    if(!this._payload || !this._payload.value) {
+    if(!payload || !payload.value) {
       diagram = {
         diagramType: DiagramType.Sequence,
         code: await this.getMacroBody(),
         source: DataSource.MacroBody
       }
     } else {
-      diagram = this._payload?.value as Diagram;
+      diagram = payload?.value as Diagram;
     }
 
     this._loaded = true;
 
     this._diagram = diagram;
+    this._version = payload?.version?.number;
     return diagram;
   }
 
@@ -142,12 +143,12 @@ class BaseMacro2 {
     }
     const key = this._key || uuidv4();
 
-    if(this._isGeneralEditor && this._diagram?.source === DataSource.ContentProperty) {
+    if(this._isDialogEditor && this._diagram?.source === DataSource.ContentProperty) {
       const contentProperty = {
         key: this.propertyKey(key),
         value: value,
         version: {
-          number: (this._payload?.version?.number || 0) + 1
+          number: (this._version || 0) + 1
         }
       }
     
@@ -166,7 +167,7 @@ class BaseMacro2 {
 
     this.trackDiagramEvent(value, 'save_macro', 'custom_content');
 
-    if(!this._isGeneralEditor) {
+    if(!this._isDialogEditor) {
       const macroParam = {uuid: key, updatedAt: new Date()} as IMacroData;
       macroParam.customContentId = customContent.id;
   

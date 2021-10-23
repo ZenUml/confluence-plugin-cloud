@@ -214,7 +214,7 @@
         {
             "key": "zenuml-content-sequence-editor",
             "location": "none",
-            "url": "/sequence-editor.html?rendered.for=general-editor&spaceKey={space.key}&content.id={content.id}&content.version={content.version}&addonKey=__ADDON_KEY__&contentKey=__CONTENT_KEY__",
+            "url": "/sequence-editor.html?rendered.for=dialog-editor&spaceKey={space.key}&content.id={content.id}&content.version={content.version}&addonKey=__ADDON_KEY__&contentKey=__CONTENT_KEY__",
             "name": {
                 "value": "ZenUML Sequence Editor"
             }
