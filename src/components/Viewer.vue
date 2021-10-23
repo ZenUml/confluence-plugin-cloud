@@ -67,7 +67,7 @@ export default {
   },
   data() {
     return {
-        canEdit: true
+        canEdit: false
     }
   },
   created() {
@@ -85,8 +85,10 @@ export default {
       this.$store.state.selected = []
     },
     checkUserCanEdit() {
-      // TODO: Add this back. It works fine. But we will not release it for the moment.
-      // this.$store.state.macro._apWrapper.canUserEdit().then(b => this.canEdit = b);
+      this.$store.state.macro._apWrapper.canUserEdit().then(b => {
+        console.debug(`User can edit content: ${b}`);
+        this.canEdit = b;
+      });
     },
     edit() {
       EventBus.$emit('edit');

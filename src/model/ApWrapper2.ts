@@ -325,20 +325,45 @@ export default class ApWrapper2 implements IApWrapper {
   }
 
   canUserEdit() {
-    return new Promise(resolv =>
-      Promise.all([
-        this.getPageId(),
-        this._getCurrentUser()
-      ]).then(([pageId, user]) => 
+    return new Promise(resolv => {
+      const hasRestriction = (data: any) => data.restrictions.group.size > 0 || data.restrictions.user.size > 0;
+
+      const checkRestriction = (pageId: any) => 
+        this._requestFn({
+          type: 'GET',
+          url: `/rest/api/content/${pageId}/restriction/byOperation/update`,
+          success: (d: any) => {
+            console.debug(`Content update restriction response: ${d}`);
+            if(!hasRestriction(JSON.parse(d))) {
+              console.debug(`No content restriction on page ${pageId}`);
+              resolv(true);
+            } else {
+              return true;
+            }
+          },
+          error: () => resolv(false)
+        });
+
+      const checkUserRestriction = (pageId: any, user: any) => 
         this._requestFn({
           type: 'GET',
           url: `/rest/api/content/${pageId}/restriction/byOperation/update/user?accountId=${user.atlassianAccountId}`,
-          contentType: 'application/json;charset=UTF-8',
           success: () => resolv(true),
           error: () => resolv(false)
-        })
-      )
-    );
+        });
+      
+      const performChecks = (pageId: any, user: any) =>
+        checkRestriction(pageId).then((d: any) => {
+          if(d) {
+            checkUserRestriction(pageId, user);
+          }
+        } );
+
+      return Promise.all([
+        this.getPageId(),
+        this._getCurrentUser()
+      ]).then(([pageId, user]) => performChecks(pageId, user)  );
+    } );
   }
 
   isLite(): boolean {
