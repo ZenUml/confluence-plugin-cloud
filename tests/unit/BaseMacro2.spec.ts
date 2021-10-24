@@ -3,6 +3,7 @@ import MockAp from '@/model/MockAp'
 import {IConfluence} from "@/model/IConfluence";
 import {DataSource, DiagramType} from "@/model/Diagram";
 import ApWrapper2 from "@/model/ApWrapper2";
+import helper from './TestHelper';
 
 let mockAp: MockAp;
 let mockApConfluence: IConfluence;
@@ -16,6 +17,8 @@ describe('BaseMacro2', () => {
   const contentId = 'content_id_1234';
 
   beforeEach(() => {
+    helper.setUpUrlParam('contentKey=sequence');
+
     mockAp = new MockAp(contentId);
     mockApConfluence = mockAp.confluence;
     macro = new BaseMacro2(new ApWrapper2(mockAp));
@@ -24,9 +27,6 @@ describe('BaseMacro2', () => {
 
   it('creates custom content if _customContentId is null', async () => {
     await macro.load();
-    delete window.location;
-    // @ts-ignore
-    window.location = new URL('https://zenuml.com/?contentKey=zenuml-content-sequence')
 
     const customContentId = await macro.save({
       diagramType: DiagramType.Sequence,
@@ -38,9 +38,6 @@ describe('BaseMacro2', () => {
 
   it('update custom content if _customContentId is not null', async () => {
     await macro.load();
-    delete window.location;
-    // @ts-ignore
-    window.location = new URL('https://zenuml.com/?contentKey=zenuml-content-sequence')
 
     const customContentId = await macro.save({
       diagramType: DiagramType.Sequence,

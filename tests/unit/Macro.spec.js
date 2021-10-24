@@ -1,6 +1,7 @@
 import MockAp from '@/model/MockAp'
 import Macro from '@/model/Macro'
 import ApWrapper2 from "@/model/ApWrapper2";
+import helper from './TestHelper';
 
 let mockAp, mockApConfluence;
 let macro;
@@ -8,11 +9,14 @@ let macro;
 jest.mock('../../src/utils/uuid', () => {
   return () => 'random_uuid'
 })
+
 describe('Macro', () => {
   let gtag;
   const contentId = 'abcd'
 
   beforeEach(() => {
+    helper.setUpUrlParam('contentKey=sequence');
+
     mockAp = new MockAp(contentId);
     mockApConfluence = mockAp.confluence;
     macro = new Macro(new ApWrapper2(mockAp));
