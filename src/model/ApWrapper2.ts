@@ -321,49 +321,30 @@ export default class ApWrapper2 implements IApWrapper {
 
 
   _getCurrentUser(): Promise<IUser> {
-    return new Promise(resolv => this._user.getCurrentUser((user: IUser) => resolv(user)));
+    return new Promise(resolv => this._user.getCurrentUser((user: IUser) => {
+      console.debug(`Current user:`, user);
+      resolv(user);
+    }));
   }
 
   canUserEdit() {
-    return new Promise(resolv => {
-      const hasRestriction = (data: any) => data.restrictions.group.size > 0 || data.restrictions.user.size > 0;
+    const checkPermission = (pageId: any, userId: any) => 
+      this._requestFn({
+        type: 'POST',
+        url: `/rest/api/content/${pageId}/permission/check`,
+        contentType: 'application/json', 
+        data: JSON.stringify({subject: {type: 'user', identifier: userId}, operation: 'update'})
+      })
+      .then((response: any) => {
+        const data = JSON.parse(response.body);
+        console.debug(`Content permission response:`, data);
+        return data.hasPermission;
+      }, (e: any) => console.error(`Error checking content permission:`, e));
 
-      const checkRestriction = (pageId: any) => 
-        this._requestFn({
-          type: 'GET',
-          url: `/rest/api/content/${pageId}/restriction/byOperation/update`,
-          success: (d: any) => {
-            console.debug(`Content update restriction response: ${d}`);
-            if(!hasRestriction(JSON.parse(d))) {
-              console.debug(`No content restriction on page ${pageId}`);
-              resolv(true);
-            } else {
-              return true;
-            }
-          },
-          error: () => resolv(false)
-        });
-
-      const checkUserRestriction = (pageId: any, user: any) => 
-        this._requestFn({
-          type: 'GET',
-          url: `/rest/api/content/${pageId}/restriction/byOperation/update/user?accountId=${user.atlassianAccountId}`,
-          success: () => resolv(true),
-          error: () => resolv(false)
-        });
-      
-      const performChecks = (pageId: any, user: any) =>
-        checkRestriction(pageId).then((d: any) => {
-          if(d) {
-            checkUserRestriction(pageId, user);
-          }
-        } );
-
-      return Promise.all([
-        this.getPageId(),
-        this._getCurrentUser()
-      ]).then(([pageId, user]) => performChecks(pageId, user)  );
-    } );
+    return Promise.all([
+      this.getPageId(),
+      this._getCurrentUser()
+    ]).then(([pageId, user]) => checkPermission(pageId, user.atlassianAccountId), console.error);
   }
 
   isLite(): boolean {
