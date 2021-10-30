@@ -80,7 +80,7 @@ EventBus.$on('edit', () => {
   // @ts-ignore
   AP.dialog.create(
     {
-      key: 'zenuml-content-sequence-editor',
+      key: 'zenuml-content-sequence-editor-dialog',
         chrome: false,
         width: "100%",
         height: "100%",
