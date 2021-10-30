@@ -3,21 +3,13 @@
 </template>
 
 <script>
-// import {mapState,mapGetters} from "vuex";
 import EventBus from '../EventBus'
 
 export default {
   name: "SaveAndGoBackButton",
-  computed: {
-    // ...mapState(['macro', 'code', 'styles', 'mermaidCode', 'diagramType']),
-    // ...mapGetters(['title'])
-  },
   methods: {
-    saveAndExit: async function () {
-      // await this.macro.save2(this.code, this.styles, this.mermaidCode, this.diagramType, this.title);
+    saveAndExit: function () {
       EventBus.$emit('save');
-      /* eslint-disable no-undef */
-      // AP.dialog.close();
     }
   }
 }

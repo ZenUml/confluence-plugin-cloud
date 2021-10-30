@@ -65,7 +65,7 @@ describe('BaseMacro2', () => {
       code: 'A.m',
       source: DataSource.ContentProperty
     };
-    await macro.save(diagram);
+    await macro.saveOnDialog(diagram);
     mockApConfluence.getContentProperty(key, (content) => expect(content).toEqual({version: {number: 2}, key, value: diagram}));
   })
 })

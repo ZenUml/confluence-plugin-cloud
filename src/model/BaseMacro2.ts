@@ -16,7 +16,6 @@ class BaseMacro2 {
   _macroIdentifier: any;
   _pageId: any;
   _standaloneCustomContent: boolean;
-  _isDialogEditor: boolean;
   private _apWrapper: IApWrapper;
 
   constructor(apWrapper2: ApWrapper2) {
@@ -25,7 +24,6 @@ class BaseMacro2 {
 
     const renderedFor = getUrlParam('rendered.for');
     this._standaloneCustomContent = renderedFor === 'custom-content-native';
-    this._isDialogEditor = renderedFor === 'dialog-editor';
   }
 
   async initPageId() {
@@ -143,7 +141,34 @@ class BaseMacro2 {
     }
     const key = this._key || uuidv4();
 
-    if(this._isDialogEditor && this._diagram?.source === DataSource.ContentProperty) {
+    let customContent;
+    if(this._customContentId) {
+      customContent = await this._apWrapper.saveCustomContent(this._customContentId, value);
+    } else {
+      customContent = await this._apWrapper.createCustomContent(value);
+    }
+
+    this.trackDiagramEvent(value, 'save_macro', 'custom_content');
+
+    const macroParam = {uuid: key, updatedAt: new Date()} as IMacroData;
+    macroParam.customContentId = customContent.id;
+
+    // Saving core data to body for disaster recovery
+    let body = BaseMacro2.getCoreData(value);
+    this._apWrapper.saveMacro(macroParam, body);
+    this.trackDiagramEvent(value, 'save_macro', 'macro_body');
+
+    return customContent.id;
+  }
+
+  async saveOnDialog(value: Diagram) {
+    console.debug('Saving macro', value);
+    if (!this._loaded) {
+      throw new Error('You have to call load before calling save()')
+    }
+    const key = this._key || uuidv4();
+
+    if(this._diagram?.source === DataSource.ContentProperty) {
       const contentProperty = {
         key: this.propertyKey(key),
         value: value,
@@ -166,18 +191,6 @@ class BaseMacro2 {
     }
 
     this.trackDiagramEvent(value, 'save_macro', 'custom_content');
-
-    if(!this._isDialogEditor) {
-      const macroParam = {uuid: key, updatedAt: new Date()} as IMacroData;
-      macroParam.customContentId = customContent.id;
-  
-      // Saving core data to body for disaster recovery
-      let body = BaseMacro2.getCoreData(value);
-      this._apWrapper.saveMacro(macroParam, body);
-      this.trackDiagramEvent(value, 'save_macro', 'macro_body');
-    }
-
-    return customContent.id;
   }
 
   private static getCoreData(value: Diagram) {
