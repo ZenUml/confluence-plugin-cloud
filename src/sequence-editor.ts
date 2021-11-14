@@ -71,8 +71,11 @@ async function initializeMacro() {
   // @ts-ignore
   store.dispatch('updateMermaidCode', mermaidCode || store.state.mermaidCode)
   store.dispatch('updateDiagramType', diagramType)
-  let timing = window.performance.timing;
-  console.debug('ZenUML diagram loading time:%s(ms)', timing.domContentLoadedEventEnd- timing.navigationStart)
+  let performanceEntries = window.performance.getEntriesByType("navigation");
+  for (let i = 0; i < performanceEntries.length; i++) {
+    const e = performanceEntries[i];
+    console.debug('ZenUML diagram loading time:%s(ms)', e.duration)
+  }
 }
 
 initializeMacro();
