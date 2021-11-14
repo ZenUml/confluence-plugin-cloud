@@ -9,7 +9,6 @@ import 'vue-sequence/dist/vue-sequence.css'
 console.log(VueSequence.Version)
 
 import MockApConfluence from './model/MockApConfluence'
-import Macro from './model/Macro'
 import Editor from './components/Editor.vue'
 import Workspace from './components/Workspace.vue'
 import mermaid from 'mermaid'
@@ -37,7 +36,6 @@ mermaid.mermaidAPI.initialize({
 Vue.config.productionTip = false
 
 Vue.component('diagram-frame', VueSequence.DiagramFrame)
-Vue.component('seq-diagram', VueSequence.SeqDiagram)
 Vue.component('editor', Editor)
 Vue.component('workspace', Workspace)
 Vue.use(VueCodeMirror)
