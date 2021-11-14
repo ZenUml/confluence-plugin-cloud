@@ -58,15 +58,13 @@ if (window.location.href.includes('localhost')) {
   // eslint-disable-next-line
   console.log('You are using a mocked AP.confluence')
   // @ts-ignore
-    window.AP = {
+  window.AP = {
     confluence: new MockApConfluence()
   }
 }
 async function initializeMacro() {
-// @ts-ignore
-  const macro = store.state.macro || new Macro(AP);
   // @ts-ignore
-  window.macro = macro;
+  const macro = store.state.macro;  // store.state.macro is set in Store.ts
   const {code, styles, mermaidCode, diagramType} = await macro.load();
 
   store.commit('code', code);
