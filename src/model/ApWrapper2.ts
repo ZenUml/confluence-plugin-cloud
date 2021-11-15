@@ -27,7 +27,7 @@ export default class ApWrapper2 implements IApWrapper {
   };
   _navigator: any;
   _dialog: any;
-  public _macroIdentifier: MacroIdentifier;
+  _macroIdentifier: MacroIdentifier;
   _locationContext: any;
   _user: any;
 

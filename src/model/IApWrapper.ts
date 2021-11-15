@@ -10,7 +10,6 @@ export enum VersionType {
 }
 
 export interface IApWrapper {
-  _macroIdentifier: MacroIdentifier;
   versionType: VersionType;
 
   isLite(): boolean;

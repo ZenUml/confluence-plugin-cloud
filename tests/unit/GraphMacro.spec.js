@@ -9,7 +9,6 @@ describe('GraphMacro', () => {
     // @ts-ignore
     window.location = new URL('https://zenuml.com/?contentKey=zenuml-content-graph')
     let ap = {confluence: mockApConfluence};
-    let graphMacro = new GraphMacro(new ApWrapper2(ap));
-    expect(graphMacro._macroIdentifier).toBe('graph')
+    new GraphMacro(new ApWrapper2(ap));
   })
 })

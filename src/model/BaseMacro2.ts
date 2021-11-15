@@ -12,14 +12,12 @@ class BaseMacro2 {
   _key: any;
   _customContentId: string | undefined;
   _loaded = false;
-  _macroIdentifier: any;
   _pageId: any;
   _standaloneCustomContent: boolean;
   private _apWrapper: IApWrapper;
 
   constructor(apWrapper2: ApWrapper2) {
     this._apWrapper = apWrapper2;
-    this._macroIdentifier = this._apWrapper._macroIdentifier;
     this._standaloneCustomContent = getUrlParam('rendered.for') === 'custom-content-native';
   }
 
@@ -27,11 +25,6 @@ class BaseMacro2 {
     if(!this._pageId) {
       this._pageId = getUrlParam('content.id') || (await this._apWrapper.getPageId());
     }
-  }
-
-  propertyKey(uuid: string) {
-    const macroKey = `zenuml-${this._macroIdentifier}-macro`;
-    return `${macroKey}-${uuid}-body`;
   }
 
   // deprecated: We should rely on diagram.diagramType. For old diagrams we do not have that saved.
