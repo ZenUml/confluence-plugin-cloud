@@ -12,19 +12,12 @@ class BaseMacro2 {
   _key: any;
   _customContentId: string | undefined;
   _loaded = false;
-  _pageId: any;
   _standaloneCustomContent: boolean;
   private _apWrapper: IApWrapper;
 
   constructor(apWrapper2: ApWrapper2) {
     this._apWrapper = apWrapper2;
     this._standaloneCustomContent = getUrlParam('rendered.for') === 'custom-content-native';
-  }
-
-  async initPageId() {
-    if(!this._pageId) {
-      this._pageId = getUrlParam('content.id') || (await this._apWrapper.getPageId());
-    }
   }
 
   // deprecated: We should rely on diagram.diagramType. For old diagrams we do not have that saved.
@@ -99,8 +92,6 @@ class BaseMacro2 {
   }
 
   async load(): Promise<Diagram> {
-    await this.initPageId();
-
     let diagram;
     const payload = await this.getContent();
 
