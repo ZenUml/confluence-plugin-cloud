@@ -15,7 +15,7 @@ jest.mock('../../src/utils/uuid', () => {
 const savedLocation = window.location;
 
 describe('BaseMacro2', () => {
-  const contentId = 'content_id_1234';
+  const pageId = 'page_id_1234';
 
   beforeEach(() => {
     // See the following pattern at https://icing.space/2021/mocking-window-location-in-jest/
@@ -27,7 +27,7 @@ describe('BaseMacro2', () => {
       reload: jest.fn(),
       replace: jest.fn()
     });
-    mockAp = new MockAp(contentId);
+    mockAp = new MockAp(pageId);
     mockApConfluence = mockAp.confluence;
     macro = new BaseMacro2(new ApWrapper2(mockAp));
   });
