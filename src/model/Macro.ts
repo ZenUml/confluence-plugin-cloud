@@ -3,6 +3,9 @@ import BaseMacro2 from './BaseMacro2';
 import Example from '../utils/sequence/Example'
 import {DataSource} from "@/model/Diagram";
 
+/**
+ * Macro is BaseMacro2 plus load example and save with a different parameter list.
+ */
 class Macro extends BaseMacro2 {
   EXAMPLE = Example;
 
