@@ -12,10 +12,21 @@ jest.mock('../../src/utils/uuid', () => {
   return () => 'random_uuid'
 })
 
+const savedLocation = window.location;
+
 describe('BaseMacro2', () => {
   const contentId = 'content_id_1234';
 
   beforeEach(() => {
+    // See the following pattern at https://icing.space/2021/mocking-window-location-in-jest/
+    delete window.location;
+    // @ts-ignore
+    window.location = Object.assign(new URL("https://zenuml.com/?contentKey=zenuml-content-sequence"), {
+      ancestorOrigins: "",
+      assign: jest.fn(),
+      reload: jest.fn(),
+      replace: jest.fn()
+    });
     mockAp = new MockAp(contentId);
     mockApConfluence = mockAp.confluence;
     macro = new BaseMacro2(new ApWrapper2(mockAp));
@@ -24,9 +35,6 @@ describe('BaseMacro2', () => {
 
   it('creates custom content if _customContentId is null', async () => {
     await macro.load();
-    delete window.location;
-    // @ts-ignore
-    window.location = new URL('https://zenuml.com/?contentKey=zenuml-content-sequence')
 
     const customContentId = await macro.save({
       diagramType: DiagramType.Sequence,
@@ -38,9 +46,6 @@ describe('BaseMacro2', () => {
 
   it('update custom content if _customContentId is not null', async () => {
     await macro.load();
-    delete window.location;
-    // @ts-ignore
-    window.location = new URL('https://zenuml.com/?contentKey=zenuml-content-sequence')
 
     const customContentId = await macro.save({
       diagramType: DiagramType.Sequence,

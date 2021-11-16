@@ -13,6 +13,16 @@ describe('Macro', () => {
   const contentId = 'abcd'
 
   beforeEach(() => {
+    // See the following pattern at https://icing.space/2021/mocking-window-location-in-jest/
+    delete window.location;
+    // @ts-ignore
+    window.location = Object.assign(new URL("https://zenuml.com/?contentKey=zenuml-content-sequence"), {
+      ancestorOrigins: "",
+      assign: jest.fn(),
+      reload: jest.fn(),
+      replace: jest.fn()
+    });
+
     mockAp = new MockAp(contentId);
     mockApConfluence = mockAp.confluence;
     macro = new Macro(new ApWrapper2(mockAp));
