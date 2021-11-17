@@ -20,4 +20,19 @@ describe('ApWrapper', () => {
     let apWrapper2 = new ApWrapper2(mockAp);
     expect(apWrapper2.isLite()).toBeTruthy();
   })
+
+  it('tells us the page id', async () => {
+    delete window.location;
+    // @ts-ignore
+    window.location = new URL("https://zenuml.com/?contentKey=zenuml-content-sequence");
+    let mockAp = new MockAp();
+    let apWrapper2 = new ApWrapper2(mockAp);
+    const getLocationContext = jest.fn().mockImplementation(async () => {
+      return {
+        contentId: "page-001"
+      }
+    });
+    apWrapper2.getLocationContext = getLocationContext.bind(apWrapper2);
+    expect(await apWrapper2.getPageId()).toBe('page-001');
+  })
 })
