@@ -173,7 +173,6 @@ export default class ApWrapper2 implements IApWrapper {
   }
 
   async getPageId() {
-    // @ts-ignore
     const locationContext = await this.getLocationContext();
     return locationContext.contentId;
   }
