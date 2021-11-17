@@ -8,6 +8,7 @@ import {IConfluence} from "@/model/IConfluence";
 import {IAp} from "@/model/IAp";
 import {MacroIdentifier} from "@/model/MacroIdentifier";
 import {DataSource, Diagram, DiagramType} from "@/model/Diagram";
+import {ICustomContentResponseBody} from "@/model/ICustomContentResponseBody";
 
 interface ContentPropertyIn {
 }
@@ -189,7 +190,7 @@ export default class ApWrapper2 implements IApWrapper {
     return `ac:${getUrlParam('addonKey')}:${this.getContentKey()}`;
   }
 
-  parseCustomContentResponse(response: { body: string; }) {
+  parseCustomContentResponse(response: { body: string; }): ICustomContentResponseBody {
     return response && response.body && JSON.parse(response.body);
   }
 
@@ -274,7 +275,8 @@ export default class ApWrapper2 implements IApWrapper {
     console.debug(`Loaded custom content by id ${id}.`);
     let diagram = JSON.parse(customContent.body.raw.value);
     diagram.source = DataSource.CustomContent;
-    return Object.assign({}, customContent, {value: diagram});
+    let assign = <unknown>Object.assign({}, customContent, {value: diagram});
+    return <ICustomContent>assign;
   }
 
   async saveCustomContent(customContentId: string, value: Diagram) {

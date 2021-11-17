@@ -35,4 +35,45 @@ describe('ApWrapper', () => {
     apWrapper2.getLocationContext = getLocationContext.bind(apWrapper2);
     expect(await apWrapper2.getPageId()).toBe('page-001');
   })
+
+  it('gets custom content by id', async () => {
+    delete window.location;
+    // @ts-ignore
+    window.location = new URL("https://zenuml.com/?contentKey=zenuml-content-sequence");
+    let mockAp = new MockAp();
+    let apWrapper2 = new ApWrapper2(mockAp);
+    const _requestFn = jest.fn().mockImplementation(async () => {
+      return {
+      body: JSON.stringify({
+        body: {
+          raw: {
+            value: JSON.stringify({
+              "code": "A.method"
+            })
+          }
+        },
+        container: {
+          id: "page-002"
+        }
+      })
+    }});
+    apWrapper2._requestFn = _requestFn.bind(apWrapper2);
+    expect(await apWrapper2.getCustomContentById("custom-content-001")).toEqual({
+      body: {
+        raw: {
+          value: JSON.stringify({
+            "code": "A.method"
+          })
+        }
+      },
+      container: {
+        id: "page-002"
+      },
+      value: {
+        "code": "A.method",
+        "source": "custom-content"
+      }
+    });
+  })
+
 })
