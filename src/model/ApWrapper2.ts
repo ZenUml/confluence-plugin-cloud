@@ -275,6 +275,11 @@ export default class ApWrapper2 implements IApWrapper {
     console.debug(`Loaded custom content by id ${id}.`);
     let diagram = JSON.parse(customContent.body.raw.value);
     diagram.source = DataSource.CustomContent;
+    if (await this.getPageId() !== customContent?.container?.id) {
+      diagram.isCopy = true;
+    } else {
+      diagram.isCopy = false;
+    }
     let assign = <unknown>Object.assign({}, customContent, {value: diagram});
     return <ICustomContent>assign;
   }

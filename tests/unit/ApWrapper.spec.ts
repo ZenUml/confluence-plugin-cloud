@@ -58,6 +58,11 @@ describe('ApWrapper', () => {
       })
     }});
     apWrapper2._requestFn = _requestFn.bind(apWrapper2);
+
+    const getPageId = jest.fn().mockImplementation(async () => {
+      return "page-002"
+    });
+    apWrapper2.getPageId = getPageId.bind(apWrapper2);
     expect(await apWrapper2.getCustomContentById("custom-content-001")).toEqual({
       body: {
         raw: {
@@ -71,6 +76,7 @@ describe('ApWrapper', () => {
       },
       value: {
         "code": "A.method",
+        "isCopy": false,
         "source": "custom-content"
       }
     });

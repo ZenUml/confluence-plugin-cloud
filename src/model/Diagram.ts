@@ -13,6 +13,7 @@ export enum DiagramType {
 }
 
 export interface Diagram {
+  isCopy?: boolean;
   diagramType: DiagramType,
   code?: string,
   title?: string,

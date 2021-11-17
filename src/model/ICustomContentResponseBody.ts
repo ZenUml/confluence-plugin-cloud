@@ -3,5 +3,6 @@ export interface ICustomContentResponseBody {
     raw: {
       value: string;
     }
-  }
+  },
+  container?: { id: string, type: string };
 }
