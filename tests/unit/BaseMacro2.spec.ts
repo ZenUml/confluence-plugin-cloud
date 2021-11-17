@@ -4,6 +4,7 @@ import {IConfluence} from "@/model/IConfluence";
 import {DataSource, DiagramType} from "@/model/Diagram";
 import ApWrapper2 from "@/model/ApWrapper2";
 import Macro from "@/model/Macro";
+import {setUpWindowLocation} from "../SetUpWindowLocation";
 
 let mockAp: MockAp;
 let mockApConfluence: IConfluence;
@@ -19,15 +20,7 @@ describe('BaseMacro2', () => {
   const pageId = 'page_id_1234';
 
   beforeEach(() => {
-    // See the following pattern at https://icing.space/2021/mocking-window-location-in-jest/
-    delete window.location;
-    // @ts-ignore
-    window.location = Object.assign(new URL("https://zenuml.com/?contentKey=zenuml-content-sequence"), {
-      ancestorOrigins: "",
-      assign: jest.fn(),
-      reload: jest.fn(),
-      replace: jest.fn()
-    });
+    setUpWindowLocation("?contentKey=zenuml-content-sequence");
     mockAp = new MockAp(pageId);
     mockApConfluence = mockAp.confluence;
     macro = new BaseMacro2(new ApWrapper2(mockAp));
@@ -61,9 +54,7 @@ describe('BaseMacro2', () => {
 
   it('If the container id is different from the current page id the macro is considered as a clone',
     async () => {
-      delete window.location;
-      // @ts-ignore
-      window.location = new URL("https://zenuml.com/?contentKey=zenuml-content-sequence");
+      setUpWindowLocation("?contentKey=zenuml-content-sequence");
       let mockAp = new MockAp();
       let apWrapper2 = new ApWrapper2(mockAp);
       const getLocationContext = jest.fn().mockImplementation(async () => {
