@@ -1,5 +1,6 @@
 import MockAp from "@/model/MockAp";
 import ApWrapper2 from "@/model/ApWrapper2";
+import {setUpWindowLocation} from "../SetUpWindowLocation";
 
 function buildResponse(containerId: string, code: string) {
   return {
@@ -36,12 +37,6 @@ function buildEnrichedCustomContent(containerId: string = "page-002", code: stri
       "source": "custom-content"
     }
   };
-}
-
-function setUpWindowLocation(query: string = "?contentKey=zenuml-content-sequence") {
-  delete window.location;
-  // @ts-ignore
-  window.location = new URL("https://zenuml.com/" + query);
 }
 
 describe('ApWrapper', () => {
