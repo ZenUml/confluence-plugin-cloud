@@ -1,5 +1,4 @@
 import {trackEvent} from "@/utils/window";
-import './GTagConfig'
 import {DiagramType} from "@/model/Diagram/Diagram";
 import AP from "@/model/AP";
 import defaultContentProvider from "@/model/ContentProvider/CompositeContentProvider";

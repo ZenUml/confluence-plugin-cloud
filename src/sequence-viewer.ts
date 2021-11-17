@@ -12,7 +12,6 @@ import Viewer from "@/components/Viewer/Viewer.vue";
 import {trackEvent} from "@/utils/window";
 import {initializeMacro} from "@/model/macro/InitializeMacro";
 import createAttachmentIfContentChanged from "@/model/Attachment";
-import './GTagConfig'
 import globals from '@/model/globals';
 import BaseMacro2 from "@/model/BaseMacro2";
 
