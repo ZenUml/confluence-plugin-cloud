@@ -5,15 +5,17 @@ describe('ApWrapper', () => {
   beforeEach(() => {
     // See the following pattern at https://icing.space/2021/mocking-window-location-in-jest/
     delete window.location;
+    // It seems sufficient to mock window.location with new URL
     // @ts-ignore
-    window.location = Object.assign(new URL("https://zenuml.com/?contentKey=zenuml-content-sequence"), {
-      ancestorOrigins: "",
-      assign: jest.fn(),
-      reload: jest.fn(),
-      replace: jest.fn()
-    });
-
+    window.location = new URL("https://zenuml.com/?contentKey=zenuml-content-sequence");
+    // window.location = Object.assign(new URL("https://zenuml.com/?contentKey=zenuml-content-sequence"), {
+    //   ancestorOrigins: "",
+    //   assign: jest.fn(),
+    //   reload: jest.fn(),
+    //   replace: jest.fn()
+    // });
   });
+
   it('tells whether it is a lite version or full version', () => {
     let mockAp = new MockAp();
     let apWrapper2 = new ApWrapper2(mockAp);
