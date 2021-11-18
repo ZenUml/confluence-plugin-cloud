@@ -1,43 +1,7 @@
 import MockAp from "@/model/MockAp";
 import ApWrapper2 from "@/model/ApWrapper2";
 import {setUpWindowLocation} from "../SetUpWindowLocation";
-
-function buildResponse(containerId: string, code: string) {
-  return {
-    body: JSON.stringify({
-      body: {
-        raw: {
-          value: JSON.stringify({
-            "code": code
-          })
-        }
-      },
-      container: {
-        id: containerId
-      }
-    })
-  };
-}
-
-function buildEnrichedCustomContent(containerId: string = "page-002", code: string = "A.method", isCopy: boolean = false) {
-  return {
-    body: {
-      raw: {
-        value: JSON.stringify({
-          "code": code
-        })
-      }
-    },
-    container: {
-      id: containerId
-    },
-    value: {
-      "code": code,
-      "isCopy": isCopy,
-      "source": "custom-content"
-    }
-  };
-}
+import {buildEnrichedCustomContent, buildCustomContentResponse} from "../CustomContentFixtures";
 
 describe('ApWrapper', () => {
 
@@ -73,7 +37,7 @@ describe('ApWrapper', () => {
     let mockAp = new MockAp();
     let apWrapper2 = new ApWrapper2(mockAp);
     const _requestFn = jest.fn().mockImplementation(async () => {
-      return buildResponse("page-001", "A.method")});
+      return buildCustomContentResponse("page-001", "A.method")});
     apWrapper2._requestFn = _requestFn.bind(apWrapper2);
 
     const getPageId = jest.fn().mockImplementation(async () => { return "page-001" });
@@ -87,7 +51,7 @@ describe('ApWrapper', () => {
     let mockAp = new MockAp();
     let apWrapper2 = new ApWrapper2(mockAp);
     const _requestFn = jest.fn().mockImplementation(async () => {
-      return buildResponse("page-002", "A.method")});
+      return buildCustomContentResponse("page-002", "A.method")});
     apWrapper2._requestFn = _requestFn.bind(apWrapper2);
 
     const getPageId = jest.fn().mockImplementation(async () => { return "page-001" });

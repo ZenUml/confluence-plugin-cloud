@@ -5,6 +5,7 @@ import {DataSource, DiagramType} from "@/model/Diagram";
 import ApWrapper2 from "@/model/ApWrapper2";
 import Macro from "@/model/Macro";
 import {setUpWindowLocation} from "../SetUpWindowLocation";
+import {buildCustomContentResponse} from "../CustomContentFixtures";
 
 let mockAp: MockAp;
 let mockApConfluence: IConfluence;
@@ -68,20 +69,8 @@ describe('BaseMacro2', () => {
       macro = new BaseMacro2(new ApWrapper2(mockAp));
 
       const _requestFn = jest.fn().mockImplementation(async () => {
-        return {
-          body: JSON.stringify({
-            body: {
-              raw: {
-                value: JSON.stringify({
-                  "code": "A.method"
-                })
-              }
-            },
-            container: {
-              id: "page-002"
-            }
-          })
-        }});
+        return buildCustomContentResponse("page-002", "A.method");
+      });
       apWrapper2._requestFn = _requestFn.bind(apWrapper2);
       const getMacroData = jest.fn().mockImplementation(async () => {
         return {
