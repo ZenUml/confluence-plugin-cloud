@@ -38,4 +38,6 @@ export interface IApWrapper {
   createCustomContent(content: Diagram): Promise<any>;
 
   updateCustomContent(contentObj: ICustomContent, newBody: Diagram): Promise<any>;
+
+  canUserEdit(): Promise<boolean>;
 }

@@ -126,6 +126,7 @@ class BaseMacro2 {
     }
 
     this._loaded = true;
+    console.debug('Loaded diagram', diagram);
 
     this._diagram = diagram;
     this._version = payload?.version?.number;
@@ -183,14 +184,15 @@ class BaseMacro2 {
       return;
     }
 
-    let customContent;
     if(this._customContentId) {
-      customContent = await this._apWrapper.saveCustomContent(this._customContentId, value);
-    } else {
-      customContent = await this._apWrapper.createCustomContent(value);
+      await this._apWrapper.saveCustomContent(this._customContentId, value);
     }
 
     this.trackDiagramEvent(value, 'save_macro', 'custom_content');
+  }
+
+  async canEditOnDialog(): Promise<boolean> {
+    return this._loaded && this._diagram?.source !== DataSource.MacroBody && (await this._apWrapper.canUserEdit());
   }
 
   private static getCoreData(value: Diagram) {

@@ -85,6 +85,10 @@ class MockApWrapper implements IApWrapper {
 
   saveMacro(params: IMacroData, body: string): void {
   }
+
+  async canUserEdit(): Promise<boolean> {
+    return true;
+  }
 }
 
 describe('SequenceDiagramLoader', () => {

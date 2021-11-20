@@ -37,6 +37,7 @@ import EventBus from '../EventBus'
 import StylingPanel from "@/components/StylingPanel";
 import ErrorBoundary from "@/components/ErrorBoundary";
 const DiagramFrame = VueSequence.DiagramFrame;
+
 export default {
   name: "Viewer",
   components: {
@@ -46,7 +47,7 @@ export default {
     DiagramFrame
   },
   computed: {
-    ...mapGetters({isDisplayMode: 'isDisplayMode', diagramType: 'diagramType'}),
+    ...mapGetters({isDisplayMode: 'isDisplayMode', diagramType: 'diagramType', canEdit: 'canEdit'}),
     isLite() {
       return this.$store.state.macro._apWrapper.isLite();
     },
@@ -65,14 +66,6 @@ export default {
       return `<style> ${statements}</style>`;
     },
   },
-  data() {
-    return {
-        canEdit: false
-    }
-  },
-  created() {
-    this.checkUserCanEdit();
-  },
   methods: {
     deselectAll(event) {
       let el = event.target
@@ -83,12 +76,6 @@ export default {
         el = el.parentNode
       }
       this.$store.state.selected = []
-    },
-    checkUserCanEdit() {
-      this.$store.state.macro._apWrapper.canUserEdit().then(b => {
-        console.debug(`User can edit content: ${b}`);
-        this.canEdit = b;
-      });
     },
     edit() {
       EventBus.$emit('edit');

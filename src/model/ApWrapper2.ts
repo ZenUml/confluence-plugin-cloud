@@ -327,7 +327,7 @@ export default class ApWrapper2 implements IApWrapper {
     }));
   }
 
-  canUserEdit() {
+  canUserEdit(): Promise<boolean> {
     const checkPermission = (pageId: any, userId: any) => 
       this._requestFn({
         type: 'POST',

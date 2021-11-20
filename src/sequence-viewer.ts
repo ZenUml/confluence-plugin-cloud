@@ -56,6 +56,10 @@ async function initializeMacro() {
     // @ts-ignore
     store.dispatch('updateMermaidCode', diagram.mermaidCode || store.state.mermaidCode)
     store.dispatch('updateDiagramType', diagram.diagramType)
+
+    const canEdit = await macro.canEditOnDialog();
+    store.dispatch('updateCanEdit', canEdit);
+
     if(!macro._standaloneCustomContent) {
       try {
         // @ts-ignore

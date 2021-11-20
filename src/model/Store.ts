@@ -20,6 +20,9 @@ export default {
     },
     updateDiagramType(state: any, payload: any) {
       state.diagramType = payload
+    },
+    updateCanEdit(state: any, payload: any) {
+      state.canEdit = payload
     }
   },
   actions: {
@@ -41,6 +44,9 @@ export default {
     updateDiagramType({commit}: any, payload: DiagramType) {
       commit('updateDiagramType', payload)
     },
+    updateCanEdit({commit}: any, payload: any) {
+      commit('updateCanEdit', payload)
+    },
     reloadZenUML({commit, state}: any) {
       const code = state.code
       commit('code', '')
@@ -55,7 +61,8 @@ export default {
     diagramType: (state: any) => {
       return state.diagramType?.toLowerCase() || DiagramType.Sequence
     },
-    isDisplayMode: (state: any) => state.macro._apWrapper.isDisplayMode()
+    isDisplayMode: (state: any) => state.macro._apWrapper.isDisplayMode(),
+    canEdit: (state: any) => state.canEdit
   },
   state: {
     ...storeConfig.state,
@@ -63,6 +70,7 @@ export default {
     mermaidCode: 'graph TD; A-->B;',
     mermaidSvg: '',
     diagramType: DiagramType.Sequence,
+    canEdit: false,
     styles: {},
     error: null,
     onElementClick: (codeRange: any) => {
