@@ -40,13 +40,13 @@ describe('ApWrapper', () => {
     let mockAp = new MockAp();
     let apWrapper2 = new ApWrapper2(mockAp);
     const _requestFn = jest.fn().mockImplementation(async () => {
-      return buildCustomContentResponse("page-001", "A.method")});
+      return buildCustomContentResponse("12345", "A.method")});
     apWrapper2._requestFn = _requestFn.bind(apWrapper2);
 
-    const getPageId = jest.fn().mockImplementation(async () => { return "page-001" });
+    const getPageId = jest.fn().mockImplementation(async () => { return 12345 });
     apWrapper2.getPageId = getPageId.bind(apWrapper2);
     expect(await apWrapper2.getCustomContentById("custom-content-001"))
-      .toEqual(buildEnrichedCustomContent("page-001", "A.method", false));
+      .toEqual(buildEnrichedCustomContent("12345", "A.method", false));
   })
 
   it('gets custom content by id (on a different page)', async () => {
@@ -54,13 +54,13 @@ describe('ApWrapper', () => {
     let mockAp = new MockAp();
     let apWrapper2 = new ApWrapper2(mockAp);
     const _requestFn = jest.fn().mockImplementation(async () => {
-      return buildCustomContentResponse("page-002", "A.method")});
+      return buildCustomContentResponse("12346", "A.method")});
     apWrapper2._requestFn = _requestFn.bind(apWrapper2);
 
-    const getPageId = jest.fn().mockImplementation(async () => { return "page-001" });
+    const getPageId = jest.fn().mockImplementation(async () => { return 12345 });
     apWrapper2.getPageId = getPageId.bind(apWrapper2);
     expect(await apWrapper2.getCustomContentById("custom-content-001"))
-      .toEqual(buildEnrichedCustomContent("page-002", "A.method", true));
+      .toEqual(buildEnrichedCustomContent("12346", "A.method", true));
   })
 
 })

@@ -63,8 +63,6 @@ if (window.location.href.includes('localhost')) {
 }
 async function initializeMacro() {
   // @ts-ignore
-  const macro = store.state.macro || new Macro(AP);
-  // @ts-ignore
   const macro = store.state.macro;  // store.state.macro is set in Store.ts
   const {code, styles, mermaidCode, diagramType} = await macro.load();
 
@@ -83,7 +81,7 @@ async function initializeMacro() {
 
 EventBus.$on('save', async () => {
   // @ts-ignore
-  await window.macro.save2(store.state.code, store.state.styles, store.state.mermaidCode, store.state.diagramType, store.getters.title);
+  await store.state.macro.save2(store.state.code, store.state.styles, store.state.mermaidCode, store.state.diagramType, store.getters.title);
 
   // @ts-ignore
   AP.dialog.close();
