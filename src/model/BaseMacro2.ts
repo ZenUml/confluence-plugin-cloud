@@ -186,9 +186,8 @@ class BaseMacro2 {
 
     if(this._customContentId) {
       await this._apWrapper.saveCustomContent(this._customContentId, value);
+      this.trackDiagramEvent(value, 'save_macro', 'custom_content');
     }
-
-    this.trackDiagramEvent(value, 'save_macro', 'custom_content');
   }
 
   async canEditOnDialog(): Promise<boolean> {
