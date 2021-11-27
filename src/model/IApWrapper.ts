@@ -21,6 +21,8 @@ export interface IApWrapper {
 
   getContentProperty2(): Promise<IContentPropertyNormalised | undefined>;
 
+  setContentProperty(property: IContentPropertyNormalised): Promise<any>;
+
   getCustomContent(): Promise<ICustomContent | undefined>;
 
   getCustomContentById(id: string): Promise<ICustomContent | undefined>;
@@ -36,4 +38,6 @@ export interface IApWrapper {
   createCustomContent(content: Diagram): Promise<any>;
 
   updateCustomContent(contentObj: ICustomContent, newBody: Diagram): Promise<any>;
+
+  canUserEdit(): Promise<boolean>;
 }

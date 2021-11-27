@@ -12,6 +12,7 @@ class Macro extends BaseMacro2 {
     if(!result.mermaidCode && !result.code) {
       trackEvent('sequence', 'new_macro', 'custom_content');
       result.code = this.EXAMPLE;
+      result.source = DataSource.Example;
     }
 
     return result;

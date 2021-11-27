@@ -37,6 +37,7 @@ import EventBus from '../EventBus'
 import StylingPanel from "@/components/StylingPanel";
 import ErrorBoundary from "@/components/ErrorBoundary";
 const DiagramFrame = VueSequence.DiagramFrame;
+
 export default {
   name: "Viewer",
   components: {
@@ -46,7 +47,7 @@ export default {
     DiagramFrame
   },
   computed: {
-    ...mapGetters({isDisplayMode: 'isDisplayMode', diagramType: 'diagramType'}),
+    ...mapGetters({isDisplayMode: 'isDisplayMode', diagramType: 'diagramType', canEdit: 'canEdit'}),
     isLite() {
       return this.$store.state.macro._apWrapper.isLite();
     },
@@ -54,7 +55,7 @@ export default {
       return !!localStorage.zenumlDebug;
     },
     diagram() {
-      console.log('_diagram', this.$store.state.macro._diagram);
+      console.debug('_diagram', this.$store.state.macro._diagram);
       return this.$store.state.macro._diagram || {};
     },
     styles() {
@@ -64,14 +65,6 @@ export default {
           .join('\n');
       return `<style> ${statements}</style>`;
     },
-  },
-  data() {
-    return {
-        canEdit: false
-    }
-  },
-  created() {
-    this.checkUserCanEdit();
   },
   methods: {
     deselectAll(event) {
@@ -83,10 +76,6 @@ export default {
         el = el.parentNode
       }
       this.$store.state.selected = []
-    },
-    checkUserCanEdit() {
-      // TODO: Add this back. It works fine. But we will not release it for the moment.
-      // this.$store.state.macro._apWrapper.canUserEdit().then(b => this.canEdit = b);
     },
     edit() {
       EventBus.$emit('edit');

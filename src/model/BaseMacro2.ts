@@ -9,6 +9,7 @@ import {DataSource, Diagram, DiagramType} from "@/model/Diagram";
 
 class BaseMacro2 {
   _diagram?: Diagram;
+  _version?: number;
   _key: any;
   _customContentId: string | undefined;
   _loaded = false;
@@ -20,7 +21,9 @@ class BaseMacro2 {
   constructor(apWrapper2: ApWrapper2) {
     this._apWrapper = apWrapper2;
     this._macroIdentifier = this._apWrapper._macroIdentifier;
-    this._standaloneCustomContent = getUrlParam('rendered.for') === 'custom-content-native';
+
+    const renderedFor = getUrlParam('rendered.for');
+    this._standaloneCustomContent = renderedFor === 'custom-content-native';
   }
 
   async initPageId() {
@@ -110,6 +113,7 @@ class BaseMacro2 {
 
     let diagram;
     const payload = await this.getContent();
+    console.debug('Loaded payload', payload);
 
     if(!payload || !payload.value) {
       diagram = {
@@ -122,9 +126,10 @@ class BaseMacro2 {
     }
 
     this._loaded = true;
+    console.debug('Loaded diagram', diagram);
 
-    console.debug('Loaded macro', diagram);
     this._diagram = diagram;
+    this._version = payload?.version?.number;
     return diagram;
   }
 
@@ -136,6 +141,7 @@ class BaseMacro2 {
       throw new Error('You have to call load before calling save()')
     }
     const key = this._key || uuidv4();
+
     let customContent;
     if(this._customContentId) {
       customContent = await this._apWrapper.saveCustomContent(this._customContentId, value);
@@ -144,15 +150,48 @@ class BaseMacro2 {
     }
 
     this.trackDiagramEvent(value, 'save_macro', 'custom_content');
+
     const macroParam = {uuid: key, updatedAt: new Date()} as IMacroData;
     macroParam.customContentId = customContent.id;
 
-    //TODO: Edit issue when editing content property based macro in viewer
     // Saving core data to body for disaster recovery
     let body = BaseMacro2.getCoreData(value);
     this._apWrapper.saveMacro(macroParam, body);
     this.trackDiagramEvent(value, 'save_macro', 'macro_body');
-    return macroParam.customContentId;
+
+    return customContent.id;
+  }
+
+  async saveOnDialog(value: Diagram) {
+    console.debug('Saving macro', value);
+    if (!this._loaded) {
+      throw new Error('You have to call load before calling save()')
+    }
+    const key = this._key || uuidv4();
+
+    if(this._diagram?.source === DataSource.ContentProperty) {
+      const contentProperty = {
+        key: this.propertyKey(key),
+        value: value,
+        version: {
+          number: (this._version || 0) + 1
+        }
+      }
+    
+      console.debug('Saving content property', contentProperty);
+      await this._apWrapper.setContentProperty(contentProperty as IContentPropertyNormalised);
+      this.trackDiagramEvent(value, 'save_macro', 'content_property');
+      return;
+    }
+
+    if(this._customContentId) {
+      await this._apWrapper.saveCustomContent(this._customContentId, value);
+      this.trackDiagramEvent(value, 'save_macro', 'custom_content');
+    }
+  }
+
+  async canEditOnDialog(): Promise<boolean> {
+    return this._loaded && this._diagram?.source !== DataSource.MacroBody && (await this._apWrapper.canUserEdit());
   }
 
   private static getCoreData(value: Diagram) {

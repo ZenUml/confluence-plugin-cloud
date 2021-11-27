@@ -16,7 +16,7 @@ interface RequestHandler {
   handle(request: any): any
 }
 
-export default class MockAp implements IAp{
+export default class MockAp implements IAp {
   public confluence: any
   public request: any
   public navigator: any

@@ -134,7 +134,7 @@ export default class ApWrapper2 implements IApWrapper {
     })
   }
 
-  async setContentProperty(content: ContentPropertyIn) {
+  async setContentProperty(content: IContentPropertyNormalised) {
     return new Promise((resolve, reject) => {
       this._confluence.setContentProperty(content, (result) => {
         if(result.error) {
@@ -321,24 +321,30 @@ export default class ApWrapper2 implements IApWrapper {
 
 
   _getCurrentUser(): Promise<IUser> {
-    return new Promise(resolv => this._user.getCurrentUser((user: IUser) => resolv(user)));
+    return new Promise(resolv => this._user.getCurrentUser((user: IUser) => {
+      console.debug(`Current user:`, user);
+      resolv(user);
+    }));
   }
 
-  canUserEdit() {
-    return new Promise(resolv =>
-      Promise.all([
-        this.getPageId(),
-        this._getCurrentUser()
-      ]).then(([pageId, user]) => 
-        this._requestFn({
-          type: 'GET',
-          url: `/rest/api/content/${pageId}/restriction/byOperation/update/user?accountId=${user.atlassianAccountId}`,
-          contentType: 'application/json;charset=UTF-8',
-          success: () => resolv(true),
-          error: () => resolv(false)
-        })
-      )
-    );
+  canUserEdit(): Promise<boolean> {
+    const checkPermission = (pageId: any, userId: any) => 
+      this._requestFn({
+        type: 'POST',
+        url: `/rest/api/content/${pageId}/permission/check`,
+        contentType: 'application/json', 
+        data: JSON.stringify({subject: {type: 'user', identifier: userId}, operation: 'update'})
+      })
+      .then((response: any) => {
+        const data = JSON.parse(response.body);
+        console.debug(`Content permission response:`, data);
+        return data.hasPermission;
+      }, (e: any) => console.error(`Error checking content permission:`, e));
+
+    return Promise.all([
+      this.getPageId(),
+      this._getCurrentUser()
+    ]).then(([pageId, user]) => checkPermission(pageId, user.atlassianAccountId), console.error);
   }
 
   isLite(): boolean {
