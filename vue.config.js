@@ -10,6 +10,11 @@ module.exports = {
       template: 'public/sequence-editor.html',
       chunks: ['chunk-common', 'chunk-sequence-editor-vendors', 'sequence-editor']
     },
+    "sequence-editor-dialog": {
+      entry: 'src/sequence-editor-dialog.ts',
+      template: 'public/sequence-editor.html',
+      chunks: ['chunk-common', 'chunk-sequence-editor-vendors', 'sequence-editor-dialog']
+    },
     "sequence-viewer": {
       entry: 'src/sequence-viewer.ts',
       template: 'public/sequence-viewer.html',

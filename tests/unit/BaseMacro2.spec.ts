@@ -6,6 +6,7 @@ import ApWrapper2 from "@/model/ApWrapper2";
 import Macro from "@/model/Macro";
 import {setUpWindowLocation} from "../SetUpWindowLocation";
 import {buildCustomContentResponse} from "../CustomContentFixtures";
+import helper from './TestHelper';
 
 let mockAp: MockAp;
 let mockApConfluence: IConfluence;
@@ -20,15 +21,16 @@ const savedLocation = window.location;
 describe('BaseMacro2', () => {
   const pageId = 'page_id_1234';
 
-  beforeEach(() => {
-    setUpWindowLocation("?contentKey=zenuml-content-sequence");
-    mockAp = new MockAp(pageId);
+  function setUp(param: string) {
+    helper.setUpUrlParam(param);
+
+    mockAp = new MockAp();
     mockApConfluence = mockAp.confluence;
     macro = new BaseMacro2(new ApWrapper2(mockAp));
-  });
-
+  };
 
   it('creates custom content if _customContentId is null', async () => {
+    setUp('contentKey=sequence');
     await macro.load();
 
     const customContentId = await macro.save({
@@ -40,6 +42,7 @@ describe('BaseMacro2', () => {
   })
 
   it('update custom content if _customContentId is not null', async () => {
+    setUp('contentKey=sequence');
     await macro.load();
 
     const customContentId = await macro.save({
@@ -55,7 +58,7 @@ describe('BaseMacro2', () => {
 
   it('If the container id is different from the current page id the macro is considered as a clone',
     async () => {
-      setUpWindowLocation("?contentKey=zenuml-content-sequence");
+      setUp("contentKey=zenuml-content-sequence");
       let mockAp = new MockAp();
       let apWrapper2 = new ApWrapper2(mockAp);
       const getLocationContext = jest.fn().mockImplementation(async () => {
@@ -97,4 +100,24 @@ describe('BaseMacro2', () => {
     async () => {
   })
 
+  it('save content property in dialog editor', async () => {
+    setUp('contentKey=sequence&rendered.for=dialog-editor');
+
+    const key = 'zenuml-sequence-macro-abc-123-body';
+    const value = {code: 'a.foo'};
+
+    mockApConfluence.saveMacro({uuid: 'abc-123'}, JSON.stringify(value));
+    mockApConfluence.setContentProperty({key: key, version: {number: 1}, value});
+
+    const payload = await macro.load();
+    expect(payload.source).toBe(DataSource.ContentProperty);
+
+    const diagram = {
+      diagramType: DiagramType.Sequence,
+      code: 'A.m',
+      source: DataSource.ContentProperty
+    };
+    await macro.saveOnDialog(diagram);
+    mockApConfluence.getContentProperty(key, (content) => expect(content).toEqual({version: {number: 2}, key, value: diagram}));
+  })
 })

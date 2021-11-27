@@ -9,6 +9,7 @@ import 'vue-sequence/dist/vue-sequence.css'
 console.log(VueSequence.Version)
 
 import MockApConfluence from './model/MockApConfluence'
+import Macro from './model/Macro'
 import Editor from './components/Editor.vue'
 import Workspace from './components/Workspace.vue'
 import mermaid from 'mermaid'
@@ -37,6 +38,7 @@ mermaid.mermaidAPI.initialize({
 Vue.config.productionTip = false
 
 Vue.component('diagram-frame', VueSequence.DiagramFrame)
+Vue.component('seq-diagram', VueSequence.SeqDiagram)
 Vue.component('editor', Editor)
 Vue.component('workspace', Workspace)
 Vue.use(VueCodeMirror)
@@ -57,15 +59,15 @@ if (window.location.href.includes('localhost')) {
   // eslint-disable-next-line
   console.log('You are using a mocked AP.confluence')
   // @ts-ignore
-  window.AP = {
+    window.AP = {
     confluence: new MockApConfluence()
   }
 }
 async function initializeMacro() {
-  // @ts-ignore
+// @ts-ignore
   const macro = store.state.macro || new Macro(AP);
   // @ts-ignore
-  const macro = store.state.macro;  // store.state.macro is set in Store.ts
+  window.macro = macro;
   const {code, styles, mermaidCode, diagramType} = await macro.load();
 
   store.commit('code', code);
@@ -74,16 +76,17 @@ async function initializeMacro() {
   // @ts-ignore
   store.dispatch('updateMermaidCode', mermaidCode || store.state.mermaidCode)
   store.dispatch('updateDiagramType', diagramType)
-  let performanceEntries = window.performance.getEntriesByType("navigation");
-  for (let i = 0; i < performanceEntries.length; i++) {
-    const e = performanceEntries[i];
-    console.debug('ZenUML diagram loading time:%s(ms)', e.duration)
-  }
+  let timing = window.performance.timing;
+  console.debug('ZenUML diagram loading time:%s(ms)', timing.domContentLoadedEventEnd- timing.navigationStart)
 }
 
 EventBus.$on('save', async () => {
   // @ts-ignore
-  await window.macro.save2(store.state.code, store.state.styles, store.state.mermaidCode, store.state.diagramType, store.getters.title);
+  const macro = window.macro;
+  // @ts-ignore
+  const value = {code: store.state.code, styles: store.state.styles, mermaidCode: store.state.mermaidCode, diagramType: store.state.diagramType, title: store.getters.title} as Diagram;
+
+  await macro.saveOnDialog(value);
 
   // @ts-ignore
   AP.dialog.close();

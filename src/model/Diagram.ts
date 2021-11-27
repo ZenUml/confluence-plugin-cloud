@@ -21,5 +21,6 @@ export interface Diagram {
   mermaidCode?: string,
   graphXml?: string,
   compressed?: boolean,
-  source: DataSource
+  source: DataSource,
+  payload?: any
 }

@@ -9,15 +9,20 @@ import {DataSource, Diagram, DiagramType} from "@/model/Diagram";
 
 class BaseMacro2 {
   _diagram?: Diagram;
-  _key: any;
+  _uuid: any;
   _customContentId: string | undefined;
   _loaded = false;
   _standaloneCustomContent: boolean;
+  _addonVersion: string;
   private _apWrapper: IApWrapper;
 
   constructor(apWrapper2: ApWrapper2) {
     this._apWrapper = apWrapper2;
-    this._standaloneCustomContent = getUrlParam('rendered.for') === 'custom-content-native';
+
+    const renderedFor = getUrlParam('rendered.for');
+    this._standaloneCustomContent = renderedFor === 'custom-content-native';
+
+    this._addonVersion = getUrlParam('version') || '';
   }
 
   // deprecated: We should rely on diagram.diagramType. For old diagrams we do not have that saved.
@@ -77,15 +82,15 @@ class BaseMacro2 {
     // When the macro is edited for the first time, macro data is not available in the preview mode
     // Fall back to the uuid parameter in the URL.
     // This is defined in the descriptor and is only available for sequence-viewer.html.
-    this._key = macroData?.uuid || getUrlParam('uuid');
-    console.debug('Macro UUID:', this._key);
+    this._uuid = macroData?.uuid || getUrlParam('uuid');
+    console.debug('Macro UUID:', this._uuid);
     
     this._customContentId = macroData?.customContentId;
     
     if(this._customContentId) {
       return await this.getCustomContent();
     }
-    if(this._key) {
+    if(this._uuid) {
       return await this.getContentProperty();
     }
     return undefined;
@@ -94,6 +99,7 @@ class BaseMacro2 {
   async load(): Promise<Diagram> {
     let diagram;
     const payload = await this.getContent();
+    console.debug('Loaded payload', payload);
 
     if(!payload || !payload.value) {
       diagram = {
@@ -106,8 +112,8 @@ class BaseMacro2 {
     }
 
     this._loaded = true;
+    console.debug('Loaded diagram', diagram);
 
-    console.debug('Loaded macro', diagram);
     this._diagram = diagram;
     return diagram;
   }
@@ -119,7 +125,8 @@ class BaseMacro2 {
     if (!this._loaded) {
       throw new Error('You have to call load before calling save()')
     }
-    const key = this._key || uuidv4();
+    const uuid = this._uuid || uuidv4();
+
     let customContent;
     if(this._customContentId) {
       customContent = await this._apWrapper.saveCustomContent(this._customContentId, value);
@@ -128,15 +135,48 @@ class BaseMacro2 {
     }
 
     this.trackDiagramEvent(value, 'save_macro', 'custom_content');
-    const macroParam = {uuid: key, updatedAt: new Date()} as IMacroData;
+
+    const macroParam = {uuid: uuid, updatedAt: new Date()} as IMacroData;
     macroParam.customContentId = customContent.id;
 
-    //TODO: Edit issue when editing content property based macro in viewer
     // Saving core data to body for disaster recovery
     let body = BaseMacro2.getCoreData(value);
     this._apWrapper.saveMacro(macroParam, body);
     this.trackDiagramEvent(value, 'save_macro', 'macro_body');
-    return macroParam.customContentId;
+
+    return customContent.id;
+  }
+
+  async saveOnDialog(value: Diagram) {
+    console.debug('Saving macro', value);
+    if (!this._loaded) {
+      throw new Error('You have to call load before calling save()')
+    }
+
+    if(this._diagram?.source === DataSource.ContentProperty) {
+      const contentProperty = {
+        key: this._diagram?.payload?.key,
+        value: value,
+        version: {
+          number: (this._diagram?.payload?.version.number || 0) + 1
+        }
+      }
+    
+      console.debug('Saving content property', contentProperty);
+      await this._apWrapper.setContentProperty(contentProperty as IContentPropertyNormalised);
+      this.trackDiagramEvent(value, 'save_macro', 'content_property');
+      return;
+    }
+
+    if(this._customContentId) {
+      await this._apWrapper.saveCustomContent(this._customContentId, value);
+      this.trackDiagramEvent(value, 'save_macro', 'custom_content');
+    }
+  }
+
+  async canEditOnDialog(): Promise<boolean> {
+    const isVersionSupported = this._addonVersion >= '2021.11';
+    return isVersionSupported && this._loaded && this._diagram?.source !== DataSource.MacroBody && (await this._apWrapper.canUserEdit());
   }
 
   private static getCoreData(value: Diagram) {

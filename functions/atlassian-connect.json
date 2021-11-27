@@ -28,17 +28,17 @@
         },
         "renderModes": {
           "default": {
-            "url": "/attachment?spaceKey={space.key}&pageId={page.id}&pageVersion={page.version}&macroId={macro.id}&uuid={uuid}&addonKey=__ADDON_KEY__&contentKey=__CONTENT_KEY__"
+            "url": "/attachment?version=__VERSION__&spaceKey={space.key}&pageId={page.id}&pageVersion={page.version}&macroId={macro.id}&uuid={uuid}&addonKey=__ADDON_KEY__&contentKey=__CONTENT_KEY__"
           }
         },
-        "url": "/sequence-viewer.html?spaceKey={space.key}&pageId={page.id}&pageVersion={page.version}&macroId={macro.id}&uuid={uuid}&outputType={output.type}&addonKey=__ADDON_KEY__&contentKey=__CONTENT_KEY__",
+        "url": "/sequence-viewer.html?version=__VERSION__&spaceKey={space.key}&pageId={page.id}&pageVersion={page.version}&macroId={macro.id}&uuid={uuid}&outputType={output.type}&addonKey=__ADDON_KEY__&contentKey=__CONTENT_KEY__",
         "description": {
           "value": "Create a ZenUML Sequence Diagram"
         },
         "outputType": "block",
         "bodyType": "plain-text",
         "editor": {
-          "url": "/sequence-editor.html?update=202103291207&addonKey=__ADDON_KEY__&contentKey=__CONTENT_KEY__",
+          "url": "/sequence-editor.html?version=__VERSION__&update=202103291207&addonKey=__ADDON_KEY__&contentKey=__CONTENT_KEY__",
           "width": "100%",
           "height": "100%",
           "cacheable": true
@@ -76,17 +76,17 @@
         },
         "renderModes": {
           "default": {
-            "url": "/attachment?spaceKey={space.key}&pageId={page.id}&pageVersion={page.version}&macroId={macro.id}&uuid={uuid}&addonKey=__ADDON_KEY__&contentKey=__CONTENT_KEY__"
+            "url": "/attachment?version=__VERSION__&spaceKey={space.key}&pageId={page.id}&pageVersion={page.version}&macroId={macro.id}&uuid={uuid}&addonKey=__ADDON_KEY__&contentKey=__CONTENT_KEY__"
           }
         },
-        "url": "/drawio/viewer.html?spaceKey={space.key}&pageId={page.id}&pageVersion={page.version}&macroId={macro.id}&uuid={uuid}&outputType={output.type}&addonKey=__ADDON_KEY__&contentKey=__CONTENT_KEY__",
+        "url": "/drawio/viewer.html?version=__VERSION__&spaceKey={space.key}&pageId={page.id}&pageVersion={page.version}&macroId={macro.id}&uuid={uuid}&outputType={output.type}&addonKey=__ADDON_KEY__&contentKey=__CONTENT_KEY__",
         "description": {
           "value": "Create a ZenUML Graph"
         },
         "outputType": "block",
         "bodyType": "none",
         "editor": {
-          "url": "/drawio/editor.html?addonKey=__ADDON_KEY__&contentKey=__CONTENT_KEY__",
+          "url": "/drawio/editor.html?version=__VERSION__&addonKey=__ADDON_KEY__&contentKey=__CONTENT_KEY__",
           "editTitle": {
             "value": "Edit ZenUML Graph"
           },
@@ -198,7 +198,7 @@
         {
             "key": "zenuml-content-sequence-viewer-dialog",
             "location": "none",
-            "url": "/sequence-viewer-dialog.html?&addonKey=__ADDON_KEY__&contentKey=__CONTENT_KEY__",
+            "url": "/sequence-viewer-dialog.html?version=__VERSION__&addonKey=__ADDON_KEY__&contentKey=__CONTENT_KEY__",
             "name": {
                 "value": "ZenUML Sequence Viewer Dialog"
             }
@@ -206,15 +206,15 @@
         {
             "key": "zenuml-content-sequence-viewer",
             "location": "none",
-            "url": "/sequence-viewer.html?rendered.for=custom-content-native&spaceKey={space.key}&content.id={content.id}&content.version={content.version}&addonKey=__ADDON_KEY__&contentKey=__CONTENT_KEY__",
+            "url": "/sequence-viewer.html?version=__VERSION__&rendered.for=custom-content-native&spaceKey={space.key}&content.id={content.id}&content.version={content.version}&addonKey=__ADDON_KEY__&contentKey=__CONTENT_KEY__",
             "name": {
                 "value": "ZenUML Sequence Viewer"
             }
         },
         {
-            "key": "zenuml-content-sequence-editor",
+            "key": "zenuml-content-sequence-editor-dialog",
             "location": "none",
-            "url": "/sequence-editor.html?spaceKey={space.key}&content.id={content.id}&content.version={content.version}&addonKey=__ADDON_KEY__&contentKey=__CONTENT_KEY__",
+            "url": "/sequence-editor-dialog.html?version=__VERSION__&spaceKey={space.key}&content.id={content.id}&content.version={content.version}&addonKey=__ADDON_KEY__&contentKey=__CONTENT_KEY__",
             "name": {
                 "value": "ZenUML Sequence Editor"
             }
@@ -222,7 +222,7 @@
         {
             "key": "zenuml-content-graph-viewer",
             "location": "none",
-            "url": "/drawio/viewer.html?rendered.for=custom-content-native&spaceKey={space.key}&content.id={content.id}&content.version={content.version}&addonKey=__ADDON_KEY__&contentKey=__CONTENT_KEY__",
+            "url": "/drawio/viewer.html?version=__VERSION__&rendered.for=custom-content-native&spaceKey={space.key}&content.id={content.id}&content.version={content.version}&addonKey=__ADDON_KEY__&contentKey=__CONTENT_KEY__",
             "name": {
                 "value": "ZenUML Graph Viewer"
             }
