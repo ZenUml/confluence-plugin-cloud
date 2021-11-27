@@ -53,6 +53,8 @@ exports.descriptor = functions.https.onRequest((req, resp) => {
   // This is not necessary but works as a defense.
   data.links.self = self;
 
+  const VERSION = '2021.11';
+
   const replaceUrls = (modules, replaceFunction) => {
     modules.dynamicContentMacros.forEach(macro => {
       macro.url = replaceFunction(macro.url, macro);
@@ -110,7 +112,7 @@ exports.descriptor = functions.https.onRequest((req, resp) => {
   replaceUrls(data.modules, (url, module) => {
     let result = url.replace('__ADDON_KEY__', data.key);
     const contentKey = getCustomContentKeyForModule(module, data.modules);
-    return result.replace('__CONTENT_KEY__', contentKey);
+    return result.replace('__CONTENT_KEY__', contentKey).replace('__VERSION__', VERSION);
   });
 
   resp.json(data);

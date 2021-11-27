@@ -16,6 +16,7 @@ class BaseMacro2 {
   _macroIdentifier: any;
   _pageId: any;
   _standaloneCustomContent: boolean;
+  _addonVersion: string;
   private _apWrapper: IApWrapper;
 
   constructor(apWrapper2: ApWrapper2) {
@@ -24,6 +25,8 @@ class BaseMacro2 {
 
     const renderedFor = getUrlParam('rendered.for');
     this._standaloneCustomContent = renderedFor === 'custom-content-native';
+
+    this._addonVersion = getUrlParam('version') || '';
   }
 
   async initPageId() {
@@ -191,7 +194,8 @@ class BaseMacro2 {
   }
 
   async canEditOnDialog(): Promise<boolean> {
-    return this._loaded && this._diagram?.source !== DataSource.MacroBody && (await this._apWrapper.canUserEdit());
+    const isVersionSupported = this._addonVersion >= '2021.11';
+    return isVersionSupported && this._loaded && this._diagram?.source !== DataSource.MacroBody && (await this._apWrapper.canUserEdit());
   }
 
   private static getCoreData(value: Diagram) {
