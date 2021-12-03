@@ -79,4 +79,4 @@ async function initializeMacro() {
   console.debug('ZenUML diagram loading time:%s(ms)', timing.domContentLoadedEventEnd- timing.navigationStart)
 }
 
-initializeMacro();
+await initializeMacro();

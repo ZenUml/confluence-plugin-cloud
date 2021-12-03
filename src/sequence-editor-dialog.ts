@@ -92,4 +92,4 @@ EventBus.$on('save', async () => {
   AP.dialog.close();
 });
 
-initializeMacro();
+await initializeMacro();

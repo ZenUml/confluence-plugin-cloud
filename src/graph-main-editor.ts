@@ -36,4 +36,4 @@ async function initializeMacro() {
   }
 }
 
-initializeMacro();
+await initializeMacro();
