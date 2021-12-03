@@ -9,35 +9,20 @@ import {DataSource, Diagram, DiagramType} from "@/model/Diagram";
 
 class BaseMacro2 {
   _diagram?: Diagram;
-  _version?: number;
-  _key: any;
+  _uuid: any;
   _customContentId: string | undefined;
   _loaded = false;
-  _macroIdentifier: any;
-  _pageId: any;
   _standaloneCustomContent: boolean;
   _addonVersion: string;
   private _apWrapper: IApWrapper;
 
   constructor(apWrapper2: ApWrapper2) {
     this._apWrapper = apWrapper2;
-    this._macroIdentifier = this._apWrapper._macroIdentifier;
 
     const renderedFor = getUrlParam('rendered.for');
     this._standaloneCustomContent = renderedFor === 'custom-content-native';
 
     this._addonVersion = getUrlParam('version') || '';
-  }
-
-  async initPageId() {
-    if(!this._pageId) {
-      this._pageId = getUrlParam('content.id') || (await this._apWrapper.getPageId());
-    }
-  }
-
-  propertyKey(uuid: string) {
-    const macroKey = `zenuml-${this._macroIdentifier}-macro`;
-    return `${macroKey}-${uuid}-body`;
   }
 
   // deprecated: We should rely on diagram.diagramType. For old diagrams we do not have that saved.
@@ -97,23 +82,21 @@ class BaseMacro2 {
     // When the macro is edited for the first time, macro data is not available in the preview mode
     // Fall back to the uuid parameter in the URL.
     // This is defined in the descriptor and is only available for sequence-viewer.html.
-    this._key = macroData?.uuid || getUrlParam('uuid');
-    console.debug('Macro UUID:', this._key);
+    this._uuid = macroData?.uuid || getUrlParam('uuid');
+    console.debug('Macro UUID:', this._uuid);
     
     this._customContentId = macroData?.customContentId;
     
     if(this._customContentId) {
       return await this.getCustomContent();
     }
-    if(this._key) {
+    if(this._uuid) {
       return await this.getContentProperty();
     }
     return undefined;
   }
 
   async load(): Promise<Diagram> {
-    await this.initPageId();
-
     let diagram;
     const payload = await this.getContent();
     console.debug('Loaded payload', payload);
@@ -132,70 +115,70 @@ class BaseMacro2 {
     console.debug('Loaded diagram', diagram);
 
     this._diagram = diagram;
-    this._version = payload?.version?.number;
     return diagram;
   }
 
   // Warning! Do not call getXXX in save. Do retest if you want to call getXXX.
   // It does not work as of 17th May 2020. That is why we have stored key and version
-  async save(value: Diagram) {
-    console.debug('Saving macro', value);
+  async save(diagram: Diagram) {
+    console.debug('Saving macro', diagram);
     if (!this._loaded) {
       throw new Error('You have to call load before calling save()')
     }
-    const key = this._key || uuidv4();
+    const uuid = this._uuid || uuidv4();
 
     let customContent;
-    if(this._customContentId) {
-      customContent = await this._apWrapper.saveCustomContent(this._customContentId, value);
+    if(this._customContentId && !this._diagram?.isCopy) {
+      customContent = await this._apWrapper.saveCustomContent(this._customContentId, diagram);
     } else {
-      customContent = await this._apWrapper.createCustomContent(value);
+      customContent = await this._apWrapper.createCustomContent(diagram);
     }
 
-    this.trackDiagramEvent(value, 'save_macro', 'custom_content');
+    this.trackDiagramEvent(diagram, 'save_macro', 'custom_content');
 
-    const macroParam = {uuid: key, updatedAt: new Date()} as IMacroData;
+    const macroParam = {uuid: uuid, updatedAt: new Date()} as IMacroData;
     macroParam.customContentId = customContent.id;
 
     // Saving core data to body for disaster recovery
-    let body = BaseMacro2.getCoreData(value);
+    let body = BaseMacro2.getCoreData(diagram);
     this._apWrapper.saveMacro(macroParam, body);
-    this.trackDiagramEvent(value, 'save_macro', 'macro_body');
+    this.trackDiagramEvent(diagram, 'save_macro', 'macro_body');
 
     return customContent.id;
   }
 
-  async saveOnDialog(value: Diagram) {
-    console.debug('Saving macro', value);
+  async saveOnDialog(diagram: Diagram) {
+    console.debug('Saving macro', diagram);
     if (!this._loaded) {
       throw new Error('You have to call load before calling save()')
     }
-    const key = this._key || uuidv4();
 
     if(this._diagram?.source === DataSource.ContentProperty) {
       const contentProperty = {
-        key: this.propertyKey(key),
-        value: value,
+        key: this._diagram?.payload?.key,
+        value: diagram,
         version: {
-          number: (this._version || 0) + 1
+          number: (this._diagram?.payload?.version.number || 0) + 1
         }
       }
     
       console.debug('Saving content property', contentProperty);
       await this._apWrapper.setContentProperty(contentProperty as IContentPropertyNormalised);
-      this.trackDiagramEvent(value, 'save_macro', 'content_property');
+      this.trackDiagramEvent(diagram, 'save_macro', 'content_property');
       return;
     }
 
     if(this._customContentId) {
-      await this._apWrapper.saveCustomContent(this._customContentId, value);
-      this.trackDiagramEvent(value, 'save_macro', 'custom_content');
+      await this._apWrapper.saveCustomContent(this._customContentId, diagram);
+      this.trackDiagramEvent(diagram, 'save_macro', 'custom_content');
     }
   }
 
   async canEditOnDialog(): Promise<boolean> {
     const isVersionSupported = this._addonVersion >= '2021.11';
-    return isVersionSupported && this._loaded && this._diagram?.source !== DataSource.MacroBody && (await this._apWrapper.canUserEdit());
+    const notMacroBody = this._diagram?.source !== DataSource.MacroBody;
+    const notCopy = !this._diagram?.isCopy;
+    return isVersionSupported && this._loaded && notMacroBody && notCopy && (await this._apWrapper.canUserEdit());
   }
 
   private static getCoreData(value: Diagram) {

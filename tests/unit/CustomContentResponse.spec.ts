@@ -1,11 +1,11 @@
 // This response is used for both POST (for creating) and GET
-interface ICustomContentResponse {
+interface ICustomContentResponseBody {
   id: string
   raw: { value: string }
 }
 
 
-class CustomContentResponse implements ICustomContentResponse {
+class CustomContentResponse implements ICustomContentResponseBody {
   public id: string;
   public raw: {value: string} = {value: ''};
   constructor(id: string) {

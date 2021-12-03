@@ -8,6 +8,7 @@ import {IConfluence} from "@/model/IConfluence";
 import {IAp} from "@/model/IAp";
 import {MacroIdentifier} from "@/model/MacroIdentifier";
 import {DataSource, Diagram, DiagramType} from "@/model/Diagram";
+import {ICustomContentResponseBody} from "@/model/ICustomContentResponseBody";
 
 interface ContentPropertyIn {
 }
@@ -27,7 +28,7 @@ export default class ApWrapper2 implements IApWrapper {
   };
   _navigator: any;
   _dialog: any;
-  public _macroIdentifier: MacroIdentifier;
+  _macroIdentifier: MacroIdentifier;
   _locationContext: any;
   _user: any;
 
@@ -117,6 +118,7 @@ export default class ApWrapper2 implements IApWrapper {
     } else {
       result.value.source = DataSource.ContentProperty;
     }
+    result.value.payload = result; // To cache content property key and version on Diagram object
     return result;
   }
 
@@ -173,9 +175,8 @@ export default class ApWrapper2 implements IApWrapper {
   }
 
   async getPageId() {
-    // @ts-ignore
     const locationContext = await this.getLocationContext();
-    return (locationContext.contentId);
+    return locationContext.contentId;
   }
 
   getContentKey() {
@@ -190,7 +191,7 @@ export default class ApWrapper2 implements IApWrapper {
     return `ac:${getUrlParam('addonKey')}:${this.getContentKey()}`;
   }
 
-  parseCustomContentResponse(response: { body: string; }) {
+  parseCustomContentResponse(response: { body: string; }): ICustomContentResponseBody {
     return response && response.body && JSON.parse(response.body);
   }
 
@@ -275,7 +276,17 @@ export default class ApWrapper2 implements IApWrapper {
     console.debug(`Loaded custom content by id ${id}.`);
     let diagram = JSON.parse(customContent.body.raw.value);
     diagram.source = DataSource.CustomContent;
-    return Object.assign({}, customContent, {value: diagram});
+
+    const pageId = String(await this.getPageId());
+    console.debug(`In getCustomContentById: pageId=${pageId}, containerId=${customContent?.container?.id}`);
+    if (pageId !== String(customContent?.container?.id)) {
+      diagram.isCopy = true;
+      console.debug('Detected copied macro');
+    } else {
+      diagram.isCopy = false;
+    }
+    let assign = <unknown>Object.assign({}, customContent, {value: diagram});
+    return <ICustomContent>assign;
   }
 
   async saveCustomContent(customContentId: string, value: Diagram) {

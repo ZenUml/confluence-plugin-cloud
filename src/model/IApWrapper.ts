@@ -10,34 +10,28 @@ export enum VersionType {
 }
 
 export interface IApWrapper {
-  _macroIdentifier: MacroIdentifier;
   versionType: VersionType;
 
   isLite(): boolean;
+  getPageId(): Promise<string>;
 
+  // Macro APIs
   getMacroData(): Promise<IMacroData | undefined>;
-
   getMacroBody(): Promise<string | undefined>;
+  saveMacro(params: IMacroData, body: string): void;
 
+  // Content Property APIs
   getContentProperty2(): Promise<IContentPropertyNormalised | undefined>;
 
+  // Custom Content APIs
+  hasCustomContent(): boolean;
   setContentProperty(property: IContentPropertyNormalised): Promise<any>;
 
   getCustomContent(): Promise<ICustomContent | undefined>;
-
   getCustomContentById(id: string): Promise<ICustomContent | undefined>;
-
-  getPageId(): Promise<string>;
-
-  hasCustomContent(): boolean;
-
-  saveCustomContent(customContentId: string, value: Diagram): Promise<any>;
-
-  saveMacro(params: IMacroData, body: string): void;
-
   createCustomContent(content: Diagram): Promise<any>;
-
   updateCustomContent(contentObj: ICustomContent, newBody: Diagram): Promise<any>;
+  saveCustomContent(customContentId: string, value: Diagram): Promise<any>;
 
   canUserEdit(): Promise<boolean>;
 }
