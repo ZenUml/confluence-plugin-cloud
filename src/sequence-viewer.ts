@@ -102,4 +102,4 @@ EventBus.$on('fullscreen', () => {
     });
 });
 
-await initializeMacro();
+initializeMacro();
