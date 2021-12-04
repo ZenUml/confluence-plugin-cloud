@@ -269,17 +269,19 @@ export default class ApWrapper2 implements IApWrapper {
     console.debug(`Loaded custom content by id ${id}.`);
     let diagram = JSON.parse(customContent.body.raw.value);
     diagram.source = DataSource.CustomContent;
+    const count = (await this._page.macros((m) => {
+      return m.attrs?.parameters?.macroParams?.customContentId?.value === id;
+    })).length;
+    console.log(`Found ${count} macros on page`);
 
     const pageId = String(await this._page.getPageId());
     console.debug(`In getCustomContentById: pageId=${pageId}, containerId=${customContent?.container?.id}`);
-    if (pageId !== String(customContent?.container?.id)) {
+    if (pageId !== String(customContent?.container?.id) || count > 1) {
       diagram.isCopy = true;
-      console.debug('Detected copied macro');
+      console.warn('Detected copied macro');
     } else {
       diagram.isCopy = false;
     }
-    const count = (await this._page.macros(() => true)).length;
-    console.log(`Found ${count} macros on page`);
     let assign = <unknown>Object.assign({}, customContent, {value: diagram});
     return <ICustomContent>assign;
   }

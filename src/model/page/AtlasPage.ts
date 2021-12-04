@@ -67,7 +67,9 @@ interface AtlasDocElement {
   attrs: {
     parameters: {
       macroParams: {
-        customContentId?: string;
+        customContentId?: {
+          value: string;
+        }
       }
     }
   };
