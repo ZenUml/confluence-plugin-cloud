@@ -245,19 +245,6 @@ export default class ApWrapper2 implements IApWrapper {
     return this.parseCustomContentResponse(response);
   }
 
-  async getCustomContentByTitle(type: any, title: any) {
-    const spaceKey = await this.getSpaceKey();
-    const url = `/rest/api/content?type=${type}&title=${title}&spaceKey=${spaceKey}&expand=children,history,version.number`;
-    const results = JSON.parse((await this._requestFn({type: 'GET', url})).body).results;
-    if(results.length > 1) {
-      throw `multiple results found with type ${type}, title ${title}`;
-    }
-    if(results.length === 1) {
-      return results[0];
-    }
-    return null;
-  }
-
   async getCustomContentById(id: string): Promise<ICustomContent | undefined> {
     const url = `/rest/api/content/${id}?expand=body.raw,version.number,container,space`;
     const response = await this._requestFn({type: 'GET', url});
