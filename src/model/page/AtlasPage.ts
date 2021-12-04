@@ -34,7 +34,13 @@ export class AtlasPage {
     return locationContext.contentId;
   }
 
+  async getSpaceKey() {
+    return (await this._getLocationContext()).spaceKey;
+  }
 
+  async getContentType() {
+    return (await this._getLocationContext()).contentType;
+  }
 
   // This API may return stale data. The most recent macro may not be returned.
   // This is caused by the REST API we are calling.
@@ -59,10 +65,6 @@ export class AtlasPage {
     console.debug("Page.macros", contentList);
     return contentList.filter(({type}: any) => type === AtlasDocElementType.Extension)
       .filter(matcher);
-  }
-
-  async getSpaceKey() {
-    return (await this._getLocationContext()).spaceKey;
   }
 }
 enum AtlasDocElementType {

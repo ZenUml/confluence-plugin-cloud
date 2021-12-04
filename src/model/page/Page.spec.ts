@@ -15,6 +15,7 @@ describe('Page', () => {
     page._getLocationContext = getLocationContext;
     expect(await page.getPageId()).toBe("page-001");
     expect(await page.getSpaceKey()).toBe("space-001");
+    expect(await page.getContentType()).toBe("page");
   });
   it('should list all macros', async () => {
     const page = new AtlasPage();

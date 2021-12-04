@@ -10,7 +10,6 @@ import {MacroIdentifier} from "@/model/MacroIdentifier";
 import {DataSource, Diagram, DiagramType} from "@/model/Diagram";
 import {ICustomContentResponseBody} from "@/model/ICustomContentResponseBody";
 import {AtlasPage} from "@/model/page/AtlasPage";
-import {ILocationContext} from "@/model/ILocationContext";
 
 export default class ApWrapper2 implements IApWrapper {
   versionType: VersionType;
@@ -21,7 +20,6 @@ export default class ApWrapper2 implements IApWrapper {
   _navigator: any;
   _dialog: any;
   _macroIdentifier: MacroIdentifier;
-  _locationContext: any;
   _user: any;
   _page: AtlasPage;
 
@@ -148,21 +146,6 @@ export default class ApWrapper2 implements IApWrapper {
     this._confluence.saveMacro(params, body)
   }
 
-  getLocationContext(): Promise<ILocationContext> {
-    if(this._locationContext) {
-      return Promise.resolve(this._locationContext);
-    }
-
-    const self = this;
-
-    return new Promise((resolve) => {
-      self._navigator.getLocation((data: any) => {
-        self._locationContext = data.context;
-        resolve(data.context);
-      });
-    });
-  }
-
   getContentKey() {
     return getUrlParam('contentKey');
   }
@@ -180,9 +163,9 @@ export default class ApWrapper2 implements IApWrapper {
   }
 
   async createCustomContent(content: Diagram) {
-    const context = await this.getLocationContext();
     const type = this.getCustomContentType();
-    const container = {id: context.contentId, type: context.contentType};
+    // TODO: Can the type be blog?
+    const container = {id: this._page.getPageId(), type: this._page.getContentType()};
     const bodyData = {
       "type": type,
       "title": content.title || `Untitled ${new Date().toISOString()}`,
