@@ -2,7 +2,7 @@ import {IAp} from "@/model/IAp";
 import {ILocationContext} from "@/model/ILocationContext";
 
 export class AtlasPage {
-  private readonly _requestFn?: (req: IApRequest) => any;
+  _requestFn?: (req: IApRequest) => any;
   private _locationContext?: ILocationContext;
   private readonly _navigator: any;
   constructor(ap?: IAp) {
@@ -66,6 +66,13 @@ export class AtlasPage {
     return contentList.filter(({type}: any) => type === AtlasDocElementType.Extension)
       .filter(matcher);
   }
+
+  async countMacros(matcher: (mps: MacroParams) => boolean) {
+    return (await this.macros(()=>true))
+      .map(c => c.attrs.parameters.macroParams)
+      .filter(matcher)
+      .length;
+  }
 }
 enum AtlasDocElementType {
   Extension = 'extension',
@@ -75,11 +82,13 @@ interface AtlasDocElement {
   type: AtlasDocElementType;
   attrs: {
     parameters: {
-      macroParams: {
-        customContentId?: {
-          value: string;
-        }
-      }
+      macroParams: MacroParams;
     }
   };
+}
+
+interface MacroParams {
+  customContentId?: {
+    value: string;
+  }
 }
