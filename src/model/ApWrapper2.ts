@@ -163,11 +163,6 @@ export default class ApWrapper2 implements IApWrapper {
     });
   }
 
-  async getSpaceKey() {
-    const locationContext = await this.getLocationContext();
-    return (locationContext.spaceKey);
-  }
-
   getContentKey() {
     return getUrlParam('contentKey');
   }
@@ -192,7 +187,7 @@ export default class ApWrapper2 implements IApWrapper {
       "type": type,
       "title": content.title || `Untitled ${new Date().toISOString()}`,
       "space": {
-        "key": context.spaceKey
+        "key": this._page.getSpaceKey()
       },
       "container": container,
       "body": {
