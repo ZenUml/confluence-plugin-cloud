@@ -2,7 +2,7 @@ import {setUpWindowLocation} from './../../../tests/SetUpWindowLocation';
 import App from "@/model/app/App";
 
 describe('App', () => {
-  it('should create an instance', () => {
+  it('should know the host', () => {
     setUpWindowLocation('', 'https://some.host.name')
     let app = new App();
     expect(app).toBeTruthy();

@@ -9,6 +9,7 @@ import {IAp} from "@/model/IAp";
 import {MacroIdentifier} from "@/model/MacroIdentifier";
 import {DataSource, Diagram, DiagramType} from "@/model/Diagram";
 import {ICustomContentResponseBody} from "@/model/ICustomContentResponseBody";
+import {AtlasPage} from "@/model/page/AtlasPage";
 
 interface ContentPropertyIn {
 }
@@ -31,6 +32,7 @@ export default class ApWrapper2 implements IApWrapper {
   _macroIdentifier: MacroIdentifier;
   _locationContext: any;
   _user: any;
+  _page: AtlasPage;
 
   constructor(ap: IAp) {
     this.versionType = this.isLite() ? VersionType.Lite : VersionType.Full;
@@ -54,6 +56,8 @@ export default class ApWrapper2 implements IApWrapper {
     this._navigator = ap.navigator;
     this._dialog = ap.dialog;
     this._user = ap.user;
+    this._page = new AtlasPage('121503745', ap);
+    // this._page = null;
   }
 
   getMacroData(): Promise<IMacroData | undefined> {
@@ -285,6 +289,8 @@ export default class ApWrapper2 implements IApWrapper {
     } else {
       diagram.isCopy = false;
     }
+    const count = (await this._page.macros(() => true)).length;
+    console.log(`Found ${count} macros on page`);
     let assign = <unknown>Object.assign({}, customContent, {value: diagram});
     return <ICustomContent>assign;
   }
