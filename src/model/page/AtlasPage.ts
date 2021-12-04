@@ -2,18 +2,19 @@ import {IAp} from "@/model/IAp";
 import {ILocationContext} from "@/model/ILocationContext";
 
 export class AtlasPage {
-  private _requestFn?: (req: IApRequest) => any;
-  private _locationContext: any;
-  private _navigator: any;
+  private readonly _requestFn?: (req: IApRequest) => any;
+  private _locationContext?: ILocationContext;
+  private readonly _navigator: any;
   constructor(ap?: IAp) {
-    console.log("Page.constructor");
-    // Assigning _ap causes DOMException: Blocked a frame with origin "xxx" from accessing a cross-origin frame.
+    // TODO: why? Assigning _ap causes DOMException:
+    // Blocked a frame with origin "xxx" from accessing a cross-origin frame.
     // this._ap = ap;
     this._requestFn = ap?.request;
     this._navigator = ap?.navigator;
   }
 
-  getLocationContext(): Promise<ILocationContext> {
+  // This method cannot be private or protected because it needs to be overwritten in test.
+  _getLocationContext(): Promise<ILocationContext> {
     if(this._locationContext) {
       return Promise.resolve(this._locationContext);
     }
@@ -29,9 +30,11 @@ export class AtlasPage {
   }
 
   async getPageId() {
-    const locationContext = await this.getLocationContext();
+    const locationContext = await this._getLocationContext();
     return locationContext.contentId;
   }
+
+
 
   // This API may return stale data. The most recent macro may not be returned.
   // This is caused by the REST API we are calling.
@@ -57,7 +60,11 @@ export class AtlasPage {
     return contentList.filter(({type}: any) => type === AtlasDocElementType.Extension)
       .filter(matcher);
   }
+
+  async getSpaceKey() {
+    return (await this._getLocationContext()).spaceKey;
   }
+}
 enum AtlasDocElementType {
   Extension = 'extension',
 }

@@ -12,10 +12,6 @@ import {ICustomContentResponseBody} from "@/model/ICustomContentResponseBody";
 import {AtlasPage} from "@/model/page/AtlasPage";
 import {ILocationContext} from "@/model/ILocationContext";
 
-interface ContentPropertyIn {
-}
-
-// custom content APIs.
 export default class ApWrapper2 implements IApWrapper {
   versionType: VersionType;
   _confluence: IConfluence;
