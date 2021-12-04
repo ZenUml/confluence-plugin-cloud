@@ -10,14 +10,9 @@ import {MacroIdentifier} from "@/model/MacroIdentifier";
 import {DataSource, Diagram, DiagramType} from "@/model/Diagram";
 import {ICustomContentResponseBody} from "@/model/ICustomContentResponseBody";
 import {AtlasPage} from "@/model/page/AtlasPage";
+import {ILocationContext} from "@/model/ILocationContext";
 
 interface ContentPropertyIn {
-}
-
-interface ILocationContext {
-  spaceKey: string;
-  contentType: string;
-  contentId: string;
 }
 
 // custom content APIs.
@@ -56,8 +51,7 @@ export default class ApWrapper2 implements IApWrapper {
     this._navigator = ap.navigator;
     this._dialog = ap.dialog;
     this._user = ap.user;
-    this._page = new AtlasPage('121503745', ap);
-    // this._page = null;
+    this._page = new AtlasPage(ap);
   }
 
   getMacroData(): Promise<IMacroData | undefined> {
@@ -178,11 +172,6 @@ export default class ApWrapper2 implements IApWrapper {
     return (locationContext.spaceKey);
   }
 
-  async getPageId() {
-    const locationContext = await this.getLocationContext();
-    return locationContext.contentId;
-  }
-
   getContentKey() {
     return getUrlParam('contentKey');
   }
@@ -281,7 +270,7 @@ export default class ApWrapper2 implements IApWrapper {
     let diagram = JSON.parse(customContent.body.raw.value);
     diagram.source = DataSource.CustomContent;
 
-    const pageId = String(await this.getPageId());
+    const pageId = String(await this._page.getPageId());
     console.debug(`In getCustomContentById: pageId=${pageId}, containerId=${customContent?.container?.id}`);
     if (pageId !== String(customContent?.container?.id)) {
       diagram.isCopy = true;
@@ -359,7 +348,7 @@ export default class ApWrapper2 implements IApWrapper {
       }, (e: any) => console.error(`Error checking content permission:`, e));
 
     return Promise.all([
-      this.getPageId(),
+      this._page.getPageId(),
       this._getCurrentUser()
     ]).then(([pageId, user]) => checkPermission(pageId, user.atlassianAccountId), console.error);
   }

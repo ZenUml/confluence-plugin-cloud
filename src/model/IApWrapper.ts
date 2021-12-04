@@ -13,7 +13,6 @@ export interface IApWrapper {
   versionType: VersionType;
 
   isLite(): boolean;
-  getPageId(): Promise<string>;
 
   // Macro APIs
   getMacroData(): Promise<IMacroData | undefined>;

@@ -1,21 +1,45 @@
 import {IAp} from "@/model/IAp";
+import {ILocationContext} from "@/model/ILocationContext";
 
 export class AtlasPage {
   private _requestFn?: (req: IApRequest) => any;
-  constructor(public id: string, ap?: IAp) {
-    console.log("Page.constructor", id);
+  private _locationContext: any;
+  private _navigator: any;
+  constructor(ap?: IAp) {
+    console.log("Page.constructor");
     // Assigning _ap causes DOMException: Blocked a frame with origin "xxx" from accessing a cross-origin frame.
     // this._ap = ap;
     this._requestFn = ap?.request;
+    this._navigator = ap?.navigator;
   }
 
+  getLocationContext(): Promise<ILocationContext> {
+    if(this._locationContext) {
+      return Promise.resolve(this._locationContext);
+    }
+
+    const self = this;
+
+    return new Promise((resolve) => {
+      self._navigator.getLocation((data: any) => {
+        self._locationContext = data.context;
+        resolve(data.context);
+      });
+    });
+  }
+
+  async getPageId() {
+    const locationContext = await this.getLocationContext();
+    return locationContext.contentId;
+  }
 
   async macros(matcher: (e: AtlasDocElement) => boolean): Promise<AtlasDocElement[]> {
     if (!this._requestFn) {
       return [];
     }
+    const pageId = await this.getPageId();
     const response = await this._requestFn({
-      url: `/rest/api/content/${this.id}?expand=body.atlas_doc_format&status=draft`,
+      url: `/rest/api/content/${pageId}?expand=body.atlas_doc_format&status=draft`,
       type: 'GET',
       contentType: 'application/json'
     });
