@@ -33,6 +33,10 @@ export class AtlasPage {
     return locationContext.contentId;
   }
 
+  // This API may return stale data. The most recent macro may not be returned.
+  // This is caused by the REST API we are calling.
+  // It seems reliable enough for us to use, as we only need to know the macros
+  // when we edit the newly added macro.
   async macros(matcher: (e: AtlasDocElement) => boolean): Promise<AtlasDocElement[]> {
     if (!this._requestFn) {
       return [];
