@@ -45,7 +45,7 @@ export class AtlasPage {
   // This is caused by the REST API we are calling.
   // It seems reliable enough for us to use, as we only need to know the macros
   // when we edit the newly added macro.
-  async macros(matcher: (e: AtlasDocElement) => boolean): Promise<AtlasDocElement[]> {
+  private async macros(): Promise<AtlasDocElement[]> {
     if (!this._requestFn) {
       return [];
     }
@@ -62,12 +62,11 @@ export class AtlasPage {
     const {body: {atlas_doc_format: {value}}} = JSON.parse(response.body);
     const {content: contentList} = JSON.parse(value);
     console.debug("Page.macros", contentList);
-    return contentList.filter(({type}: any) => type === AtlasDocElementType.Extension)
-      .filter(matcher);
+    return contentList.filter(({type}: any) => type === AtlasDocElementType.Extension);
   }
 
   async countMacros(matcher: (mps: MacroParams) => boolean) {
-    return (await this.macros(()=>true))
+    return (await this.macros())
       .map(c => c.attrs.parameters.macroParams)
       .filter(matcher)
       .length;
