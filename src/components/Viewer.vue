@@ -58,7 +58,6 @@ export default {
       return !!localStorage.zenumlDebug;
     },
     diagram() {
-      console.debug('_diagram', this.$store.state.macro._diagram);
       return this.$store.state.macro._diagram || {};
     },
     styles() {

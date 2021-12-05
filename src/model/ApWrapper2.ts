@@ -53,7 +53,6 @@ export default class ApWrapper2 implements IApWrapper {
       try {
         this._confluence.getMacroData((data) => {
           resolve(data)
-          console.debug('Loaded macro data:', data)
         })
       } catch (e) {
         // eslint-disable-next-line
@@ -87,7 +86,7 @@ export default class ApWrapper2 implements IApWrapper {
     let macroData = await this.getMacroData();
     const uuid = macroData?.uuid;
     if (!uuid) {
-      console.debug('`uuid` is empty. This diagram has not been initialised. Most likely it has not been edited.')
+      console.warn('`uuid` is empty. This diagram has not been initialised. Most likely it has not been edited.')
       return undefined;
     }
     let key = this.propertyKey(uuid);
@@ -236,7 +235,6 @@ export default class ApWrapper2 implements IApWrapper {
     console.log(`Found ${count} macros on page`);
 
     const pageId = String(await this._page.getPageId());
-    console.debug(`In getCustomContentById: pageId=${pageId}, containerId=${customContent?.container?.id}`);
     if (pageId !== String(customContent?.container?.id) || count > 1) {
       diagram.isCopy = true;
       console.warn('Detected copied macro');
@@ -289,7 +287,6 @@ export default class ApWrapper2 implements IApWrapper {
 
   _getCurrentUser(): Promise<IUser> {
     return new Promise(resolv => this._user.getCurrentUser((user: IUser) => {
-      console.debug(`Current user:`, user);
       resolv(user);
     }));
   }
@@ -304,7 +301,6 @@ export default class ApWrapper2 implements IApWrapper {
       })
       .then((response: any) => {
         const data = JSON.parse(response.body);
-        console.debug(`Content permission response:`, data);
         return data.hasPermission;
       }, (e: any) => console.error(`Error checking content permission:`, e));
 
