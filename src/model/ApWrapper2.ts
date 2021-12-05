@@ -232,7 +232,7 @@ export default class ApWrapper2 implements IApWrapper {
     const count = (await this._page.countMacros((m) => {
       return m.customContentId?.value === id;
     }));
-    console.log(`Found ${count} macros on page`);
+    console.debug(`Found ${count} macros on page`);
 
     const pageId = String(await this._page.getPageId());
     if (pageId !== String(customContent?.container?.id) || count > 1) {
