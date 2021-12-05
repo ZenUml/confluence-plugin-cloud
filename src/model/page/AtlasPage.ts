@@ -30,8 +30,7 @@ export class AtlasPage {
   }
 
   async getPageId() {
-    const locationContext = await this._getLocationContext();
-    return locationContext.contentId;
+    return (await this._getLocationContext()).contentId;
   }
 
   async getSpaceKey() {

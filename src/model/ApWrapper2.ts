@@ -165,12 +165,12 @@ export default class ApWrapper2 implements IApWrapper {
   async createCustomContent(content: Diagram) {
     const type = this.getCustomContentType();
     // TODO: Can the type be blog?
-    const container = {id: this._page.getPageId(), type: this._page.getContentType()};
+    const container = {id: await this._page.getPageId(), type: await this._page.getContentType()};
     const bodyData = {
       "type": type,
       "title": content.title || `Untitled ${new Date().toISOString()}`,
       "space": {
-        "key": this._page.getSpaceKey()
+        "key": await this._page.getSpaceKey()
       },
       "container": container,
       "body": {
@@ -230,9 +230,9 @@ export default class ApWrapper2 implements IApWrapper {
     console.debug(`Loaded custom content by id ${id}.`);
     let diagram = JSON.parse(customContent.body.raw.value);
     diagram.source = DataSource.CustomContent;
-    const count = (await this._page.macros((m) => {
-      return m.attrs?.parameters?.macroParams?.customContentId?.value === id;
-    })).length;
+    const count = (await this._page.countMacros((m) => {
+      return m.customContentId?.value === id;
+    }));
     console.log(`Found ${count} macros on page`);
 
     const pageId = String(await this._page.getPageId());
