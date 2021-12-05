@@ -109,6 +109,7 @@ export default class ApWrapper2 implements IApWrapper {
     } else {
       result.value.source = DataSource.ContentProperty;
     }
+    result.value.id = key;
     result.value.payload = result; // To cache content property key and version on Diagram object
     return result;
   }
@@ -241,6 +242,7 @@ export default class ApWrapper2 implements IApWrapper {
     } else {
       diagram.isCopy = false;
     }
+    diagram.id = id;
     let assign = <unknown>Object.assign({}, customContent, {value: diagram});
     return <ICustomContent>assign;
   }

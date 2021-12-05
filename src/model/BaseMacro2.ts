@@ -99,6 +99,7 @@ class BaseMacro2 {
 
     if(!payload || !payload.value) {
       diagram = {
+        id: this._uuid,
         diagramType: DiagramType.Sequence,
         code: await this.getMacroBody(),
         source: DataSource.MacroBody

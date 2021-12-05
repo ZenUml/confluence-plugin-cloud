@@ -2,6 +2,7 @@ import {DataSource, Diagram, DiagramType} from "@/model/Diagram";
 import {IApWrapper} from "@/model/IApWrapper";
 import Example from "@/utils/sequence/Example";
 
+// TODO: Check if we should use it in other scenarios. It is only used in viewer dialog for the moment.
 export default class SequenceDiagramLoader {
   apWrapper: IApWrapper;
 
@@ -12,20 +13,21 @@ export default class SequenceDiagramLoader {
   async load() : Promise<Diagram>{
     let customContent = await this.apWrapper.getCustomContent();
     if (customContent) {
-      return { code: customContent.value.code, styles: customContent.value.styles, diagramType: DiagramType.Sequence, source: DataSource.CustomContent }
+      console.log("SequenceDiagramLoader: Loaded custom content");
+      return customContent.value;
     }
-    console.warn('Custom Content is empty. Loading from content property.');
+    console.warn('SequenceDiagramLoader: Custom Content is empty. Loading from content property.');
     let contentProperty = await this.apWrapper.getContentProperty2();
     if (contentProperty) {
-      return {code: contentProperty.value.code, styles: contentProperty.value.styles, diagramType: DiagramType.Sequence,source: DataSource.ContentProperty};
+      return contentProperty.value;
     }
-    console.error('contentProperty is empty. Falling back to macro body.');
+    console.error('SequenceDiagramLoader: contentProperty is empty. Falling back to macro body.');
     let macroBody = await this.apWrapper.getMacroBody();
     if (macroBody) {
-      console.warn('loaded from macro body');
-      return {code: macroBody, styles: {}, diagramType: DiagramType.Sequence,source: DataSource.MacroBody};
+      console.warn('SequenceDiagramLoader: loaded from macro body');
+      return {id: 'NO_ID',  code: macroBody, styles: {}, diagramType: DiagramType.Sequence,source: DataSource.MacroBody};
     }
-    console.warn('macro body is empty. Use example.');
-    return {code: Example, styles: {}, diagramType: DiagramType.Sequence,source: DataSource.Example};
+    console.warn('SequenceDiagramLoader: macro body is empty. Use example.');
+    return {id: 'NO_ID', code: Example, styles: {}, diagramType: DiagramType.Sequence,source: DataSource.Example};
   }
 }

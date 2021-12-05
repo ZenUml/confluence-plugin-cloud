@@ -1,6 +1,6 @@
 <template>
 <div class="viewer">
-  <div v-show="debug">Host: {{app.host}} Data source: {{diagram.source}}</div>
+  <div v-show="debug">Host: {{app.host}} Data source: {{diagram.source}} {{diagram.id}}</div>
   <error-boundary>
   <div v-html="styles"></div>
   <mermaid v-show="diagramType === 'mermaid'"/>

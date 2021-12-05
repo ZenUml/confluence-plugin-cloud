@@ -13,6 +13,8 @@ export enum DiagramType {
 }
 
 export interface Diagram {
+  // id is used only for debugging and for display only. It is NOT saved in custom content or content property.
+  id?: string; // custom content id or content property id or uuid
   isCopy?: boolean;
   diagramType: DiagramType,
   code?: string,
