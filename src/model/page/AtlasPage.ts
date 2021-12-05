@@ -54,13 +54,11 @@ export class AtlasPage {
       type: 'GET',
       contentType: 'application/json'
     });
-    console.debug("Page.macros", response);
     if (!response || !response.body) {
       return [];
     }
     const {body: {atlas_doc_format: {value}}} = JSON.parse(response.body);
     const {content: contentList} = JSON.parse(value);
-    console.debug("Page.macros", contentList);
     return contentList.filter(({type}: any) => type === AtlasDocElementType.Extension);
   }
 

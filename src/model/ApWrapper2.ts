@@ -264,8 +264,6 @@ export default class ApWrapper2 implements IApWrapper {
     return new Promise((resolv) => {
       try {
         dialog.getCustomData((data: unknown) => {
-          // eslint-disable-next-line
-          console.log('custom data:', data);
           resolv(data);
         });
       } catch(e) {
