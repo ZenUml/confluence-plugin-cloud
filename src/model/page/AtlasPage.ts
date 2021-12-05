@@ -14,13 +14,12 @@ export class AtlasPage {
   }
 
   // This method cannot be private or protected because it needs to be overwritten in test.
-  _getLocationContext(): Promise<ILocationContext> {
+  async _getLocationContext(): Promise<ILocationContext> {
     if(this._locationContext) {
-      return Promise.resolve(this._locationContext);
+      return this._locationContext;
     }
 
     const self = this;
-
     return new Promise((resolve) => {
       self._navigator.getLocation((data: any) => {
         self._locationContext = data.context;
