@@ -262,6 +262,12 @@ export default class ApWrapper2 implements IApWrapper {
     if (existing && pageId === String(existing?.container?.id) && count === 1) {
       result = await this.updateCustomContent(existing, value);
     } else {
+      if(count > 1) {
+        console.warn(`Detected copied macro on the same page ${pageId}.`);
+      }
+      if (pageId !== String(existing?.container?.id)) {
+        console.warn(`Detected copied macro on page ${pageId} (current) and ${existing?.container?.id}.`);
+      }
       result = await this.createCustomContent(value);
     }
     return result
