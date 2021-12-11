@@ -77,7 +77,7 @@ exports.descriptor = functions.https.onRequest((req, resp) => {
     const macroType = module.key.includes('sequence') ? 'sequence' : 'graph';
     const result = modules.customContent.filter(c => c.key.includes(macroType));
     if(result.length === 0) {
-      console.log(`Custom content not found for module ${macro.key} in ${modules.customContent.map(c => c.key)}`);
+      console.log(`Custom content not found for module ${module.key} in ${modules.customContent.map(c => c.key)}`);
     } else {
       return result[0].key;
     }
