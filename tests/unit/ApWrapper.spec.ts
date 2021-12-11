@@ -22,19 +22,6 @@ describe('ApWrapper', () => {
     expect(apWrapper2.isLite()).toBeTruthy();
   })
 
-  it('tells us the page id', async () => {
-    setUpWindowLocation("?contentKey=zenuml-content-sequence");
-    let mockAp = new MockAp();
-    let apWrapper2 = new ApWrapper2(mockAp);
-    const getLocationContext = jest.fn().mockImplementation(async () => {
-      return {
-        contentId: "page-001"
-      }
-    });
-    apWrapper2.getLocationContext = getLocationContext.bind(apWrapper2);
-    expect(await apWrapper2.getPageId()).toBe('page-001');
-  })
-
   it('gets custom content by id (on the original page)', async () => {
     setUpWindowLocation("?contentKey=zenuml-content-sequence");
     let mockAp = new MockAp();
@@ -44,9 +31,9 @@ describe('ApWrapper', () => {
     apWrapper2._requestFn = _requestFn.bind(apWrapper2);
 
     const getPageId = jest.fn().mockImplementation(async () => { return 12345 });
-    apWrapper2.getPageId = getPageId.bind(apWrapper2);
+    apWrapper2._page.getPageId = getPageId.bind(apWrapper2);
     expect(await apWrapper2.getCustomContentById("custom-content-001"))
-      .toEqual(buildEnrichedCustomContent("12345", "A.method", false));
+      .toEqual(buildEnrichedCustomContent("custom-content-001", "12345", "A.method", false));
   })
 
   it('gets custom content by id (on a different page)', async () => {
@@ -58,9 +45,9 @@ describe('ApWrapper', () => {
     apWrapper2._requestFn = _requestFn.bind(apWrapper2);
 
     const getPageId = jest.fn().mockImplementation(async () => { return 12345 });
-    apWrapper2.getPageId = getPageId.bind(apWrapper2);
+    apWrapper2._page.getPageId = getPageId.bind(apWrapper2);
     expect(await apWrapper2.getCustomContentById("custom-content-001"))
-      .toEqual(buildEnrichedCustomContent("12346", "A.method", true));
+      .toEqual(buildEnrichedCustomContent("custom-content-001", "12346", "A.method", true));
   })
 
 })

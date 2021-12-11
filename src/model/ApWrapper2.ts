@@ -1,4 +1,4 @@
-import {getUrlParam} from '@/utils/window';
+import {getUrlParam, trackEvent} from '@/utils/window';
 import {IApWrapper, VersionType} from "@/model/IApWrapper";
 import {IMacroData} from "@/model/IMacroData";
 import {IContentProperty, IContentPropertyNormalised} from "@/model/IContentProperty";
@@ -9,17 +9,8 @@ import {IAp} from "@/model/IAp";
 import {MacroIdentifier} from "@/model/MacroIdentifier";
 import {DataSource, Diagram, DiagramType} from "@/model/Diagram";
 import {ICustomContentResponseBody} from "@/model/ICustomContentResponseBody";
+import {AtlasPage} from "@/model/page/AtlasPage";
 
-interface ContentPropertyIn {
-}
-
-interface ILocationContext {
-  spaceKey: string;
-  contentType: string;
-  contentId: string;
-}
-
-// custom content APIs.
 export default class ApWrapper2 implements IApWrapper {
   versionType: VersionType;
   _confluence: IConfluence;
@@ -29,8 +20,8 @@ export default class ApWrapper2 implements IApWrapper {
   _navigator: any;
   _dialog: any;
   _macroIdentifier: MacroIdentifier;
-  _locationContext: any;
   _user: any;
+  _page: AtlasPage;
 
   constructor(ap: IAp) {
     this.versionType = this.isLite() ? VersionType.Lite : VersionType.Full;
@@ -54,6 +45,7 @@ export default class ApWrapper2 implements IApWrapper {
     this._navigator = ap.navigator;
     this._dialog = ap.dialog;
     this._user = ap.user;
+    this._page = new AtlasPage(ap);
   }
 
   getMacroData(): Promise<IMacroData | undefined> {
@@ -61,7 +53,6 @@ export default class ApWrapper2 implements IApWrapper {
       try {
         this._confluence.getMacroData((data) => {
           resolve(data)
-          console.debug('Loaded macro data:', data)
         })
       } catch (e) {
         // eslint-disable-next-line
@@ -95,7 +86,7 @@ export default class ApWrapper2 implements IApWrapper {
     let macroData = await this.getMacroData();
     const uuid = macroData?.uuid;
     if (!uuid) {
-      console.debug('`uuid` is empty. This diagram has not been initialised. Most likely it has not been edited.')
+      console.warn('`uuid` is empty. This diagram has not been initialised. Most likely it has not been edited.')
       return undefined;
     }
     let key = this.propertyKey(uuid);
@@ -118,6 +109,7 @@ export default class ApWrapper2 implements IApWrapper {
     } else {
       result.value.source = DataSource.ContentProperty;
     }
+    result.value.id = key;
     result.value.payload = result; // To cache content property key and version on Diagram object
     return result;
   }
@@ -154,31 +146,6 @@ export default class ApWrapper2 implements IApWrapper {
     this._confluence.saveMacro(params, body)
   }
 
-  getLocationContext(): Promise<ILocationContext> {
-    if(this._locationContext) {
-      return Promise.resolve(this._locationContext);
-    }
-
-    const self = this;
-
-    return new Promise((resolve) => {
-      self._navigator.getLocation((data: any) => {
-        self._locationContext = data.context;
-        resolve(data.context);
-      });
-    });
-  }
-
-  async getSpaceKey() {
-    const locationContext = await this.getLocationContext();
-    return (locationContext.spaceKey);
-  }
-
-  async getPageId() {
-    const locationContext = await this.getLocationContext();
-    return locationContext.contentId;
-  }
-
   getContentKey() {
     return getUrlParam('contentKey');
   }
@@ -196,14 +163,14 @@ export default class ApWrapper2 implements IApWrapper {
   }
 
   async createCustomContent(content: Diagram) {
-    const context = await this.getLocationContext();
     const type = this.getCustomContentType();
-    const container = {id: context.contentId, type: context.contentType};
+    // TODO: Can the type be blog?
+    const container = {id: await this._page.getPageId(), type: await this._page.getContentType()};
     const bodyData = {
       "type": type,
       "title": content.title || `Untitled ${new Date().toISOString()}`,
       "space": {
-        "key": context.spaceKey
+        "key": await this._page.getSpaceKey()
       },
       "container": container,
       "body": {
@@ -256,19 +223,6 @@ export default class ApWrapper2 implements IApWrapper {
     return this.parseCustomContentResponse(response);
   }
 
-  async getCustomContentByTitle(type: any, title: any) {
-    const spaceKey = await this.getSpaceKey();
-    const url = `/rest/api/content?type=${type}&title=${title}&spaceKey=${spaceKey}&expand=children,history,version.number`;
-    const results = JSON.parse((await this._requestFn({type: 'GET', url})).body).results;
-    if(results.length > 1) {
-      throw `multiple results found with type ${type}, title ${title}`;
-    }
-    if(results.length === 1) {
-      return results[0];
-    }
-    return null;
-  }
-
   async getCustomContentById(id: string): Promise<ICustomContent | undefined> {
     const url = `/rest/api/content/${id}?expand=body.raw,version.number,container,space`;
     const response = await this._requestFn({type: 'GET', url});
@@ -276,15 +230,26 @@ export default class ApWrapper2 implements IApWrapper {
     console.debug(`Loaded custom content by id ${id}.`);
     let diagram = JSON.parse(customContent.body.raw.value);
     diagram.source = DataSource.CustomContent;
+    const count = (await this._page.countMacros((m) => {
+      return m.customContentId?.value === id;
+    }));
+    console.debug(`Found ${count} macros on page`);
 
-    const pageId = String(await this.getPageId());
-    console.debug(`In getCustomContentById: pageId=${pageId}, containerId=${customContent?.container?.id}`);
-    if (pageId !== String(customContent?.container?.id)) {
+    const pageId = String(await this._page.getPageId());
+    let isCrossPageCopy = pageId !== String(customContent?.container?.id);
+    if (isCrossPageCopy || count > 1) {
       diagram.isCopy = true;
-      console.debug('Detected copied macro');
+      console.warn('Detected copied macro');
+      if(isCrossPageCopy) {
+        trackEvent('cross_page', 'duplication_detect', 'warning');
+      }
+      if(count > 1) {
+        trackEvent('same_page', 'duplication_detect', 'warning');
+      }
     } else {
       diagram.isCopy = false;
     }
+    diagram.id = id;
     let assign = <unknown>Object.assign({}, customContent, {value: diagram});
     return <ICustomContent>assign;
   }
@@ -293,9 +258,22 @@ export default class ApWrapper2 implements IApWrapper {
     let result;
     // TODO: Do we really need to check whether it exists?
     const existing = await this.getCustomContentById(customContentId);
-    if (existing) {
+    const pageId = String(await this._page.getPageId());
+    const count = (await this._page.countMacros((m) => {
+      return m.customContentId?.value === customContentId;
+    }));
+
+    // Make sure we don't update custom content on a different page
+    // and there is only one macro linked to the custom content on the current page.
+    if (existing && pageId === String(existing?.container?.id) && count === 1) {
       result = await this.updateCustomContent(existing, value);
     } else {
+      if(count > 1) {
+        console.warn(`Detected copied macro on the same page ${pageId}.`);
+      }
+      if (pageId !== String(existing?.container?.id)) {
+        console.warn(`Detected copied macro on page ${pageId} (current) and ${existing?.container?.id}.`);
+      }
       result = await this.createCustomContent(value);
     }
     return result
@@ -306,8 +284,6 @@ export default class ApWrapper2 implements IApWrapper {
     return new Promise((resolv) => {
       try {
         dialog.getCustomData((data: unknown) => {
-          // eslint-disable-next-line
-          console.log('custom data:', data);
           resolv(data);
         });
       } catch(e) {
@@ -333,7 +309,6 @@ export default class ApWrapper2 implements IApWrapper {
 
   _getCurrentUser(): Promise<IUser> {
     return new Promise(resolv => this._user.getCurrentUser((user: IUser) => {
-      console.debug(`Current user:`, user);
       resolv(user);
     }));
   }
@@ -348,12 +323,11 @@ export default class ApWrapper2 implements IApWrapper {
       })
       .then((response: any) => {
         const data = JSON.parse(response.body);
-        console.debug(`Content permission response:`, data);
         return data.hasPermission;
       }, (e: any) => console.error(`Error checking content permission:`, e));
 
     return Promise.all([
-      this.getPageId(),
+      this._page.getPageId(),
       this._getCurrentUser()
     ]).then(([pageId, user]) => checkPermission(pageId, user.atlassianAccountId), console.error);
   }

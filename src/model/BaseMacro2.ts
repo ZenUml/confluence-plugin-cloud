@@ -71,10 +71,8 @@ class BaseMacro2 {
 
   async getContent(): Promise<IContentPropertyNormalised | ICustomContent | undefined> {
     if(this._standaloneCustomContent) {
-      console.debug('rendering for custom content native viewer.');
       // @ts-ignore
       this._customContentId = getUrlParam('content.id');
-      console.debug('custom content id:', this._customContentId);
       return await this.getCustomContent();
     }
     const macroData = await this._apWrapper.getMacroData();
@@ -83,8 +81,7 @@ class BaseMacro2 {
     // Fall back to the uuid parameter in the URL.
     // This is defined in the descriptor and is only available for sequence-viewer.html.
     this._uuid = macroData?.uuid || getUrlParam('uuid');
-    console.debug('Macro UUID:', this._uuid);
-    
+
     this._customContentId = macroData?.customContentId;
     
     if(this._customContentId) {
@@ -99,10 +96,10 @@ class BaseMacro2 {
   async load(): Promise<Diagram> {
     let diagram;
     const payload = await this.getContent();
-    console.debug('Loaded payload', payload);
 
     if(!payload || !payload.value) {
       diagram = {
+        id: this._uuid,
         diagramType: DiagramType.Sequence,
         code: await this.getMacroBody(),
         source: DataSource.MacroBody
@@ -112,8 +109,6 @@ class BaseMacro2 {
     }
 
     this._loaded = true;
-    console.debug('Loaded diagram', diagram);
-
     this._diagram = diagram;
     return diagram;
   }
@@ -121,7 +116,6 @@ class BaseMacro2 {
   // Warning! Do not call getXXX in save. Do retest if you want to call getXXX.
   // It does not work as of 17th May 2020. That is why we have stored key and version
   async save(diagram: Diagram) {
-    console.debug('Saving macro', diagram);
     if (!this._loaded) {
       throw new Error('You have to call load before calling save()')
     }
@@ -148,7 +142,6 @@ class BaseMacro2 {
   }
 
   async saveOnDialog(diagram: Diagram) {
-    console.debug('Saving macro', diagram);
     if (!this._loaded) {
       throw new Error('You have to call load before calling save()')
     }
@@ -162,7 +155,6 @@ class BaseMacro2 {
         }
       }
     
-      console.debug('Saving content property', contentProperty);
       await this._apWrapper.setContentProperty(contentProperty as IContentPropertyNormalised);
       this.trackDiagramEvent(diagram, 'save_macro', 'content_property');
       return;
