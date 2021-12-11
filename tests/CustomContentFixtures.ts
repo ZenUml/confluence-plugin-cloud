@@ -15,7 +15,7 @@ export function buildCustomContentResponse(containerId: string, code: string) {
   };
 }
 
-export function buildEnrichedCustomContent(containerId: string = "page-002", code: string = "A.method", isCopy: boolean = false) {
+export function buildEnrichedCustomContent(id: string = "todo", containerId: string = "page-002", code: string = "A.method", isCopy: boolean = false) {
   return {
     body: {
       raw: {
@@ -28,6 +28,7 @@ export function buildEnrichedCustomContent(containerId: string = "page-002", cod
       id: containerId
     },
     value: {
+      "id": id,
       "code": code,
       "isCopy": isCopy,
       "source": "custom-content"

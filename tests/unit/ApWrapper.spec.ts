@@ -33,7 +33,7 @@ describe('ApWrapper', () => {
     const getPageId = jest.fn().mockImplementation(async () => { return 12345 });
     apWrapper2._page.getPageId = getPageId.bind(apWrapper2);
     expect(await apWrapper2.getCustomContentById("custom-content-001"))
-      .toEqual(buildEnrichedCustomContent("12345", "A.method", false));
+      .toEqual(buildEnrichedCustomContent("custom-content-001", "12345", "A.method", false));
   })
 
   it('gets custom content by id (on a different page)', async () => {
@@ -47,7 +47,7 @@ describe('ApWrapper', () => {
     const getPageId = jest.fn().mockImplementation(async () => { return 12345 });
     apWrapper2._page.getPageId = getPageId.bind(apWrapper2);
     expect(await apWrapper2.getCustomContentById("custom-content-001"))
-      .toEqual(buildEnrichedCustomContent("12346", "A.method", true));
+      .toEqual(buildEnrichedCustomContent("custom-content-001", "12346", "A.method", true));
   })
 
 })
