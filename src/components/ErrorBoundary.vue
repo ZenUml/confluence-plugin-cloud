@@ -20,7 +20,6 @@ export default {
   name: "ErrorBoundary",
   computed: {
     error() {
-      console.log(this.$store.state.error?.data);
       return this.$store.state.error;
     }
   }

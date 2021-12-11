@@ -13,6 +13,8 @@ export enum DiagramType {
 }
 
 export interface Diagram {
+  // id is used only for debugging and for display only. It is NOT saved in custom content or content property.
+  id?: string; // custom content id or content property id or uuid
   isCopy?: boolean;
   diagramType: DiagramType,
   code?: string,
@@ -22,5 +24,5 @@ export interface Diagram {
   graphXml?: string,
   compressed?: boolean,
   source: DataSource,
-  payload?: any
+  payload?: any   // Only used for content-property to keep the version and key which are used at `saveOnDialog`.
 }

@@ -4,7 +4,6 @@ import {IConfluence} from "@/model/IConfluence";
 import {DataSource, DiagramType} from "@/model/Diagram";
 import ApWrapper2 from "@/model/ApWrapper2";
 import Macro from "@/model/Macro";
-import {setUpWindowLocation} from "../SetUpWindowLocation";
 import {buildCustomContentResponse} from "../CustomContentFixtures";
 import helper from './TestHelper';
 
@@ -27,7 +26,7 @@ describe('BaseMacro2', () => {
     mockAp = new MockAp();
     mockApConfluence = mockAp.confluence;
     macro = new BaseMacro2(new ApWrapper2(mockAp));
-  };
+  }
 
   it('creates custom content if _customContentId is null', async () => {
     setUp('contentKey=sequence');
@@ -66,8 +65,8 @@ describe('BaseMacro2', () => {
           contentId: "page-001"
         }
       });
-      apWrapper2.getLocationContext = getLocationContext.bind(apWrapper2);
-      expect(await apWrapper2.getPageId()).toBe('page-001');
+      apWrapper2._page._getLocationContext = getLocationContext.bind(apWrapper2);
+      expect(await apWrapper2._page.getPageId()).toBe('page-001');
       mockApConfluence = mockAp.confluence;
       macro = new BaseMacro2(new ApWrapper2(mockAp));
 

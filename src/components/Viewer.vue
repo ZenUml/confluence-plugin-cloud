@@ -1,6 +1,6 @@
 <template>
 <div class="viewer">
-  <div v-show="debug">Data source: {{diagram.source}}</div>
+  <div v-show="debug">Host: {{app.host}} Data source: {{diagram.source}} {{diagram.id}}</div>
   <error-boundary>
   <div v-html="styles"></div>
   <mermaid v-show="diagramType === 'mermaid'"/>
@@ -33,7 +33,7 @@ import {mapGetters} from "vuex";
 import { VueSequence } from 'vue-sequence'
 import Mermaid from './Mermaid'
 import EventBus from '../EventBus'
-
+import App from './../model/app/App.ts'
 import StylingPanel from "@/components/StylingPanel";
 import ErrorBoundary from "@/components/ErrorBoundary";
 const DiagramFrame = VueSequence.DiagramFrame;
@@ -48,6 +48,9 @@ export default {
   },
   computed: {
     ...mapGetters({isDisplayMode: 'isDisplayMode', diagramType: 'diagramType', canEdit: 'canEdit'}),
+    app() {
+      return new App();
+    },
     isLite() {
       return this.$store.state.macro._apWrapper.isLite();
     },
@@ -55,7 +58,6 @@ export default {
       return !!localStorage.zenumlDebug;
     },
     diagram() {
-      console.debug('_diagram', this.$store.state.macro._diagram);
       return this.$store.state.macro._diagram || {};
     },
     styles() {
