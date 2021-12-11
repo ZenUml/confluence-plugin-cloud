@@ -1,4 +1,4 @@
-import {getUrlParam} from '@/utils/window';
+import {getUrlParam, trackEvent} from '@/utils/window';
 import {IApWrapper, VersionType} from "@/model/IApWrapper";
 import {IMacroData} from "@/model/IMacroData";
 import {IContentProperty, IContentPropertyNormalised} from "@/model/IContentProperty";
@@ -240,6 +240,12 @@ export default class ApWrapper2 implements IApWrapper {
     if (isCrossPageCopy || count > 1) {
       diagram.isCopy = true;
       console.warn('Detected copied macro');
+      if(isCrossPageCopy) {
+        trackEvent('cross_page', 'duplication_detect', 'warning');
+      }
+      if(count > 1) {
+        trackEvent('same_page', 'duplication_detect', 'warning');
+      }
     } else {
       diagram.isCopy = false;
     }
