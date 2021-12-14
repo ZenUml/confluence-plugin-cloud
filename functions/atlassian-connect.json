@@ -141,7 +141,6 @@
           "apiSupport": {
             "bodyType": "raw",
             "supportedContainerTypes": [
-              "space",
               "page",
               "blogpost",
               "comment"
@@ -175,7 +174,6 @@
           "apiSupport": {
             "bodyType": "raw",
             "supportedContainerTypes": [
-              "space",
               "page",
               "blogpost",
               "comment"
