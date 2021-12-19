@@ -89,7 +89,7 @@ module.exports = {
   productionSourceMap: false,
   configureWebpack: {
     entry: {
-      descriptor123: './src/descriptor/atlassian-connect.base.descriptor'
+      descriptor: './src/descriptor/atlassian-connect.base.descriptor'
     },
     module: {
       rules: [
