@@ -1,3 +1,5 @@
+const FileListPlugin = require('./src/webpack-plugins/file-list-plugin.js');
+const path = require('path')
 module.exports = {
   pages: {
     "index": {
@@ -87,6 +89,25 @@ module.exports = {
   },
   productionSourceMap: false,
   configureWebpack: {
+    entry: {
+      descriptor123: './src/descriptor/atlassian-connect.base.descriptor'
+    },
+    plugins: [
+      new FileListPlugin()
+    ],
+    module: {
+      rules: [
+        {
+          test: /\.descriptor$/,
+          exclude: '/node_modules/',
+          use: [
+            {
+              loader: path.resolve(__dirname, 'src/webpack-plugins/descriptor-loader.js')
+            }
+          ]
+        }
+      ]
+    },
     resolve: {
       alias: {
         // 'vue$': 'vue/dist/vue.esm.js' // Full version with template compiler
