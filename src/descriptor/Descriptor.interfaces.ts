@@ -1,4 +1,11 @@
 export interface IDescriptor {
+  key: string
+  name: string
+  description: string
+  enableLicensing: boolean
+  links: {
+    self: string
+  }
   modules: {
     dynamicContentMacros: Array<IDynamicContentMacro>
     generalPages: Array<IGeneralPage>
@@ -8,6 +15,7 @@ export interface IDescriptor {
 
 export interface IDynamicContentMacro {
   key: string
+  name: { value: string }
   url: string
   editor?: {
     url: string
@@ -21,6 +29,7 @@ export interface IDynamicContentMacro {
 
 interface ICustomContentModule {
   key: string
+  name: { value: string }
 }
 
 export interface IGeneralPage {

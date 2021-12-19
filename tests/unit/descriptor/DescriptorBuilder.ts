@@ -1,12 +1,11 @@
 import {IDescriptor} from "@/descriptor/Descriptor.interfaces";
 
 export class DescriptorBuilder {
-  private _base?: IDescriptor;
+  private readonly _base: IDescriptor;
   private _version?: string;
 
-  from(base: IDescriptor) {
+  constructor(base: IDescriptor) {
     this._base = base;
-    return this;
   }
 
   public forVersion(version: string) {
@@ -29,9 +28,48 @@ export class DescriptorBuilder {
 
     let stringBase = JSON.stringify(this._base);
     let stringFull = stringBase
-      .replace(/__VERSION__/g, this._version || '')
-      .replace(/__ADDON_KEY__/g, 'com.zenuml.confluence-addon')
+      .replace(/__VERSION__/g, this._version || '');
     return JSON.parse(stringFull);
+  }
+
+  lite() {
+    let liteKeySuffix = '-lite';
+    this._base.key = `${this._base.key}${liteKeySuffix}`;
+    this._base.name = "ZenUML Lite";
+    this._base.description = "ZenUML Lite add-on";
+    this._base.enableLicensing = false;
+    this._base.links.self = `/atlassian-connect${liteKeySuffix}.json`;
+    this._base.modules.dynamicContentMacros.forEach(macro => {
+      if (macro.key === 'zenuml-sequence-macro') {
+        macro.name.value = 'ZenUML Sequence Lite';
+      }
+      else if (macro.key === 'zenuml-graph-macro') {
+        macro.name.value = 'ZenUML Graph Lite';
+      }
+      macro.key = `${macro.key}${liteKeySuffix}`;
+      const contentKey = this.getCustomContentKeyForModule(macro.key);
+      this.replaceUrl(macro, contentKey);
+      this.replaceUrl(macro.editor, contentKey);
+      this.replaceUrl(macro.renderModes?.default, contentKey);
+    });
+
+    if(this._base.modules.customContent) {
+      this._base.modules.customContent.forEach(content => {
+        if(content.name && content.name.value) {
+          content.name.value = `${content.name.value} Lite`;
+        }
+      });
+    }
+
+    this._base?.modules?.generalPages?.forEach(page => {
+      const contentKey = this.getCustomContentKeyForModule(page.key);
+      this.replaceUrl(page, contentKey);
+    })
+
+    let stringBase = JSON.stringify(this._base);
+    const stringLite = stringBase
+      .replace(/__VERSION__/g, this._version || '');
+    return JSON.parse(stringLite);
   }
 
   private getCustomContentKeyForModule = (moduleKey: any) => {
@@ -47,8 +85,9 @@ export class DescriptorBuilder {
   }
 
   private replaceUrl(field: { url: string } | undefined, contentKey: string) {
-    if(field?.url) {
-      field.url = field.url.replace('__CONTENT_KEY__', contentKey);
+    if(field) {
+      field.url = field.url.replace('__CONTENT_KEY__', contentKey)
+        .replace('__ADDON_KEY__', this._base.key);
     }
   }
 }
