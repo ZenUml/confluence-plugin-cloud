@@ -1,4 +1,3 @@
-const FileListPlugin = require('./src/webpack-plugins/file-list-plugin.js');
 const path = require('path')
 module.exports = {
   pages: {
@@ -92,9 +91,6 @@ module.exports = {
     entry: {
       descriptor123: './src/descriptor/atlassian-connect.base.descriptor'
     },
-    plugins: [
-      new FileListPlugin()
-    ],
     module: {
       rules: [
         {
