@@ -14,28 +14,16 @@ export class DescriptorBuilder {
     return this;
   }
 
-  getCustomContentKeyForModule = (module: any) => {
-    const moduleType = module.key.includes('sequence') ? 'sequence' : 'graph';
-    let customContentArray = this._base?.modules?.customContent;
-    const result = customContentArray?.filter((c: any) => c.key.includes(moduleType));
-    if (!result || result?.length === 0) {
-      console.log(`Custom content not found for module ${module.key} in ${customContentArray?.map((c: any) => c.key)}`);
-      return 'custom_content_undefined';
-    } else {
-      return result[0].key;
-    }
-  }
-
   full() {
     this._base?.modules?.dynamicContentMacros.forEach(macro => {
-      const contentKey = this.getCustomContentKeyForModule(macro);
+      const contentKey = this.getCustomContentKeyForModule(macro.key);
       this.replaceUrl(macro, contentKey);
       this.replaceUrl(macro.editor, contentKey);
       this.replaceUrl(macro.renderModes?.default, contentKey);
     });
 
     this._base?.modules?.generalPages?.forEach(page => {
-      const contentKey = this.getCustomContentKeyForModule(page);
+      const contentKey = this.getCustomContentKeyForModule(page.key);
       this.replaceUrl(page, contentKey);
     })
 
@@ -44,6 +32,18 @@ export class DescriptorBuilder {
       .replace(/__VERSION__/g, this._version || '')
       .replace(/__ADDON_KEY__/g, 'com.zenuml.confluence-addon')
     return JSON.parse(stringFull);
+  }
+
+  private getCustomContentKeyForModule = (moduleKey: any) => {
+    const moduleType = moduleKey.includes('sequence') ? 'sequence' : 'graph';
+    let customContentArray = this._base?.modules?.customContent;
+    const result = customContentArray?.filter((c: any) => c.key.includes(moduleType));
+    if (!result || result?.length === 0) {
+      console.log(`Custom content not found for module ${moduleKey} in ${customContentArray?.map((c: any) => c.key)}`);
+      return 'custom_content_undefined';
+    } else {
+      return result[0].key;
+    }
   }
 
   private replaceUrl(field: { url: string } | undefined, contentKey: string) {

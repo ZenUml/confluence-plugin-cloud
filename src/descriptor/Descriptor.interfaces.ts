@@ -7,6 +7,7 @@ export interface IDescriptor {
 }
 
 export interface IDynamicContentMacro {
+  key: string
   url: string
   editor?: {
     url: string
@@ -23,5 +24,6 @@ interface ICustomContentModule {
 }
 
 export interface IGeneralPage {
+  key: string
   url: string
 }
