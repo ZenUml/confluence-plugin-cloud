@@ -231,7 +231,7 @@ export default class ApWrapper2 implements IApWrapper {
     let diagram = JSON.parse(customContent.body.raw.value);
     diagram.source = DataSource.CustomContent;
     const count = (await this._page.countMacros((m) => {
-      return m.customContentId?.value === id;
+      return m?.customContentId?.value === id;
     }));
     console.debug(`Found ${count} macros on page`);
 
@@ -260,7 +260,7 @@ export default class ApWrapper2 implements IApWrapper {
     const existing = await this.getCustomContentById(customContentId);
     const pageId = String(await this._page.getPageId());
     const count = (await this._page.countMacros((m) => {
-      return m.customContentId?.value === customContentId;
+      return m?.customContentId?.value === customContentId;
     }));
 
     // Make sure we don't update custom content on a different page
