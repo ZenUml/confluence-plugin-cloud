@@ -27,19 +27,14 @@ export class DescriptorBuilder {
   full() {
     this._base?.modules?.dynamicContentMacros.forEach(macro => {
       const contentKey = this.getCustomContentKeyForModule(macro, this._base?.modules);
-      macro.url = macro.url.replace('__CONTENT_KEY__', contentKey);
-      if (macro.editor) {
-        macro.editor.url = macro.editor?.url.replace('__CONTENT_KEY__', contentKey);
-      }
-
-      if (macro.renderModes && macro.renderModes.default && macro.renderModes.default.url) {
-        macro.renderModes.default.url = macro.renderModes.default.url.replace('__CONTENT_KEY__', contentKey);
-      }
+      this.replaceUrl(macro, contentKey);
+      this.replaceUrl(macro.editor, contentKey);
+      this.replaceUrl(macro.renderModes?.default, contentKey);
     });
 
     this._base?.modules?.generalPages?.forEach(page => {
       const contentKey = this.getCustomContentKeyForModule(page, this._base?.modules);
-      page.url = page.url.replace('__CONTENT_KEY__', contentKey);
+      this.replaceUrl(page, contentKey);
     })
 
     let stringBase = JSON.stringify(this._base);
@@ -47,5 +42,11 @@ export class DescriptorBuilder {
       .replace(/__VERSION__/g, this._version || '')
       .replace(/__ADDON_KEY__/g, 'com.zenuml.confluence-addon')
     return JSON.parse(stringFull);
+  }
+
+  private replaceUrl(field: { url: string } | undefined, contentKey: string) {
+    if(field?.url) {
+      field.url = field.url.replace('__CONTENT_KEY__', contentKey);
+    }
   }
 }
