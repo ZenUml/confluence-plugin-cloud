@@ -14,11 +14,13 @@ export class DescriptorBuilder {
     return this;
   }
 
-  getCustomContentKeyForModule = (module: any, modules: any) => {
-    const macroType = module.key.includes('sequence') ? 'sequence' : 'graph';
-    const result = modules.customContent.filter((c: any) => c.key.includes(macroType));
-    if (result.length === 0) {
-      console.log(`Custom content not found for module ${module.key} in ${modules.customContent.map((c: any) => c.key)}`);
+  getCustomContentKeyForModule = (module: any) => {
+    const moduleType = module.key.includes('sequence') ? 'sequence' : 'graph';
+    let customContentArray = this._base?.modules?.customContent;
+    const result = customContentArray?.filter((c: any) => c.key.includes(moduleType));
+    if (!result || result?.length === 0) {
+      console.log(`Custom content not found for module ${module.key} in ${customContentArray?.map((c: any) => c.key)}`);
+      return 'custom_content_undefined';
     } else {
       return result[0].key;
     }
@@ -26,14 +28,14 @@ export class DescriptorBuilder {
 
   full() {
     this._base?.modules?.dynamicContentMacros.forEach(macro => {
-      const contentKey = this.getCustomContentKeyForModule(macro, this._base?.modules);
+      const contentKey = this.getCustomContentKeyForModule(macro);
       this.replaceUrl(macro, contentKey);
       this.replaceUrl(macro.editor, contentKey);
       this.replaceUrl(macro.renderModes?.default, contentKey);
     });
 
     this._base?.modules?.generalPages?.forEach(page => {
-      const contentKey = this.getCustomContentKeyForModule(page, this._base?.modules);
+      const contentKey = this.getCustomContentKeyForModule(page);
       this.replaceUrl(page, contentKey);
     })
 
