@@ -8,6 +8,7 @@
     <a class="help mx-1" target="_blank" :href="helpUrl">
       <va-button type="default"><va-icon type="question-circle" /><span class="ml-1">Help</span></va-button>
     </a>
+    <get-support/>
     <save-and-go-back-button />
   </div>
 </template>
@@ -15,10 +16,14 @@
 <script>
 import {mapState} from 'vuex';
 import SaveAndGoBackButton from "@/components/SaveAndGoBackButton";
+import GetSupport from './SendFeedback'
 import {DiagramType} from "@/model/Diagram";
 export default {
   name: "Header",
-  components: {SaveAndGoBackButton},
+  components: {
+    SaveAndGoBackButton,
+    GetSupport,
+  },
   data() {
     return {
       helpUrl: 'https://zenuml.atlassian.net/wiki/spaces/Doc/overview',

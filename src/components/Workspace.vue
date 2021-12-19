@@ -7,9 +7,6 @@
       </div>
       <div id="workspace-right" class="split diagram">
         <Viewer />
-        <div class="get-support-container">
-          <get-support/>
-        </div>
       </div>
     </div>
   </div>
@@ -17,7 +14,6 @@
 
 <script>
   import Editor from './Editor.vue'
-  import GetSupport from './SendFeedback'
   import Split from 'split.js'
   import Header from "@/components/Header";
   import Viewer from "@/components/Viewer";
@@ -34,7 +30,6 @@
     },
     components: {
       Header,
-      GetSupport,
       Editor,
       Viewer
     }
