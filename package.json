@@ -4,10 +4,12 @@
   "private": true,
   "scripts": {
     "engine": "use yarn to install",
+    "tsc:descriptor-loader": "tsc src/descriptor/DescriptorBuilder.ts",
+    "tsc:clean": "tsc --build --clean",
     "test:unit": "vue-cli-service test:unit",
     "build:full": "PRODUCT_TYPE=full vue-cli-service build --mode production",
     "build:full:watch": "PRODUCT_TYPE=full vue-cli-service build --watch",
-    "build:lite": "PRODUCT_TYPE=lite vue-cli-service build",
+    "build:lite": "yarn tsc:descriptor-loader && PRODUCT_TYPE=lite vue-cli-service build && yarn tsc:clean",
     "deploy:full:prod": "npm run build:full && firebase deploy --project full:prod",
     "deploy:full:stage": "npm run build:full && firebase deploy --project full:stage",
     "deploy:lite:prod": "npm run build:lite && firebase deploy --project lite:prod",

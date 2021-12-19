@@ -1,4 +1,6 @@
 const {DescriptorBuilder} = require("../descriptor/DescriptorBuilder");
+// import {DescriptorBuilder} from "../descriptor/DescriptorBuilder";
+
 class FileListPlugin {
   apply(compiler) {
     // emit is asynchronous hook, tapping into it using tapAsync, you can use tapPromise/tap(synchronous) as well
