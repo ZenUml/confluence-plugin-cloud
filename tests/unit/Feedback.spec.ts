@@ -1,7 +1,7 @@
 import { shallowMount } from '@vue/test-utils'
-import GetSupport from '@/components/GetSupport.vue'
+import GetSupport from '@/components/SendFeedback.vue'
 
-describe('GetSupport.vue', () => {
+describe('SendFeedback.vue', () => {
   it('renders props.msg when passed', () => {
     const msg = 'Send feedback'
     const wrapper = shallowMount(GetSupport, {

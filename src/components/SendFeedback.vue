@@ -1,6 +1,5 @@
 <template>
-<div class="get-support">
-
+<div class="send-feedback">
   <a target="_blank" href="https://zenuml.atlassian.net/servicedesk">Send feedback
     <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px"
          width="20" height="20"
@@ -12,13 +11,13 @@
 
 <script>
     export default {
-        name: "GetSupport"
+        name: "SendFeedback"
     }
 </script>
 
 <style scoped>
 
-  .get-support {
+  .send-feedback {
     border-radius: 5px;
     padding: 10px;
     background-color: hsla(0, 0%, 83%, 0.75);
