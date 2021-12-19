@@ -5,8 +5,8 @@
       <va-radio-btn label="mermaid">Mermaid (Beta)</va-radio-btn>
     </va-radio-group>
 
-    <a class="help" target="_blank" :href="helpUrl">
-      <va-button round type="default"><va-icon type="question-circle" /></va-button>
+    <a class="help mx-1" target="_blank" :href="helpUrl">
+      <va-button type="default"><va-icon type="question-circle" /><span class="ml-1">Help</span></va-button>
     </a>
     <save-and-go-back-button />
   </div>

@@ -17,7 +17,7 @@
 
 <script>
   import Editor from './Editor.vue'
-  import GetSupport from './GetSupport'
+  import GetSupport from './SendFeedback'
   import Split from 'split.js'
   import Header from "@/components/Header";
   import Viewer from "@/components/Viewer";
