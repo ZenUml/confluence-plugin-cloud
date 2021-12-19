@@ -3,7 +3,7 @@ import GetSupport from '@/components/GetSupport.vue'
 
 describe('GetSupport.vue', () => {
   it('renders props.msg when passed', () => {
-    const msg = 'Get support'
+    const msg = 'Send feedback'
     const wrapper = shallowMount(GetSupport, {
       propsData: { msg }
     })
