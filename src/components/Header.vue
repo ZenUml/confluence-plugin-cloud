@@ -8,7 +8,7 @@
     <a class="help mx-1" target="_blank" :href="helpUrl">
       <va-button type="default"><va-icon type="question-circle" /><span class="ml-1">Help</span></va-button>
     </a>
-    <get-support/>
+    <send-feedback/>
     <save-and-go-back-button />
   </div>
 </template>
@@ -16,13 +16,13 @@
 <script>
 import {mapState} from 'vuex';
 import SaveAndGoBackButton from "@/components/SaveAndGoBackButton";
-import GetSupport from './SendFeedback'
 import {DiagramType} from "@/model/Diagram";
+import SendFeedback from "@/components/SendFeedback";
 export default {
   name: "Header",
   components: {
+    SendFeedback,
     SaveAndGoBackButton,
-    GetSupport,
   },
   data() {
     return {
