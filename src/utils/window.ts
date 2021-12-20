@@ -9,7 +9,7 @@ export function getUrlParam (param: string): string | undefined {
   }
 }
 
-export function trackEvent(label: DiagramType | string, event: string, category: string) {
+export function trackEvent(label: DiagramType | string, action: string, category: string) {
     // @ts-ignore
-  window.gtag && window.gtag('event', event, {'event_category': category, 'event_label' : label});
+  window.gtag && window.gtag('event', action, {'event_category': category, 'event_label' : label});
 }
