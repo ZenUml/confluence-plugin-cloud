@@ -92,7 +92,7 @@ export default class ApWrapper2 implements IApWrapper {
     let key = this.propertyKey(uuid);
     let property = await this.getContentProperty(key);
     if (!property) {
-      let message = 'property is not find with key:' + key;
+      let message = 'property is not found with key:' + key;
       console.error(message);
       throw {
         message: message,
@@ -224,10 +224,10 @@ export default class ApWrapper2 implements IApWrapper {
   }
 
   async getCustomContentById(id: string): Promise<ICustomContent | undefined> {
-    const url = `/rest/api/content/${id}?expand=body.raw,version.number,container,space`;
-    const response = await this._requestFn({type: 'GET', url});
-    const customContent = this.parseCustomContentResponse(response);
-    console.debug(`Loaded custom content by id ${id}.`);
+    const customContent = await this.getCustomContentRaw(id);
+    if (!customContent) {
+      throw Error(`Failed to load custom content by id ${id}`);
+    }
     let diagram = JSON.parse(customContent.body.raw.value);
     diagram.source = DataSource.CustomContent;
     const count = (await this._page.countMacros((m) => {
@@ -252,6 +252,20 @@ export default class ApWrapper2 implements IApWrapper {
     diagram.id = id;
     let assign = <unknown>Object.assign({}, customContent, {value: diagram});
     return <ICustomContent>assign;
+  }
+
+  private async getCustomContentRaw(id: string) {
+    const url = `/rest/api/content/${id}?expand=body.raw,version.number,container,space`;
+    try {
+      const response = await this._requestFn({type: 'GET', url});
+      const customContent = this.parseCustomContentResponse(response);
+      console.debug(`Loaded custom content by id ${id}.`);
+      return customContent;
+    } catch (e) {
+      trackEvent(e.message, 'load_custom_content', 'error');
+      // TODO: return a NullCustomContentObject
+      return undefined;
+    }
   }
 
   async saveCustomContent(customContentId: string, value: Diagram) {

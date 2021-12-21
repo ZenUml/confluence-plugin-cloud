@@ -12,6 +12,7 @@ import mermaid from 'mermaid'
 import ExtendedStore from './model/Store'
 import EventBus from './EventBus'
 import Viewer from "@/components/Viewer.vue";
+import {trackEvent} from "@/utils/window";
 
 // eslint-disable-next-line
 // @ts-ignore
@@ -71,7 +72,8 @@ async function initializeMacro() {
     }
   } catch (e) {
     // @ts-ignore
-    console.log('Error on initializing macro:', e);
+    console.error('Error on initializing macro:', e);
+    trackEvent(e.message, 'load_sequence', 'error');
     // @ts-ignore
     store.state.error = e;
   }
