@@ -92,7 +92,7 @@ export default class ApWrapper2 implements IApWrapper {
     let key = this.propertyKey(uuid);
     let property = await this.getContentProperty(key);
     if (!property) {
-      let message = 'property is not find with key:' + key;
+      let message = 'property is not found with key:' + key;
       console.error(message);
       throw {
         message: message,
