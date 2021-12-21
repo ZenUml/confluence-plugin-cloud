@@ -72,7 +72,7 @@ async function initializeMacro() {
     }
   } catch (e) {
     // @ts-ignore
-    console.log('Error on initializing macro:', e);
+    console.error('Error on initializing macro:', e);
     trackEvent(e.message, 'load_sequence', 'error');
     // @ts-ignore
     store.state.error = e;
