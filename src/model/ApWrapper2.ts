@@ -226,7 +226,7 @@ export default class ApWrapper2 implements IApWrapper {
   async getCustomContentById(id: string): Promise<ICustomContent | undefined> {
     const customContent = await this.getCustomContentRaw(id);
     if (!customContent) {
-      throw Error(`Failed to load custom contenty by id ${id}`);
+      throw Error(`Failed to load custom content by id ${id}`);
     }
     let diagram = JSON.parse(customContent.body.raw.value);
     diagram.source = DataSource.CustomContent;
