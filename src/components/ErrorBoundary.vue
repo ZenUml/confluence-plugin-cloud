@@ -4,6 +4,7 @@
     <h1 class="font-bold">Error</h1>
     <p class="sm:inline">{{error && error.message}}</p>
     <p class="code">{{error && error.data}}</p>
+    <p class="code">{{error && error.stack}}</p>
     <p>To get support, submit a ticket at
       <a target="_blank" class="font-bold underline" href="https://zenuml.atlassian.net/servicedesk/customer/portals">our help desk</a>.
       Please include the above error message in your ticket.
