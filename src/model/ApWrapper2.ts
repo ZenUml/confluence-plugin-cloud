@@ -224,10 +224,10 @@ export default class ApWrapper2 implements IApWrapper {
   }
 
   async getCustomContentById(id: string): Promise<ICustomContent | undefined> {
-    const url = `/rest/api/content/${id}?expand=body.raw,version.number,container,space`;
-    const response = await this._requestFn({type: 'GET', url});
-    const customContent = this.parseCustomContentResponse(response);
-    console.debug(`Loaded custom content by id ${id}.`);
+    const customContent = await this.getCustomContentRaw(id);
+    if (!customContent) {
+      throw Error(`Failed to load custom contenty by id ${id}`);
+    }
     let diagram = JSON.parse(customContent.body.raw.value);
     diagram.source = DataSource.CustomContent;
     const count = (await this._page.countMacros((m) => {
@@ -252,6 +252,20 @@ export default class ApWrapper2 implements IApWrapper {
     diagram.id = id;
     let assign = <unknown>Object.assign({}, customContent, {value: diagram});
     return <ICustomContent>assign;
+  }
+
+  private async getCustomContentRaw(id: string) {
+    const url = `/rest/api/content/${id}?expand=body.raw,version.number,container,space`;
+    try {
+      const response = await this._requestFn({type: 'GET', url});
+      const customContent = this.parseCustomContentResponse(response);
+      console.debug(`Loaded custom content by id ${id}.`);
+      return customContent;
+    } catch (e) {
+      trackEvent(e.message, 'load_custom_content', 'error');
+      // TODO: return a NullCustomContentObject
+      return undefined;
+    }
   }
 
   async saveCustomContent(customContentId: string, value: Diagram) {
