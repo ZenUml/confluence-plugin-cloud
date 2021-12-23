@@ -49,28 +49,32 @@ export class AtlasPage {
     if (!this._requestFn) {
       return [];
     }
-    const pageId = await this.getPageId();
-    const response = await this._requestFn({
-      url: `/rest/api/content/${pageId}?expand=body.atlas_doc_format&status=draft`,
-      type: 'GET',
-      contentType: 'application/json'
-    });
-    if (!response || !response.body) {
-      return [];
-    }
+    let responseStatus = '';
+    let responseBody = '';
     try {
+      const pageId = await this.getPageId();
+      const response = await this._requestFn({
+        url: `/rest/api/content/${pageId}?expand=body.atlas_doc_format&status=draft`,
+        type: 'GET',
+        contentType: 'application/json'
+      });
+      responseStatus = response?.xhr?.status || '';
+      if (!response || !response.body) {
+        return [];
+      }
+      responseBody = response.body;
       const {body: {atlas_doc_format: {value}}} = JSON.parse(response.body);
       const {content: contentList} = JSON.parse(value);
       return contentList.filter(({type}: any) => type === AtlasDocElementType.Extension);
     } catch (e) {
-      trackEvent(response?.xhr?.status, 'query_macro_atlas_doc_format', 'error');
+      trackEvent(responseStatus, 'query_macro_atlas_doc_format', 'error');
       trackEvent(e.message, 'query_macro_atlas_doc_format', 'error');
       console.trace('Failed to query all macros on the page. Assume there is no macros on this page.')
       console.error('This message will be very helpful for the vendor to improve their product.');
       console.error('Please consider share it with the vendor so that they can fix the issue.');
       console.error('Please remove all sensitive data before sharing.');
       console.error('==========');
-      console.error(response?.body);
+      console.error(responseBody);
       console.error('==========');
       return [];
     }
