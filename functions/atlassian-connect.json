@@ -225,7 +225,14 @@
           "value": "ZenUML Graph Viewer"
         }
       }
-    ]
+    ],
+    "postInstallPage": {
+      "key": "onboarding",
+      "name": {
+        "value": "Get Started"
+      },
+      "url": "/get-started.html"
+    }
   },
   "apiMigrations": {
     "gdpr": true
