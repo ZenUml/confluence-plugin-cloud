@@ -192,40 +192,40 @@
           "key": "zenuml-content-graph"
         }
       ],
-      "generalPages": [
-        {
-            "key": "zenuml-content-sequence-viewer-dialog",
-            "location": "none",
-            "url": "/sequence-viewer-dialog.html?version=__VERSION__&addonKey=__ADDON_KEY__&contentKey=__CONTENT_KEY__",
-            "name": {
-                "value": "ZenUML Sequence Viewer Dialog"
-            }
-        },
-        {
-            "key": "zenuml-content-sequence-viewer",
-            "location": "none",
-            "url": "/sequence-viewer.html?version=__VERSION__&rendered.for=custom-content-native&spaceKey={space.key}&content.id={content.id}&content.version={content.version}&addonKey=__ADDON_KEY__&contentKey=__CONTENT_KEY__",
-            "name": {
-                "value": "ZenUML Sequence Viewer"
-            }
-        },
-        {
-            "key": "zenuml-content-sequence-editor-dialog",
-            "location": "none",
-            "url": "/sequence-editor-dialog.html?version=__VERSION__&spaceKey={space.key}&content.id={content.id}&content.version={content.version}&addonKey=__ADDON_KEY__&contentKey=__CONTENT_KEY__",
-            "name": {
-                "value": "ZenUML Sequence Editor"
-            }
-        },
-        {
-            "key": "zenuml-content-graph-viewer",
-            "location": "none",
-            "url": "/drawio/viewer.html?version=__VERSION__&rendered.for=custom-content-native&spaceKey={space.key}&content.id={content.id}&content.version={content.version}&addonKey=__ADDON_KEY__&contentKey=__CONTENT_KEY__",
-            "name": {
-                "value": "ZenUML Graph Viewer"
-            }
+    "generalPages": [
+      {
+        "key": "zenuml-content-sequence-viewer-dialog",
+        "location": "none",
+        "url": "/sequence-viewer-dialog.html?version=__VERSION__&addonKey=__ADDON_KEY__&contentKey=__CONTENT_KEY__",
+        "name": {
+          "value": "ZenUML Sequence Viewer Dialog"
         }
-      ]
+      },
+      {
+        "key": "zenuml-content-sequence-viewer",
+        "location": "none",
+        "url": "/sequence-viewer.html?version=__VERSION__&rendered.for=custom-content-native&spaceKey={space.key}&content.id={content.id}&content.version={content.version}&addonKey=__ADDON_KEY__&contentKey=__CONTENT_KEY__",
+        "name": {
+          "value": "ZenUML Sequence Viewer"
+        }
+      },
+      {
+        "key": "zenuml-content-sequence-editor-dialog",
+        "location": "none",
+        "url": "/sequence-editor-dialog.html?version=__VERSION__&spaceKey={space.key}&content.id={content.id}&content.version={content.version}&addonKey=__ADDON_KEY__&contentKey=__CONTENT_KEY__",
+        "name": {
+          "value": "ZenUML Sequence Editor"
+        }
+      },
+      {
+        "key": "zenuml-content-graph-viewer",
+        "location": "none",
+        "url": "/drawio/viewer.html?version=__VERSION__&rendered.for=custom-content-native&spaceKey={space.key}&content.id={content.id}&content.version={content.version}&addonKey=__ADDON_KEY__&contentKey=__CONTENT_KEY__",
+        "name": {
+          "value": "ZenUML Graph Viewer"
+        }
+      }
+    ]
   },
   "apiMigrations": {
     "gdpr": true
