@@ -227,12 +227,28 @@
       }
     ],
     "postInstallPage": {
-      "key": "onboarding",
+      "key": "onboarding-page",
       "name": {
         "value": "Get Started"
       },
       "url": "/get-started.html"
-    }
+    },
+    "webPanels": [
+      {
+        "url": "/onboarding-panel.html?version=__VERSION__&addonKey=__ADDON_KEY__&postInstallPageKey=__POST_INSTALL_KEY__",
+        "location": "atl.footer",
+        "layout": {
+          "width": "0px",
+          "height": "0px"
+        },
+        "weight": 50,
+        "supportsNative": false,
+        "name": {
+          "value": "Onboarding Panel"
+        },
+        "key": "onboarding-panel"
+      }
+    ]
   },
   "apiMigrations": {
     "gdpr": true

@@ -1,3 +1,5 @@
+const HELP_DESK_URL = 'https://zenuml.atlassian.net/servicedesk/customer/portals';
+
 function getUrlParam (param) {
   let codeParams = (new RegExp(param + '=([^&]*)')).exec(window.location.search);
   if(codeParams && codeParams.length >= 1) {
@@ -39,4 +41,8 @@ function uuidv4() {
   return ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, c =>
     (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
   );
+}
+
+function reportError(error, context) {
+  console.error(`Error in ${context}. Please report to our helpdesk: ${HELP_DESK_URL}`, error);
 }

@@ -15,10 +15,12 @@
     "firebase:serve": "firebase emulators:start --only hosting,functions",
     "firebase:serve:functions": "firebase emulators:start --only functions",
     "cloudflare:8080": "cloudflared --hostname air.zenuml.com --url http://localhost:8080",
+    "cloudflare:yanhui": "cloudflared --hostname yanhui.zenuml.com --url http://localhost:8081",
     "lint:vue": "vue-cli-service lint",
     "start:local": "VERSION=latest PRODUCT_TYPE=lite vue-cli-service serve --open",
     "start:vue:sit": "VERSION=latest PRODUCT_TYPE=lite vue-cli-service serve --open --mode test",
-    "start:sit": "concurrently \"yarn firebase:serve\" \"yarn start:vue:sit\" \"yarn cloudflare:8080\""
+    "start:sit": "concurrently \"yarn firebase:serve\" \"yarn start:vue:sit\" \"yarn cloudflare:8080\"",
+    "start:sit:yanhui": "concurrently \"yarn firebase:serve\" \"yarn start:vue:sit --port 8081 --open false\" \"yarn cloudflare:yanhui\""
   },
   "dependencies": {
     "@atlaskit/button": "^15.1.0",

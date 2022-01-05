@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <script type="text/javascript" src="https://connect-cdn.atl-paas.net/all.js"></script>
+  <script type="text/javascript" src="js/util.js"></script>
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-114996686-1"></script>
+  <script type="text/javascript" src="js/google-analytics.js"></script>
+
+  <script>
+  const STORAGE_KEY = 'onboardingState';
+  const DEFAULT_STATE = {users: {}, lastUpdated: new Date()};
+
+  const version = getUrlParam('version');
+  const addonKey = getUrlParam('addonKey');
+  const postInstallPageKey = getUrlParam('postInstallPageKey');
+
+  const url = `/rest/atlassian-connect/1/addons/${addonKey}/properties/${STORAGE_KEY}`;
+
+  var flag;
+  const popup = () => {
+    flag = AP.flag.create({
+      title: 'New version of ZenUML add-on installed',
+      body: 'You can create and edit standard-compliant UML diagrams in a snap.',
+      type: 'info',
+      actions: {
+        'seeHowItWorks': 'See how it works',
+        'noThanks': 'No thanks'
+      }
+    });
+
+    trackEvent('', 'display', 'onboarding');
+  };
+
+  async function init() {
+    try {
+      const localState = getLocalState();
+      const remoteState = await getAppProperty();
+
+      const isOnboarded = (u, state) => {
+        const userState = state.users[u.atlassianAccountId];
+        return userState 
+          && userState[version] 
+          && (!userState[version].expires || (new Date() < new Date(userState[version].expires)));
+      };
+
+      const checkUser = (u) => {
+        const resolvedState = localState || remoteState;
+        if(!isOnboarded(u, resolvedState)) {
+          popup();
+        }
+        else if(!localState) { //copy remote state to local state
+          setLocalState(resolvedState);
+        }
+        else if(!isOnboarded(u, remoteState)) { //override remote state with local state
+          setOnboardedRemoteState(u, null);
+        }
+      }
+      AP.user.getCurrentUser(checkUser);
+    } catch(e) {
+      popup();
+    }
+  }
+
+  AP.events.on('flag.action', function(e) {
+    flag && flag.close();
+
+    if(e.actionIdentifier === 'seeHowItWorks') {
+      AP.user.getCurrentUser(u => setOnboarded(u));
+
+      trackEvent('', 'see-how-it-works', 'onboarding');
+
+      AP.navigator.go('addonModule', {addonKey, moduleKey: postInstallPageKey});      
+    }
+    else if(e.actionIdentifier === 'noThanks') {
+      AP.user.getCurrentUser(u => setOnboarded(u, getOneYearLater()));
+
+      trackEvent('', 'no-thanks', 'onboarding');
+    }
+  });
+
+  function setOnboarded(user, expires) {
+    setLocalState(getOnboardedState(DEFAULT_STATE, user, expires));
+
+    setOnboardedRemoteState(user, expires);
+  };
+
+  function setOnboardedRemoteState(user, expires) {
+    return getAppProperty().then(s => setAppProperty(getOnboardedState(s, user, expires)));
+  };
+
+  function getOnboardedState(s, user, expires) {
+    const lastUpdated = new Date();
+    const newState = clone(s);
+    newState.users[user.atlassianAccountId] = {[version]: {lastUpdated, expires}};
+    newState.lastUpdated = lastUpdated;
+    return newState;
+  };
+
+  function getLocalState(_state) {
+    const localState = window.localStorage.getItem(STORAGE_KEY);
+    return localState && JSON.parse(localState);
+  }
+
+  function setLocalState(state) {
+    window.localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  }
+
+  async function getAppProperty() {
+    try {
+      const data = JSON.parse((await AP.request({url, type: 'GET'})).body);
+      return data && data.value;
+    } catch(e) {
+      if(e && e.xhr && e.xhr.status === 404) { //initial state: app property doesn't exist
+        return DEFAULT_STATE;
+      } else {
+        reportError(e, 'getAppProperty');
+      }
+    }
+  }
+
+  async function setAppProperty(data) {
+    try {
+      await AP.request({url, type: 'PUT', contentType: 'application/json', data: JSON.stringify(data)});
+    } catch(e) {
+      reportError(e, 'setAppProperty');
+    }
+  }
+
+  function getOneYearLater() {
+    const date = new Date();
+    const nextYear = date.getFullYear() + 1;
+    if(nextYear > new Date(8640000000000000).getFullYear()) {
+      throw 'Date value out of range';
+    }
+    date.setFullYear(nextYear);
+    return date;
+  }
+
+  function trackEvent(label, action, category) {
+    try {
+      window.gtag && window.gtag('event', action, {'event_category': category, 'event_label' : label});
+    } catch (e) {
+      reportError(e, 'trackingEvent');
+    }
+  }
+
+  function clone(o) {
+    return JSON.parse(JSON.stringify(o));
+  }
+
+  init();
+
+  </script>
+
+</head>
+<body>
+</body>
+</html>
