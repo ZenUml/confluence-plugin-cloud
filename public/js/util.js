@@ -46,3 +46,28 @@ function uuidv4() {
 function reportError(error, context) {
   console.error(`Error in ${context}. Please report to our helpdesk: ${HELP_DESK_URL}`, error);
 }
+
+function getOneYearLater() {
+	const date = new Date();
+	const nextYear = date.getFullYear() + 1;
+	if(nextYear > new Date(8640000000000000).getFullYear()) {
+		throw 'Date value out of range';
+	}
+	date.setFullYear(nextYear);
+	return date;
+}
+
+function clone(o) {
+	return JSON.parse(JSON.stringify(o));
+}
+
+function getAtlassianDomain() {
+	const pattern = /\/\/(\w+)\.atlassian\.net/i;
+	const xdme = getUrlParam('xdm_e');
+	const url = xdme && decodeURIComponent(xdme);
+	const result = pattern.exec(url);
+	if(result && result.length > 1) {
+		return result[1];
+	}
+return '';
+}
