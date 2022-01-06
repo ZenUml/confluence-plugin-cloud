@@ -7,8 +7,8 @@
     "type": "none"
   },
   "lifecycle": {
-    "installed": "/installed?version=2021.4",
-    "uninstalled": "/uninstalled?version=2021.4"
+    "installed": "/installed?version=__VERSION__",
+    "uninstalled": "/uninstalled?version=__VERSION__"
   },
   "enableLicensing": true,
   "links": {

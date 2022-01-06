@@ -128,5 +128,8 @@ exports.descriptor = functions.https.onRequest((req, resp) => {
     return result.replace('__VERSION__', VERSION);
   });
 
+  data.lifecycle.installed = data.lifecycle.installed.replace('__VERSION__', VERSION);
+  data.lifecycle.uninstalled = data.lifecycle.uninstalled.replace('__VERSION__', VERSION);
+
   resp.json(data);
 })
