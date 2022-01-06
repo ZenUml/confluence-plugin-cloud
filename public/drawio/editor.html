@@ -68,6 +68,17 @@
       z-index: 1000;
       right: 0;
     }
+
+    /* The following two rules are a hack. The issue is introduced by
+     * tailwindcss. We should remove tailwind from graph macro.
+     */
+    .geEditor * {
+      box-sizing: content-box;
+    }
+    .geEditor img {
+      display: unset;
+    }
+
   </style>
 </head>
 <body class="geEditor" style="line-height: unset">
