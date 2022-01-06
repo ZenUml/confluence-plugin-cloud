@@ -53,9 +53,13 @@
         }
         else if(!localState) { //copy remote state to local state
           setLocalState(resolvedState);
+
+          trackEvent('', 'set_local_state_from_remote', 'onboarding');
         }
         else if(!isOnboarded(u, remoteState)) { //override remote state with local state
           setOnboardedRemoteState(u, null);
+
+          trackEvent('', 'set_remote_state_from_local', 'onboarding');
         }
       }
 
@@ -69,7 +73,7 @@
     flag && flag.close();
 
     if(e.actionIdentifier === 'seeHowItWorks') {
-      trackEvent('', 'see-how-it-works', 'onboarding');
+      trackEvent('', 'see_how_it_works', 'onboarding');
 
       AP.user.getCurrentUser(u => {
         setOnboarded(u).then(gotoOnboardingPage);
@@ -77,7 +81,7 @@
     
     }
     else if(e.actionIdentifier === 'noThanks') {
-      trackEvent('', 'no-thanks', 'onboarding');
+      trackEvent('', 'no_thanks', 'onboarding');
 
       AP.user.getCurrentUser(u => setOnboarded(u, getOneYearLater()));
     }
@@ -136,7 +140,7 @@
     } catch(e) {
       //exceeding limit error: "{\"status-code\":403,\"message\":\"The value cannot be bigger than 32 KB.\"}"
       const label = e?.xhr?.status ? `status-${e?.xhr?.status}` : '';
-      trackEvent(label, 'set-app-property-error', 'onboarding');
+      trackEvent(label, 'set_app_property_error', 'onboarding');
       reportError(e, 'setAppProperty');
     }
   }
