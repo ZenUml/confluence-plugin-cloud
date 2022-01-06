@@ -57,7 +57,7 @@
           trackEvent('', 'set_local_state_from_remote', 'onboarding');
         }
         else if(!isOnboarded(u, remoteState)) { //override remote state with local state
-          setOnboardedRemoteState(u, null);
+          setOnboardedRemoteState(u);
 
           trackEvent('', 'set_remote_state_from_local', 'onboarding');
         }
