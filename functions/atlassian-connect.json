@@ -246,7 +246,15 @@
         "name": {
           "value": "Onboarding Panel"
         },
-        "key": "onboarding-panel"
+        "key": "onboarding-panel",
+        "conditions": [
+          {
+              "condition": "has_page_permission",
+              "params": {
+                  "permission": "EDIT"
+              }
+          }
+      ]
       }
     ]
   },
