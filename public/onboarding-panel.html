@@ -98,7 +98,7 @@
   };
 
   function setOnboardedLocalState(user, expires) {
-    setLocalState(getOnboardedState(DEFAULT_STATE, user, expires));
+    setLocalState(getOnboardedState(getLocalState(), user, expires));
   };
 
   function setOnboardedRemoteState(user, expires) {
