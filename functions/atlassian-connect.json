@@ -7,8 +7,8 @@
     "type": "none"
   },
   "lifecycle": {
-    "installed": "/installed?version=2021.4",
-    "uninstalled": "/uninstalled?version=2021.4"
+    "installed": "/installed?version=__VERSION__",
+    "uninstalled": "/uninstalled?version=__VERSION__"
   },
   "enableLicensing": true,
   "links": {
@@ -227,12 +227,36 @@
       }
     ],
     "postInstallPage": {
-      "key": "onboarding",
+      "key": "onboarding-page",
       "name": {
         "value": "Get Started"
       },
       "url": "/get-started.html"
-    }
+    },
+    "webPanels": [
+      {
+        "url": "/onboarding-panel.html?version=__VERSION__&addonKey=__ADDON_KEY__&postInstallPageKey=__POST_INSTALL_KEY__",
+        "location": "atl.footer",
+        "layout": {
+          "width": "0px",
+          "height": "0px"
+        },
+        "weight": 50,
+        "supportsNative": false,
+        "name": {
+          "value": "Onboarding Panel"
+        },
+        "key": "onboarding-panel",
+        "conditions": [
+          {
+              "condition": "has_page_permission",
+              "params": {
+                  "permission": "EDIT"
+              }
+          }
+      ]
+      }
+    ]
   },
   "apiMigrations": {
     "gdpr": true

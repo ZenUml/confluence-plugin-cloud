@@ -1,3 +1,4 @@
+
 function getUrlParam (param) {
   let codeParams = (new RegExp(param + '=([^&]*)')).exec(window.location.search);
   if(codeParams && codeParams.length >= 1) {
