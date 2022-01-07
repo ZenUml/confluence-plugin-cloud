@@ -176,7 +176,7 @@
   }
 
   function getAtlassianDomain() {
-    const pattern = /\/\/(\w+)\.atlassian\.net/i;
+    const pattern = /\/\/([a-z0-9-_]+)\.atlassian\.net/i;
     const xdme = getUrlParam('xdm_e');
     const url = xdme && decodeURIComponent(xdme);
     const result = pattern.exec(url);
