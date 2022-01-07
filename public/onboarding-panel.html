@@ -18,7 +18,7 @@
 
   const url = () => `/rest/atlassian-connect/1/addons/${addonKey()}/properties/${STORAGE_KEY}`;
 
-  var flag;
+  var flag, userId = '';
   const popup = () => {
     flag = AP.flag.create({
       title: 'New version of ZenUML add-on installed',
@@ -29,8 +29,6 @@
         'noThanks': 'No thanks'
       }
     });
-
-    trackEvent('', 'display', 'onboarding');
   };
 
   async function init() {
@@ -47,19 +45,25 @@
       };
 
       const checkUser = (u) => {
-        const resolvedState = localState || remoteState;
-        if(!isOnboarded(u, resolvedState)) {
-          popup();
-        }
-        else if(!localState) { //copy remote state to local state
-          setLocalState(resolvedState);
+        userId = u.atlassianAccountId;
 
-          trackEvent('', 'set_local_state_from_remote', 'onboarding');
+        const localOnboarded = isOnboarded(u, localState);
+        const remoteOnboarded = isOnboarded(u, remoteState);
+
+        if(!localOnboarded && !remoteOnboarded) {
+          popup();
+
+          trackEvent(userId, 'display', 'onboarding');
         }
-        else if(!isOnboarded(u, remoteState)) { //override remote state with local state
+        else if(!localOnboarded) {
+          setOnboardedLocalState(u);
+
+          trackEvent(userId, 'copy_remote_onboarded_state_to_local', 'onboarding');
+        }
+        else if(!remoteOnboarded) {
           setOnboardedRemoteState(u);
 
-          trackEvent('', 'set_remote_state_from_local', 'onboarding');
+          trackEvent(userId, 'copy_local_onboarded_state_to_remote', 'onboarding');
         }
       }
 
@@ -73,7 +77,7 @@
     flag && flag.close();
 
     if(e.actionIdentifier === 'seeHowItWorks') {
-      trackEvent('', 'see_how_it_works', 'onboarding');
+      trackEvent(userId, 'see_how_it_works', 'onboarding');
 
       AP.user.getCurrentUser(u => {
         setOnboarded(u).then(gotoOnboardingPage);
@@ -81,16 +85,20 @@
     
     }
     else if(e.actionIdentifier === 'noThanks') {
-      trackEvent('', 'no_thanks', 'onboarding');
+      trackEvent(userId, 'no_thanks', 'onboarding');
 
       AP.user.getCurrentUser(u => setOnboarded(u, getOneYearLater()));
     }
   });
 
   function setOnboarded(user, expires) {
-    setLocalState(getOnboardedState(DEFAULT_STATE, user, expires));
+    setOnboardedLocalState(user, expires);
 
     return setOnboardedRemoteState(user, expires);
+  };
+
+  function setOnboardedLocalState(user, expires) {
+    setLocalState(getOnboardedState(DEFAULT_STATE, user, expires));
   };
 
   function setOnboardedRemoteState(user, expires) {
@@ -111,7 +119,7 @@
 
   function getLocalState(_state) {
     const localState = window.localStorage.getItem(getLocalStorageKey());
-    return localState && JSON.parse(localState);
+    return localState && JSON.parse(localState) || DEFAULT_STATE;
   }
 
   function setLocalState(state) {
