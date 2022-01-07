@@ -44,6 +44,8 @@
           && (!userState[ver].expires || (new Date() < new Date(userState[ver].expires)));
       };
 
+      const expiresOf = (u, state) => state.users[u.atlassianAccountId][version()].expires;
+
       const checkUser = (u) => {
         userId = u.atlassianAccountId;
 
@@ -56,12 +58,12 @@
           trackEvent(userId, 'display', 'onboarding');
         }
         else if(!localOnboarded) {
-          setOnboardedLocalState(u);
+          setOnboardedLocalState(u, expiresOf(u, remoteState));
 
           trackEvent(userId, 'copy_remote_onboarded_state_to_local', 'onboarding');
         }
         else if(!remoteOnboarded) {
-          setOnboardedRemoteState(u);
+          setOnboardedRemoteState(u, expiresOf(u, localState));
 
           trackEvent(userId, 'copy_local_onboarded_state_to_remote', 'onboarding');
         }
