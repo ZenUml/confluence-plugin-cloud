@@ -67,8 +67,8 @@ export class AtlasPage {
       const {content: contentList} = JSON.parse(value);
       return contentList.filter(({type}: any) => type === AtlasDocElementType.Extension);
     } catch (e) {
-      trackEvent(responseStatus, 'query_macro_atlas_doc_format', 'error');
-      trackEvent(e.message, 'query_macro_atlas_doc_format', 'error');
+      trackEvent(responseStatus, 'query_macro_atlas_doc_format', 'warning');
+      trackEvent(e.message, 'query_macro_atlas_doc_format', 'warning');
       console.trace('Failed to query all macros on the page. Assume there is no macros on this page.')
       console.error('This message will be very helpful for the vendor to improve their product.');
       console.error('Please consider share it with the vendor so that they can fix the issue.');
