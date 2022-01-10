@@ -76,20 +76,24 @@
   }
 
   AP.events.on('flag.action', function(e) {
-    flag && flag.close();
+    try {
+      flag && flag.close();
 
-    if(e.actionIdentifier === 'seeHowItWorks') {
-      trackEvent(userId, 'see_how_it_works', 'onboarding');
+      if(e.actionIdentifier === 'seeHowItWorks') {
+        trackEvent(userId, 'see_how_it_works', 'onboarding');
 
-      AP.user.getCurrentUser(u => {
-        setOnboarded(u).then(gotoOnboardingPage);
-      });
-    
-    }
-    else if(e.actionIdentifier === 'noThanks') {
-      trackEvent(userId, 'no_thanks', 'onboarding');
+        AP.user.getCurrentUser(u => {
+          setOnboarded(u).then(gotoOnboardingPage);
+        });
+      
+      }
+      else if(e.actionIdentifier === 'noThanks') {
+        trackEvent(userId, 'no_thanks', 'onboarding');
 
-      AP.user.getCurrentUser(u => setOnboarded(u, getOneYearLater()));
+        AP.user.getCurrentUser(u => setOnboarded(u, getOneYearLater()));
+      }
+    } catch(e) {
+      reportError(e, 'onFlagAction');
     }
   });
 
@@ -148,10 +152,9 @@
     try {
       await AP.request({url: url(), type: 'PUT', contentType: 'application/json', data: JSON.stringify(data)});
     } catch(e) {
-      //exceeding limit error: "{\"status-code\":403,\"message\":\"The value cannot be bigger than 32 KB.\"}"
-      const label = e?.xhr?.status ? `status-${e?.xhr?.status}` : '';
+      const label = e?.xhr?.responseText || '';
       trackEvent(label, 'set_app_property_error', 'onboarding');
-      reportError(e, 'setAppProperty');
+      reportError(e, 'setAppProperty', true);
     }
   }
 
@@ -159,7 +162,7 @@
     try {
       window.gtag && window.gtag('event', action, {'event_category': category, 'event_label' : label});
     } catch (e) {
-      reportError(e, 'trackingEvent');
+      reportError(e, 'trackEvent', true);
     }
   }
 
@@ -188,7 +191,11 @@
     return '';
   }
 
-  function reportError(error, context) {
+  function reportError(error, context, skipEvent) {
+    if(!skipEvent) {
+      trackEvent(`${context} error: ${error}`, 'unexpected_error', 'onboarding');
+    }
+
     console.error(`Error in ${context}. Please report to our helpdesk: ${HELP_DESK_URL}`, error);
   }
   </script>
