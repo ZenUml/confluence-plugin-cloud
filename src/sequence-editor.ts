@@ -64,6 +64,8 @@ if (window.location.href.includes('localhost')) {
 async function initializeMacro() {
   // @ts-ignore
   const macro = store.state.macro;  // store.state.macro is set in Store.ts
+  await macro._apWrapper.initializeContext();
+  
   const {code, styles, mermaidCode, diagramType} = await macro.load();
 
   store.commit('code', code);

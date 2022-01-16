@@ -12,7 +12,10 @@ new Vue({
   render: h => h(SaveAndGoBackButtonGraph)
 }).$mount('#save-and-go-back');
 async function initializeMacro() {
-  const macro = new GraphMacro(new ApWrapper2(AP));
+  const apWrapper = new ApWrapper2(AP);
+  await apWrapper.initializeContext();
+  
+  const macro = new GraphMacro(apWrapper);
 
   // @ts-ignore
   window.macro = macro;

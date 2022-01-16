@@ -48,6 +48,8 @@ async function initializeMacro() {
   // @ts-ignore
   window.macro = macro;
   try {
+    await macro._apWrapper.initializeContext();
+    
     const diagram = await macro.load();
     store.commit('code', diagram.code);
     // @ts-ignore
