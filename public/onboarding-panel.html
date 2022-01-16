@@ -64,11 +64,6 @@
 
           trackEvent(userId, 'copy_remote_onboarded_state_to_local', 'onboarding');
         }
-        else if(!remoteOnboarded) {
-          setOnboardedRemoteState(u, expiresOf(u, localState));
-
-          trackEvent(userId, 'copy_local_onboarded_state_to_remote', 'onboarding');
-        }
       }
 
       AP.user.getCurrentUser(checkUser);
@@ -104,9 +99,14 @@
   }
 
   function setOnboarded(user, expires) {
-    setOnboardedLocalState(user, expires);
+    try {
+      setOnboardedLocalState(user, expires);
+      return Promise.resolve();
+    } catch(e) {
+      reportError(e, 'setOnboardedLocalState');
 
-    return setOnboardedRemoteState(user, expires);
+      return setOnboardedRemoteState(user, expires);
+    }
   };
 
   function setOnboardedLocalState(user, expires) {
@@ -130,8 +130,12 @@
   }
 
   function getLocalState(_state) {
-    const localState = window.localStorage.getItem(getLocalStorageKey());
-    return localState && JSON.parse(localState) || DEFAULT_STATE;
+    try {
+      const localState = window.localStorage.getItem(getLocalStorageKey());
+      return localState && JSON.parse(localState) || DEFAULT_STATE;
+    } catch(e) {
+      return DEFAULT_STATE;
+    }
   }
 
   function setLocalState(state) {
