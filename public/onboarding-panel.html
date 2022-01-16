@@ -55,6 +55,8 @@
         if(!localOnboarded && !remoteOnboarded) {
           popup();
 
+          setOnboardedForOneYear();
+
           trackEvent(userId, 'display', 'onboarding');
         }
         else if(!localOnboarded) {
@@ -90,12 +92,16 @@
       else if(e.actionIdentifier === 'noThanks') {
         trackEvent(userId, 'no_thanks', 'onboarding');
 
-        AP.user.getCurrentUser(u => setOnboarded(u, getOneYearLater()));
+        setOnboardedForOneYear();
       }
     } catch(e) {
       reportError(e, 'onFlagAction');
     }
   });
+
+  function setOnboardedForOneYear() {
+    AP.user.getCurrentUser(u => setOnboarded(u, getOneYearLater()));
+  }
 
   function setOnboarded(user, expires) {
     setOnboardedLocalState(user, expires);
