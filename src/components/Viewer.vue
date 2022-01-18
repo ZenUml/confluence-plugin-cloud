@@ -1,5 +1,5 @@
 <template>
-<div class="viewer">
+<div class="viewer mx-1">
   <div v-show="debug">Host: {{app.host}} Data source: {{diagram.source}} {{diagram.id}}</div>
   <error-boundary>
   <div v-html="styles"></div>
@@ -7,8 +7,8 @@
   <div v-show="diagramType === 'sequence'" @click="deselectAll">
     <styling-panel/>
     <diagram-frame>
-      <div class="actions flex" v-show="isDisplayMode">
-        <div class="p-1" v-show="isLite">
+      <div class="actions flex" :class="{flex: isDisplayMode, hidden: !isDisplayMode}">
+        <div v-show="isLite">
           <div class="p-1 text-xs font-bold leading-none text-gray-300 bg-gray-100 rounded">Lite</div>
         </div>
         <button @click="edit" v-show="this.canEdit" class="p-1">
