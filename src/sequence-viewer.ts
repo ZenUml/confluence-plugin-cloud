@@ -6,13 +6,13 @@ import './assets/tailwind.css'
 console.log(`vue-sequence version: ${VueSequence.Version}`)
 
 import './model/MockApConfluence'
-import Macro from './model/Macro'
 import mermaid from 'mermaid'
 
 import ExtendedStore from './model/Store'
 import EventBus from './EventBus'
 import Viewer from "@/components/Viewer.vue";
 import {trackEvent} from "@/utils/window";
+import './GTagConfig'
 
 // eslint-disable-next-line
 // @ts-ignore

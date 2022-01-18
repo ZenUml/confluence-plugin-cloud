@@ -24,7 +24,7 @@ import 'codemirror/lib/codemirror.css'
 // theme css
 import 'codemirror/theme/base16-dark.css'
 import ExtendedStore from './model/Store'
-
+import './GTagConfig'
 Vue.use(Va, 'en')
 
 // eslint-disable-next-line

@@ -23,6 +23,7 @@ import 'codemirror/lib/codemirror.css'
 import 'codemirror/theme/base16-dark.css'
 import ExtendedStore from './model/Store'
 import EventBus from './EventBus'
+import './GTagConfig'
 
 Vue.use(Va, 'en')
 
