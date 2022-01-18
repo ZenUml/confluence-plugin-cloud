@@ -2,6 +2,7 @@ import Vue from 'vue'
 import './assets/tailwind.css'
 import {VueSequence} from 'vue-sequence'
 import 'vue-sequence/dist/vue-sequence.css'
+import './GTagConfig'
 
 import configStoreAsyncFn from "./model/sequence-view-store";
 console.log('From sequence viewer dialog');
