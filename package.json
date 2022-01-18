@@ -61,7 +61,7 @@
     "vue": "^2.6.12",
     "vue-atlas": "^2.1.8",
     "vue-codemirror": "^4.0.6",
-    "vue-sequence": "^1.0.185",
+    "vue-sequence": "^1.0.188",
     "vuex": "^3.5.1",
     "ws": "^8.2.2",
     "y18n": "^5.0.8"
