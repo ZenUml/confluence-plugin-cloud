@@ -203,7 +203,7 @@
 
   function reportError(error, context, skipEvent) {
     if(!skipEvent) {
-      trackEvent(`${context} error: ${error}`, 'unexpected_error', 'onboarding');
+      trackEvent(`${context} error: ${error && JSON.stringify(error)}`, 'unexpected_error', 'onboarding');
     }
 
     console.error(`Error in ${context}. Please report to our helpdesk: ${HELP_DESK_URL}`, error);
