@@ -111,5 +111,19 @@ describe('Macro', () => {
       expect(code).toBe('A.m')
     })
 
+    test('should fallback to macro body when content property fails', async () => {
+      mockApConfluence.saveMacro({uuid: '1234'}, 'body')
+      mockApConfluence.getContentProperty = jest.fn(() => {
+        throw 'getContentProperty error'
+      })
+      
+      const code = (await macro.load()).code;
+      expect(code).toBe('body');
+
+      expect(gtag.mock.calls).toEqual(expect.arrayContaining([
+        ['event', 'get_content_property', {event_category: 'unexpected_error', event_label: 'property is not found with key:zenuml-sequence-macro-1234-body'}],
+      ]));
+    })
+
   })
 })

@@ -94,10 +94,8 @@ export default class ApWrapper2 implements IApWrapper {
     if (!property) {
       let message = 'property is not found with key:' + key;
       console.error(message);
-      throw {
-        message: message,
-        data: macroData
-      }
+      trackEvent(message, 'get_content_property', 'unexpected_error');
+      return undefined;
     }
     let result = Object.assign({}, property) as IContentPropertyNormalised;
     if(typeof property.value === "string") {
