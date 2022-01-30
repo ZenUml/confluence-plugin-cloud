@@ -22,6 +22,8 @@ export default class ApWrapper2 implements IApWrapper {
   _macroIdentifier: MacroIdentifier;
   _user: any;
   _page: AtlasPage;
+  currentUser: IUser | undefined;
+  currentSpace: string | undefined;
 
   constructor(ap: IAp) {
     this.versionType = this.isLite() ? VersionType.Lite : VersionType.Full;
@@ -46,6 +48,10 @@ export default class ApWrapper2 implements IApWrapper {
     this._dialog = ap.dialog;
     this._user = ap.user;
     this._page = new AtlasPage(ap);
+  }
+
+  initializeContext(): Promise<any> {
+    return Promise.all([this._getCurrentUser(), this._getCurrentSpace()]);
   }
 
   getMacroData(): Promise<IMacroData | undefined> {
@@ -170,7 +176,7 @@ export default class ApWrapper2 implements IApWrapper {
       "type": type,
       "title": content.title || `Untitled ${new Date().toISOString()}`,
       "space": {
-        "key": await this._page.getSpaceKey()
+        "key": await this._getCurrentSpace()
       },
       "container": container,
       "body": {
@@ -320,11 +326,14 @@ export default class ApWrapper2 implements IApWrapper {
     return undefined;
   }
 
-
   _getCurrentUser(): Promise<IUser> {
-    return new Promise(resolv => this._user.getCurrentUser((user: IUser) => {
-      resolv(user);
-    }));
+    return new Promise(resolv => this.currentUser 
+      ? resolv(this.currentUser) 
+      : this._user.getCurrentUser((user: IUser) => resolv(this.currentUser = user)));
+  }
+
+  async _getCurrentSpace(): Promise<string> {
+    return this.currentSpace || (this.currentSpace = await this._page.getSpaceKey());
   }
 
   canUserEdit(): Promise<boolean> {

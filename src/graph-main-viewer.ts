@@ -12,7 +12,10 @@ if (window.location.href.includes('localhost')) {
   }
 }
 async function initializeMacro() {
-  const macro = new GraphMacro(new ApWrapper2(AP));
+  const apWrapper = new ApWrapper2(AP);
+  await apWrapper.initializeContext();
+
+  const macro = new GraphMacro(apWrapper);
   // @ts-ignore
   window.macro = macro;
   const {graphXml} = await macro.load();

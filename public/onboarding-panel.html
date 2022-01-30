@@ -5,7 +5,7 @@
 
   <!-- Global site tag (gtag.js) - Google Analytics -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=UA-114996686-1"></script>
-  <script type="text/javascript" src="js/google-analytics.js"></script>
+  <script type="text/javascript" src="js/google-analytics.js?version=2022.01"></script>
 
   <script>
   const STORAGE_KEY = 'onboardingState';
@@ -18,7 +18,8 @@
 
   const url = () => `/rest/atlassian-connect/1/addons/${addonKey()}/properties/${STORAGE_KEY}`;
 
-  var flag, userId = '';
+  var flag, userId = '', clientDomain = '', currentSpace = '';
+
   const popup = () => {
     flag = AP.flag.create({
       title: 'New version of ZenUML add-on installed',
@@ -33,6 +34,8 @@
 
   async function init() {
     try {
+      currentSpace = await getCurrentSpace();
+
       const localState = getLocalState();
       const remoteState = await getAppProperty();
 
@@ -143,7 +146,7 @@
   }
 
   function getLocalStorageKey() {
-    return `${STORAGE_KEY}-${getAtlassianDomain()}`;
+    return `${STORAGE_KEY}-${getClientDomain()}`;
   }
 
   async function getAppProperty() {
@@ -170,7 +173,14 @@
 
   function trackEvent(label, action, category) {
     try {
-      window.gtag && window.gtag('event', action, {'event_category': category, 'event_label' : label});
+      const eventDetails = {
+        'event_category': category, 
+        'event_label' : label,
+        'client_domain': getClientDomain(),
+        'user_account_id': userId,
+        'confluence_space': currentSpace
+      };
+      window.gtag && window.gtag('event', action, eventDetails);
     } catch (e) {
       reportError(e, 'trackEvent', true);
     }
@@ -190,6 +200,10 @@
     return JSON.parse(JSON.stringify(o));
   }
 
+  function getClientDomain() {
+    return clientDomain || (clientDomain = getAtlassianDomain());
+  }
+
   function getAtlassianDomain() {
     const pattern = /\/\/([a-z0-9-_]+)\.atlassian\.net/i;
     const xdme = getUrlParam('xdm_e');
@@ -199,6 +213,11 @@
       return result[1];
     }
     return '';
+  }
+
+  function getCurrentSpace() {
+    return new Promise(resolv =>
+      AP.navigator.getLocation(l => resolv(l?.context?.spaceKey)));
   }
 
   function reportError(error, context, skipEvent) {
