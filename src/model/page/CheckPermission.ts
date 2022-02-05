@@ -1,7 +1,7 @@
 interface PermissionCheckResponse {
   body: string;
 }
-interface PermissionCheckRequestFunc {
+export interface PermissionCheckRequestFunc {
   (req: object): Promise<PermissionCheckResponse>;
 }
 

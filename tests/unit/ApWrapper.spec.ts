@@ -1,13 +1,35 @@
 import MockAp from "@/model/MockAp";
 import ApWrapper2 from "@/model/ApWrapper2";
 import {setUpWindowLocation} from "../SetUpWindowLocation";
-import {buildEnrichedCustomContent, buildCustomContentResponse} from "../CustomContentFixtures";
+import {buildCustomContentResponse, buildEnrichedCustomContent} from "../CustomContentFixtures";
 import helper from './TestHelper';
 
 describe('ApWrapper', () => {
+  beforeEach(() => {
+    helper.setUpUrlParam('contentKey=zenuml-content-sequence');
+  });
+
+  it('tells if the user has edit permission', async () => {
+    const ap = new ApWrapper2(new MockAp());
+    ap._requestFn = jest.fn().mockImplementation(async (req: any) => {
+      const hasPermission = req.data.includes('user-001');
+      return {
+        body: JSON.stringify({
+          hasPermission
+        })
+      }
+    });
+    ap.currentUser = {
+      atlassianAccountId: 'user-001'
+    }
+    expect(await ap.canUserEdit()).toBeTruthy();
+    ap.currentUser = {
+      atlassianAccountId: 'user-002'
+    }
+    expect(await ap.canUserEdit()).toBeFalsy();
+  })
 
   it('tells whether it is a lite version or full version', () => {
-    helper.setUpUrlParam('contentKey=zenuml-content-sequence');
 
     let mockAp = new MockAp();
     let apWrapper2 = new ApWrapper2(mockAp);

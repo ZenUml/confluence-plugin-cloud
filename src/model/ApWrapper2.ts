@@ -10,6 +10,7 @@ import {MacroIdentifier} from "@/model/MacroIdentifier";
 import {DataSource, Diagram, DiagramType} from "@/model/Diagram";
 import {ICustomContentResponseBody} from "@/model/ICustomContentResponseBody";
 import {AtlasPage} from "@/model/page/AtlasPage";
+import CheckPermission, {PermissionCheckRequestFunc} from "@/model/page/CheckPermission";
 
 export default class ApWrapper2 implements IApWrapper {
   versionType: VersionType;
@@ -339,23 +340,9 @@ export default class ApWrapper2 implements IApWrapper {
     return this.currentSpace || (this.currentSpace = await this._page.getSpaceKey());
   }
 
-  canUserEdit(): Promise<boolean> {
-    const checkPermission = (pageId: any, userId: any) => 
-      this._requestFn({
-        type: 'POST',
-        url: `/rest/api/content/${pageId}/permission/check`,
-        contentType: 'application/json', 
-        data: JSON.stringify({subject: {type: 'user', identifier: userId}, operation: 'update'})
-      })
-      .then((response: any) => {
-        const data = JSON.parse(response.body);
-        return data.hasPermission;
-      }, (e: any) => console.error(`Error checking content permission:`, e));
-
-    return Promise.all([
-      this._page.getPageId(),
-      this.currentUser || this._getCurrentUser()
-    ]).then(([pageId, user]) => checkPermission(pageId, user.atlassianAccountId), console.error);
+  async canUserEdit(): Promise<boolean> {
+    const pageId = await this._page.getPageId();
+    return await CheckPermission(pageId, this.currentUser?.atlassianAccountId || '', this._requestFn as PermissionCheckRequestFunc)
   }
 
   isLite(): boolean {
