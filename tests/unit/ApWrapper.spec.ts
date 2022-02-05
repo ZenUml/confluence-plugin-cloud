@@ -50,4 +50,38 @@ describe('ApWrapper', () => {
       .toEqual(buildEnrichedCustomContent("custom-content-001", "12346", "A.method", true));
   })
 
+  it('initializeContext', async () => {
+    setUpWindowLocation("?contentKey=zenuml-content-sequence");
+    let mockAp = new MockAp();
+    let apWrapper2 = new ApWrapper2(mockAp);
+    await apWrapper2.initializeContext();
+    expect(await apWrapper2.currentUser).toStrictEqual({"atlassianAccountId": "fake:user-account-id"});
+    expect(await apWrapper2.currentSpace).toBe('fake-space');
+  })
+
+  it('must NOT throw exception when initializeContext', async () => {
+    setUpWindowLocation("?contentKey=zenuml-content-sequence");
+    let mockAp = new MockAp();
+    let apWrapper2 = new ApWrapper2(mockAp);
+    const _getCurrentUser = jest.fn().mockImplementation(async () => {
+      throw new Error("mock error");
+    });
+    apWrapper2._getCurrentUser = _getCurrentUser.bind(apWrapper2);
+    await apWrapper2.initializeContext();
+    expect(await apWrapper2.currentUser).toBeUndefined();
+    expect(await apWrapper2.currentSpace).toBeUndefined();
+  })
+
+  it('must NOT throw exception when initializeContext', async () => {
+    setUpWindowLocation("?contentKey=zenuml-content-sequence");
+    let mockAp = new MockAp();
+    let apWrapper2 = new ApWrapper2(mockAp);
+    const _getCurrentSpace = jest.fn().mockImplementation(async () => {
+      throw new Error("mock error");
+    });
+    apWrapper2._getCurrentSpace = _getCurrentSpace.bind(apWrapper2);
+    await apWrapper2.initializeContext();
+    expect(await apWrapper2.currentUser).toStrictEqual({"atlassianAccountId": "fake:user-account-id"});
+    expect(await apWrapper2.currentSpace).toBeUndefined();
+  })
 })

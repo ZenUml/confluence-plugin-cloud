@@ -50,8 +50,13 @@ export default class ApWrapper2 implements IApWrapper {
     this._page = new AtlasPage(ap);
   }
 
-  initializeContext(): Promise<any> {
-    return Promise.all([this._getCurrentUser(), this._getCurrentSpace()]);
+  async initializeContext(): Promise<any> {
+    try {
+      await this._getCurrentUser();
+      await this._getCurrentSpace();
+    } catch (e) {
+      console.error(e);
+    }
   }
 
   getMacroData(): Promise<IMacroData | undefined> {
