@@ -34,7 +34,13 @@
 
   async function init() {
     try {
-      currentSpace = await getCurrentSpace();
+      try {
+        currentSpace = await getCurrentSpace();
+      } catch (e) {
+        currentSpace = 'unknow_space';
+        console.log('Error getting current space', e);
+        trackEvent('error', 'getCurrentSpace', e.message);
+      }
 
       const localState = getLocalState();
       const remoteState = await getAppProperty();
@@ -201,7 +207,12 @@
   }
 
   function getClientDomain() {
-    return clientDomain || (clientDomain = getAtlassianDomain());
+    try {
+      return clientDomain || (clientDomain = getAtlassianDomain()) || 'unknown_client_domain';
+    } catch(e){
+      console.error(e);
+      return 'unknown_client_domain';
+    }
   }
 
   function getAtlassianDomain() {
