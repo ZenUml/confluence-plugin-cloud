@@ -27,6 +27,13 @@ export default class MockAp implements IAp {
   private requestHandlers: Array<RequestHandler> = []
 
   constructor(pageId: any = null) {
+    this.user = {
+      getCurrentUser: function (cb: any) {
+        cb({
+          atlassianAccountId: 'fake:user-account-id',
+        })
+      }
+    }
     this.confluence = new MockApConfluence();
     this.navigator = {
       getLocation: (_: any) => {}
@@ -34,7 +41,7 @@ export default class MockAp implements IAp {
     this.contentId = pageId;
     this.navigator = {
       getLocation: (cb: any) => cb({
-          context: { contentId: this.contentId }
+          context: { contentId: this.contentId, spaceKey: 'fake-space' }
         }
       )
     };

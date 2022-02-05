@@ -32,7 +32,8 @@ describe('Macro', () => {
       expect(code).toBe(macro.EXAMPLE)
 
       expect(gtag.mock.calls).toEqual([
-        ['event', 'new_macro', {event_category: 'custom_content', event_label: 'sequence', client_domain: '', user_account_id: '', confluence_space: ''}]
+        ['event', 'new_macro', {event_category: 'custom_content', event_label: 'sequence',
+          client_domain: 'unknown_atlassian_domain', user_account_id: 'unknown_user_account_id', confluence_space: 'unknown_space'}]
       ])
     })
 
@@ -52,7 +53,8 @@ describe('Macro', () => {
       expect(code).toBe('body')
 
       expect(gtag.mock.calls).toEqual([
-        ['event', 'load_macro', {event_category: 'macro_body', event_label: 'sequence', client_domain: '', user_account_id: '', confluence_space: ''}],
+        ['event', 'load_macro', {event_category: 'macro_body', event_label: 'sequence',
+          client_domain: 'unknown_atlassian_domain', user_account_id: 'unknown_user_account_id', confluence_space: 'unknown_space'}],
       ])
     })
 
@@ -63,7 +65,8 @@ describe('Macro', () => {
       expect(code).toBe('A.method')
 
       expect(gtag.mock.calls).toEqual([
-        ['event', 'load_macro', {event_category: 'content_property_old', event_label: 'sequence', client_domain: '', user_account_id: '', confluence_space: ''}],
+        ['event', 'load_macro', {event_category: 'content_property_old', event_label: 'sequence',
+          client_domain: 'unknown_atlassian_domain', user_account_id: 'unknown_user_account_id', confluence_space: 'unknown_space'}],
       ])
     })
 
@@ -75,7 +78,9 @@ describe('Macro', () => {
       expect(code).toBe('A.method')
 
       expect(gtag.mock.calls).toEqual([
-        ['event', 'load_macro', {event_category: 'content_property', event_label: '_sequence', client_domain: '', user_account_id: '', confluence_space: ''}],
+        ['event', 'load_macro', {
+          event_category: 'content_property', event_label: '_sequence',
+          client_domain: 'unknown_atlassian_domain', user_account_id: 'unknown_user_account_id', confluence_space: 'unknown_space'}],
       ])
     })
 

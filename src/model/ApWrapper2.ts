@@ -10,6 +10,7 @@ import {MacroIdentifier} from "@/model/MacroIdentifier";
 import {DataSource, Diagram, DiagramType} from "@/model/Diagram";
 import {ICustomContentResponseBody} from "@/model/ICustomContentResponseBody";
 import {AtlasPage} from "@/model/page/AtlasPage";
+import CheckPermission, {PermissionCheckRequestFunc} from "@/model/page/CheckPermission";
 
 export default class ApWrapper2 implements IApWrapper {
   versionType: VersionType;
@@ -50,8 +51,18 @@ export default class ApWrapper2 implements IApWrapper {
     this._page = new AtlasPage(ap);
   }
 
-  initializeContext(): Promise<any> {
-    return Promise.all([this._getCurrentUser(), this._getCurrentSpace()]);
+  async initializeContext(): Promise<void> {
+    try {
+      this.currentUser = await this._getCurrentUser();
+      this.currentSpace = await this._getCurrentSpace();
+    } catch (e) {
+      console.error(e);
+      try {
+        trackEvent('error', 'initializeContext', e.message);
+      } catch (e) {
+        console.error(e);
+      }
+    }
   }
 
   getMacroData(): Promise<IMacroData | undefined> {
@@ -176,7 +187,7 @@ export default class ApWrapper2 implements IApWrapper {
       "type": type,
       "title": content.title || `Untitled ${new Date().toISOString()}`,
       "space": {
-        "key": await this._getCurrentSpace()
+        "key": this.currentSpace || await this._getCurrentSpace()
       },
       "container": container,
       "body": {
@@ -327,32 +338,16 @@ export default class ApWrapper2 implements IApWrapper {
   }
 
   _getCurrentUser(): Promise<IUser> {
-    return new Promise(resolv => this.currentUser 
-      ? resolv(this.currentUser) 
-      : this._user.getCurrentUser((user: IUser) => resolv(this.currentUser = user)));
+    return new Promise(resolv => this._user.getCurrentUser((user: IUser) => resolv(user)));
   }
 
   async _getCurrentSpace(): Promise<string> {
     return this.currentSpace || (this.currentSpace = await this._page.getSpaceKey());
   }
 
-  canUserEdit(): Promise<boolean> {
-    const checkPermission = (pageId: any, userId: any) => 
-      this._requestFn({
-        type: 'POST',
-        url: `/rest/api/content/${pageId}/permission/check`,
-        contentType: 'application/json', 
-        data: JSON.stringify({subject: {type: 'user', identifier: userId}, operation: 'update'})
-      })
-      .then((response: any) => {
-        const data = JSON.parse(response.body);
-        return data.hasPermission;
-      }, (e: any) => console.error(`Error checking content permission:`, e));
-
-    return Promise.all([
-      this._page.getPageId(),
-      this._getCurrentUser()
-    ]).then(([pageId, user]) => checkPermission(pageId, user.atlassianAccountId), console.error);
+  async canUserEdit(): Promise<boolean> {
+    const pageId = await this._page.getPageId();
+    return await CheckPermission(pageId, this.currentUser?.atlassianAccountId || '', this._requestFn as PermissionCheckRequestFunc)
   }
 
   isLite(): boolean {

@@ -10,16 +10,31 @@ export function getUrlParam (param: string): string | undefined {
   }
 }
 
+interface EventDetails {
+  event_category: string
+  event_label: string
+  client_domain: string
+  user_account_id: string
+  confluence_space: string
+}
+
 export function trackEvent(label: DiagramType | string, action: string, category: string) {
   try {
-    const eventDetails = {
-      'event_category': category, 
-      'event_label' : label,
-      'client_domain': getClientDomain(),
-      'user_account_id': getCurrentUserAccountId(),
-      'confluence_space': getCurrentSpace()
-    };
-
+    let eventDetails = {
+      'event_category': category || 'category_not_set',
+      'event_label' : label || 'label_not_set',
+    } as EventDetails;
+    // make sure event is still sent out even if there are errors in setting up the event details
+    try {
+      eventDetails =  {
+        ...eventDetails,
+        'client_domain': getClientDomain(),
+        'user_account_id': getCurrentUserAccountId(),
+        'confluence_space': getCurrentSpace()
+      };
+    } catch (e) {
+      console.error(e);
+    }
     // @ts-ignore
     window.gtag && window.gtag('event', action, eventDetails);
   } catch (e) {
@@ -27,11 +42,16 @@ export function trackEvent(label: DiagramType | string, action: string, category
   }
 }
 
+// Never throw
 function getClientDomain(): string {
-  return clientDomain || getAtlassianDomain();
+  try {
+    return clientDomain || _getAtlassianDomain() || 'unknown_atlassian_domain';
+  } catch (e) {
+    return 'unknown_atlassian_domain'
+  }
 }
 
-function getAtlassianDomain(): string {
+function _getAtlassianDomain(): string {
   const pattern = /\/\/([a-z0-9-_]+)\.atlassian\.net/i;
   const xdme = getUrlParam('xdm_e');
   const url = xdme && decodeURIComponent(xdme) || '';
@@ -39,15 +59,15 @@ function getAtlassianDomain(): string {
   if(result && result.length > 1) {
     return result[1];
   }
-  return '';
+  return 'unknown_atlassian_domain';
 }
 
 function getCurrentUserAccountId(): string {
   // @ts-ignore
-  return window.macro?._apWrapper?.currentUser?.atlassianAccountId || '';
+  return window.macro?._apWrapper?.currentUser?.atlassianAccountId || 'unknown_user_account_id';
 }
 
 function getCurrentSpace(): string {
   // @ts-ignore
-  return window.macro?._apWrapper?.currentSpace || '';
+  return window.macro?._apWrapper?.currentSpace || 'unknown_space';
 }
