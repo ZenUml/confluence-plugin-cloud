@@ -57,7 +57,11 @@ export default class ApWrapper2 implements IApWrapper {
       this.currentSpace = await this._getCurrentSpace();
     } catch (e) {
       console.error(e);
-      trackEvent('error', 'initializeContext', e.message);
+      try {
+        trackEvent('error', 'initializeContext', e.message);
+      } catch (e) {
+        console.error(e);
+      }
     }
   }
 
