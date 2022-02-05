@@ -50,7 +50,7 @@ export default class ApWrapper2 implements IApWrapper {
     this._page = new AtlasPage(ap);
   }
 
-  async initializeContext(): Promise<any> {
+  async initializeContext(): Promise<void> {
     try {
       await this._getCurrentUser();
       await this._getCurrentSpace();
