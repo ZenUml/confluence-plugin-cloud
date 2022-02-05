@@ -52,8 +52,8 @@ export default class ApWrapper2 implements IApWrapper {
 
   async initializeContext(): Promise<void> {
     try {
-      await this._getCurrentUser();
-      await this._getCurrentSpace();
+      this.currentUser = await this._getCurrentUser();
+      this.currentSpace = await this._getCurrentSpace();
     } catch (e) {
       console.error(e);
     }
@@ -181,7 +181,7 @@ export default class ApWrapper2 implements IApWrapper {
       "type": type,
       "title": content.title || `Untitled ${new Date().toISOString()}`,
       "space": {
-        "key": await this._getCurrentSpace()
+        "key": this.currentSpace || await this._getCurrentSpace()
       },
       "container": container,
       "body": {
@@ -332,9 +332,7 @@ export default class ApWrapper2 implements IApWrapper {
   }
 
   _getCurrentUser(): Promise<IUser> {
-    return new Promise(resolv => this.currentUser 
-      ? resolv(this.currentUser) 
-      : this._user.getCurrentUser((user: IUser) => resolv(this.currentUser = user)));
+    return new Promise(resolv => this._user.getCurrentUser((user: IUser) => resolv(user)));
   }
 
   async _getCurrentSpace(): Promise<string> {
@@ -356,7 +354,7 @@ export default class ApWrapper2 implements IApWrapper {
 
     return Promise.all([
       this._page.getPageId(),
-      this._getCurrentUser()
+      this.currentUser || this._getCurrentUser()
     ]).then(([pageId, user]) => checkPermission(pageId, user.atlassianAccountId), console.error);
   }
 
