@@ -126,7 +126,7 @@ describe('Macro', () => {
       expect(code).toBe('body');
 
       expect(gtag.mock.calls).toEqual(expect.arrayContaining([
-        ['event', 'get_content_property', {event_category: 'unexpected_error', event_label: 'property is not found with key:zenuml-sequence-macro-1234-body'}],
+        ['event', 'get_content_property', {event_category: 'unexpected_error', event_label: 'property is not found with key:zenuml-sequence-macro-1234-body', client_domain: 'unknown_atlassian_domain', confluence_space: 'unknown_space', user_account_id: 'unknown_user_account_id'}],
       ]));
     })
 
@@ -146,7 +146,7 @@ describe('Macro', () => {
       }
 
       expect(gtag.mock.calls).toEqual(expect.arrayContaining([
-        ['event', 'get_content_property', {event_category: 'unexpected_error', event_label: 'property is not found with key:zenuml-sequence-macro-1234-body'}],
+        ['event', 'get_content_property', {event_category: 'unexpected_error', event_label: 'property is not found with key:zenuml-sequence-macro-1234-body', client_domain: 'unknown_atlassian_domain', confluence_space: 'unknown_space', user_account_id: 'unknown_user_account_id'}],
       ]));
     })
 
