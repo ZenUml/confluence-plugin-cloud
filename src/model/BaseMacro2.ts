@@ -94,23 +94,32 @@ class BaseMacro2 {
   }
 
   async load(): Promise<Diagram> {
-    let diagram;
-    const payload = await this.getContent();
-
-    if(!payload || !payload.value) {
-      diagram = {
-        id: this._uuid,
-        diagramType: DiagramType.Sequence,
-        code: await this.getMacroBody(),
-        source: DataSource.MacroBody
+    let payload, body;
+    try {
+      payload = await this.getContent();
+      if(!payload?.value) {
+        body = await this.getMacroBody();
       }
-    } else {
-      diagram = payload?.value as Diagram;
+    } catch(e) { //get content property could fail sometimes
+      console.debug('Load content error, fallback to macro body');
+      body = await this.getMacroBody();
+      if(!body) {
+        throw e;
+      }
     }
 
     this._loaded = true;
-    this._diagram = diagram;
-    return diagram;
+    this._diagram = payload?.value || this.diagramForCode(body);
+    return this._diagram;
+  }
+
+  diagramForCode(code: string | undefined): Diagram {
+    return {
+      id: this._uuid,
+      diagramType: DiagramType.Sequence,
+      code: code,
+      source: DataSource.MacroBody
+    };
   }
 
   // Warning! Do not call getXXX in save. Do retest if you want to call getXXX.

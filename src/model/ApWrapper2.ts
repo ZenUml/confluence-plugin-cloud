@@ -79,7 +79,6 @@ export default class ApWrapper2 implements IApWrapper {
     }))
   }
 
-  //FIXME: this method throws error in custom content viewer
   getMacroBody(): Promise<string | undefined> {
     return new Promise((resolve) => {
       try {
@@ -111,6 +110,7 @@ export default class ApWrapper2 implements IApWrapper {
     if (!property) {
       let message = 'property is not found with key:' + key;
       console.error(message);
+      trackEvent(message, 'get_content_property', 'error');
       throw {
         message: message,
         data: macroData

@@ -116,5 +116,39 @@ describe('Macro', () => {
       expect(code).toBe('A.m')
     })
 
+    test('should fallback to macro body when content property fails', async () => {
+      mockApConfluence.saveMacro({uuid: '1234'}, 'body')
+      mockApConfluence.getContentProperty = jest.fn(() => {
+        throw 'getContentProperty error'
+      })
+      
+      const code = (await macro.load()).code;
+      expect(code).toBe('body');
+
+      expect(gtag.mock.calls).toEqual(expect.arrayContaining([
+        ['event', 'get_content_property', {event_category: 'error', event_label: 'property is not found with key:zenuml-sequence-macro-1234-body', client_domain: 'unknown_atlassian_domain', confluence_space: 'unknown_space', user_account_id: 'unknown_user_account_id'}],
+      ]));
+    })
+
+    test('should throw error if fallback to macro body also fails', async () => {
+      const uuid = '1234';
+      const data = {uuid};
+      mockApConfluence.saveMacro(data, undefined)
+      mockApConfluence.getContentProperty = jest.fn(() => {
+        throw 'getContentProperty error'
+      })
+      
+      try {
+        await macro.load();
+        expect(true).toBe(false);
+      } catch(e) {
+        expect(e).toEqual({message: `property is not found with key:zenuml-sequence-macro-${uuid}-body`, data});
+      }
+
+      expect(gtag.mock.calls).toEqual(expect.arrayContaining([
+        ['event', 'get_content_property', {event_category: 'error', event_label: 'property is not found with key:zenuml-sequence-macro-1234-body', client_domain: 'unknown_atlassian_domain', confluence_space: 'unknown_space', user_account_id: 'unknown_user_account_id'}],
+      ]));
+    })
+
   })
 })
