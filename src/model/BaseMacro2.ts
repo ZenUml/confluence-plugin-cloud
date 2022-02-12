@@ -100,7 +100,8 @@ class BaseMacro2 {
       if(!payload?.value) {
         body = await this.getMacroBody();
       }
-    } catch(e) {
+    } catch(e) { //get content property could fail sometimes
+      console.debug('Load content error, fallback to macro body');
       body = await this.getMacroBody();
       if(!body) {
         throw e;

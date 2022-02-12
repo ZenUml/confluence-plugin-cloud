@@ -79,7 +79,6 @@ export default class ApWrapper2 implements IApWrapper {
     }))
   }
 
-  //FIXME: this method throws error in custom content viewer
   getMacroBody(): Promise<string | undefined> {
     return new Promise((resolve) => {
       try {
