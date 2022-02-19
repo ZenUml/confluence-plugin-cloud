@@ -5,6 +5,7 @@
   "scripts": {
     "engine": "use yarn to install",
     "test:unit": "vue-cli-service test:unit",
+    "test:unit:watch": "vue-cli-service test:unit --watch",
     "build:full": "PRODUCT_TYPE=full vue-cli-service build --mode production",
     "build:full:watch": "PRODUCT_TYPE=full vue-cli-service build --watch",
     "build:lite": "PRODUCT_TYPE=lite vue-cli-service build",
@@ -20,7 +21,7 @@
     "start:local": "VERSION=latest PRODUCT_TYPE=lite vue-cli-service serve --open",
     "start:vue:sit": "VERSION=latest PRODUCT_TYPE=lite vue-cli-service serve --open --mode test",
     "start:sit": "concurrently \"yarn firebase:serve\" \"yarn start:vue:sit\" \"yarn cloudflare:8080\"",
-    "start:sit:yanhui": "concurrently \"yarn firebase:serve\" \"yarn start:vue:sit --port 8081 --open false\" \"yarn cloudflare:yanhui\""
+    "start:sit:yanhui": "concurrently \"yarn firebase:serve\" \"yarn start:vue:sit --port 8081 --open false\""
   },
   "dependencies": {
     "@atlaskit/button": "^15.1.0",

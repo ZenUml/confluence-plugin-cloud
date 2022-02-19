@@ -104,6 +104,7 @@ class BaseMacro2 {
       console.debug('Load content error, fallback to macro body');
       body = await this.getMacroBody();
       if(!body) {
+        trackEvent('Fallback to macro body failed', 'get_content_fallback', 'error');
         throw e;
       }
     }

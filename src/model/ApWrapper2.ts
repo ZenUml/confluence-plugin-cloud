@@ -110,7 +110,7 @@ export default class ApWrapper2 implements IApWrapper {
     if (!property) {
       let message = 'property is not found with key:' + key;
       console.error(message);
-      trackEvent(message, 'get_content_property', 'error');
+      trackEvent(message, 'get_content_property', 'warning');
       throw {
         message: message,
         data: macroData
