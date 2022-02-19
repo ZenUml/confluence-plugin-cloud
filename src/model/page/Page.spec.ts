@@ -8,7 +8,8 @@ describe('Page', () => {
       return {
         spaceKey: "space-001",
         contentType: "page",
-        contentId: "page-001"
+        contentId: "page-001",
+        href: 'https://foo.atlassian.net/wiki/spaces/space-001/pages/1234/test1'
       }
     });
 
@@ -16,6 +17,7 @@ describe('Page', () => {
     expect(await page.getPageId()).toBe("page-001");
     expect(await page.getSpaceKey()).toBe("space-001");
     expect(await page.getContentType()).toBe("page");
+    expect(await page.getHref()).toBe('https://foo.atlassian.net/wiki/spaces/space-001/pages/1234/test1');
   });
 
   // A matcher function is passed to page.countMacros(). This functions accepts

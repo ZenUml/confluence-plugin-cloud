@@ -14,7 +14,6 @@ export async function initializeMacro(store: any) {
     // @ts-ignore
     store.state.styles = styles;
     // @ts-ignore
-    store.state.macro = Object.assign({}, macro);
     // @ts-ignore
     store.dispatch('updateMermaidCode', mermaidCode || store.state.mermaidCode)
     store.dispatch('updateDiagramType', diagramType)

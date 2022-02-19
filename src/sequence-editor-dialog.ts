@@ -9,7 +9,6 @@ import 'vue-sequence/dist/vue-sequence.css'
 console.log(VueSequence.Version)
 
 import MockApConfluence from './model/MockApConfluence'
-import Macro from './model/Macro'
 import Editor from './components/Editor.vue'
 import Workspace from './components/Workspace.vue'
 import mermaid from 'mermaid'
@@ -65,8 +64,10 @@ if (window.location.href.includes('localhost')) {
   }
 }
 async function initializeMacro() {
-// @ts-ignore
-  const macro = store.state.macro || new Macro(AP);
+  // @ts-ignore
+  const macro = store.state.macro;
+  await macro._apWrapper.initializeContext();
+
   // @ts-ignore
   window.macro = macro;
   const {code, styles, mermaidCode, diagramType} = await macro.load();
