@@ -14,7 +14,7 @@ class BaseMacro2 {
   _loaded = false;
   _standaloneCustomContent: boolean;
   _addonVersion: string;
-  private _apWrapper: IApWrapper;
+  _apWrapper: IApWrapper;
 
   constructor(apWrapper2: ApWrapper2) {
     this._apWrapper = apWrapper2;

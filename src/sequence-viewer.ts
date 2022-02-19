@@ -12,6 +12,7 @@ import ExtendedStore from './model/Store'
 import EventBus from './EventBus'
 import Viewer from "@/components/Viewer.vue";
 import {trackEvent} from "@/utils/window";
+import {initializeMacro} from "@/model/macro/InitializeMacro";
 import './GTagConfig'
 
 // eslint-disable-next-line
@@ -40,49 +41,24 @@ if(document.getElementById('app')) {
 // @ts-ignore
 window.store = store
 
-async function initializeMacro() {
+EventBus.$on('diagramLoaded', async () => {
   // @ts-ignore
-  console.debug('Initializing macro from sequence-viewer.ts', store.state.macro);
-  // @ts-ignore
-  const macro = window.macro || store.state.macro;
-  // @ts-ignore
-  window.macro = macro;
-  try {
-    await macro._apWrapper.initializeContext();
-    
-    const diagram = await macro.load();
-    store.commit('code', diagram.code);
-    // @ts-ignore
-    store.state.styles = diagram.styles;
-    // @ts-ignore
-    store.state.macro = Object.assign({}, macro);
-    // @ts-ignore
-    store.dispatch('updateMermaidCode', diagram.mermaidCode || store.state.mermaidCode)
-    store.dispatch('updateDiagramType', diagram.diagramType)
+  const macro = window.macro;
+  if(!macro?._standaloneCustomContent) {
 
     const canEdit = await macro.canEditOnDialog();
     store.dispatch('updateCanEdit', canEdit);
 
-    if(!macro._standaloneCustomContent) {
-      try {
-        // @ts-ignore
-        await window.createAttachmentIfContentChanged(diagram.code);
-      } catch (e) {
-        // Do not re-throw the error
-        console.debug('Error when creating attachment', e);
-      }
+    try {
+      // @ts-ignore
+      await window.createAttachmentIfContentChanged(macro?._diagram?.code);
+    } catch (e) {
+      // Do not re-throw the error
+      console.error('Error when creating attachment', e);
+      trackEvent(JSON.stringify(e), 'create_attachment', 'error');
     }
-  } catch (e) {
-    // @ts-ignore
-    console.error('Error on initializing macro:', e);
-    trackEvent(e.message, 'load_sequence', 'error');
-    // @ts-ignore
-    store.state.error = e;
   }
-
-  let timing = window.performance.timing;
-  console.debug('ZenUML diagram loading time:%s (ms)', timing.domContentLoadedEventEnd- timing.navigationStart)
-}
+});
 
 EventBus.$on('edit', () => {
   // @ts-ignore
@@ -92,7 +68,7 @@ EventBus.$on('edit', () => {
         chrome: false,
         width: "100%",
         height: "100%",
-    }).on('close', initializeMacro);
+    }).on('close', () => initializeMacro(store));
 });
 
 EventBus.$on('fullscreen', () => {
@@ -106,4 +82,4 @@ EventBus.$on('fullscreen', () => {
     });
 });
 
-initializeMacro();
+initializeMacro(store);

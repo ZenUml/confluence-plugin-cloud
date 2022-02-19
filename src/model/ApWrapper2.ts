@@ -25,6 +25,7 @@ export default class ApWrapper2 implements IApWrapper {
   _page: AtlasPage;
   currentUser: IUser | undefined;
   currentSpace: string | undefined;
+  currentPageUrl: string | undefined;
 
   constructor(ap: IAp) {
     this.versionType = this.isLite() ? VersionType.Lite : VersionType.Full;
@@ -55,6 +56,7 @@ export default class ApWrapper2 implements IApWrapper {
     try {
       this.currentUser = await this._getCurrentUser();
       this.currentSpace = await this._getCurrentSpace();
+      this.currentPageUrl = await this._getCurrentPageUrl();
     } catch (e) {
       console.error(e);
       try {
@@ -279,7 +281,7 @@ export default class ApWrapper2 implements IApWrapper {
       console.debug(`Loaded custom content by id ${id}.`);
       return customContent;
     } catch (e) {
-      trackEvent(e.message, 'load_custom_content', 'error');
+      trackEvent(JSON.stringify(e), 'load_custom_content', 'error');
       // TODO: return a NullCustomContentObject
       return undefined;
     }
@@ -343,6 +345,10 @@ export default class ApWrapper2 implements IApWrapper {
 
   async _getCurrentSpace(): Promise<string> {
     return this.currentSpace || (this.currentSpace = await this._page.getSpaceKey());
+  }
+
+  async _getCurrentPageUrl(): Promise<string> {
+    return this.currentPageUrl || (this.currentPageUrl = await this._page.getHref());
   }
 
   async canUserEdit(): Promise<boolean> {

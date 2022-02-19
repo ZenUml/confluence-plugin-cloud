@@ -53,8 +53,7 @@ function getClientDomain(): string {
 
 function _getAtlassianDomain(): string {
   const pattern = /\/\/([a-z0-9-_]+)\.atlassian\.net/i;
-  const xdme = getUrlParam('xdm_e');
-  const url = xdme && decodeURIComponent(xdme) || '';
+  const url = getCurrentPageUrl();
   const result = pattern.exec(url);
   if(result && result.length > 1) {
     return result[1];
@@ -70,4 +69,9 @@ function getCurrentUserAccountId(): string {
 function getCurrentSpace(): string {
   // @ts-ignore
   return window.macro?._apWrapper?.currentSpace || 'unknown_space';
+}
+
+function getCurrentPageUrl(): string {
+  // @ts-ignore
+  return window.macro?._apWrapper?.currentPageUrl || 'unknown_page_url';
 }

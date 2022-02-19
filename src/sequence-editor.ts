@@ -23,6 +23,7 @@ import 'codemirror/lib/codemirror.css'
 import 'codemirror/theme/base16-dark.css'
 import ExtendedStore from './model/Store'
 import EventBus from './EventBus'
+import {initializeMacro} from "@/model/macro/InitializeMacro";
 import './GTagConfig'
 
 Vue.use(Va, 'en')
@@ -62,25 +63,6 @@ if (window.location.href.includes('localhost')) {
     confluence: new MockApConfluence()
   }
 }
-async function initializeMacro() {
-  // @ts-ignore
-  const macro = store.state.macro;  // store.state.macro is set in Store.ts
-  await macro._apWrapper.initializeContext();
-  
-  const {code, styles, mermaidCode, diagramType} = await macro.load();
-
-  store.commit('code', code);
-  // @ts-ignore
-  store.state.styles = styles;
-  // @ts-ignore
-  store.dispatch('updateMermaidCode', mermaidCode || store.state.mermaidCode)
-  store.dispatch('updateDiagramType', diagramType)
-  let performanceEntries = window.performance.getEntriesByType("navigation");
-  for (let i = 0; i < performanceEntries.length; i++) {
-    const e = performanceEntries[i];
-    console.debug('ZenUML diagram loading time:%s(ms)', e.duration)
-  }
-}
 
 EventBus.$on('save', async () => {
   // @ts-ignore
@@ -90,4 +72,4 @@ EventBus.$on('save', async () => {
   AP.dialog.close();
 });
 
-initializeMacro();
+initializeMacro(store);
