@@ -25,6 +25,9 @@ export async function initializeMacro(store: any) {
     trackEvent(JSON.stringify(e), 'load_sequence', 'error');
     // @ts-ignore
     store.state.error = e;
+  } finally {
+    // Trigger reactivity of state.macro._diagram. It is used in the debug panel.
+    // TODO: We may be able to find a better way to do this.
+    store.state.macro = Object.assign({}, macro);
   }
-
 }
