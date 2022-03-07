@@ -6,7 +6,6 @@ group BusinessService {
   @Lambda PurchaseService
   @AzureFunction InvoiceService
 }
-@Entity "order:Order"
 
 @Starter(Client)
 //\`POST /orders\`
