@@ -1,17 +1,23 @@
-export default `title Order Service (Example)
-@Lambda OrderController
-<<BFF>> OrderService
+export default `title Order Service (Demonstration only)
+@Actor Client
+@Boundary OrderController
+@EC2 <<BFF>> OrderService
 group BusinessService {
-  PurchaseService
-  InvoiceService
+  @Lambda PurchaseService
+  @AzureFunction InvoiceService
 }
+@Entity "order:Order"
+
+@Starter(Client)
 //\`POST /orders\`
-OrderController.create(payload) {
+OrderController.post(payload) {
   OrderService.create(payload) {
     order = new Order(payload)
-    par {
-      PurchaseService.createPO(order)
-      InvoiceService.createInvoice(order)      
+    if(order != null) {
+      par {
+        PurchaseService.createPO(order)
+        InvoiceService.createInvoice(order)      
+      }      
     }
   }
 }`
