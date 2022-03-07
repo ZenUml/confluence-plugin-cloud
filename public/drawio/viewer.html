@@ -83,11 +83,8 @@
 		}
 
     setTimeout(function () {
-      let width = document.body.scrollWidth;
-      let height = document.body.scrollHeight;
-      console.debug('Resize graph window to ', width, height);
-      AP.resize(width, height);
-    }, 1000);
+      AP.resize();
+    }, 1500);
   </script>
 </body>
 </html>

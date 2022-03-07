@@ -76,10 +76,7 @@
     }
 
     setTimeout(async function () {
-      let width = document.body.scrollWidth;
-      let height = document.body.scrollHeight;
-      console.debug('Resize sequence viewer to ', width, height);
-      AP.resize(width, height);
+      AP.resize();
     }, 1500);
 
   </script>
