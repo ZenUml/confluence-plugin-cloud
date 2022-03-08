@@ -41,6 +41,11 @@ if(document.getElementById('app')) {
 // @ts-ignore
 window.store = store
 
+EventBus.$on('diagramLoaded', () => {
+  console.debug('Resize macro');
+  // @ts-ignore
+  setTimeout(window.AP?.resize, 500)
+});
 EventBus.$on('diagramLoaded', async () => {
   // @ts-ignore
   const macro = window.macro;
