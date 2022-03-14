@@ -6,7 +6,7 @@
 
   const has = body => body.content.filter(c => c.type === 'extension' && c.attrs.extensionType === 'com.atlassian.confluence.macro.core' && c.attrs.extensionKey.indexOf('zenuml-') === 0);
 
-  const process = response => response.results.filter(p => has(body(p)).length > 0).map(p => `${p.title} ${response._links.base}${p._links.webui}`);
+  const process = response => response.results.filter(p => has(body(p)).length > 0).map(p => `${response._links.base}${p._links.webui}`);
 
   const scan = url => fetch(url).then(r => r.json()).then(r => {
     console.log(process(r));
