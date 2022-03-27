@@ -1,10 +1,16 @@
 <template>
   <div v-show="debug">
-    Host: {{app.host}} <br>
-    Macro: {{macro._uuid}}
-    Data source: {{diagram.source}} {{diagram.id}}
+    <div class="px-4 py-5 sm:p-6">
+      <dt class="text-blue-600 hover:text-blue-800 visited:text-purple-600">
+        HOST: {{ app.host }}
+      </dt>
+      <dd class="mt-1">
+        <div class="flex items-baseline font-mono text-indigo-600">
+          {{ macro._uuid.substring(0, 8) }} {{ diagram.source }}:{{diagram.id}}
+        </div>
+      </dd>
+    </div>
   </div>
-
 </template>
 
 <script>
