@@ -6,7 +6,7 @@
       </dt>
       <dd class="mt-1">
         <div class="flex items-baseline font-mono text-indigo-600">
-          {{ macro._uuid.substring(0, 8) }} {{ diagram.source }}:{{diagram.id}}
+          {{ shortUuid }} {{ diagram.source }}:{{diagram.id}}
         </div>
       </dd>
     </div>
@@ -30,6 +30,9 @@ export default {
     },
     macro() {
       return this.$store.state.macro;
+    },
+    shortUuid() {
+      return this.macro?._uuid?.substring(0, 8);
     }
 
   }
