@@ -1,39 +1,75 @@
-
 function toPng() {
   var node = document.getElementsByClassName('sequence-diagram')[0];
   return domtoimage.toBlob(node, { bgcolor: 'white' });
 }
 
-async function getAttachments(pageId) {
-  var attachments;
-  const response = await AP.request({
-    url: '/rest/api/content/' + pageId + '/child/attachment?expand=version',
+function buildAttachmentBasePath(pageId) {
+  return '/rest/api/content/' + pageId + '/child/attachment';
+}
+
+function buildGetRequestForAttachments(pageId) {
+  return {
+    url: buildAttachmentBasePath(pageId) + '?expand=version',
     type: 'GET'
-  });
-  attachments = JSON.parse(response.body).results;
-  return attachments;
+  };
+}
+
+function parseAttachmentsFromResponse(response) {
+  return JSON.parse(response.body).results;
+}
+
+async function getAttachments(pageId) {
+  const response = await AP.request(buildGetRequestForAttachments(pageId));
+  return parseAttachmentsFromResponse(response);
+}
+
+function buildPostRequestToUploadAttachment(uri, hash, file) {
+  return {
+    url: uri,
+    type: 'POST',
+    contentType: 'multipart/form-data',
+    data: {minorEdit: true, comment: hash, file: file}
+  };
 }
 
 async function uploadAttachment(attachmentName, uri, hash) {
   const blob = await toPng();
   const file = new File([blob], attachmentName, {type: 'image/png'});
   console.debug('Uploading attachment to', uri);
-  const response = await AP.request({
-    url: uri,
-    type: 'POST',
-    contentType: 'multipart/form-data',
-    data: {minorEdit: true, comment: hash, file: file}
-  });
-  return response;
+  return await AP.request(buildPostRequestToUploadAttachment(uri, hash, file));
+}
+
+function buildPutRequestToUpdateAttachmentProperties(pageId, attachmentId, versionNumber, hash) {
+  return {
+    url: buildAttachmentBasePath(pageId) + '/' + attachmentId,
+    type: 'PUT',
+    contentType: 'application/json',
+    data: JSON.stringify({
+      minorEdit: true,
+      id: attachmentId,
+      type: 'attachment',
+      version: {number: versionNumber},
+      metadata: {comment: hash}
+    })
+  };
 }
 
 async function updateAttachmentProperties(pageId, attachmentId, versionNumber, hash) {
-  await AP.request({
-    url: '/rest/api/content/' + pageId + '/child/attachment/' + attachmentId,
-    type: 'PUT',
-    contentType: 'application/json',
-    data: JSON.stringify({minorEdit: true, id: attachmentId, type: 'attachment', version: {number: versionNumber}, metadata: {comment: hash}})
-  });
+  await AP.request(buildPutRequestToUpdateAttachmentProperties(pageId, attachmentId, versionNumber, hash));
+}
+
+function buildAttachmentUri(attachment, pageId) {
+  return attachment != null
+    ? buildAttachmentBasePath(pageId) + '/' + attachment.id + '/data'
+    : buildAttachmentBasePath(pageId);
+}
+
+function buildAttachmentId(attachment, response) {
+  return attachment != null ? attachment.id : JSON.parse(response.body).results[0].id;
+}
+
+function buildAttachmentVersionNumber(attachment) {
+  return attachment != null ? attachment.version.number + 1 : 1;
 }
 
 async function createAttachmentIfContentChanged(content) {
@@ -46,16 +82,13 @@ async function createAttachmentIfContentChanged(content) {
   const attachmentName = 'zenuml-' + getUrlParam("uuid") + '.png';
   var attachment = attachments.find(a => a.title === attachmentName);
 
-  const uri = attachment != null
-    ? '/rest/api/content/' + pageId + '/child/attachment/' + attachment.id + '/data'
-    : '/rest/api/content/' + pageId + '/child/attachment';
-
-  if(attachment == null || hash !== attachment.metadata.comment) {
+  if(attachment === null || hash !== attachment.metadata.comment) {
+    const uri = buildAttachmentUri(attachment, pageId);
     console.debug('Uploading attachment:', uri, hash);
     const response = await uploadAttachment(attachmentName, uri, hash);
 
-    const attachmentId = attachment != null ? attachment.id : JSON.parse(response.body).results[0].id;
-    const versionNumber = attachment != null ? attachment.version.number + 1 : 1;
+    const attachmentId = buildAttachmentId(attachment, response);
+    const versionNumber = buildAttachmentVersionNumber(attachment);
 
     await updateAttachmentProperties(pageId, attachmentId, versionNumber, hash);
   }
