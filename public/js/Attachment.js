@@ -90,14 +90,18 @@ function uploadNewAttachment(hash) {
   }
 }
 
+async function updateAttachmentProperties(attachmentMeta) {
+  await AP.request(buildPutRequestToUpdateAttachmentProperties(getUrlParam("pageId"),
+    attachmentMeta.attachmentId, attachmentMeta.versionNumber, attachmentMeta.hash));
+}
+
 // Add new version, response does have `results` property.
 async function createAttachmentIfContentChanged(content) {
   console.debug('Creating attachment for code:', content);
   const attachment = await tryGetAttachment();
   const hash = md5(content);
   if (!attachment || hash !== attachment.metadata.comment) {
-    let fnUploadAttachment = attachment ? uploadNewVersionOfAttachment(hash) : uploadNewAttachment(hash);
-    let attachmentMeta = await fnUploadAttachment();
-    await AP.request(buildPutRequestToUpdateAttachmentProperties(getUrlParam("pageId"), attachmentMeta.attachmentId, attachmentMeta.versionNumber, attachmentMeta.hash));
+    let attachmentMeta = await (attachment ? uploadNewVersionOfAttachment(hash) : uploadNewAttachment(hash))();
+    await updateAttachmentProperties(attachmentMeta);
   }
 }
