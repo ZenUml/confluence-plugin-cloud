@@ -58,38 +58,54 @@ async function updateAttachmentProperties(pageId, attachmentId, versionNumber, h
   await AP.request(buildPutRequestToUpdateAttachmentProperties(pageId, attachmentId, versionNumber, hash));
 }
 
-function buildAttachmentUri(attachment, pageId) {
-  return attachment != null
-    ? buildAttachmentBasePath(pageId) + '/' + attachment.id + '/data'
-    : buildAttachmentBasePath(pageId);
-}
-
-function buildAttachmentId(attachment, response) {
-  return attachment != null ? attachment.id : JSON.parse(response.body).results[0].id;
-}
-
-function buildAttachmentVersionNumber(attachment) {
-  return attachment != null ? attachment.version.number + 1 : 1;
-}
-
-async function createAttachmentIfContentChanged(content) {
-  console.debug('Creating attachment for code:', content);
-  const hash = md5(content);
-
+async function tryGetAttachment() {
   const pageId = getUrlParam("pageId");
   const attachments = await getAttachments(pageId);
 
   const attachmentName = 'zenuml-' + getUrlParam("uuid") + '.png';
-  var attachment = attachments.find(a => a.title === attachmentName);
+  return attachments.find(a => a.title === attachmentName);
+}
 
-  if(attachment === null || hash !== attachment.metadata.comment) {
-    const uri = buildAttachmentUri(attachment, pageId);
-    console.debug('Uploading attachment:', uri, hash);
-    const response = await uploadAttachment(attachmentName, uri, hash);
+async function uploadAttachment2(hash, fnGetUri) {
+  const pageId = getUrlParam("pageId");
+  const attachmentName = 'zenuml-' + getUrlParam("uuid") + '.png';
+  const uri = fnGetUri(pageId);
+  return await uploadAttachment(attachmentName, uri, hash);
+}
 
-    const attachmentId = buildAttachmentId(attachment, response);
-    const versionNumber = buildAttachmentVersionNumber(attachment);
+async function uploadAttachment3(hash, fnGetUri) {
+  const pageId = getUrlParam("pageId");
+  const attachmentName = 'zenuml-' + getUrlParam("uuid") + '.png';
+  const uri = fnGetUri(pageId);
+  return await uploadAttachment(attachmentName, uri, hash);
+}
 
-    await updateAttachmentProperties(pageId, attachmentId, versionNumber, hash);
+async function updateAttachmentProperties2(response, hash) {
+  const attachmentId = JSON.parse(response.body).results[0].id;
+  await updateAttachmentProperties(getUrlParam("pageId"), attachmentId, 1, hash);
+}
+
+async function addNewAttachment(hash) {
+  const response = await uploadAttachment2(hash, buildAttachmentBasePath);
+  await updateAttachmentProperties2(response, hash);
+}
+
+// Add new version, response does have `results` property.
+async function addNewVersionOfAttachment(hash, attId, newVersionNumber) {
+  await uploadAttachment2(hash, (pageId) => {
+    return buildAttachmentBasePath(pageId) + '/' + attId + '/data';
+  });
+
+  await updateAttachmentProperties(getUrlParam("pageId"), attId, newVersionNumber, hash);
+}
+
+async function createAttachmentIfContentChanged(content) {
+  console.debug('Creating attachment for code:', content);
+  var attachment = await tryGetAttachment();
+  const hash = md5(content);
+  if (!attachment) {
+    await addNewAttachment(hash);
+  } else if (hash !== attachment.metadata.comment) {
+    await addNewVersionOfAttachment(hash, attachment.id, attachment.version.number + 1);
   }
 }
