@@ -54,10 +54,6 @@ function buildPutRequestToUpdateAttachmentProperties(pageId, attachmentId, versi
   };
 }
 
-async function updateAttachmentProperties(pageId, attachmentId, versionNumber, hash) {
-  await AP.request(buildPutRequestToUpdateAttachmentProperties(pageId, attachmentId, versionNumber, hash));
-}
-
 async function tryGetAttachment() {
   const pageId = getUrlParam("pageId");
   const attachments = await getAttachments(pageId);
@@ -73,32 +69,35 @@ async function uploadAttachment2(hash, fnGetUri) {
   return await uploadAttachment(attachmentName, uri, hash);
 }
 
-async function updateAttachmentProperties2(response, hash) {
-  const attachmentId = JSON.parse(response.body).results[0].id;
-  await updateAttachmentProperties(getUrlParam("pageId"), attachmentId, 1, hash);
+function uploadNewVersionOfAttachment(hash) {
+  return async () => {
+    const attachment = await tryGetAttachment();
+    const attachmentId = attachment.id;
+    const versionNumber = attachment.version.number + 1;
+    await uploadAttachment2(hash, (pageId) => {
+      return buildAttachmentBasePath(pageId) + '/' + attachmentId + '/data';
+    });
+    return {attachmentId, versionNumber, hash};
+  }
 }
 
-async function addNewAttachment(hash) {
-  const response = await uploadAttachment2(hash, buildAttachmentBasePath);
-  await updateAttachmentProperties2(response, hash);
+function uploadNewAttachment(hash) {
+  return async () => {
+    const response = await uploadAttachment2(hash, buildAttachmentBasePath);
+    const attachmentId = JSON.parse(response.body).results[0].id;
+    const versionNumber = 1;
+    return {attachmentId, versionNumber, hash};
+  }
 }
 
 // Add new version, response does have `results` property.
-async function addNewVersionOfAttachment(hash, attId, newVersionNumber) {
-  await uploadAttachment2(hash, (pageId) => {
-    return buildAttachmentBasePath(pageId) + '/' + attId + '/data';
-  });
-
-  await updateAttachmentProperties(getUrlParam("pageId"), attId, newVersionNumber, hash);
-}
-
 async function createAttachmentIfContentChanged(content) {
   console.debug('Creating attachment for code:', content);
-  var attachment = await tryGetAttachment();
+  const attachment = await tryGetAttachment();
   const hash = md5(content);
-  if (!attachment) {
-    await addNewAttachment(hash);
-  } else if (hash !== attachment.metadata.comment) {
-    await addNewVersionOfAttachment(hash, attachment.id, attachment.version.number + 1);
+  if (!attachment || hash !== attachment.metadata.comment) {
+    let fnUploadAttachment = attachment ? uploadNewVersionOfAttachment(hash) : uploadNewAttachment(hash);
+    let attachmentMeta = await fnUploadAttachment();
+    await AP.request(buildPutRequestToUpdateAttachmentProperties(getUrlParam("pageId"), attachmentMeta.attachmentId, attachmentMeta.versionNumber, attachmentMeta.hash));
   }
 }
