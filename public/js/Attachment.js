@@ -73,13 +73,6 @@ async function uploadAttachment2(hash, fnGetUri) {
   return await uploadAttachment(attachmentName, uri, hash);
 }
 
-async function uploadAttachment3(hash, fnGetUri) {
-  const pageId = getUrlParam("pageId");
-  const attachmentName = 'zenuml-' + getUrlParam("uuid") + '.png';
-  const uri = fnGetUri(pageId);
-  return await uploadAttachment(attachmentName, uri, hash);
-}
-
 async function updateAttachmentProperties2(response, hash) {
   const attachmentId = JSON.parse(response.body).results[0].id;
   await updateAttachmentProperties(getUrlParam("pageId"), attachmentId, 1, hash);
