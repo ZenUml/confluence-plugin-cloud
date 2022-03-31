@@ -13,6 +13,7 @@ import EventBus from './EventBus'
 import Viewer from "@/components/Viewer.vue";
 import {trackEvent} from "@/utils/window";
 import {initializeMacro} from "@/model/macro/InitializeMacro";
+import createAttachmentIfContentChanged from "@/model/Attachment";
 import './GTagConfig'
 
 // eslint-disable-next-line
@@ -56,7 +57,7 @@ EventBus.$on('diagramLoaded', async () => {
 
     try {
       // @ts-ignore
-      await window.createAttachmentIfContentChanged(macro?._diagram?.code);
+      await createAttachmentIfContentChanged(macro?._diagram?.code);
     } catch (e) {
       // Do not re-throw the error
       console.error('Error when creating attachment', e);

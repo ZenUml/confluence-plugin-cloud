@@ -1,6 +1,10 @@
+import * as htmlToImage from 'html-to-image';
+import md5 from 'md5';
+import {getUrlParam} from '@/utils/window.ts';
+
 function toPng() {
   var node = document.getElementsByClassName('sequence-diagram')[0];
-  return domtoimage.toBlob(node, { bgcolor: 'white' });
+  return htmlToImage.toBlob(node, { bgcolor: 'white' });
 }
 
 function buildAttachmentBasePath(pageId) {
@@ -19,7 +23,7 @@ function parseAttachmentsFromResponse(response) {
 }
 
 async function getAttachments(pageId) {
-  const response = await AP.request(buildGetRequestForAttachments(pageId));
+  const response = await window.AP.request(buildGetRequestForAttachments(pageId));
   return parseAttachmentsFromResponse(response);
 }
 
@@ -36,7 +40,7 @@ async function uploadAttachment(attachmentName, uri, hash) {
   const blob = await toPng();
   const file = new File([blob], attachmentName, {type: 'image/png'});
   console.debug('Uploading attachment to', uri);
-  return await AP.request(buildPostRequestToUploadAttachment(uri, hash, file));
+  return await window.AP.request(buildPostRequestToUploadAttachment(uri, hash, file));
 }
 
 function buildPutRequestToUpdateAttachmentProperties(pageId, attachmentId, versionNumber, hash) {
@@ -91,13 +95,13 @@ function uploadNewAttachment(hash) {
 }
 
 async function updateAttachmentProperties(attachmentMeta) {
-  await AP.request(buildPutRequestToUpdateAttachmentProperties(getUrlParam("pageId"),
+  await window.AP.request(buildPutRequestToUpdateAttachmentProperties(getUrlParam("pageId"),
     attachmentMeta.attachmentId, attachmentMeta.versionNumber, attachmentMeta.hash));
 }
 
 // Add new version, response does have `results` property.
 async function createAttachmentIfContentChanged(content) {
-  console.debug('Creating attachment for code:', content);
+  console.debug('!!!!!Creating attachment for code:', content);
   const attachment = await tryGetAttachment();
   const hash = md5(content);
   if (!attachment || hash !== attachment.metadata.comment) {
@@ -105,3 +109,5 @@ async function createAttachmentIfContentChanged(content) {
     await updateAttachmentProperties(attachmentMeta);
   }
 }
+
+export default createAttachmentIfContentChanged;
