@@ -57,7 +57,7 @@ EventBus.$on('diagramLoaded', async () => {
 
     try {
       // @ts-ignore
-      await createAttachmentIfContentChanged(store.getters.diagramType === 'mermaid' ? store.state.mermaidCode : store.state.code);
+      await createAttachmentIfContentChanged(store.getters.content);
     } catch (e) {
       // Do not re-throw the error
       console.error('Error when creating attachment', e);

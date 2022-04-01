@@ -60,7 +60,7 @@
         return this.$refs.myEditor.Editor
       },
       code() {
-        return this.$store.getters.diagramType === 'mermaid' ? this.$store.state.mermaidCode : this.$store.state.code;
+        return this.$store.getters.content;
       },
       codemirror() {
         return this.$refs.myCm.codemirror
