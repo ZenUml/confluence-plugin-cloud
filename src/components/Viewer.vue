@@ -1,5 +1,6 @@
 <template>
-<div class="viewer mx-1">
+<!-- screen-capture-content class is used in Attachment.js to select the node. -->
+<div class="viewer screen-capture-content mx-1 pr-2">
   <Debug />
   <error-boundary>
   <div v-html="styles"></div>

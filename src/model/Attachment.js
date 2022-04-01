@@ -3,22 +3,26 @@ import md5 from 'md5';
 import {getUrlParam} from '@/utils/window.ts';
 
 function toPng() {
-  var node = document.getElementsByClassName('sequence-diagram')[0];
-  return htmlToImage.toBlob(node, { bgcolor: 'white' });
+  try {
+    var node = document.getElementsByClassName('screen-capture-content')[0];
+    return htmlToImage.toBlob(node, {bgcolor: 'white', pixelRatio: 1});
+  } catch (e) {
+    console.error('Failed to convert to png', e);
+  }
 }
 
-function buildAttachmentBasePath(pageId) {
+export function buildAttachmentBasePath(pageId) {
   return '/rest/api/content/' + pageId + '/child/attachment';
 }
 
-function buildGetRequestForAttachments(pageId) {
+export function buildGetRequestForAttachments(pageId) {
   return {
     url: buildAttachmentBasePath(pageId) + '?expand=version',
     type: 'GET'
   };
 }
 
-function parseAttachmentsFromResponse(response) {
+export function parseAttachmentsFromResponse(response) {
   return JSON.parse(response.body).results;
 }
 
@@ -101,7 +105,7 @@ async function updateAttachmentProperties(attachmentMeta) {
 
 // Add new version, response does have `results` property.
 async function createAttachmentIfContentChanged(content) {
-  console.debug('!!!!!Creating attachment for code:', content);
+  console.debug('Checking attachment for code:', content);
   const attachment = await tryGetAttachment();
   const hash = md5(content);
   if (!attachment || hash !== attachment.metadata.comment) {
