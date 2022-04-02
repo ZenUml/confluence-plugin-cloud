@@ -5,7 +5,7 @@ import {getUrlParam} from '@/utils/window.ts';
 function toPng() {
   try {
     var node = document.getElementsByClassName('screen-capture-content')[0];
-    return htmlToImage.toBlob(node, {bgcolor: 'white', pixelRatio: 1});
+    return htmlToImage.toBlob(node, {bgcolor: 'white'});
   } catch (e) {
     console.error('Failed to convert to png', e);
   }
