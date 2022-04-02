@@ -18,6 +18,7 @@ export async function initializeMacro(store: any) {
 
     EventBus.$emit('diagramLoaded');
     // This is a hack to trigger reactivity on macro.
+    // Without this the `Debug` component misses debug information after initializing the macro.
     Vue.set(macro, 'dummy', 'dummy');
   } catch (e) {
     console.error('Error on initializing macro:', e);
