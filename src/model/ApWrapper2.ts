@@ -30,16 +30,17 @@ export default class ApWrapper2 implements IApWrapper {
   constructor(ap: IAp) {
     this.versionType = this.isLite() ? VersionType.Lite : VersionType.Full;
     let macroIdentifier: MacroIdentifier;
-    const contentKey = getUrlParam('contentKey');
+    let contentKey = getUrlParam('contentKey');
     if (!contentKey) {
-      console.error('contentKey URL parameter must be provided. It can be `sequence` or `graph`.')
+      console.warn('contentKey URL parameter is not provided. It can be `sequence` or `graph`. Falling back to `sequence`');
+      contentKey = 'sequence';
     }
     if (contentKey?.includes('sequence')) {
       macroIdentifier = MacroIdentifier.Sequence;
     } else if (contentKey?.includes('graph')) {
       macroIdentifier = MacroIdentifier.Graph
     } else {
-      console.error('Wrong value in contentKey URL parameter. Fall back to `sequence`.')
+      console.warn('Wrong value in contentKey URL parameter. Fall back to `sequence`.')
       macroIdentifier = MacroIdentifier.Sequence;
     }
 

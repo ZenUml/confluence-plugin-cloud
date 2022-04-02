@@ -1,6 +1,7 @@
 <template>
-<div class="viewer mx-1">
-  <div v-show="debug">Host: {{app.host}} Data source: {{diagram.source}} {{diagram.id}}</div>
+<!-- screen-capture-content class is used in Attachment.js to select the node. -->
+<div class="viewer screen-capture-content mx-1 pr-2">
+  <Debug />
   <error-boundary>
   <div v-html="styles"></div>
   <mermaid v-show="diagramType === 'mermaid'"/>
@@ -33,7 +34,7 @@ import {mapGetters} from "vuex";
 import { VueSequence } from 'vue-sequence'
 import Mermaid from './Mermaid'
 import EventBus from '../EventBus'
-import App from './../model/app/App.ts'
+import Debug from '@/components/Debug/Debug.vue'
 import StylingPanel from "@/components/StylingPanel";
 import ErrorBoundary from "@/components/ErrorBoundary";
 const DiagramFrame = VueSequence.DiagramFrame;
@@ -41,6 +42,7 @@ const DiagramFrame = VueSequence.DiagramFrame;
 export default {
   name: "Viewer",
   components: {
+    Debug,
     ErrorBoundary,
     Mermaid,
     StylingPanel,
@@ -48,17 +50,8 @@ export default {
   },
   computed: {
     ...mapGetters({isDisplayMode: 'isDisplayMode', diagramType: 'diagramType', canEdit: 'canEdit'}),
-    app() {
-      return new App();
-    },
     isLite() {
       return this.$store.state.macro._apWrapper.isLite();
-    },
-    debug() {
-      return !!localStorage.zenumlDebug;
-    },
-    diagram() {
-      return this.$store.state.macro._diagram || {};
     },
     styles() {
       const stylesInStore = this.$store.state.styles || {};
