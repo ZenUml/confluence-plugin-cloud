@@ -56,7 +56,6 @@ EventBus.$on('diagramLoaded', async () => {
     store.dispatch('updateCanEdit', canEdit);
 
     try {
-      // @ts-ignore
       await createAttachmentIfContentChanged(store.getters.content);
     } catch (e) {
       // Do not re-throw the error
