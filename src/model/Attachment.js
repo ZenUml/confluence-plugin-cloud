@@ -1,6 +1,6 @@
 import * as htmlToImage from 'html-to-image';
 import md5 from 'md5';
-import {getUrlParam} from '@/utils/window.ts';
+import {getUrlParam, trackEvent} from '@/utils/window.ts';
 
 function toPng() {
   try {
@@ -8,6 +8,9 @@ function toPng() {
     return htmlToImage.toBlob(node, {bgcolor: 'white'});
   } catch (e) {
     console.error('Failed to convert to png', e);
+    trackEvent(JSON.stringify(e), 'convert_to_png', 'error');
+  } finally {
+    trackEvent('toPng', 'convert_to_png', 'export');
   }
 }
 
@@ -82,6 +85,7 @@ function uploadNewVersionOfAttachment(hash) {
     const attachment = await tryGetAttachment();
     const attachmentId = attachment.id;
     const versionNumber = attachment.version.number + 1;
+    trackEvent('uploadNewVersionOfAttachment' + versionNumber, 'upload_attachment', 'export');
     await uploadAttachment2(hash, (pageId) => {
       return buildAttachmentBasePath(pageId) + '/' + attachmentId + '/data';
     });
@@ -91,6 +95,7 @@ function uploadNewVersionOfAttachment(hash) {
 
 function uploadNewAttachment(hash) {
   return async () => {
+    trackEvent('uploadNewAttachment', 'upload_attachment', 'export');
     const response = await uploadAttachment2(hash, buildAttachmentBasePath);
     const attachmentId = JSON.parse(response.body).results[0].id;
     const versionNumber = 1;

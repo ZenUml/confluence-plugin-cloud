@@ -2,6 +2,9 @@ import MockApConfluence from './model/MockApConfluence'
 import GraphMacro from './model/GraphMacro'
 import AP from "@/model/AP";
 import ApWrapper2 from "@/model/ApWrapper2";
+import createAttachmentIfContentChanged from "@/model/Attachment";
+import {trackEvent} from "@/utils/window";
+
 console.debug('Running graph main viewer');
 if (window.location.href.includes('localhost')) {
   // eslint-disable-next-line
@@ -26,6 +29,15 @@ async function initializeMacro() {
     setGraphStyle && setGraphStyle('styles/default.xml');
     // @ts-ignore
     setGraphXml(graphXml);
+
+    try {
+      await createAttachmentIfContentChanged(graphXml);
+    } catch (e) {
+      // Do not re-throw the error
+      console.error('Error when creating attachment', e);
+      trackEvent(JSON.stringify(e), 'create_attachment', 'error');
+    }
+
   }
 }
 
