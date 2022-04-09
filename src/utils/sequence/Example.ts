@@ -1,5 +1,7 @@
 export default `title Order Service (Demonstration only)
-@Actor Client
+// Styling participants with background colors is an experimental feature.
+// This feature is available for users to test and provide feedback.
+@Actor Client #FF0000
 @Boundary OrderController
 @EC2 <<BFF>> OrderService
 group BusinessService {
