@@ -18,6 +18,8 @@
     "cloudflare:8080": "cloudflared --hostname air.zenuml.com --url http://localhost:8080",
     "cloudflare:yanhui": "cloudflared --hostname yanhui.zenuml.com --url http://localhost:8081",
     "lint:vue": "vue-cli-service lint",
+    "git:branch:clean:gone": "git fetch -p && git branch -vv | awk '/: gone]/{print $1}' | xargs git branch -d",
+    "git:branch:clean:merged": "git branch --merged|egrep -v \"(\\*|master|main|dev|skip_branch_name)\" | xargs git branch -d",
     "start:local": "VERSION=latest PRODUCT_TYPE=lite vue-cli-service serve --open",
     "start:vue:sit": "VERSION=latest PRODUCT_TYPE=lite vue-cli-service serve --open --mode test",
     "start:sit": "concurrently \"yarn firebase:serve\" \"yarn start:vue:sit\" \"yarn cloudflare:8080\"",
