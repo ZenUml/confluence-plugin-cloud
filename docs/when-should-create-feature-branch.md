@@ -3,3 +3,4 @@ In below cases, you can skip this step:
 1. Only updating package scripts;
 2. Only updating docs;
 3. Only updating dependencies;
+4. Only updating Example code.
