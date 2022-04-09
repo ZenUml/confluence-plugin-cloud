@@ -1,9 +1,9 @@
 export default `title Order Service (Demonstration only)
 // Styling participants with background colors is an experimental feature.
 // This feature is available for users to test and provide feedback.
-@Actor Client #FF0000
-@Boundary OrderController
-@EC2 <<BFF>> OrderService
+@Actor Client #FFEBE6
+@Boundary OrderController #0747A6
+@EC2 <<BFF>> OrderService #E3FCEF
 group BusinessService {
   @Lambda PurchaseService
   @AzureFunction InvoiceService
