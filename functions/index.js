@@ -3,7 +3,7 @@ const descriptor = require('./atlassian-connect.json');
 const SteinStore = require('stein-js-client');
 const store = new SteinStore('https://api.steinhq.com/v1/storages/5ed5fe9883c30d0425e2c433');
 
-const VERSION = '2022.01';
+const VERSION = '2022.06';
 
 exports.renderAttachment = functions.https.onRequest((request, response) => {
   response.send(`<ac:image> <ri:attachment ri:filename="zenuml-${request.query.uuid}.png" /> </ac:image>`);
