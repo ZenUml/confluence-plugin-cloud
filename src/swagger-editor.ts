@@ -20,11 +20,13 @@ async function initializeMacro() {
   await apWrapper.initializeContext();
   
   const macro = new Macro(apWrapper);
+  // await macro.load();
 
   // @ts-ignore
   window.macro = macro;
-  // const {code} = await macro.load();
-  let code = 'OpenAPI Example'
+  const {code} = await macro.load();
+  console.log('-------------- loaded spec:', code)
+  // let code = 'OpenAPI Example'
 
   if(code) {
     // eslint-disable-next-line
