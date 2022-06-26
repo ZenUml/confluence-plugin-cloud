@@ -61,6 +61,7 @@
     "ssri": "^8.0.1",
     "stein-js-client": "^0.0.2",
     "styled-components": "^5.2.0",
+    "swagger-editor": "^4.2.9",
     "tailwindcss": "npm:@tailwindcss/postcss7-compat@^2.0.2",
     "urijs": "^1.19.7",
     "vue": "^2.6.12",

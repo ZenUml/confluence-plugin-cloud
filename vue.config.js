@@ -1,9 +1,9 @@
 module.exports = {
   pages: {
     "index": {
-      entry: 'src/main.ts',
+      entry: 'src/swagger-editor.ts',
       template: 'public/index.html',
-      chunks: ['chunk-common', 'chunk-sequence-editor-vendors', 'sequence-editor']
+      chunks: ['chunk-common', 'chunk-index-vendors', 'index']
     },
     "sequence-editor": {
       entry: 'src/sequence-editor.ts',
@@ -46,6 +46,16 @@ module.exports = {
       template: 'public/drawio/viewer.html',
       filename: 'drawio/viewer.html',
       chunks: ['chunk-common', 'chunk-graph-viewer-vendors', 'graph-viewer']
+    },
+    "swagger-editor": {
+      entry: 'src/swagger-editor.ts',
+      template: 'public/swagger-editor.html',
+      chunks: ['chunk-common', 'chunk-swagger-editor-vendors', 'swagger-editor']
+    },
+    "swagger-ui": {
+      entry: 'src/swagger-ui.ts',
+      template: 'public/swagger-ui.html',
+      chunks: ['chunk-common', 'chunk-swagger-ui-vendors', 'swagger-ui']
     }
   },
   chainWebpack: config => {

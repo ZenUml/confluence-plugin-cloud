@@ -10,6 +10,61 @@
   <script id="connect-loader">
     window.split = true;
   </script>
+
+
+<link href="css/swagger-editor.css" rel="stylesheet">
+
+<style>
+  * {
+    box-sizing: border-box;
+  }
+  body {
+    font-family: Roboto,sans-serif;
+    font-size: 9px;
+    line-height: 1.42857143;
+    color: #444;
+    margin: 0px;
+  }
+
+  #swagger-editor {
+    font-size: 1.3em;
+  }
+
+  .container {
+    height: 100%;
+    max-width: 880px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  #editor-wrapper {
+    height: 100%;
+    border:1em solid #000;
+    border:none;
+  }
+
+  .Pane2 {
+    overflow-y: scroll;
+  }
+
+  </style>
+<script>
+  
+  window.onload = function() {
+    // Build a system
+    const editor = SwaggerEditorBundle({
+      dom_id: '#swagger-editor',
+      // layout: 'StandaloneLayout',
+      presets: [
+        // SwaggerEditorStandalonePreset
+      ],
+      queryConfigEnabled: false,
+    })
+
+    window.editor = editor
+  }
+  </script>
+
   <title>Sequence Editor</title>
   <style>
     body.root {
@@ -19,7 +74,7 @@
   </style>
 </head>
 <body style="height: 100vh;" class="root">
-<div id="app" class="container"></div>
+  <div id="swagger-editor"></div>
 <!-- built files will be auto injected -->
 </body>
 </html>

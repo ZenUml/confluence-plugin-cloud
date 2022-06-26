@@ -1,5 +1,11 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
+import SwaggerEditorBundle from 'swagger-editor'
+
+// eslint-disable-next-line
+// @ts-ignore
+window.SwaggerEditorBundle = SwaggerEditorBundle;
+
 // @ts-ignore
 import VueCodeMirror from 'vue-codemirror'
 

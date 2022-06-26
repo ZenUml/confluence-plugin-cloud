@@ -6,18 +6,63 @@
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
     <link rel="icon" href="<%= BASE_URL %>favicon.ico">
     <title>Demo confluence-plugin</title>
-    <link rel="stylesheet"
-          href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/default.min.css">
-    <script type="text/javascript">
-      window.split = true;
-    </script>
+    
+
+<link href="css/swagger-editor.css" rel="stylesheet">
+
+<style>
+  * {
+    box-sizing: border-box;
+  }
+  body {
+    font-family: Roboto,sans-serif;
+    font-size: 9px;
+    line-height: 1.42857143;
+    color: #444;
+    margin: 0px;
+  }
+
+  #swagger-editor {
+    font-size: 1.3em;
+  }
+
+  .container {
+    height: 100%;
+    max-width: 880px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  #editor-wrapper {
+    height: 100%;
+    border:1em solid #000;
+    border:none;
+  }
+
+  .Pane2 {
+    overflow-y: scroll;
+  }
+  </style>
+<script>
+  
+  window.onload = function() {
+    // Build a system
+    const editor = SwaggerEditorBundle({
+      dom_id: '#swagger-editor',
+      // layout: 'StandaloneLayout',
+      presets: [
+        // SwaggerEditorStandalonePreset
+      ],
+      url: 'https://raw.githubusercontent.com/OAI/OpenAPI-Specification/main/examples/v3.0/uspto.json'
+    })
+
+    window.editor = editor
+  }
+  </script>
   </head>
-  <body style="height: 100vh;">
-    <script>
-    </script>
-    <h1>Demo</h1>
-    <p>This page is used for <code>yarn serve</code> and local testing with <code>yarn build</code>.</p>
-    <div id="app"></div>
+  <body >
+    <div id="swagger-editor"></div>
+    <!-- <div id="app"></div> -->
     <!-- built files will be auto injected -->
   </body>
 </html>

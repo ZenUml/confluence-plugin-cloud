@@ -122,6 +122,60 @@
             "defaultValue": "None"
           }
         ]
+      },
+      {
+        "key": "zenuml-swagger-macro",
+        "name": {
+          "value": "ZenUML Swagger"
+        },
+        "renderModes": {
+          "default": {
+            "url": "/attachment?version=__VERSION__&spaceKey={space.key}&pageId={page.id}&pageVersion={page.version}&macroId={macro.id}&uuid={uuid}&addonKey=__ADDON_KEY__&contentKey=__CONTENT_KEY__"
+          }
+        },
+        "url": "/swagger-ui.html?version=__VERSION__&spaceKey={space.key}&pageId={page.id}&pageVersion={page.version}&macroId={macro.id}&uuid={uuid}&outputType={output.type}&addonKey=__ADDON_KEY__&contentKey=__CONTENT_KEY__",
+        "description": {
+          "value": "Create a ZenUML Swagger file"
+        },
+        "outputType": "block",
+        "bodyType": "none",
+        "editor": {
+          "url": "/swagger-editor.html?version=__VERSION__&addonKey=__ADDON_KEY__&contentKey=__CONTENT_KEY__",
+          "editTitle": {
+            "value": "Edit ZenUML Swagger"
+          },
+          "insertTitle": {
+            "value": "Create ZenUML Swagger"
+          },
+          "width": "100%",
+          "height": "100%",
+          "cacheable": true
+        },
+        "icon": {
+          "width": 16,
+          "height": 16,
+          "url": "image/zenuml_logo.png"
+        },
+        "documentation": {
+          "url": "https://zenuml.atlassian.net/wiki/spaces/Doc/overview"
+        },
+        "categories": [
+          "visuals"
+        ],
+        "featured": true,
+        "parameters": [
+          {
+            "identifier": "diagramName",
+            "name": {
+              "value": "Diagram name (do not change)",
+              "i18n": "diagramName"
+            },
+            "type": "string",
+            "required": true,
+            "multiple": false,
+            "defaultValue": "None"
+          }
+        ]
       }
     ],
     "customContent": [

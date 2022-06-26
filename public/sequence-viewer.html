@@ -14,10 +14,57 @@
 
   <script id="connect-loader"></script>
 
+
+<link href="css/swagger-ui.css" rel="stylesheet">
+
+<style>
+  html
+{
+  box-sizing: border-box;
+  overflow: -moz-scrollbars-vertical;
+  overflow-y: scroll;
+}
+
+*,
+*:before,
+*:after
+{
+  box-sizing: inherit;
+}
+
+body
+{
+  margin:0;
+  background: #fafafa;
+}
+
+  </style>
+<script>
+  
+  window.onload = function() {
+    // Build a system
+    const ui = SwaggerUIBundle({
+    url: "https://petstore.swagger.io/v2/swagger.json",
+    dom_id: "#swagger-ui",
+    presets: [
+      SwaggerUIBundle.presets.apis,
+      // SwaggerUIStandalonePreset
+    ],
+    plugins: [
+      SwaggerUIBundle.plugins.DownloadUrl
+    ],
+    // requestSnippetsEnabled: true,
+    // layout: "StandaloneLayout"
+    })
+
+    window.ui = ui
+  }
+  </script>
+
 </head>
 <body>
 <div class="mx-auto" style="width: fit-content">
-  <div id="app"></div>
+  <div id="swagger-ui"></div>
 </div>
 <!-- built files will be auto injected -->
 </body>
