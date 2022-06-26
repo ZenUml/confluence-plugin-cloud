@@ -5,6 +5,14 @@ import 'vue-sequence/dist/vue-sequence.css'
 import './assets/tailwind.css'
 console.log(`vue-sequence version: ${VueSequence.Version}`)
 
+
+import SwaggerUIBundle from 'swagger-ui'
+// eslint-disable-next-line
+// @ts-ignore
+window.SwaggerUIBundle = SwaggerUIBundle;
+console.log('------------ SwaggerUIBundle', SwaggerUIBundle)
+
+
 import './model/MockApConfluence'
 import mermaid from 'mermaid'
 
