@@ -26,6 +26,12 @@ async function initializeMacro() {
     // @ts-ignore
     window.updateSpec(code);
     console.log('-------------- updateSpec with:', code)
+
+    setTimeout(function () {
+      // eslint-disable-next-line
+      // @ts-ignore
+      window.AP.resize();
+    }, 1500);
   }
 }
 
