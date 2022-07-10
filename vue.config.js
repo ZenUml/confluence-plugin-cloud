@@ -1,7 +1,7 @@
 module.exports = {
   pages: {
     "index": {
-      entry: 'src/swagger-editor.ts',
+      entry: 'src/sequence-editor.ts',
       template: 'public/index.html',
       chunks: ['chunk-common', 'chunk-index-vendors', 'index']
     },

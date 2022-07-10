@@ -2,7 +2,7 @@ import SwaggerEditorBundle from 'swagger-editor'
 import SpecListener from './utils/spec-listener'
 
 import Vue from 'vue'
-import Macro from "./model/Macro";
+import BaseMacro2 from "./model/BaseMacro2";
 import SaveAndGoBackButtonOpenAPI from "@/components/SaveAndGoBackButtonOpenAPI.vue";
 // @ts-ignore
 import Va from 'vue-atlas'
@@ -19,7 +19,7 @@ async function initializeMacro() {
   const apWrapper = new ApWrapper2(AP);
   await apWrapper.initializeContext();
   
-  const macro = new Macro(apWrapper);
+  const macro = new BaseMacro2(apWrapper);
   // await macro.load();
 
   // @ts-ignore
