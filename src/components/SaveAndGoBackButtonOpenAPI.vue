@@ -22,6 +22,7 @@ export default {
 .save-and-exit {
   position: fixed;
   top: 0;
+  right: 0;
   min-height: 30px;
 }
 </style>
