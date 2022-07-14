@@ -22,7 +22,7 @@
     "git:branch:clean:merged": "git branch --merged|egrep -v \"(\\*|master|main|dev|skip_branch_name)\" | xargs git branch -d",
     "start:local": "VERSION=latest PRODUCT_TYPE=lite vue-cli-service serve --open",
     "start:vue:sit": "VERSION=latest PRODUCT_TYPE=lite vue-cli-service serve --open --mode test",
-    "start:sit": "concurrently \"yarn firebase:serve\" \"yarn start:vue:sit\" \"yarn cloudflare:8080\"",
+    "start:sit": "concurrently \"yarn firebase:serve\" \"yarn start:vue:sit\" ",
     "start:sit:yanhui": "concurrently \"yarn firebase:serve\" \"yarn start:vue:sit --port 8081 --open false\""
   },
   "dependencies": {
