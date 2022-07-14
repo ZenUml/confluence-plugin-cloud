@@ -4,6 +4,8 @@ import SaveAndGoBackButtonGraph from "@/components/SaveAndGoBackButtonGraph.vue"
 // @ts-ignore
 import Va from 'vue-atlas'
 import 'vue-atlas/dist/vue-atlas.css'
+import './assets/tailwind.css'
+
 import ApWrapper2 from "@/model/ApWrapper2";
 import AP from "@/model/AP";
 Vue.use(Va, 'en')
@@ -14,7 +16,7 @@ new Vue({
 async function initializeMacro() {
   const apWrapper = new ApWrapper2(AP);
   await apWrapper.initializeContext();
-  
+
   const macro = new GraphMacro(apWrapper);
 
   // @ts-ignore

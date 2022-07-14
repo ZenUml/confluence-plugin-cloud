@@ -1,5 +1,5 @@
 <template>
-  <va-button class="save-and-exit" type="primary" icon-before="angle-left" @click="saveAndExit">Save and Go back to Confluence</va-button>
+  <va-button class="save-and-exit fixed right-0 top-0" type="primary" icon-before="angle-left" @click="saveAndExit">Save and Go back to Confluence</va-button>
 </template>
 
 <script>
@@ -17,12 +17,3 @@ export default {
   }
 }
 </script>
-
-<style scoped>
-.save-and-exit {
-  position: fixed;
-  top: 0;
-  right: 0;
-  min-height: 30px;
-}
-</style>
