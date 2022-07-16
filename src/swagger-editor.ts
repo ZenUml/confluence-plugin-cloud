@@ -13,6 +13,7 @@ import ApWrapper2 from "@/model/ApWrapper2";
 import AP from "@/model/AP";
 Vue.use(Va, 'en')
 import '@/components/Debug/DebugMounter.ts'
+import Example from '@/model/OpenApi/OpenApiExample'
 
 new Vue({
   render: h => h(SaveAndGoBackButtonOpenAPI)
@@ -29,14 +30,10 @@ async function initializeMacro() {
   window.macro = macro;
   const {code} = await macro.load();
   console.log('-------------- loaded spec:', code)
-  // let code = 'OpenAPI Example'
-
-  if(code) {
     // eslint-disable-next-line
     // @ts-ignore
-    window.updateSpec(code);
+    window.updateSpec(code || Example);
     console.log('-------------- updateSpec with:', code)
-  }
 }
 
 
