@@ -1,8 +1,16 @@
+import Vue from 'vue'
+import Debug from './components/Debug/Debug.vue'
 import SwaggerUIBundle from 'swagger-ui'
 import SpecListener from './utils/spec-listener'
 import BaseMacro2 from "./model/BaseMacro2";
 import ApWrapper2 from "@/model/ApWrapper2";
 import AP from "@/model/AP";
+import './assets/tailwind.css'
+
+new Vue({
+  render: h => h(Debug)
+}).$mount('#debug');
+
 
 // eslint-disable-next-line
 // @ts-ignore
@@ -11,7 +19,7 @@ window.SwaggerUIBundle = SwaggerUIBundle;
 async function initializeMacro() {
   const apWrapper = new ApWrapper2(AP);
   await apWrapper.initializeContext();
-  
+
   const macro = new BaseMacro2(apWrapper);
   // await macro.load();
 
