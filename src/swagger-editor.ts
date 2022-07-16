@@ -12,6 +12,7 @@ import './assets/tailwind.css'
 import ApWrapper2 from "@/model/ApWrapper2";
 import AP from "@/model/AP";
 Vue.use(Va, 'en')
+import '@/components/Debug/DebugMounter.ts'
 
 new Vue({
   render: h => h(SaveAndGoBackButtonOpenAPI)
