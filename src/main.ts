@@ -1,12 +1,10 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-// @ts-ignore
-import VueCodeMirror from 'vue-codemirror'
 
 import './assets/tailwind.css'
 import {VueSequence} from 'vue-sequence'
 import 'vue-sequence/dist/vue-sequence.css'
-console.log(VueSequence.Version)
+console.log('$$$$$$$$$$$$$')
 
 // @ts-ignore
 import MockApConfluence from './model/MockApConfluence'
@@ -40,7 +38,6 @@ Vue.component('diagram-frame', VueSequence.DiagramFrame)
 Vue.component('seq-diagram', VueSequence.SeqDiagram)
 Vue.component('editor', Editor)
 Vue.component('workspace', Workspace)
-Vue.use(VueCodeMirror)
 
 Vue.use(Vuex)
 
