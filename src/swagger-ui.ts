@@ -6,6 +6,7 @@ import AP from "@/model/AP";
 import './assets/tailwind.css'
 
 import '@/components/Debug/DebugMounter.ts'
+import Example from '@/model/OpenApi/OpenApiExample'
 
 // eslint-disable-next-line
 // @ts-ignore
@@ -16,26 +17,20 @@ async function initializeMacro() {
   await apWrapper.initializeContext();
 
   const macro = new BaseMacro2(apWrapper);
-  // await macro.load();
 
   // @ts-ignore
   window.macro = macro;
   const {code} = await macro.load();
-  console.log('-------------- loaded spec:', code)
-  // let code = 'OpenAPI Example'
 
-  if(code) {
+  // eslint-disable-next-line
+  // @ts-ignore
+  window.updateSpec(code || Example);
+
+  setTimeout(function () {
     // eslint-disable-next-line
     // @ts-ignore
-    window.updateSpec(code);
-    console.log('-------------- updateSpec with:', code)
-
-    setTimeout(function () {
-      // eslint-disable-next-line
-      // @ts-ignore
-      window.AP.resize();
-    }, 1500);
-  }
+    window.AP.resize();
+  }, 1500);
 }
 
 
