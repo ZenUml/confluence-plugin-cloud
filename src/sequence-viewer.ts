@@ -1,9 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import { VueSequence } from 'vue-sequence'
 import 'vue-sequence/dist/vue-sequence.css'
 import './assets/tailwind.css'
-console.log(`vue-sequence version: ${VueSequence.Version}`)
 
 import './model/MockApConfluence'
 import mermaid from 'mermaid'
@@ -25,7 +23,6 @@ mermaid.mermaidAPI.initialize({
 })
 
 Vue.config.productionTip = false
-Vue.component('seq-diagram', VueSequence.SeqDiagram)
 Vue.use(Vuex)
 
 const store = new Vuex.Store(ExtendedStore);
