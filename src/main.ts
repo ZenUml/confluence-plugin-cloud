@@ -2,14 +2,11 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 
 import './assets/tailwind.css'
-import {VueSequence} from 'vue-sequence'
 import 'vue-sequence/dist/vue-sequence.css'
-console.log('$$$$$$$$$$$$$')
 
 // @ts-ignore
 import MockApConfluence from './model/MockApConfluence'
 import Macro from "@/model/Macro";
-import Editor from './components/Editor.vue'
 import Workspace from './components/Workspace.vue'
 import mermaid from 'mermaid'
 
@@ -34,10 +31,6 @@ mermaid.mermaidAPI.initialize({
 })
 
 Vue.config.productionTip = false
-Vue.component('diagram-frame', VueSequence.DiagramFrame)
-Vue.component('seq-diagram', VueSequence.SeqDiagram)
-Vue.component('editor', Editor)
-Vue.component('workspace', Workspace)
 
 Vue.use(Vuex)
 
