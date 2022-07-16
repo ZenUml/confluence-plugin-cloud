@@ -1,26 +1,21 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-// @ts-ignore
-import VueCodeMirror from 'vue-codemirror'
-
-import './assets/tailwind.css'
-import {VueSequence} from 'vue-sequence'
-import 'vue-sequence/dist/vue-sequence.css'
-console.log(VueSequence.Version)
 
 import MockApConfluence from './model/MockApConfluence'
-import Editor from './components/Editor.vue'
 import Workspace from './components/Workspace.vue'
 import mermaid from 'mermaid'
-
 // @ts-ignore
 import Va from 'vue-atlas'
-import 'vue-atlas/dist/vue-atlas.css'
 
+// ==== CSS ====
+import 'vue-atlas/dist/vue-atlas.css'
+import './assets/tailwind.css'
+import 'vue-sequence/dist/vue-sequence.css'
 // Code Editor style
 import 'codemirror/lib/codemirror.css'
 // theme css
 import 'codemirror/theme/base16-dark.css'
+
 import ExtendedStore from './model/Store'
 import EventBus from './EventBus'
 import {initializeMacro} from "@/model/macro/InitializeMacro";
@@ -37,11 +32,6 @@ mermaid.mermaidAPI.initialize({
 })
 
 Vue.config.productionTip = false
-
-Vue.component('diagram-frame', VueSequence.DiagramFrame)
-Vue.component('editor', Editor)
-Vue.component('workspace', Workspace)
-Vue.use(VueCodeMirror)
 
 Vue.use(Vuex)
 
