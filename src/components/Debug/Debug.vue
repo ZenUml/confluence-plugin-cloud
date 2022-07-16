@@ -1,9 +1,10 @@
 <template>
   <div v-show="debug">
     <div class="px-4 py-5 sm:p-6">
-      <dt class="text-blue-600 hover:text-blue-800 visited:text-purple-600">
-        HOST: {{ app.host }}
-      </dt>
+      <div class="flex gap-2 item-left max-w-xs">
+        <img :src="hostIcon" alt="Host Icon" class="object-contain h-6 w-6o" />
+        {{ app.host }}
+      </div>
       <dd class="mt-1">
         <div class="flex items-baseline font-mono text-indigo-600">
           {{ shortUuid }} {{ diagram.source }}:{{diagram.id}}
@@ -15,9 +16,15 @@
 
 <script>
 import App from "@/model/app/App";
+import HostIcon from '@/assets/server-svgrepo-com.svg'
 
 export default {
   name: "Debug",
+  data() {
+    return {
+      hostIcon: HostIcon
+    }
+  },
   computed: {
     debug() {
       return !!localStorage.zenumlDebug;
@@ -26,10 +33,10 @@ export default {
       return new App();
     },
     diagram() {
-      return this.$store.state.macro._diagram || {};
+      return this.$store?.state.macro._diagram || {};
     },
     macro() {
-      return this.$store.state.macro;
+      return this.$store?.state.macro;
     },
     shortUuid() {
       return this.macro?._uuid?.substring(0, 8);

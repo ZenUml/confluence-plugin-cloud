@@ -100,6 +100,7 @@
     "parcel-bundler": "^1.12.4",
     "parcel-plugin-externals": "^0.5.2",
     "sqlite3": "^5.0.0",
+    "svg-url-loader": "^6.0.0",
     "test-lib": "^2.1.2",
     "typescript": "~3.9.3",
     "vue-cli-plugin-tailwind": "~2.0.6",
