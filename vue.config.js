@@ -3,7 +3,7 @@ module.exports = {
     "index": {
       entry: 'src/main.ts',
       template: 'public/index.html',
-      chunks: ['chunk-common', 'chunk-sequence-editor-vendors', 'sequence-editor']
+      chunks: ['chunk-common', 'chunk-index-vendors', 'index']
     },
     "sequence-editor": {
       entry: 'src/sequence-editor.ts',
