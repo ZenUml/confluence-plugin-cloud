@@ -1,15 +1,15 @@
 <template>
   <div v-show="debug">
-    <div class="px-4 py-5 sm:p-6">
+    <div class="flex gap-7 flex-wrap m-2">
       <div class="flex gap-2 item-left max-w-xs">
         <img :src="hostIcon" alt="Host Icon" class="object-contain h-6 w-6o" />
         {{ app.host }}
       </div>
-      <dd class="mt-1">
-        <div class="flex items-baseline font-mono text-indigo-600">
+      <div class="flex gap-2 items-center">
+        <div class="text-sm leading-none text-gray-600">
           {{ shortUuid }} {{ diagram.source }}:{{diagram.id}}
         </div>
-      </dd>
+      </div>
     </div>
   </div>
 </template>
