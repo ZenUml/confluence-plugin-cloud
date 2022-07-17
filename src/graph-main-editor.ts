@@ -26,7 +26,7 @@ async function initializeMacro() {
   if(graphXml) {
     // set diagram content
     await (async () => {
-      console.log("Waiting for EditorUi.init");
+      console.debug("Waiting for EditorUi.init");
       // eslint-disable-next-line no-prototype-builtins
       while (!window.hasOwnProperty("setGraphXml")) {
         await new Promise(resolve => setTimeout(resolve, 1000));
