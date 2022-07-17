@@ -72,6 +72,9 @@ exports.descriptor = functions.https.onRequest((req, resp) => {
         page.url = replaceFunction(page.url, page);
       });
     }
+    if(modules.postInstallPage) {
+      modules.postInstallPage.url = replaceFunction(modules.postInstallPage.url)
+    }
     if(modules.webPanels) {
       modules.webPanels.forEach(m => {
         m.url = replaceFunction(m.url, m);
