@@ -63,7 +63,7 @@
     "styled-components": "^5.2.0",
     "swagger-editor": "^4.2.9",
     "tailwindcss": "npm:@tailwindcss/postcss7-compat@^2.0.2",
-    "urijs": "^1.19.7",
+    "urijs": "^1.19.11",
     "vue": "^2.6.12",
     "vue-atlas": "^2.1.8",
     "vue-codemirror": "^4.0.6",
