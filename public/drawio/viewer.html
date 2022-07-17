@@ -61,7 +61,8 @@
 	<textarea rows="24" cols="100" id="textarea" placeholder="mxGraphModel"></textarea>
 	<br />
 	<button onclick="show(document.getElementById('textarea').value);return false;">Show</button> -->
-	<div id="graph" class="screen-capture-content"></div>
+  <div id="debug"></div>
+  <div id="graph" class="screen-capture-content"></div>
 	<script type="text/javascript">
 		var graph = new Graph(document.getElementById('graph'));
 		graph.resizeContainer = true;

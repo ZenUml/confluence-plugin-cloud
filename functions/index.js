@@ -45,6 +45,7 @@ exports.uninstalledEndpoint = functions.https.onRequest((request, response) => {
 });
 
 const liteKeySuffix = '-lite';
+const liteNameSuffix = ' Lite';
 
 exports.descriptor = functions.https.onRequest((req, resp) => {
   const url = req.url;
@@ -96,12 +97,7 @@ exports.descriptor = functions.https.onRequest((req, resp) => {
     data.enableLicensing = false;
 
     data.modules.dynamicContentMacros.forEach(macro => {
-      if (macro.key === 'zenuml-sequence-macro') {
-        macro.name.value = 'ZenUML Sequence Lite';
-      }
-      else if (macro.key === 'zenuml-graph-macro') {
-        macro.name.value = 'ZenUML Graph Lite';
-      }
+      macro.name.value = `${macro.name.value}${liteNameSuffix}`
       macro.key = `${macro.key}${liteKeySuffix}`;
     });
 
