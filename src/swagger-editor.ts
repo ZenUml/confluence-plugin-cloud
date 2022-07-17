@@ -27,14 +27,14 @@ async function initializeMacro() {
   // @ts-ignore
   window.macro = macro;
   const {code} = await macro.load();
-  console.log('-------------- loaded spec:', code)
+  console.debug('-------------- loaded spec:', code)
   // let code = 'OpenAPI Example'
 
   if(code) {
     // eslint-disable-next-line
     // @ts-ignore
     window.updateSpec(code);
-    console.log('-------------- updateSpec with:', code)
+    console.debug('-------------- updateSpec with:', code)
   }
 }
 
