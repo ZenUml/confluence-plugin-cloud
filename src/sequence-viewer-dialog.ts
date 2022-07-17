@@ -5,7 +5,7 @@ import 'vue-sequence/dist/vue-sequence.css'
 import './GTagConfig'
 
 import configStoreAsyncFn from "./model/sequence-view-store";
-console.log('From sequence viewer dialog');
+console.debug('From sequence viewer dialog');
 
 function mountDiagramFrame(store: any, id: string) {
   if (document.getElementById(id)) {
