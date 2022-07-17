@@ -6,12 +6,12 @@ export const updateSpec = (ori) => (...args) => {
   let [spec] = args
   ori(...args)
 
-  console.log('---------- spec:', spec)
+  console.debug('---------- spec:', spec)
   window.specContent = spec;
 }
 
 export default function(system) {
-  console.log('---------- system.specActions.updateSpec:', system.specActions.updateSpec)
+  console.debug('---------- system.specActions.updateSpec:', system.specActions.updateSpec)
   window.updateSpec = system.specActions.updateSpec;
 
   return {
