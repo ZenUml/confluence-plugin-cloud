@@ -24,7 +24,7 @@
       {
         "key": "zenuml-sequence-macro",
         "name": {
-          "value": "ZenUML Sequence Diagram"
+          "value": "ZenUML Diagram"
         },
         "renderModes": {
           "default": {

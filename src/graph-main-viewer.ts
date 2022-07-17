@@ -4,6 +4,8 @@ import AP from "@/model/AP";
 import ApWrapper2 from "@/model/ApWrapper2";
 import createAttachmentIfContentChanged from "@/model/Attachment";
 import {trackEvent} from "@/utils/window";
+import '@/components/Debug/DebugMounter.ts'
+import './assets/tailwind.css'
 
 console.debug('Running graph main viewer');
 if (window.location.href.includes('localhost')) {
