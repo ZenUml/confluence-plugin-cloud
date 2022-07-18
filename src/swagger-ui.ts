@@ -7,6 +7,8 @@ import './assets/tailwind.css'
 
 import '@/components/Debug/DebugMounter.ts'
 import Example from '@/model/OpenApi/OpenApiExample'
+import createAttachmentIfContentChanged from "@/model/Attachment";
+import {trackEvent} from "@/utils/window";
 
 // eslint-disable-next-line
 // @ts-ignore
@@ -26,10 +28,16 @@ async function initializeMacro() {
   // @ts-ignore
   window.updateSpec(code || Example);
 
-  setTimeout(function () {
-    // eslint-disable-next-line
-    // @ts-ignore
-    window.AP.resize();
+  setTimeout(async function () {
+    AP.resize();
+    try {
+      await createAttachmentIfContentChanged(code);
+    } catch (e) {
+      // Do not re-throw the error
+      console.error('Error when creating attachment', e);
+      trackEvent(JSON.stringify(e), 'create_attachment', 'error');
+    }
+
   }, 1500);
 }
 
