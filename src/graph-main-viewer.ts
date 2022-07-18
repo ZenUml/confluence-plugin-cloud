@@ -32,14 +32,16 @@ async function initializeMacro() {
     // @ts-ignore
     setGraphXml(graphXml);
 
-    try {
-      await createAttachmentIfContentChanged(graphXml);
-    } catch (e) {
-      // Do not re-throw the error
-      console.error('Error when creating attachment', e);
-      trackEvent(JSON.stringify(e), 'create_attachment', 'error');
-    }
-
+    setTimeout(async function () {
+      AP.resize();
+      try {
+        await createAttachmentIfContentChanged(graphXml);
+      } catch (e) {
+        // Do not re-throw the error
+        console.error('Error when creating attachment', e);
+        trackEvent(JSON.stringify(e), 'create_attachment', 'error');
+      }
+    }, 1500);
   }
 }
 
