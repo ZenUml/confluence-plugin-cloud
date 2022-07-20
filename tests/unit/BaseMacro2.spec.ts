@@ -6,9 +6,10 @@ import ApWrapper2 from "@/model/ApWrapper2";
 import Macro from "@/model/Macro";
 import {buildCustomContentResponse} from "../CustomContentFixtures";
 import helper from './TestHelper';
+import MockApConfluence from "@/model/MockApConfluence";
 
 let mockAp: MockAp;
-let mockApConfluence: IConfluence;
+let mockApConfluence: MockApConfluence;
 let macro: BaseMacro2;
 
 jest.mock('../../src/utils/uuid', () => {
@@ -106,7 +107,7 @@ describe('BaseMacro2', () => {
     const value = {code: 'a.foo'};
 
     mockApConfluence.saveMacro({uuid: 'abc-123'}, JSON.stringify(value));
-    mockApConfluence.setContentProperty({key: key, version: {number: 1}, value});
+    mockApConfluence.setContentProperty({key: key, version: {number: 1}, value}, () => {});
 
     const payload = await macro.load();
     expect(payload.source).toBe(DataSource.ContentProperty);
@@ -117,7 +118,7 @@ describe('BaseMacro2', () => {
       source: DataSource.ContentProperty
     };
     await macro.saveOnDialog(diagram);
-    mockApConfluence.getContentProperty(key, (content) => expect(content.version.number).toEqual(1));
-    mockApConfluence.getContentProperty(key, (content) => expect(content.value.code).toEqual('a.foo'));
+    mockApConfluence.getContentProperty(key, (content: any) => expect(content.version.number).toEqual(1));
+    mockApConfluence.getContentProperty(key, (content: any) => expect(content.value.code).toEqual('a.foo'));
   })
 })

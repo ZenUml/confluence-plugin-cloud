@@ -17,7 +17,7 @@ export default class MockApConfluence {
     cb(this.macroBody)
   }
 
-  setContentProperty(content: { key: any; }, cb: (arg0: any) => any) {
+  setContentProperty(content: { key: any; version: {number: number}; value: any }, cb: (arg0: any) => any) {
     this.key = content.key
     this.contentProperty = content
     cb && cb(content)
