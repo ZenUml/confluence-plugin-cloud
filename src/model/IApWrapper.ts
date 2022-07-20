@@ -24,7 +24,6 @@ export interface IApWrapper {
 
   // Custom Content APIs
   hasCustomContent(): boolean;
-  setContentProperty(property: IContentPropertyNormalised): Promise<any>;
 
   getCustomContent(): Promise<ICustomContent | undefined>;
   getCustomContentById(id: string): Promise<ICustomContent | undefined>;
