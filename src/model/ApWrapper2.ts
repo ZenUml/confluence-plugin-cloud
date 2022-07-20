@@ -148,20 +148,6 @@ export default class ApWrapper2 implements IApWrapper {
     })
   }
 
-  async setContentProperty(content: IContentPropertyNormalised) {
-    return new Promise((resolve, reject) => {
-      this._confluence.setContentProperty(content, (result) => {
-        if(result.error) {
-          // eslint-disable-next-line
-          console.error('Failed to update content property.', result.error)
-          reject(result.error)
-        } else {
-          resolve(true)
-        }
-      })
-    })
-  }
-
   saveMacro(params: IMacroData, body: string) {
     this._confluence.saveMacro(params, body)
   }
