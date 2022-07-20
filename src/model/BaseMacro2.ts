@@ -157,16 +157,7 @@ class BaseMacro2 {
     }
 
     if(this._diagram?.source === DataSource.ContentProperty) {
-      const contentProperty = {
-        key: this._diagram?.payload?.key,
-        value: diagram,
-        version: {
-          number: (this._diagram?.payload?.version.number || 0) + 1
-        }
-      }
-
-      await this._apWrapper.setContentProperty(contentProperty as IContentPropertyNormalised);
-      this.trackDiagramEvent(diagram, 'save_macro', 'content_property');
+      this.trackDiagramEvent(diagram, 'save_macro_skipped', 'content_property');
       return;
     }
 

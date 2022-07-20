@@ -6,9 +6,10 @@ import ApWrapper2 from "@/model/ApWrapper2";
 import Macro from "@/model/Macro";
 import {buildCustomContentResponse} from "../CustomContentFixtures";
 import helper from './TestHelper';
+import MockApConfluence from "@/model/MockApConfluence";
 
 let mockAp: MockAp;
-let mockApConfluence: IConfluence;
+let mockApConfluence: MockApConfluence;
 let macro: BaseMacro2;
 
 jest.mock('../../src/utils/uuid', () => {
@@ -99,14 +100,14 @@ describe('BaseMacro2', () => {
     async () => {
   })
 
-  it('save content property in dialog editor', async () => {
+  it('save content property in dialog editor has been DISABLED', async () => {
     setUp('contentKey=sequence&rendered.for=dialog-editor');
 
     const key = 'zenuml-sequence-macro-abc-123-body';
     const value = {code: 'a.foo'};
 
     mockApConfluence.saveMacro({uuid: 'abc-123'}, JSON.stringify(value));
-    mockApConfluence.setContentProperty({key: key, version: {number: 1}, value});
+    mockApConfluence.setContentProperty({key: key, version: {number: 1}, value}, () => {});
 
     const payload = await macro.load();
     expect(payload.source).toBe(DataSource.ContentProperty);
@@ -117,6 +118,7 @@ describe('BaseMacro2', () => {
       source: DataSource.ContentProperty
     };
     await macro.saveOnDialog(diagram);
-    mockApConfluence.getContentProperty(key, (content) => expect(content).toEqual({version: {number: 2}, key, value: diagram}));
+    mockApConfluence.getContentProperty(key, (content: any) => expect(content.version.number).toEqual(1));
+    mockApConfluence.getContentProperty(key, (content: any) => expect(content.value.code).toEqual('a.foo'));
   })
 })
