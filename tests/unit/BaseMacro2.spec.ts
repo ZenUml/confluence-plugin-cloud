@@ -99,7 +99,7 @@ describe('BaseMacro2', () => {
     async () => {
   })
 
-  it('save content property in dialog editor', async () => {
+  it('save content property in dialog editor has been DISABLED', async () => {
     setUp('contentKey=sequence&rendered.for=dialog-editor');
 
     const key = 'zenuml-sequence-macro-abc-123-body';
@@ -117,6 +117,7 @@ describe('BaseMacro2', () => {
       source: DataSource.ContentProperty
     };
     await macro.saveOnDialog(diagram);
-    mockApConfluence.getContentProperty(key, (content) => expect(content).toEqual({version: {number: 2}, key, value: diagram}));
+    mockApConfluence.getContentProperty(key, (content) => expect(content.version.number).toEqual(1));
+    mockApConfluence.getContentProperty(key, (content) => expect(content.value.code).toEqual('a.foo'));
   })
 })
