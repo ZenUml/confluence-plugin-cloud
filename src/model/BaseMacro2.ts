@@ -83,7 +83,7 @@ class BaseMacro2 {
     this._uuid = macroData?.uuid || getUrlParam('uuid');
 
     this._customContentId = macroData?.customContentId;
-    
+
     if(this._customContentId) {
       return await this.getCustomContent();
     }
@@ -164,7 +164,7 @@ class BaseMacro2 {
           number: (this._diagram?.payload?.version.number || 0) + 1
         }
       }
-    
+
       await this._apWrapper.setContentProperty(contentProperty as IContentPropertyNormalised);
       this.trackDiagramEvent(diagram, 'save_macro', 'content_property');
       return;
@@ -176,11 +176,12 @@ class BaseMacro2 {
     }
   }
 
+  // 20/07/2022 Limit editing on dialog to custom content only.
   async canEditOnDialog(): Promise<boolean> {
     const isVersionSupported = this._addonVersion >= '2021.11';
-    const notMacroBody = this._diagram?.source !== DataSource.MacroBody;
+    const storedWithCustomContent = this._diagram?.source === DataSource.CustomContent;
     const notCopy = !this._diagram?.isCopy;
-    return isVersionSupported && this._loaded && notMacroBody && notCopy && (await this._apWrapper.canUserEdit());
+    return isVersionSupported && this._loaded && storedWithCustomContent && notCopy && (await this._apWrapper.canUserEdit());
   }
 
   private static getCoreData(value: Diagram) {
