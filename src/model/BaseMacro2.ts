@@ -1,6 +1,5 @@
 import uuidv4 from '../utils/uuid';
 import {getUrlParam, trackEvent} from '@/utils/window.ts';
-import ApWrapper2 from "./ApWrapper2";
 import {IApWrapper} from "@/model/IApWrapper";
 import {IContentPropertyNormalised} from "@/model/IContentProperty";
 import {ICustomContent} from "@/model/ICustomContent";
@@ -16,7 +15,7 @@ class BaseMacro2 {
   _addonVersion: string;
   _apWrapper: IApWrapper;
 
-  constructor(apWrapper2: ApWrapper2) {
+  constructor(apWrapper2: IApWrapper) {
     this._apWrapper = apWrapper2;
 
     const renderedFor = getUrlParam('rendered.for');
