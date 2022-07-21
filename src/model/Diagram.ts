@@ -9,7 +9,8 @@ export enum DataSource {
 export enum DiagramType {
   Sequence = 'sequence',
   Mermaid = 'mermaid',
-  Graph = 'graph'
+  Graph = 'graph',
+  OpenApi = 'openapi',
 }
 
 export interface Diagram {

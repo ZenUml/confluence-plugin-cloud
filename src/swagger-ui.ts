@@ -9,6 +9,8 @@ import '@/components/Debug/DebugMounter.ts'
 import Example from '@/model/OpenApi/OpenApiExample'
 import createAttachmentIfContentChanged from "@/model/Attachment";
 import {trackEvent} from "@/utils/window";
+import {DiagramType} from "@/model/Diagram";
+
 
 // eslint-disable-next-line
 // @ts-ignore
@@ -31,7 +33,12 @@ async function initializeMacro() {
   setTimeout(async function () {
     AP.resize();
     try {
-      await createAttachmentIfContentChanged(code);
+      if(await apWrapper.canUserEdit()) {
+        trackEvent(DiagramType.OpenApi, 'before_create_attachment', 'info');
+        await createAttachmentIfContentChanged(code);
+      } else {
+        trackEvent(DiagramType.OpenApi, 'skip_create_attachment', 'warning');
+      }
     } catch (e) {
       // Do not re-throw the error
       console.error('Error when creating attachment', e);
