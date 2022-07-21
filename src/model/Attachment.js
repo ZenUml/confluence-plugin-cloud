@@ -30,7 +30,9 @@ export function parseAttachmentsFromResponse(response) {
 }
 
 async function getAttachments(pageId) {
+  trackEvent(pageId, 'get_attachments', 'before_request');
   const response = await window.AP.request(buildGetRequestForAttachments(pageId));
+  trackEvent(response?.xhr?.status, 'get_attachments', 'after_request');
   return parseAttachmentsFromResponse(response);
 }
 
