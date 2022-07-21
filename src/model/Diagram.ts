@@ -24,6 +24,6 @@ export interface Diagram {
   mermaidCode?: string,
   graphXml?: string,
   compressed?: boolean,
-  source: DataSource,
+  source?: DataSource,
   payload?: any   // Only used for content-property to keep the version and key which are used at `saveOnDialog`.
 }
