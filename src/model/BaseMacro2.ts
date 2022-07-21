@@ -145,7 +145,7 @@ class BaseMacro2 {
 
     // Saving core data to body for disaster recovery
     let body = BaseMacro2.getCoreData(diagram);
-    this._apWrapper.saveMacro(macroParam, body);
+    this._apWrapper.saveMacro(macroParam, body || '');
     this.trackDiagramEvent(diagram, 'save_macro', 'macro_body');
 
     return customContent.id;
