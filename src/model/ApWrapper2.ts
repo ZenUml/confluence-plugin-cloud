@@ -156,10 +156,6 @@ export default class ApWrapper2 implements IApWrapper {
     return getUrlParam('contentKey');
   }
 
-  hasCustomContent() {
-    return !!(this.getContentKey());
-  }
-
   getCustomContentType() {
     return `ac:${getUrlParam('addonKey')}:${this.getContentKey()}`;
   }

@@ -21,9 +21,6 @@ export interface IApWrapper {
   // Content Property APIs
   getContentProperty2(): Promise<IContentPropertyNormalised | undefined>;
 
-  // Custom Content APIs
-  hasCustomContent(): boolean;
-
   getCustomContent(): Promise<ICustomContent | undefined>;
   getCustomContentById(id: string): Promise<ICustomContent | undefined>;
   createCustomContent(content: Diagram): Promise<any>;

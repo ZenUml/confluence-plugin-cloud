@@ -75,10 +75,6 @@ class MockApWrapper implements IApWrapper {
     return Promise.resolve("");
   }
 
-  hasCustomContent(): boolean {
-    return false;
-  }
-
   saveCustomContent(customContentId: string, value: object): Promise<any> {
     return Promise.resolve(undefined);
   }
