@@ -15,6 +15,7 @@ import ExtendedStore from './model/Store'
 import EventBus from './EventBus'
 import './GTagConfig'
 import globals from '@/model/globals';
+import {initializeMacro} from "@/model/macro/InitializeMacro";
 
 Vue.use(Va, 'en')
 
@@ -37,25 +38,6 @@ if(document.getElementById('app')) {
       render: h => h(Workspace) // with this method, we don't need to use full version of vew
     }).$mount('#app')
 }
-// @ts-ignore
-window.store = store
-
-async function initializeMacro() {
-  // @ts-ignore
-  const macro = globals.macro;
-  await macro.initializeContext();
-
-  const {code, styles, mermaidCode, diagramType} = await macro.load();
-
-  store.commit('code', code);
-  // @ts-ignore
-  store.state.styles = styles;
-  // @ts-ignore
-  store.dispatch('updateMermaidCode', mermaidCode || store.state.mermaidCode)
-  store.dispatch('updateDiagramType', diagramType)
-  let timing = window.performance.timing;
-  console.debug('ZenUML diagram loading time:%s(ms)', timing.domContentLoadedEventEnd- timing.navigationStart)
-}
 
 EventBus.$on('save', async () => {
   const macro = globals.macro;
@@ -68,4 +50,4 @@ EventBus.$on('save', async () => {
   AP.dialog.close();
 });
 
-initializeMacro();
+initializeMacro(store);
