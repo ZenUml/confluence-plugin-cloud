@@ -27,7 +27,7 @@ async function initializeMacro() {
   // await macro.load();
 
   // @ts-ignore
-  window.macro = macro;
+  globals.macro = macro;
   const {code} = await macro.load();
   console.log('-------------- loaded spec:', code)
     // eslint-disable-next-line
