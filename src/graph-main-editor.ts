@@ -6,15 +6,15 @@ import Va from 'vue-atlas'
 import 'vue-atlas/dist/vue-atlas.css'
 import './assets/tailwind.css'
 
-import ApWrapper2 from "@/model/ApWrapper2";
-import AP from "@/model/AP";
+import globals from '@/model/globals';
+
 Vue.use(Va, 'en')
 
 new Vue({
   render: h => h(SaveAndGoBackButtonGraph)
 }).$mount('#save-and-go-back');
 async function initializeMacro() {
-  const apWrapper = new ApWrapper2(AP);
+  const apWrapper = globals.apWrapper;
   await apWrapper.initializeContext();
 
   const macro = new GraphMacro(apWrapper);

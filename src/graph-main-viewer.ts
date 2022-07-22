@@ -1,11 +1,11 @@
 import MockApConfluence from './model/MockApConfluence'
 import GraphMacro from './model/GraphMacro'
 import AP from "@/model/AP";
-import ApWrapper2 from "@/model/ApWrapper2";
 import createAttachmentIfContentChanged from "@/model/Attachment";
 import {trackEvent} from "@/utils/window";
 import '@/components/Debug/DebugMounter.ts'
 import './assets/tailwind.css'
+import globals from '@/model/globals';
 
 console.debug('Running graph main viewer');
 if (window.location.href.includes('localhost')) {
@@ -17,7 +17,7 @@ if (window.location.href.includes('localhost')) {
   }
 }
 async function initializeMacro() {
-  const apWrapper = new ApWrapper2(AP);
+  const apWrapper = globals.apWrapper;
   await apWrapper.initializeContext();
 
   const macro = new GraphMacro(apWrapper);
