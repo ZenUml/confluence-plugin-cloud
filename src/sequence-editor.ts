@@ -21,6 +21,7 @@ import EventBus from './EventBus'
 import {initializeMacro} from "@/model/macro/InitializeMacro";
 import './GTagConfig'
 import globals from '@/model/globals';
+import AP from "@/model/AP";
 
 Vue.use(Va, 'en')
 
@@ -45,15 +46,6 @@ if(document.getElementById('app')) {
 }
 // @ts-ignore
 window.store = store
-
-if (window.location.href.includes('localhost')) {
-  // eslint-disable-next-line
-  console.log('You are using a mocked AP.confluence')
-  // @ts-ignore
-  window.AP = {
-    confluence: new MockApConfluence()
-  }
-}
 
 EventBus.$on('save', async () => {
   // @ts-ignore
