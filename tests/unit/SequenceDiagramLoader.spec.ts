@@ -42,7 +42,7 @@ class MockApWrapper implements IApWrapper {
     return {value: {code: this._code, diagramType: DiagramType.Sequence, source: DataSource.ContentProperty}};
   }
 
-  async setContentProperty(property: IContentPropertyNormalised) {}
+  async setContentProperty(_: IContentPropertyNormalised) {}
 
   async getMacroData() {
     return Promise.resolve(undefined);
@@ -88,6 +88,12 @@ class MockApWrapper implements IApWrapper {
 
   async canUserEdit(): Promise<boolean> {
     return true;
+  }
+
+  initializeContext(): void {
+  }
+
+  isDisplayMode(): any {
   }
 }
 

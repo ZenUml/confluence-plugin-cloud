@@ -53,7 +53,7 @@ export default {
   computed: {
     ...mapGetters({isDisplayMode: 'isDisplayMode', diagramType: 'diagramType', canEdit: 'canEdit'}),
     isLite() {
-      return globals.macro._apWrapper.isLite();
+      return globals.apWrapper.isLite();
     },
     styles() {
       const stylesInStore = this.$store.state.styles || {};

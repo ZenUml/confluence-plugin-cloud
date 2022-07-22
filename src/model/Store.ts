@@ -61,7 +61,7 @@ export default {
     content: (state: any, getters: any) => {
       return getters.diagramType === 'mermaid' ? state.mermaidCode : state.code
     },
-    isDisplayMode: () => globals.macro._apWrapper.isDisplayMode(),
+    isDisplayMode: () => globals.apWrapper.isDisplayMode(),
     canEdit: (state: any) => state.canEdit
   },
   state: {

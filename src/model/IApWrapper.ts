@@ -31,4 +31,6 @@ export interface IApWrapper {
   saveCustomContent(customContentId: string, value: Diagram): Promise<any>;
 
   canUserEdit(): Promise<boolean>;
+
+  isDisplayMode(): any;
 }

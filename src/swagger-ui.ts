@@ -1,7 +1,6 @@
 import SwaggerUIBundle from 'swagger-ui'
 import SpecListener from './utils/spec-listener'
 import BaseMacro2 from "./model/BaseMacro2";
-import ApWrapper2 from "@/model/ApWrapper2";
 import AP from "@/model/AP";
 import './assets/tailwind.css'
 
@@ -10,14 +9,13 @@ import Example from '@/model/OpenApi/OpenApiExample'
 import createAttachmentIfContentChanged from "@/model/Attachment";
 import {trackEvent} from "@/utils/window";
 import {DiagramType} from "@/model/Diagram";
+import globals from '@/model/globals';
 
-
-// eslint-disable-next-line
 // @ts-ignore
 window.SwaggerUIBundle = SwaggerUIBundle;
 
 async function initializeMacro() {
-  const apWrapper = new ApWrapper2(AP);
+  const apWrapper = globals.apWrapper;
   await apWrapper.initializeContext();
 
   const macro = new BaseMacro2(apWrapper);
