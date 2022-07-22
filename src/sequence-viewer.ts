@@ -14,6 +14,7 @@ import {initializeMacro} from "@/model/macro/InitializeMacro";
 import createAttachmentIfContentChanged from "@/model/Attachment";
 import './GTagConfig'
 import globals from '@/model/globals';
+import {DiagramType} from "@/model/Diagram";
 
 // eslint-disable-next-line
 // @ts-ignore
@@ -53,12 +54,18 @@ EventBus.$on('diagramLoaded', async () => {
     const canEdit = await macro.canEditOnDialog();
     store.dispatch('updateCanEdit', canEdit);
 
+    let diagramType = macro._diagram?.diagramType || 'unknown';
     try {
-      await createAttachmentIfContentChanged(store.getters.content);
+      if (await globals.apWrapper.canUserEdit()) {
+        trackEvent(diagramType, 'before_create_attachment', 'info');
+        await createAttachmentIfContentChanged(store.getters.content);
+      } else {
+        trackEvent(diagramType, 'skip_create_attachment', 'info');
+      }
     } catch (e) {
       // Do not re-throw the error
       console.error('Error when creating attachment', e);
-      trackEvent(JSON.stringify(e), 'create_attachment', 'error');
+      trackEvent(JSON.stringify(e), 'create_attachment' + diagramType, 'error');
     }
   }
 });
