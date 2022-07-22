@@ -37,6 +37,8 @@ import EventBus from '../EventBus'
 import Debug from '@/components/Debug/Debug.vue'
 import StylingPanel from "@/components/StylingPanel";
 import ErrorBoundary from "@/components/ErrorBoundary";
+import globals from '@/model/globals';
+
 const DiagramFrame = VueSequence.DiagramFrame;
 
 export default {
@@ -51,7 +53,7 @@ export default {
   computed: {
     ...mapGetters({isDisplayMode: 'isDisplayMode', diagramType: 'diagramType', canEdit: 'canEdit'}),
     isLite() {
-      return this.$store.state.macro._apWrapper.isLite();
+      return globals.apWrapper.isLite();
     },
     styles() {
       const stylesInStore = this.$store.state.styles || {};

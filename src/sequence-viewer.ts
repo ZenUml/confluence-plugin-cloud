@@ -13,6 +13,8 @@ import {trackEvent} from "@/utils/window";
 import {initializeMacro} from "@/model/macro/InitializeMacro";
 import createAttachmentIfContentChanged from "@/model/Attachment";
 import './GTagConfig'
+import globals from '@/model/globals';
+import BaseMacro2 from "@/model/BaseMacro2";
 
 // eslint-disable-next-line
 // @ts-ignore
@@ -42,23 +44,35 @@ window.store = store
 EventBus.$on('diagramLoaded', () => {
   console.debug('Resize macro');
   // @ts-ignore
-  setTimeout(window.AP?.resize, 500)
+  setTimeout(window.AP?.resize, 1500)
 });
+
+async function createAttachment(macro: BaseMacro2) {
+  let diagramType = macro._diagram?.diagramType || 'unknown';
+  try {
+    if (await globals.apWrapper.canUserEdit()) {
+      trackEvent(diagramType, 'before_create_attachment', 'info');
+      await createAttachmentIfContentChanged(store.getters.content);
+    } else {
+      trackEvent(diagramType, 'skip_create_attachment', 'info');
+    }
+  } catch (e) {
+    // Do not re-throw the error
+    console.error('Error when creating attachment', e);
+    trackEvent(JSON.stringify(e), 'create_attachment' + diagramType, 'error');
+  }
+}
+
 EventBus.$on('diagramLoaded', async () => {
   // @ts-ignore
-  const macro = window.macro;
+  const macro = globals.macro;
   if(!macro?._standaloneCustomContent) {
 
     const canEdit = await macro.canEditOnDialog();
     store.dispatch('updateCanEdit', canEdit);
-
-    try {
-      await createAttachmentIfContentChanged(store.getters.content);
-    } catch (e) {
-      // Do not re-throw the error
-      console.error('Error when creating attachment', e);
-      trackEvent(JSON.stringify(e), 'create_attachment', 'error');
-    }
+    setTimeout(async () => {
+      await createAttachment(macro);
+    }, 1500);
   }
 });
 

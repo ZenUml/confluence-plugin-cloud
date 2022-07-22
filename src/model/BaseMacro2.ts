@@ -1,6 +1,5 @@
 import uuidv4 from '../utils/uuid';
 import {getUrlParam, trackEvent} from '@/utils/window.ts';
-import ApWrapper2 from "./ApWrapper2";
 import {IApWrapper} from "@/model/IApWrapper";
 import {IContentPropertyNormalised} from "@/model/IContentProperty";
 import {ICustomContent} from "@/model/ICustomContent";
@@ -16,7 +15,7 @@ class BaseMacro2 {
   _addonVersion: string;
   _apWrapper: IApWrapper;
 
-  constructor(apWrapper2: ApWrapper2) {
+  constructor(apWrapper2: IApWrapper) {
     this._apWrapper = apWrapper2;
 
     const renderedFor = getUrlParam('rendered.for');
@@ -25,6 +24,9 @@ class BaseMacro2 {
     this._addonVersion = getUrlParam('version') || '';
   }
 
+  initializeContext() {
+    this._apWrapper.initializeContext();
+  }
   // deprecated: We should rely on diagram.diagramType. For old diagrams we do not have that saved.
   getDiagramType(diagram: Diagram | undefined): string {
     if(diagram?.code) {
@@ -145,7 +147,7 @@ class BaseMacro2 {
 
     // Saving core data to body for disaster recovery
     let body = BaseMacro2.getCoreData(diagram);
-    this._apWrapper.saveMacro(macroParam, body);
+    this._apWrapper.saveMacro(macroParam, body || '');
     this.trackDiagramEvent(diagram, 'save_macro', 'macro_body');
 
     return customContent.id;

@@ -17,6 +17,7 @@
 <script>
 import App from "@/model/app/App";
 import HostIcon from '@/assets/server-svgrepo-com.svg'
+import globals from '@/model/globals';
 
 export default {
   name: "Debug",
@@ -33,13 +34,11 @@ export default {
       return new App();
     },
     diagram() {
-      return this.$store?.state.macro._diagram || {};
+      return globals.macro._diagram || {};
     },
-    macro() {
-      return this.$store?.state.macro;
-    },
+
     shortUuid() {
-      return this.macro?._uuid?.substring(0, 8);
+      return globals.macro?._uuid?.substring(0, 8);
     }
 
   }

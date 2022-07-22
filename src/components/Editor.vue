@@ -20,6 +20,11 @@
   import 'codemirror/mode/javascript/javascript.js'
   import 'codemirror/addon/display/placeholder.js'
   import 'codemirror/addon/edit/closebrackets.js'
+  // Code Editor style
+  import 'codemirror/lib/codemirror.css'
+  // theme css
+  import 'codemirror/theme/base16-dark.css'
+
 
   import EventBus from '../EventBus'
 

@@ -3,13 +3,13 @@
 </template>
 
 <script>
-
+import globals from "@/model/globals";
 export default {
   name: "SaveAndGoBackButtonOpenAPI",
   methods: {
     saveAndExit: async function () {
       // eslint-disable-next-line no-undef
-      await window.macro.save({title: '', code: window.specContent, styles: '', mermaidCode: '', diagramType: 'OpenAPI', source: 'CustomContent'});
+      await globals.macro.save({title: '', code: window.specContent, styles: '', mermaidCode: '', diagramType: 'OpenAPI', source: 'CustomContent'});
 
       /* eslint-disable no-undef */
       AP.dialog.close();

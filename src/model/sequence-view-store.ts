@@ -1,18 +1,16 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-
 import {VueSequence} from 'vue-sequence'
-
-import ApWrapper2 from "./ApWrapper2";
-import AP from "@/model/AP";
 import SequenceDiagramLoader from "@/model/SequenceDiagramLoader";
+import globals from '@/model/globals';
+
 Vue.use(Vuex)
 
 async function getCode() {
   // @ts-ignore
-  const apWrapper = new ApWrapper2(AP);
+  const apWrapper = globals.apWrapper;
   await apWrapper.initializeContext();
-  
+
   let sequenceDiagramLoader = new SequenceDiagramLoader(apWrapper);
   // @ts-ignore
   window.sequenceDiagramLoader = sequenceDiagramLoader
