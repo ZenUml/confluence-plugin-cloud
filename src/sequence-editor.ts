@@ -20,6 +20,7 @@ import ExtendedStore from './model/Store'
 import EventBus from './EventBus'
 import {initializeMacro} from "@/model/macro/InitializeMacro";
 import './GTagConfig'
+import globals from '@/model/globals';
 
 Vue.use(Va, 'en')
 
@@ -56,7 +57,7 @@ if (window.location.href.includes('localhost')) {
 
 EventBus.$on('save', async () => {
   // @ts-ignore
-  await store.state.macro.save2(store.state.code, store.state.styles, store.state.mermaidCode, store.state.diagramType, store.getters.title);
+  await globals.macro.save2(store.state.code, store.state.styles, store.state.mermaidCode, store.state.diagramType, store.getters.title);
 
   // @ts-ignore
   AP.dialog.close();

@@ -1,12 +1,9 @@
 import {VueSequence} from 'vue-sequence'
 import mermaid from "mermaid";
 import EventBus from '../EventBus'
-import Macro from "@/model/Macro";
-import AP from "@/model/AP";
 import {DiagramType} from "@/model/Diagram";
-import ApWrapper2 from "@/model/ApWrapper2";
+import globals from '@/model/globals';
 
-const ap = AP;
 const storeConfig = VueSequence.Store()
 export default {
   ...storeConfig,
@@ -64,12 +61,11 @@ export default {
     content: (state: any, getters: any) => {
       return getters.diagramType === 'mermaid' ? state.mermaidCode : state.code
     },
-    isDisplayMode: (state: any) => state.macro._apWrapper.isDisplayMode(),
+    isDisplayMode: () => globals.macro._apWrapper.isDisplayMode(),
     canEdit: (state: any) => state.canEdit
   },
   state: {
     ...storeConfig.state,
-    macro: new Macro(new ApWrapper2(ap)),
     mermaidCode: 'graph TD; A-->B;',
     mermaidSvg: '',
     diagramType: DiagramType.Sequence,

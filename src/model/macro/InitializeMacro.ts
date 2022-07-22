@@ -1,15 +1,13 @@
 import Vue from 'vue'
 import EventBus from '@/EventBus'
 import {trackEvent} from "@/utils/window";
+import globals from '@/model/globals';
 
 export async function initializeMacro(store: any) {
-  // @ts-ignore
-  const macro = window.macro || store.state.macro;
-  // @ts-ignore
-  window.macro = macro;
+  const macro = globals.macro;
   try {
     await macro._apWrapper.initializeContext();
-    
+
     const {code, styles, mermaidCode, diagramType} = await macro.load();
     store.commit('code', code);
     store.state.styles = styles;

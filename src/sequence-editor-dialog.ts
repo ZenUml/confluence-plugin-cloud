@@ -19,6 +19,7 @@ import 'codemirror/theme/base16-dark.css'
 import ExtendedStore from './model/Store'
 import EventBus from './EventBus'
 import './GTagConfig'
+import globals from '@/model/globals';
 
 Vue.use(Va, 'en')
 
@@ -54,11 +55,9 @@ if (window.location.href.includes('localhost')) {
 }
 async function initializeMacro() {
   // @ts-ignore
-  const macro = store.state.macro;
+  const macro = globals.macro;
   await macro._apWrapper.initializeContext();
 
-  // @ts-ignore
-  window.macro = macro;
   const {code, styles, mermaidCode, diagramType} = await macro.load();
 
   store.commit('code', code);
@@ -72,8 +71,7 @@ async function initializeMacro() {
 }
 
 EventBus.$on('save', async () => {
-  // @ts-ignore
-  const macro = window.macro;
+  const macro = globals.macro;
   // @ts-ignore
   const value = {code: store.state.code, styles: store.state.styles, mermaidCode: store.state.mermaidCode, diagramType: store.state.diagramType, title: store.getters.title} as Diagram;
 

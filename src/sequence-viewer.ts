@@ -13,6 +13,7 @@ import {trackEvent} from "@/utils/window";
 import {initializeMacro} from "@/model/macro/InitializeMacro";
 import createAttachmentIfContentChanged from "@/model/Attachment";
 import './GTagConfig'
+import globals from '@/model/globals';
 
 // eslint-disable-next-line
 // @ts-ignore
@@ -46,7 +47,7 @@ EventBus.$on('diagramLoaded', () => {
 });
 EventBus.$on('diagramLoaded', async () => {
   // @ts-ignore
-  const macro = window.macro;
+  const macro = globals.macro;
   if(!macro?._standaloneCustomContent) {
 
     const canEdit = await macro.canEditOnDialog();
