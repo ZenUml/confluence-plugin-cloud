@@ -1,6 +1,5 @@
 import SwaggerUIBundle from 'swagger-ui'
 import SpecListener from './utils/spec-listener'
-import BaseMacro2 from "./model/BaseMacro2";
 import AP from "@/model/AP";
 import './assets/tailwind.css'
 
@@ -16,15 +15,11 @@ window.SwaggerUIBundle = SwaggerUIBundle;
 
 async function initializeMacro() {
   const apWrapper = globals.apWrapper;
-  await apWrapper.initializeContext();
+  const macro = globals.macro;
+  await macro.initializeContext();
 
-  const macro = new BaseMacro2(apWrapper);
-
-  // @ts-ignore
-  window.macro = macro;
   const {code} = await macro.load();
 
-  // eslint-disable-next-line
   // @ts-ignore
   window.updateSpec(code || Example);
 
