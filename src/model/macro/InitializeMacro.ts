@@ -6,7 +6,7 @@ import globals from '@/model/globals';
 export async function initializeMacro(store: any) {
   const macro = globals.macro;
   try {
-    await macro._apWrapper.initializeContext();
+    await macro.initializeContext();
 
     const {code, styles, mermaidCode, diagramType} = await macro.load();
     store.commit('code', code);

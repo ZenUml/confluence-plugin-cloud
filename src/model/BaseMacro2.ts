@@ -24,6 +24,9 @@ class BaseMacro2 {
     this._addonVersion = getUrlParam('version') || '';
   }
 
+  initializeContext() {
+    this._apWrapper.initializeContext();
+  }
   // deprecated: We should rely on diagram.diagramType. For old diagrams we do not have that saved.
   getDiagramType(diagram: Diagram | undefined): string {
     if(diagram?.code) {

@@ -43,7 +43,7 @@ window.store = store
 async function initializeMacro() {
   // @ts-ignore
   const macro = globals.macro;
-  await macro._apWrapper.initializeContext();
+  await macro.initializeContext();
 
   const {code, styles, mermaidCode, diagramType} = await macro.load();
 
