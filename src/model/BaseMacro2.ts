@@ -1,5 +1,5 @@
 import uuidv4 from '../utils/uuid';
-import {getUrlParam, trackEvent} from '@/utils/window.ts';
+import {getUrlParam, trackEvent} from '@/utils/window';
 import {IApWrapper} from "@/model/IApWrapper";
 import {IContentPropertyNormalised} from "@/model/IContentProperty";
 import {ICustomContent} from "@/model/ICustomContent";

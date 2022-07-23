@@ -1,5 +1,5 @@
 import Vue from 'vue'
-import GraphMacro from "@/model/GraphMacro.ts";
+import GraphMacro from "@/model/GraphMacro";
 import SaveAndGoBackButtonGraph from "@/components/SaveAndGoBackButtonGraph.vue";
 // @ts-ignore
 import Va from 'vue-atlas'
