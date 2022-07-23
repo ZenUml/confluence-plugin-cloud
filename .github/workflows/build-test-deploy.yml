@@ -25,7 +25,7 @@ jobs:
 
   staging-lite-hosting:
     needs: build
-    name: Deploy to staging lite
+    name: Deploy to staging lite hosting
     environment:
       name: staging-lite
     runs-on: ubuntu-latest
@@ -41,7 +41,7 @@ jobs:
 
   staging-lite-functions:
     needs: build
-    name: Deploy to staging lite
+    name: Deploy to staging lite functions
     environment:
       name: staging-lite
     runs-on: ubuntu-latest
