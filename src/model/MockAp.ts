@@ -1,4 +1,4 @@
-import MockApConfluence from "@/model/MockApConfluence.ts";
+import MockApConfluence from "@/model/MockApConfluence";
 import {IAp} from "@/model/IAp";
 
 const CONTRACT: any = {
