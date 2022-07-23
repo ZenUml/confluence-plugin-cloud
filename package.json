@@ -12,6 +12,8 @@
     "deploy:full:prod": "npm run build:full && firebase deploy --project full:prod",
     "deploy:full:stage": "npm run build:full && firebase deploy --project full:stage",
     "deploy:lite:prod": "npm run build:lite && firebase deploy --project lite:prod",
+    "deploy:lite:stage:functions": "npm run build:lite && firebase deploy --project lite:stage --only functions",
+    "deploy:lite:stage:hosting": "npm run build:lite && firebase deploy --project lite:stage --only hosting",
     "deploy:lite:stage": "npm run build:lite && firebase deploy --project lite:stage",
     "firebase:serve": "firebase emulators:start --only hosting,functions",
     "firebase:serve:functions": "firebase emulators:start --only functions",
