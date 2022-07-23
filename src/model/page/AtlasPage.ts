@@ -70,12 +70,12 @@ export class AtlasPage {
       const {body: {atlas_doc_format: {value}}} = JSON.parse(response.body);
       const {content: contentList} = JSON.parse(value);
       return contentList.filter(({type}: any) => type === AtlasDocElementType.Extension);
-    } catch (e) {
+    } catch (e: any) {
       trackEvent(responseStatus, 'query_macro_atlas_doc_format', 'warning');
       trackEvent(e.message, 'query_macro_atlas_doc_format', 'warning');
       console.trace('Failed to query all macros on the page. Assume there is no macros on this page.')
       console.error('This message will be very helpful for the vendor to improve their product.');
-      console.error('Please consider share it with the vendor so that they can fix the issue.');
+      console.error('Please consider sharing it with the vendor so that they can fix the issue.');
       console.error('Please remove all sensitive data before sharing.');
       console.error('==========');
       console.error(responseBody);

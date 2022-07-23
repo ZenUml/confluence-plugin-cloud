@@ -58,7 +58,7 @@ export default class ApWrapper2 implements IApWrapper {
       this.currentUser = await this._getCurrentUser();
       this.currentSpace = await this._getCurrentSpace();
       this.currentPageUrl = await this._getCurrentPageUrl();
-    } catch (e) {
+    } catch (e: any) {
       console.error(e);
       try {
         trackEvent('error', 'initializeContext', e.message);
@@ -297,7 +297,7 @@ export default class ApWrapper2 implements IApWrapper {
 
   getDialogCustomData() {
     const dialog = this._dialog;
-    return new Promise((resolv) => {
+    return new Promise((resolv: Function) => {
       try {
         dialog.getCustomData((data: unknown) => {
           resolv(data);

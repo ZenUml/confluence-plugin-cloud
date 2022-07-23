@@ -12,7 +12,7 @@ module.exports = {
     },
     "sequence-editor-dialog": {
       entry: 'src/sequence-editor-dialog.ts',
-      template: 'public/sequence-editor.html',
+      template: 'public/sequence-editor-dialog.html',
       chunks: ['chunk-common', 'chunk-sequence-editor-dialog-vendors', 'sequence-editor-dialog']
     },
     "sequence-viewer": {
