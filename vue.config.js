@@ -109,20 +109,20 @@ module.exports = {
   productionSourceMap: false,
   configureWebpack: {
     resolve: {
+      fallback: {"stream": false},
       alias: {
         // 'vue$': 'vue/dist/vue.esm.js' // Full version with template compiler
       }
     }
   },
   devServer: {
-    disableHostCheck: true,
     historyApiFallback: true,
     hot: true,
-    public: process.env.DEV_SERVER_PUBLIC,
     host: 'localhost',
     port: 8080,
-    sockHost: 'air.zenuml.com',
-    sockPort: 443,
+    client: {
+      webSocketURL: 'auto://0.0.0.0:0/ws',
+    },
     proxy: {
       '/atlassian-connect.json': {
         target: 'http://localhost:5000/',
@@ -146,16 +146,14 @@ module.exports = {
       }
     },
     compress: true,  // This reduces the app.js from 4.8MB to 1.2MB
-    before: function (app) {
-      app.get(/installed/, function (req, res) {
+    onBeforeSetupMiddleware: function (devServer) {
+      devServer.app.get(/installed/, function (req, res) {
         res.status(200).send(`OK`);
       })
-      app.get(/uninstalled/, function (req, res) {
+      devServer.app.get(/uninstalled/, function (req, res) {
         res.status(200).send(`OK`);
       })
     },
-    allowedHosts: [
-      '.zenuml.com'
-    ]
+    allowedHosts: "all",
   }
 };
