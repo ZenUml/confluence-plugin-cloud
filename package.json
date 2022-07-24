@@ -13,7 +13,7 @@
     "deploy:full:stage": "npm run build:full && firebase deploy --project full:stage",
     "deploy:lite:prod": "npm run build:lite && firebase deploy --project lite:prod",
     "deploy:lite:stage": "npm run build:lite && firebase deploy --project lite:stage",
-    "firebase:serve": "firebase emulators:start --only hosting,functions",
+    "wrangler:serve": "wrangler pages dev dist",
     "firebase:serve:functions": "firebase emulators:start --only functions",
     "cloudflare:8080": "cloudflared --hostname air.zenuml.com --url http://localhost:8080",
     "cloudflare:yanhui": "cloudflared --hostname yanhui.zenuml.com --url http://localhost:8081",
@@ -22,7 +22,7 @@
     "git:branch:clean:merged": "git branch --merged|egrep -v \"(\\*|master|main|dev|skip_branch_name)\" | xargs git branch -d",
     "start:local": "VERSION=latest PRODUCT_TYPE=lite vue-cli-service serve --open",
     "start:vue:sit": "VERSION=latest PRODUCT_TYPE=lite vue-cli-service serve --open --mode test",
-    "start:sit": "concurrently \"yarn firebase:serve\" \"yarn start:vue:sit\" ",
+    "start:sit": "concurrently \"yarn wrangler:serve\" \"yarn start:vue:sit\" ",
     "start:sit:yanhui": "concurrently \"yarn firebase:serve\" \"yarn start:vue:sit --port 8081 --open false\""
   },
   "dependencies": {
