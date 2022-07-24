@@ -1,17 +1,17 @@
-const descriptor = require('../atlassian-connect.json');
+const descriptor = require('./atlassian-connect.json');
 const liteKeySuffix = '-lite';
 const liteNameSuffix = ' Lite';
 const VERSION = '2022.07';
 
 export const onRequestGet = async (params) => {
   const req = params.request;
-  console.log(req);
-  const url = req.url;
+  console.log(req.url);
+  const url = req.url.replace('http://', 'https://');
 
   const basePath = url.substring(0, url.lastIndexOf('/'));
   const self = url.substring(url.lastIndexOf('/'));
   const data = JSON.parse(JSON.stringify(descriptor));
-  data.baseUrl = `${req.protocol}://${req.hostname}${basePath}/`;
+  data.baseUrl = `${basePath}/`;
   // This is not necessary but works as a defense.
   data.links.self = self;
 
@@ -87,11 +87,15 @@ export const onRequestGet = async (params) => {
     return result.replace('__VERSION__', VERSION);
   });
 
-  data.lifecycle.installed = data.lifecycle.installed.replace('__VERSION__', VERSION);
+  // data.lifecycle.installed = data.lifecycle.installed.replace('__VERSION__', VERSION);
   data.lifecycle.uninstalled = data.lifecycle.uninstalled.replace('__VERSION__', VERSION);
 
   return new Response(
     JSON.stringify(data),
-    {}
+    {
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    }
   );
 };
