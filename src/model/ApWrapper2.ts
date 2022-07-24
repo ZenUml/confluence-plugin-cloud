@@ -156,12 +156,20 @@ export default class ApWrapper2 implements IApWrapper {
     return getUrlParam('contentKey');
   }
 
+  getCustomContentTypePrefix() {
+    return `ac:${getUrlParam('addonKey')}`;
+  }
+
   getCustomContentType() {
-    return `ac:${getUrlParam('addonKey')}:${this.getContentKey()}`;
+    return `${this.getCustomContentTypePrefix()}:${this.getContentKey()}`;
   }
 
   parseCustomContentResponse(response: { body: string; }): ICustomContentResponseBody {
     return response && response.body && JSON.parse(response.body);
+  }
+
+  parseCustomContentListResponse(response: { body: string; }): Array<ICustomContentResponseBody> {
+    return response && response.body && JSON.parse(response.body)?.results;
   }
 
   async createCustomContent(content: Diagram) {
@@ -267,6 +275,21 @@ export default class ApWrapper2 implements IApWrapper {
       trackEvent(JSON.stringify(e), 'load_custom_content', 'error');
       // TODO: return a NullCustomContentObject
       return undefined;
+    }
+  }
+
+  async listCustomContentByType(type: string): Promise<Array<ICustomContentResponseBody>> {
+    const customContentType = `${this.getCustomContentTypePrefix()}:${type}`;
+    const spaceKey = await this._getCurrentSpace();
+    const url = `/rest/api/content?spaceKey=${spaceKey}&type=${customContentType}&expand=body.raw,version.number,container,space`;
+    try {
+      const response = await this._requestFn({type: 'GET', url});
+      const customContentList = this.parseCustomContentListResponse(response);
+      console.debug(`Listed custom content by type ${customContentType}.`);
+      return customContentList;
+    } catch (e) {
+      trackEvent(JSON.stringify(e), 'listCustomContentByType', 'error');
+      return [] as Array<ICustomContentResponseBody>;
     }
   }
 

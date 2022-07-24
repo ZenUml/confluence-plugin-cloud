@@ -1,6 +1,7 @@
 import {IMacroData} from "@/model/IMacroData";
 import {IContentPropertyNormalised} from "@/model/IContentProperty";
 import {ICustomContent} from "@/model/ICustomContent";
+import {ICustomContentResponseBody} from "@/model/ICustomContentResponseBody";
 import {Diagram} from "@/model/Diagram";
 
 export enum VersionType {
@@ -23,6 +24,7 @@ export interface IApWrapper {
 
   getCustomContent(): Promise<ICustomContent | undefined>;
   getCustomContentById(id: string): Promise<ICustomContent | undefined>;
+  listCustomContentByType(type: string): Promise<Array<ICustomContentResponseBody>>;
   createCustomContent(content: Diagram): Promise<any>;
   updateCustomContent(contentObj: ICustomContent, newBody: Diagram): Promise<any>;
   saveCustomContent(customContentId: string, value: Diagram): Promise<any>;

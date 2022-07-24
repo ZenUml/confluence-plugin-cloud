@@ -5,6 +5,7 @@ import {IContentPropertyNormalised} from "@/model/IContentProperty";
 import {MacroIdentifier} from "@/model/MacroIdentifier";
 import {IMacroData} from "@/model/IMacroData";
 import {DataSource, Diagram, DiagramType} from '@/model/Diagram';
+import {ICustomContentResponseBody} from "@/model/ICustomContentResponseBody";
 
 class MockApWrapper implements IApWrapper {
   versionType: VersionType = VersionType.Lite;
@@ -69,6 +70,10 @@ class MockApWrapper implements IApWrapper {
 
   getCustomContentById(id: string): Promise<ICustomContent | undefined> {
     return Promise.resolve(undefined);
+  }
+
+  listCustomContentByType(type: string): Promise<Array<ICustomContentResponseBody>> {
+    return Promise.resolve([]);
   }
 
   getPageId(): Promise<string> {

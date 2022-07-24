@@ -56,6 +56,16 @@ module.exports = {
       entry: 'src/swagger-ui.ts',
       template: 'public/swagger-ui.html',
       chunks: ['chunk-common', 'chunk-swagger-ui-vendors', 'swagger-ui']
+    },
+    "embed-viewer": {
+      entry: 'src/embed-viewer.ts',
+      template: 'public/embed-viewer.html',
+      chunks: ['chunk-common', 'chunk-embed-viewer-vendors', 'embed-viewer']
+    },
+    "embed-editor": {
+      entry: 'src/embed-editor.ts',
+      template: 'public/embed-editor.html',
+      chunks: ['chunk-common', 'chunk-embed-editor-vendors', 'embed-editor']
     }
   },
   chainWebpack: config => {
