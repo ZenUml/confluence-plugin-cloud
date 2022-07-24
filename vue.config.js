@@ -107,30 +107,30 @@ module.exports = {
   devServer: {
     historyApiFallback: true,
     hot: true,
-    host: 'localhost',
+    host: '0.0.0.0',
     port: 8080,
     client: {
       webSocketURL: 'auto://0.0.0.0:0/ws',
     },
     proxy: {
-      '/atlassian-connect.json': {
-        target: 'http://localhost:5000/',
+      '/descriptor': {
+        target: 'http://localhost:8788/',
         changeOrigin: true
       },
       '/atlassian-connect-lite.json': {
-        target: 'http://localhost:5000/',
+        target: 'http://localhost:8788/',
         changeOrigin: true
       },
       '/installed': {
-        target: 'http://localhost:5000/',
+        target: 'http://localhost:8788/',
         changeOrigin: true
       },
       '/uninstalled': {
-        target: 'http://localhost:5000/',
+        target: 'http://localhost:8788/',
         changeOrigin: true
       },
       '/attachment': {
-        target: 'http://localhost:5000/',
+        target: 'http://localhost:8788/',
         changeOrigin: true
       }
     },
