@@ -98,9 +98,7 @@ module.exports = {
   productionSourceMap: false,
   configureWebpack: {
     resolve: {
-      fallback: {
-        "stream": false
-      },
+      fallback: {"stream": false},
       alias: {
         // 'vue$': 'vue/dist/vue.esm.js' // Full version with template compiler
       }
@@ -112,7 +110,7 @@ module.exports = {
     host: '0.0.0.0',
     port: 8080,
     client: {
-      webSocketURL: 'wss://air.zenuml.com:80/ws'
+      webSocketURL: 'auto://0.0.0.0:0/ws',
     },
     proxy: {
       '/descriptor': {
@@ -145,8 +143,6 @@ module.exports = {
         res.status(200).send(`OK`);
       })
     },
-    allowedHosts: [
-      '.zenuml.com'
-    ]
+    allowedHosts: "all",
   }
 };
