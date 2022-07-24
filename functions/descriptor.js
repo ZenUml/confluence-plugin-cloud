@@ -5,10 +5,11 @@ const VERSION = '2022.07';
 
 export const onRequestGet = async (params) => {
   const req = params.request;
-  console.log(req.url);
+  let host = req.headers.get('x-forwarded-host');
+  console.log(host);
   const url = req.url.replace('http://', 'https://');
 
-  const basePath = url.substring(0, url.lastIndexOf('/'));
+  const basePath = `https://${host}`;
   const self = url.substring(url.lastIndexOf('/'));
   const data = JSON.parse(JSON.stringify(descriptor));
   data.baseUrl = `${basePath}/`;
