@@ -1,4 +1,6 @@
 const SpeedMeasureWebpackPlugin = require('speed-measure-webpack-plugin');
+const { ESBuildMinifyPlugin } = require('esbuild-loader')
+
 module.exports = {
   pages: {
     "index": {
@@ -71,6 +73,14 @@ module.exports = {
           target: 'es2015',
           tsconfigRaw: require('./tsconfig.json')
         } );
+
+    // 删除底层 terser, 换用 esbuild-minimize-plugin
+    config.optimization.minimizers.delete('terser');
+
+    // 使用 esbuild 优化 css 压缩
+    config.optimization
+      .minimizer('esbuild')
+      .use(ESBuildMinifyPlugin, [{ minify: true, css: true }]);
 
     const options = module.exports
     const pages = options.pages
