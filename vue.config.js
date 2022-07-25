@@ -77,7 +77,14 @@ module.exports = {
     rule.uses.clear()
 
     // add esbuild-loader
-    rule.use('esbuild-loader').loader('esbuild-loader')
+    rule.use('esbuild-loader').loader('esbuild-loader');
+
+    const ruleTs = config.module.rule('ts');
+    // clear babel-loader
+    ruleTs.uses.clear()
+
+    // add esbuild-loader
+    ruleTs.use('esbuild-loader').loader('esbuild-loader')
       .options( {
           loader: 'ts', // 如果使用了 ts, 或者 vue 的 class 装饰器，则需要加上这个 option 配置， 否则会报错： ERROR: Unexpected "@"
           target: 'es2015',
