@@ -1,3 +1,4 @@
+const SpeedMeasureWebpackPlugin = require('speed-measure-webpack-plugin');
 module.exports = {
   pages: {
     "index": {
@@ -107,6 +108,9 @@ module.exports = {
   },
   productionSourceMap: false,
   configureWebpack: {
+    plugins: [
+      new SpeedMeasureWebpackPlugin(),
+    ],
     resolve: {
       fallback: {"stream": false},
       alias: {
