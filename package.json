@@ -76,6 +76,7 @@
     "babel-loader": "^8.2.2",
     "babel-plugin-styled-components": "^1.11.1",
     "concurrently": "^6.2.1",
+    "esbuild-loader": "^2.19.0",
     "eslint": "^7.10.0",
     "eslint-plugin-vue": "^7.5.0",
     "jest": "^27.1.0",

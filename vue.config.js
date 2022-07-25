@@ -70,6 +70,18 @@ module.exports = {
     }
   },
   chainWebpack: config => {
+    const rule = config.module.rule('js');
+    // clear babel-loader
+    rule.uses.clear()
+
+    // add esbuild-loader
+    rule.use('esbuild-loader').loader('esbuild-loader')
+      .options( {
+          loader: 'ts', // 如果使用了 ts, 或者 vue 的 class 装饰器，则需要加上这个 option 配置， 否则会报错： ERROR: Unexpected "@"
+          target: 'es2015',
+          tsconfigRaw: require('./tsconfig.json')
+        } );
+
     const options = module.exports
     const pages = options.pages
     const pageKeys = Object.keys(pages)
