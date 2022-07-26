@@ -29,10 +29,10 @@ runs:
       run: yarn install
     - name: yarn install
       shell: bash
-      run: yarn build:lite
+      run: yarn build:${{ inputs.license }}
     - name: Publish
       uses: cloudflare/wrangler-action@2.0.0
       with:
         apiToken: ${{ inputs.cloudflare-api-token }}
         accountId: ${{ inputs.cloudflare-account-id }}
-        command: pages publish dist --branch production --project-name=conf-stg-lite
+        command: pages publish dist --branch production --project-name=${{ inputs.project }}
