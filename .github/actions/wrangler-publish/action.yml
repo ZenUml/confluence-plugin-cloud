@@ -24,8 +24,12 @@ runs:
       with:
         node-version: ${{ inputs.node-version }}
         cache: 'yarn'
-    - run: yarn install
-    - run: yarn build:lite
+    - name: yarn install
+      shell: bash
+      run: yarn install
+    - name: yarn install
+      shell: bash
+      run: yarn build:lite
     - name: Publish
       uses: cloudflare/wrangler-action@2.0.0
       with:
