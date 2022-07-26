@@ -32,7 +32,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Build and publish
-        uses: ./wrangler-publish.yml
+        uses: ./github/actions/wrangler-publish.yml
 
   staging-full:
     needs: build
