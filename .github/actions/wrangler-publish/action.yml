@@ -16,19 +16,19 @@ inputs:
   project:
     description: 'Project name of cloudflare pages'
     required: true
-  runs:
-    using: 'composite'
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v2
-        with:
-          node-version: ${{ inputs.node-version }}
-          cache: 'yarn'
-      - run: yarn install
-      - run: yarn build:lite
-      - name: Publish
-        uses: cloudflare/wrangler-action@2.0.0
-        with:
-          apiToken: ${{ inputs.cloudflare-api-token }}
-          accountId: ${{ inputs.cloudflare-account-id }}
-          command: pages publish dist --branch production --project-name=conf-stg-lite
+runs:
+  using: 'composite'
+  steps:
+    - uses: actions/checkout@v3
+    - uses: actions/setup-node@v2
+      with:
+        node-version: ${{ inputs.node-version }}
+        cache: 'yarn'
+    - run: yarn install
+    - run: yarn build:lite
+    - name: Publish
+      uses: cloudflare/wrangler-action@2.0.0
+      with:
+        apiToken: ${{ inputs.cloudflare-api-token }}
+        accountId: ${{ inputs.cloudflare-account-id }}
+        command: pages publish dist --branch production --project-name=conf-stg-lite
