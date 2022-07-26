@@ -1,6 +1,15 @@
 name: 'Build the application with functions and publish it to cloudflare'
 
-input:
+inputs:
+  node-version:
+    description: 'The node version'
+    required: true
+  cloudflare-api-token:
+    descriptio: 'Cloudflare API Token'
+    requierd: true
+  cloudflare-account-id:
+    description: 'Cloudflare account ID'
+    required: true
   license:
     description: 'Full or Lite'
     required: true
@@ -13,13 +22,13 @@ input:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v2
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: ${{ inputs.node-version }}
           cache: 'yarn'
       - run: yarn install
       - run: yarn build:lite
       - name: Publish
         uses: cloudflare/wrangler-action@2.0.0
         with:
-          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          apiToken: ${{ inputs.cloudflare-api-token }}
+          accountId: ${{ inputs.cloudflare-account-id }}
           command: pages publish dist --branch production --project-name=conf-stg-lite

@@ -33,7 +33,12 @@ jobs:
       - uses: actions/checkout@v2
       - name: Build and publish
         uses: ./.github/actions/wrangler-publish
-
+        with:
+          node-version: ${{ matrix.node-version }}
+          cloudflare-api-token: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          cloudflare-account-id: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          license: lite
+          project: conf-stg-lite
   staging-full:
     needs: build
     name: Deploy to staging full
