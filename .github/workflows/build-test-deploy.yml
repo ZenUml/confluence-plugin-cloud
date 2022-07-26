@@ -63,14 +63,16 @@ jobs:
       name: prod-lite
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v2
+      - uses: actions/checkout@v3
+      - name: Build and publish
+        uses: ./.github/actions/wrangler-publish
         with:
           node-version: ${{ matrix.node-version }}
-          cache: 'yarn'
-      - run: yarn install
-      # It was failing when we change the following to lines to use npm run
-      - run: yarn deploy:lite:prod --token ${{ secrets.FIREBASE_TOKEN }}
+          cloudflare-api-token: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          cloudflare-account-id: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          license: lite
+          project: conf-lite
+
       - name: Bump version and push tag1
         id: tag_version
         uses: mathieudutour/github-tag-action@v5.6
@@ -85,14 +87,15 @@ jobs:
       name: prod-full
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v2
+      - uses: actions/checkout@v3
+      - name: Build and publish
+        uses: ./.github/actions/wrangler-publish
         with:
           node-version: ${{ matrix.node-version }}
-          cache: 'yarn'
-      - run: yarn install
-      # It was failing when we change the following to lines to use npm run
-      - run: yarn deploy:full:prod --token ${{ secrets.FIREBASE_TOKEN }}
+          cloudflare-api-token: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          cloudflare-account-id: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          license: full
+          project: conf-full
       - name: Bump version and push tag1
         id: tag_version
         uses: mathieudutour/github-tag-action@v5.6
