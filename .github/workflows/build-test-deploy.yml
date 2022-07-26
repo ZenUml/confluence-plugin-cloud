@@ -42,7 +42,7 @@ jobs:
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: pages publish dist --branch production --project-name=conf-stg-lite-cf
+          command: pages publish dist --branch production --project-name=conf-stg-lite
 
   staging-full:
     needs: build
@@ -63,7 +63,7 @@ jobs:
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: pages publish dist --branch production --project-name=conf-stg-full-cf
+          command: pages publish dist --branch production --project-name=conf-stg-full
 
   prod-lite:
     needs: staging-lite
