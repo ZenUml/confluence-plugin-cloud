@@ -1,0 +1,25 @@
+name: 'Build the application with functions and publish it to cloudflare'
+
+input:
+  license:
+    description: 'Full or Lite'
+    required: true
+  project:
+    description: 'Project name of cloudflare pages'
+    required: true
+  runs:
+    using: 'composite'
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v2
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'yarn'
+      - run: yarn install
+      - run: yarn build:lite
+      - name: Publish
+        uses: cloudflare/wrangler-action@2.0.0
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: pages publish dist --branch production --project-name=conf-stg-lite
