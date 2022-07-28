@@ -11,20 +11,10 @@ exports.renderAttachment = functions.https.onRequest((request, response) => {
 
 exports.installedEndpoint = functions.https.onRequest((request, response) => {
   try {
-    console.log('version:', request.query.version);
-    console.log('request.body.key:', request.body.key);
-    console.log('request.body.baseUrl:', request.body.baseUrl);
-    let key = request.body.key;
-    store.append('ZenUML', [
-      {
-        DateTime: new Date().toLocaleString('en-AU'),
-        ClientSite: request.body.baseUrl,
-        AppType: (key && key.includes('lite'))? 'Lite': 'Full',
-        EventType: 'Install',
-        Version: request.query.version,
-        Notes: request.query
-      }
-    ]).then(console.log)
+    console.log('query:', request.query);
+    console.log('version:', request.query?.version);
+    console.log('request.body.key:', request.body?.key);
+    console.log('request.body.baseUrl:', request.body?.baseUrl);
   } catch (e) {
     console.log('Error:', e && e.message)
   }
