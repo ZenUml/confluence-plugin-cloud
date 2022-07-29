@@ -1,21 +1,53 @@
+const functions = require('firebase-functions');
 const descriptor = require('./atlassian-connect.json');
-const liteKeySuffix = '-lite';
-const liteNameSuffix = ' Lite';
+const SteinStore = require('stein-js-client');
+const store = new SteinStore('https://api.steinhq.com/v1/storages/5ed5fe9883c30d0425e2c433');
+
 const VERSION = '2022.07';
 
-export const onRequestGet = async (params) => {
-  const req = params.request;
-  let host = req.headers.get('x-forwarded-host');
-  let basePath;
-  const url = req.url.replace('http://', 'https://');
-  if(!host) {
-    basePath = url.substring(0, url.lastIndexOf('/'));
-  } else {
-    basePath = `https://${host}`;
+exports.renderAttachment = functions.https.onRequest((request, response) => {
+  response.send(`<ac:image> <ri:attachment ri:filename="zenuml-${request.query.uuid}.png" /> </ac:image>`);
+});
+
+exports.installedEndpoint = functions.https.onRequest((request, response) => {
+  try {
+    console.log('request:', request);
+    console.log('query:', request.query);
+    console.log('version:', request.query?.version);
+    console.log('request.body.key:', request.body?.key);
+    console.log('request.body.baseUrl:', request.body?.baseUrl);
+  } catch (e) {
+    console.log('Error:', e && e.message)
   }
+  response.status(200).send(`OK`);
+});
+
+exports.uninstalledEndpoint = functions.https.onRequest((request, response) => {
+  console.log('version:', request.query.version);
+  console.log('request.body.key:', request.body.key);
+  console.log('request.body.baseUrl:', request.body.baseUrl);
+  let key = request.body.key;
+  store.append('ZenUML', [
+    {
+      DateTime: new Date().toLocaleString('en-AU'),
+      ClientSite: request.body.baseUrl,
+      AppType: key.includes('lite')? 'Lite': 'Full',
+      EventType: 'Uninstall',
+      Notes: ''
+    }
+  ]).then(console.log)
+  response.status(200).send(`OK`);
+});
+
+const liteKeySuffix = '-lite';
+const liteNameSuffix = ' Lite';
+
+exports.descriptor = functions.https.onRequest((req, resp) => {
+  const url = req.url;
+  const basePath = url.substring(0, url.lastIndexOf('/'));
   const self = url.substring(url.lastIndexOf('/'));
   const data = JSON.parse(JSON.stringify(descriptor));
-  data.baseUrl = `${basePath}/`;
+  data.baseUrl = `${req.protocol}://${req.hostname}${basePath}/`;
   // This is not necessary but works as a defense.
   data.links.self = self;
 
@@ -94,12 +126,5 @@ export const onRequestGet = async (params) => {
   data.lifecycle.installed = data.lifecycle.installed.replace('__VERSION__', VERSION);
   data.lifecycle.uninstalled = data.lifecycle.uninstalled.replace('__VERSION__', VERSION);
 
-  return new Response(
-    JSON.stringify(data),
-    {
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    }
-  );
-};
+  resp.json(data);
+})
