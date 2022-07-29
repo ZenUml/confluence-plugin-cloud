@@ -10,7 +10,10 @@ export const onRequest: PagesFunction = async ({ request, waitUntil }) => {
   });
 
   try {
-    // Your code
+    const body = await request.json() as any;
+    sentry.setTag('app-key', body.key);
+    sentry.setTag('client-key', body.key);
+    sentry.setTag('base-url', body.baseUrl);
     sentry.captureMessage("{action: 'installed'}");
 
     return new Response(JSON.stringify('data'),
