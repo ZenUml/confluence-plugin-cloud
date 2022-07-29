@@ -11,6 +11,7 @@ exports.renderAttachment = functions.https.onRequest((request, response) => {
 
 exports.installedEndpoint = functions.https.onRequest((request, response) => {
   try {
+    console.log('request:', request);
     console.log('query:', request.query);
     console.log('version:', request.query?.version);
     console.log('request.body.key:', request.body?.key);
