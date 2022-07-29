@@ -168,14 +168,6 @@ module.exports = {
       }
     },
     compress: true,  // This reduces the app.js from 4.8MB to 1.2MB
-    onBeforeSetupMiddleware: function (devServer) {
-      devServer.app.get(/installed/, function (req, res) {
-        res.status(200).send(`OK`);
-      })
-      devServer.app.get(/uninstalled/, function (req, res) {
-        res.status(200).send(`OK`);
-      })
-    },
     allowedHosts: "all",
   }
 };
