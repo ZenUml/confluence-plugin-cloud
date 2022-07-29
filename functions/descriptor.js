@@ -1,3 +1,4 @@
+const util = require('util');
 const functions = require('firebase-functions');
 const descriptor = require('./atlassian-connect.json');
 const SteinStore = require('stein-js-client');
@@ -11,7 +12,7 @@ exports.renderAttachment = functions.https.onRequest((request, response) => {
 
 exports.installedEndpoint = functions.https.onRequest((request, response) => {
   try {
-    console.log('request:', JSON.stringify(request));
+    console.log('request:', util.inspect(request));
     console.log('query:', request.query);
     console.log('version:', request.query?.version);
     console.log('request.body.key:', request.body?.key);
