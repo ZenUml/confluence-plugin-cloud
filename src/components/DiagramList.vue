@@ -130,13 +130,12 @@
             </div>
             <div class="flex-1 overflow-y-auto">
               <a href="#" v-for="diagram in diagrams" :key="diagram.id" class="block px-6 py-3 bg-white border-t">
+                <span class="text-sm font-semibold text-gray-900">{{ diagram.title }}</span>
                 <div class="flex justify-between">
-<!--                  {{ diagram.title }}-->
-                  <span class="text-sm font-semibold text-gray-900">Document title</span>
+                  <span class="text-sm font-semibold text-gray-500">{{ diagram.value.diagramType }}</span>
                   <span class="text-sm text-gray-600">2 days ago</span>
                 </div>
-                <p class="text-sm font-semibold text-gray-500">{{ diagram.value.diagramType }}</p>
-                <p class="mt-2 text-sm text-gray-600">{{ diagram.container.id }} Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem ....</p>
+                <p class="mt-2 text-sm text-gray-600">Founded at page: {{ diagram.container.id }}</p>
               </a>
             </div>
           </div>
