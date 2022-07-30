@@ -1,18 +1,18 @@
-import {captureInstalledMessage, ConfigToucan} from "./ConfigToucan";
+import {captureError, captureInstalledMessage, ConfigToucan} from "./ConfigToucan";
 import {OkResponse} from "./OkResponse";
 import {ServerErrorResponse} from "./ServerErrorResponse";
 
 export const onRequest: PagesFunction = async ({ request, waitUntil }) => {
   console.log('onRequest: /installed');
-  const sentry = ConfigToucan(request, waitUntil);
+  ConfigToucan(request, waitUntil);
 
   try {
     const body = await request.json() as any;
-    captureInstalledMessage(sentry, body);
+    captureInstalledMessage(body.key, body.clientKey, body.baseUrl);
 
     return OkResponse();
   } catch (err) {
-    sentry.captureException(err);
+    captureError(err);
     return ServerErrorResponse();
   }
 }
