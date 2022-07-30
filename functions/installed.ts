@@ -1,33 +1,18 @@
-import Toucan from 'toucan-js';
+import {captureInstalledMessage, ConfigToucan} from "./ConfigToucan";
+import {OkResponse} from "./OkResponse";
+import {ServerErrorResponse} from "./ServerErrorResponse";
 
 export const onRequest: PagesFunction = async ({ request, waitUntil }) => {
   console.log('onRequest: /installed');
-  const sentry = new Toucan({
-    dsn: 'https://d7df1008a71541aca2063f58fe7fc0bf@o571476.ingest.sentry.io/6610196',
-    context: {waitUntil, request}, // Includes 'waitUntil', which is essential for Sentry logs to be delivered. Also includes 'request' -- no need to set it separately.
-    allowedHeaders: ['user-agent'],
-    allowedSearchParams: /(.*)/,
-  });
+  const sentry = ConfigToucan(request, waitUntil);
 
   try {
     const body = await request.json() as any;
-    sentry.setTag('app-key', body.key);
-    sentry.setTag('client-key', body.key);
-    sentry.setTag('base-url', body.baseUrl);
-    sentry.captureMessage("{action: 'installed'}");
+    captureInstalledMessage(sentry, body);
 
-    return new Response(JSON.stringify('OK'),
-      {
-        status: 200,
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      });
+    return OkResponse();
   } catch (err) {
     sentry.captureException(err);
-    return new Response('Something went wrong', {
-      status: 500,
-      statusText: 'Internal Server Error',
-    });
+    return ServerErrorResponse();
   }
 }
