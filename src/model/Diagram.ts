@@ -10,7 +10,7 @@ export enum DiagramType {
   Sequence = 'sequence',
   Mermaid = 'mermaid',
   Graph = 'graph',
-  OpenApi = 'openapi',
+  OpenApi = 'OpenAPI',
 }
 
 export interface Diagram {

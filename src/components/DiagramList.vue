@@ -2,11 +2,11 @@
   <div class="content">
     <Header />
     <div class="workspace">
-      <div>Diagrams list</div>
-      <li v-for="diagram in diagrams" :key="diagram.id">
+      <div>Select a diagram to embed:</div>
+      <div v-for="diagram in diagrams" :key="diagram.id">
         <input type="radio" v-model="picked" :value="diagram">
           title: {{ diagram.title }}, type: {{ diagram.value.diagramType }}, container: {{ diagram.container.id }}
-      </li>
+      </div>
     </div>
   </div>
 </template>
