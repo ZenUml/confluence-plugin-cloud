@@ -72,7 +72,7 @@ class MockApWrapper implements IApWrapper {
     return Promise.resolve(undefined);
   }
 
-  listCustomContentByType(type: string): Promise<Array<ICustomContentResponseBody>> {
+  listCustomContentByType(types: Array<string>): Promise<Array<ICustomContent>> {
     return Promise.resolve([]);
   }
 

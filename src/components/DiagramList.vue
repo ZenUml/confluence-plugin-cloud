@@ -4,7 +4,8 @@
     <div class="workspace">
       <div>Diagrams list</div>
       <li v-for="diagram in diagrams" :key="diagram.id">
-        <input type="radio" v-model="picked" :value="diagram"> {{ diagram.title }}
+        <input type="radio" v-model="picked" :value="diagram">
+          title: {{ diagram.title }}, type: {{ diagram.value.diagramType }}, container: {{ diagram.container.id }}
       </li>
     </div>
   </div>
@@ -23,7 +24,7 @@
       };
     },
     created() {
-      globals.apWrapper.listCustomContentByType('zenuml-content-sequence').then(d => this.diagrams = d);
+      globals.apWrapper.listCustomContentByType(['zenuml-content-sequence', 'zenuml-content-graph']).then(d => this.diagrams = d);
     },
     watch: {
       picked: function(value) {

@@ -241,6 +241,7 @@ export default class ApWrapper2 implements IApWrapper {
     let diagram = JSON.parse(customContent.body.raw.value);
     diagram.source = DataSource.CustomContent;
     const count = (await this._page.countMacros((m) => {
+      //TODO: filter by macro type
       return m?.customContentId?.value === id;
     }));
     console.debug(`Found ${count} macros on page`);
@@ -278,18 +279,41 @@ export default class ApWrapper2 implements IApWrapper {
     }
   }
 
-  async listCustomContentByType(type: string): Promise<Array<ICustomContentResponseBody>> {
-    const customContentType = `${this.getCustomContentTypePrefix()}:${type}`;
+  async listCustomContentByType(types: Array<string>): Promise<Array<ICustomContent>> {
+    const customContentType = (type: string) => `${this.getCustomContentTypePrefix()}:${type}`;
     const spaceKey = await this._getCurrentSpace();
-    const url = `/rest/api/content?spaceKey=${spaceKey}&type=${customContentType}&expand=body.raw,version.number,container,space`;
-    try {
-      const response = await this._requestFn({type: 'GET', url});
+
+    const url = (type: string) => `/rest/api/content?spaceKey=${spaceKey}&type=${customContentType(type)}&expand=body.raw,version.number,container,space`;
+
+    const parseCustomContentBody = (customContent: ICustomContentResponseBody): ICustomContent => {
+      let diagram: any = {};
+      const rawValue = customContent?.body?.raw?.value;
+      try {
+        diagram = JSON.parse(rawValue);
+        diagram.source = DataSource.CustomContent;
+      } catch(e) {
+        console.error(`parseCustomContentBody error: `, e, `raw value: ${rawValue}`);
+        trackEvent(JSON.stringify(e), 'parseCustomContentBody', 'error');
+      }
+      const result = <unknown>Object.assign({}, customContent, {value: diagram});
+      console.debug(`converted result: `, result);
+      return result as ICustomContent;
+    };
+
+    const getCustomContentList = async (type: string): Promise<Array<ICustomContent>> => {
+      const response = await this._requestFn({type: 'GET', url: url(type)});
       const customContentList = this.parseCustomContentListResponse(response);
-      console.debug(`Listed custom content by type ${customContentType}.`);
-      return customContentList;
+      console.debug(`Listed custom content by type ${customContentType(type)}: ${customContentList.length} found.`);
+      return customContentList.map(parseCustomContentBody);
+    };
+
+    try {
+      const results: Array<Promise<Array<ICustomContent>>> = types.map(getCustomContentList);
+      return (await Promise.all(results)).flatMap( a => a);
     } catch (e) {
+      console.error('listCustomContentByType', e);
       trackEvent(JSON.stringify(e), 'listCustomContentByType', 'error');
-      return [] as Array<ICustomContentResponseBody>;
+      return [] as Array<ICustomContent>;
     }
   }
 
