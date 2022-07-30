@@ -1,6 +1,12 @@
-import {ConfigToucan} from "./ConfigToucan";
+import {captureError, ConfigToucan} from "./ConfigToucan";
+import {ServerErrorResponse} from "./ServerErrorResponse";
 
 export const onRequest: PagesFunction = async ({next, request, waitUntil}) => {
-  ConfigToucan(request, waitUntil);
-  return await next();
+  try {
+    ConfigToucan(request, waitUntil);
+    return await next();
+  } catch (e) {
+    captureError(e);
+    return ServerErrorResponse();
+  }
 }
