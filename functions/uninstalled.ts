@@ -1,9 +1,9 @@
-import {captureError, captureUninstalledMessage, ConfigToucan} from "./ConfigToucan";
+import {captureError, captureUninstalledMessage} from "./ConfigToucan";
 import {OkResponse} from "./OkResponse";
+import {ServerErrorResponse} from "./ServerErrorResponse";
 
-export const onRequest: PagesFunction = async ({ request, waitUntil }) => {
+export const onRequest: PagesFunction = async ({ request }) => {
   console.log('onRequest: /uninstalled')
-  ConfigToucan(request, waitUntil);
   try {
     const body = await request.json() as any;
     captureUninstalledMessage(body.key, body.clientKey, body.baseUrl);
@@ -11,9 +11,6 @@ export const onRequest: PagesFunction = async ({ request, waitUntil }) => {
     return OkResponse();
   } catch (err) {
     captureError(err);
-    return new Response('Something went wrong', {
-      status: 500,
-      statusText: 'Internal Server Error',
-    });
+    return ServerErrorResponse();
   }
 };
