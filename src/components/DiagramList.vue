@@ -1,13 +1,7 @@
 <template>
   <div class="content">
-    <Header />
     <div class="workspace h-screen flex flex-col">
       <header class="flex flex-shrink-0">
-        <div class="w-64 flex-shrink-0 px-4 py-3 bg-gray-800">
-          <button class="flex items-center h-8 text-white text-sm font-medium">
-            Document list
-          </button>
-        </div>
         <div class="flex-1 flex items-center justify-between bg-gray-700 px-6">
           <nav class="flex">
             <a href="#" class="inline-block leading-none ml-2 px-3 py-2 hover:bg-gray-600 bg-gray-800 rounded-lg text-sm font-medium text-white">All</a>
@@ -35,9 +29,38 @@
             </button>
           </div>
         </div>
+        <div class="w-80 flex-shrink-0 px-4 py-3 bg-gray-800">
+          <button class="flex items-center float-right h-8 text-white text-sm font-medium">
+            <save-and-go-back-button />
+          </button>
+        </div>
+
       </header>
       <div class="flex-1 flex overflow-hidden">
-        <div class="w-64 p-6 bg-gray-100 overflow-y-auto">
+
+        <main class="flex bg-gray-200 flex-1">
+          <div class="flex flex-col w-full max-w-xs flex-grow border-l border-r">
+            <div class="flex flex-shrink-0 items-center px-4 py-2 justify-between border-b">
+              <button class="flex items-center text-xs font-semibold text-gray-600">
+                Sorted by Date
+              </button>
+            </div>
+            <div class="flex-1 overflow-y-auto">
+              <a href="#" v-for="diagram in diagrams" :key="diagram.id" class="block px-6 py-3 bg-white border-t">
+                <span class="text-sm font-semibold text-gray-900">{{ diagram.title }}</span>
+                <div class="flex justify-between">
+                  <span class="text-sm font-semibold text-gray-500">{{ diagram.value.diagramType }}</span>
+                  <span class="text-sm text-gray-600">2 days ago</span>
+                </div>
+                <p class="mt-2 text-sm text-gray-600">Founded at page: {{ diagram.container.id }}</p>
+              </a>
+            </div>
+          </div>
+          <div>
+
+          </div>
+        </main>
+        <div class="w-80 p-6 bg-gray-100 overflow-y-auto">
           <nav>
             <h2 class="text-xs font-semibold text-gray-600 uppercase tracking-wide">Sort & Filters</h2>
             <div class="mt-3">
@@ -121,38 +144,14 @@
 
           </nav>
         </div>
-        <main class="flex bg-gray-200 flex-1">
-          <div class="flex flex-col w-full max-w-xs flex-grow border-l border-r">
-            <div class="flex flex-shrink-0 items-center px-4 py-2 justify-between border-b">
-              <button class="flex items-center text-xs font-semibold text-gray-600">
-                Sorted by Date
-              </button>
-            </div>
-            <div class="flex-1 overflow-y-auto">
-              <a href="#" v-for="diagram in diagrams" :key="diagram.id" class="block px-6 py-3 bg-white border-t">
-                <span class="text-sm font-semibold text-gray-900">{{ diagram.title }}</span>
-                <div class="flex justify-between">
-                  <span class="text-sm font-semibold text-gray-500">{{ diagram.value.diagramType }}</span>
-                  <span class="text-sm text-gray-600">2 days ago</span>
-                </div>
-                <p class="mt-2 text-sm text-gray-600">Founded at page: {{ diagram.container.id }}</p>
-              </a>
-            </div>
-          </div>
-          <div>
-
-          </div>
-        </main>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-  import Header from "@/components/Header";
   import globals from '@/model/globals';
-  import {DiagramType} from "@/model/Diagram";
-  import Split from 'split.js'
+  import SaveAndGoBackButton from "@/components/SaveAndGoBackButton";
 
   export default {
     name: 'DiagramList',
@@ -197,7 +196,7 @@
       }
     },
     components: {
-      Header
+      SaveAndGoBackButton,
     }
   }
 </script>
