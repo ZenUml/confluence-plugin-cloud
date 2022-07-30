@@ -1,9 +1,9 @@
-import {captureInstalledMessage} from "./ConfigToucan";
+import {captureUninstalledMessage} from "./ConfigToucan";
 import {OkResponse} from "./OkResponse";
 
 export const onRequest: PagesFunction = async ({ request }) => {
-  console.log('onRequest: /installed');
+  console.log('onRequest: /uninstalled')
   const body = await request.json() as any;
-  captureInstalledMessage(body.key, body.clientKey, body.baseUrl);
+  captureUninstalledMessage(body.key, body.clientKey, body.baseUrl);
   return OkResponse();
-}
+};
