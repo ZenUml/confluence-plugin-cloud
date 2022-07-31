@@ -46,13 +46,13 @@
               </button>
             </div>
             <div class="flex-1 overflow-y-auto">
-              <a href="#" v-for="diagram in diagrams" :key="diagram.id" class="block px-6 py-3 bg-white border-t">
+              <a @click="pick(diagram)" href="#" v-for="diagram in diagrams" :key="diagram.id" class="block px-6 py-3 bg-white border-t">
                 <span class="text-sm font-semibold text-gray-900">{{ diagram.title }}</span>
                 <div class="flex justify-between">
                   <span class="text-sm font-semibold text-gray-500">{{ diagram.value.diagramType }}</span>
                   <span class="text-sm text-gray-600">2 days ago</span>
                 </div>
-                <p class="mt-2 text-sm text-gray-600">Founded at page: {{ diagram.container.id }}</p>
+                <p class="mt-2 text-sm text-gray-600">Source page: {{ diagram.container.id }}</p>
               </a>
             </div>
           </div>
@@ -163,6 +163,12 @@
     },
     created() {
       globals.apWrapper.listCustomContentByType(['zenuml-content-sequence', 'zenuml-content-graph']).then(d => this.diagrams = d);
+    },
+    methods: {
+      pick(document) {
+        this.picked = document;
+        window.picked = document;
+      }
     },
     mounted () {
       if (window.split) {
