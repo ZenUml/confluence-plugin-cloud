@@ -2,13 +2,13 @@
   <div class="content">
     <div class="workspace h-screen flex flex-col">
       <header class="flex flex-shrink-0">
-        <div class="flex-1 flex items-center justify-between bg-gray-700 px-6">
+        <div class="flex-1 flex items-center justify-between bg-white px-6">
           <nav class="flex">
-            <a href="#" class="inline-block leading-none ml-2 px-3 py-2 hover:bg-gray-600 bg-gray-800 rounded-lg text-sm font-medium text-white">All</a>
-            <a href="#" class="inline-block leading-none ml-2 px-3 py-2 hover:bg-gray-600 rounded-lg text-sm font-medium text-white">Sequence</a>
-            <a href="#" class="inline-block leading-none ml-2 px-3 py-2 hover:bg-gray-600 rounded-lg text-sm font-medium text-white">Mermaid</a>
-            <a href="#" class="inline-block leading-none ml-2 px-3 py-2 hover:bg-gray-600 rounded-lg text-sm font-medium text-white">Graph</a>
-            <a href="#" class="inline-block leading-none ml-2 px-3 py-2 hover:bg-gray-600 rounded-lg text-sm font-medium text-white">Open API</a>
+            <a href="#" class="inline-block leading-none ml-2 px-3 py-2 hover:bg-gray-200 bg-gray-200 rounded-lg text-sm font-medium text-slate-800">All</a>
+            <a href="#" class="inline-block leading-none ml-2 px-3 py-2 hover:bg-gray-200 rounded-lg text-sm font-medium text-slate-800">Sequence</a>
+            <a href="#" class="inline-block leading-none ml-2 px-3 py-2 hover:bg-gray-200 rounded-lg text-sm font-medium text-slate-800">Mermaid</a>
+            <a href="#" class="inline-block leading-none ml-2 px-3 py-2 hover:bg-gray-200 rounded-lg text-sm font-medium text-slate-800">Graph</a>
+            <a href="#" class="inline-block leading-none ml-2 px-3 py-2 hover:bg-gray-200 rounded-lg text-sm font-medium text-slate-800">Open API</a>
           </nav>
           <div class="flex items-center">
             <span class="relative py-1 w-64">
@@ -29,7 +29,7 @@
             </button>
           </div>
         </div>
-        <div class="w-80 flex-shrink-0 px-4 py-3 bg-gray-800">
+        <div class="w-80 flex-shrink-0 px-4 py-3 bg-white">
           <button class="flex items-center float-right h-8 text-white text-sm font-medium">
             <save-and-go-back-button />
           </button>
