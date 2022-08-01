@@ -56,8 +56,8 @@
               </a>
             </div>
           </div>
-          <div>
-
+          <div id="workspace-right" class="flex-grow h-full">
+            <iframe id='embedded-viewer' src='' width='100%' height='100%'></iframe>
           </div>
         </main>
         <div class="w-80 p-6 bg-gray-100 overflow-y-auto">
@@ -152,6 +152,7 @@
 <script>
   import globals from '@/model/globals';
   import SaveAndGoBackButton from "@/components/SaveAndGoBackButton";
+  import {DiagramType} from "@/model/Diagram";
 
   export default {
     name: 'DiagramList',
@@ -170,11 +171,6 @@
         window.picked = document;
       }
     },
-    mounted () {
-      if (window.split) {
-        Split(['#workspace-left', '#workspace-right'], { sizes: [35, 65]})
-      }
-    },
     watch: {
       picked: function(value) {
         // eslint-disable-next-line
@@ -183,13 +179,13 @@
         console.debug('picked value:', value);
 
         function getViewerUrl(diagramType) {
-          if(diagramType == DiagramType.Sequence || diagramType == DiagramType.Mermaid) {
+          if(diagramType === DiagramType.Sequence || diagramType === DiagramType.Mermaid) {
             return '/sequence-viewer.html';
           }
-          if(diagramType == DiagramType.Graph) {
+          if(diagramType === DiagramType.Graph) {
             return '/drawio/viewer.html';
           }
-          if(diagramType == DiagramType.OpenApi) {
+          if(diagramType === DiagramType.OpenApi) {
             return '/swagger-ui.html';
           }
 
