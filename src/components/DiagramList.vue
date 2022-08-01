@@ -100,17 +100,3 @@
     }
   }
 </script>
-
-<!-- Add "scoped" attribute to limit CSS to this component only -->
-<style>
-
-.content {
-  height: 100%;
-}
-
-.workspace {
-  height: calc(100% - 50px);
-  margin-top: 5px;
-}
-
-</style>
