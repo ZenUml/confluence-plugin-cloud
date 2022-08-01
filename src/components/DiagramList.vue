@@ -64,18 +64,9 @@
       globals.apWrapper.listCustomContentByType(['zenuml-content-sequence', 'zenuml-content-graph']).then(d => this.diagrams = d);
     },
     methods: {
-      pick(document) {
-        this.picked = document;
-        window.picked = document;
-      }
-    },
-    watch: {
-      picked: function(value) {
-        // eslint-disable-next-line
-        window.picked = value;
-
-        console.debug('picked value:', value);
-
+      pick(doc) {
+        this.picked = doc;
+        window.picked = doc;
         function getViewerUrl(diagramType) {
           if(diagramType === DiagramType.Sequence || diagramType === DiagramType.Mermaid) {
             return '/sequence-viewer.html';
@@ -92,7 +83,7 @@
 
         // eslint-disable-next-line
         const iframe = document.getElementById('embedded-viewer');
-        iframe.src = `${getViewerUrl(value.value.diagramType)}${window.location.search}&rendered.for=custom-content-native&content.id=${value.id}&embedded=true`;
+        iframe.src = `${getViewerUrl(doc.value.diagramType)}${window.location.search}&rendered.for=custom-content-native&content.id=${doc.id}&embedded=true`;
       }
     },
     components: {
