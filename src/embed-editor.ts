@@ -2,7 +2,6 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 
 import DocumentList from './components/DocumentList.vue'
-import mermaid from 'mermaid'
 // @ts-ignore
 import Va from 'vue-atlas'
 
@@ -19,14 +18,6 @@ import globals from '@/model/globals';
 import AP from "@/model/AP";
 
 Vue.use(Va, 'en')
-
-// eslint-disable-next-line
-// @ts-ignore
-window.mermaid = mermaid
-
-mermaid.mermaidAPI.initialize({
-  startOnLoad:true
-})
 
 Vue.config.productionTip = false
 
