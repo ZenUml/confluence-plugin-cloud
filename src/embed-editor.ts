@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 
-import DiagramList from './components/DiagramList.vue'
+import DocumentList from './components/DocumentList.vue'
 import mermaid from 'mermaid'
 // @ts-ignore
 import Va from 'vue-atlas'
@@ -36,7 +36,7 @@ const store = new Vuex.Store(ExtendedStore);
 if(document.getElementById('app')) {
     new Vue({
       store,
-      render: h => h(DiagramList)
+      render: h => h(DocumentList)
     }).$mount('#app')
 }
 // @ts-ignore

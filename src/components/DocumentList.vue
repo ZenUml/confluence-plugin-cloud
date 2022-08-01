@@ -55,7 +55,7 @@
   import {DiagramType} from "@/model/Diagram";
 
   export default {
-    name: 'DiagramList',
+    name: 'DocumentList',
     data() {
       return {
         diagrams: [],
