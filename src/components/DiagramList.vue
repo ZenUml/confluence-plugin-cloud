@@ -4,11 +4,11 @@
       <header class="flex flex-shrink-0">
         <div class="flex-1 flex items-center justify-between bg-white px-6">
           <nav class="flex text-sm font-medium leading-none text-slate-800">
-            <a href="#" class="inline-block ml-2 px-3 py-2 hover:bg-gray-200 rounded-lg bg-gray-200 ">All</a>
-            <a href="#" class="inline-block ml-2 px-3 py-2 hover:bg-gray-200 rounded-lg">Sequence</a>
-            <a href="#" class="inline-block ml-2 px-3 py-2 hover:bg-gray-200 rounded-lg">Mermaid</a>
-            <a href="#" class="inline-block ml-2 px-3 py-2 hover:bg-gray-200 rounded-lg">Graph</a>
-            <a href="#" class="inline-block ml-2 px-3 py-2 hover:bg-gray-200 rounded-lg">Open API</a>
+            <a href="#" class="inline-block ml-2 px-3 py-2 hover:bg-gray-200 rounded-lg bg-gray-200" @click="setFilter('')">All</a>
+            <a href="#" class="inline-block ml-2 px-3 py-2 hover:bg-gray-200 rounded-lg" @click="setFilter('sequence')">Sequence</a>
+            <a href="#" class="inline-block ml-2 px-3 py-2 hover:bg-gray-200 rounded-lg" @click="setFilter('mermaid')">Mermaid</a>
+            <a href="#" class="inline-block ml-2 px-3 py-2 hover:bg-gray-200 rounded-lg" @click="setFilter('graph')">Graph</a>
+            <a href="#" class="inline-block ml-2 px-3 py-2 hover:bg-gray-200 rounded-lg" @click="setFilter('OpenApi')">Open API</a>
           </nav>
         </div>
         <div class="w-80 flex-shrink-0 px-4 py-3 bg-white">
@@ -28,7 +28,7 @@
               </button>
             </div>
             <div class="flex-1 overflow-y-auto">
-              <a @click="pick(diagram)" href="#" v-for="diagram in diagrams" :key="diagram.id"
+              <a @click="pick(diagram)" href="#" v-for="diagram in filteredDiagrams" :key="diagram.id"
                  :class="{'bg-gray-100': diagram.id === picked.id}"
                  class="block px-6 py-3 bg-white border-t hover:bg-gray-50">
                 <span class="text-sm font-semibold text-gray-900">{{ diagram.title }}</span>
@@ -59,8 +59,17 @@
     data() {
       return {
         diagrams: [],
-        picked: ''
+        picked: '',
+        docTypeFilter: '',
       };
+    },
+    computed: {
+      filteredDiagrams() {
+        if (this.docTypeFilter === '') {
+          return this.diagrams;
+        }
+        return this.diagrams.filter(diagram => diagram.value.diagramType?.toLowerCase() === this.docTypeFilter?.toLowerCase());
+      }
     },
     created() {
       globals.apWrapper.listCustomContentByType(['zenuml-content-sequence', 'zenuml-content-graph']).then(d => this.diagrams = d);
@@ -86,6 +95,9 @@
         // eslint-disable-next-line
         const iframe = document.getElementById('embedded-viewer');
         iframe.src = `${getViewerUrl(doc.value.diagramType)}${window.location.search}&rendered.for=custom-content-native&content.id=${doc.id}&embedded=true`;
+      },
+      setFilter(docType) {
+        this.docTypeFilter = docType;
       }
     },
     components: {
