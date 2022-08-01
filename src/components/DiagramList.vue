@@ -28,7 +28,9 @@
               </button>
             </div>
             <div class="flex-1 overflow-y-auto">
-              <a @click="pick(diagram)" href="#" v-for="diagram in diagrams" :key="diagram.id" class="block px-6 py-3 bg-white border-t">
+              <a @click="pick(diagram)" href="#" v-for="diagram in diagrams" :key="diagram.id"
+                 :class="{'bg-gray-100': diagram.id === picked.id}"
+                 class="block px-6 py-3 bg-white border-t hover:bg-gray-50">
                 <span class="text-sm font-semibold text-gray-900">{{ diagram.title }}</span>
                 <div class="flex justify-between">
                   <span class="text-sm font-semibold text-gray-500">{{ diagram.value.diagramType }}</span>
