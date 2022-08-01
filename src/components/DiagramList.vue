@@ -3,12 +3,12 @@
     <div class="workspace h-screen flex flex-col">
       <header class="flex flex-shrink-0">
         <div class="flex-1 flex items-center justify-between bg-white px-6">
-          <nav class="flex">
-            <a href="#" class="inline-block leading-none ml-2 px-3 py-2 hover:bg-gray-200 bg-gray-200 rounded-lg text-sm font-medium text-slate-800">All</a>
-            <a href="#" class="inline-block leading-none ml-2 px-3 py-2 hover:bg-gray-200 rounded-lg text-sm font-medium text-slate-800">Sequence</a>
-            <a href="#" class="inline-block leading-none ml-2 px-3 py-2 hover:bg-gray-200 rounded-lg text-sm font-medium text-slate-800">Mermaid</a>
-            <a href="#" class="inline-block leading-none ml-2 px-3 py-2 hover:bg-gray-200 rounded-lg text-sm font-medium text-slate-800">Graph</a>
-            <a href="#" class="inline-block leading-none ml-2 px-3 py-2 hover:bg-gray-200 rounded-lg text-sm font-medium text-slate-800">Open API</a>
+          <nav class="flex text-sm font-medium leading-none text-slate-800">
+            <a href="#" class="inline-block ml-2 px-3 py-2 hover:bg-gray-200 rounded-lg bg-gray-200 ">All</a>
+            <a href="#" class="inline-block ml-2 px-3 py-2 hover:bg-gray-200 rounded-lg">Sequence</a>
+            <a href="#" class="inline-block ml-2 px-3 py-2 hover:bg-gray-200 rounded-lg">Mermaid</a>
+            <a href="#" class="inline-block ml-2 px-3 py-2 hover:bg-gray-200 rounded-lg">Graph</a>
+            <a href="#" class="inline-block ml-2 px-3 py-2 hover:bg-gray-200 rounded-lg">Open API</a>
           </nav>
         </div>
         <div class="w-80 flex-shrink-0 px-4 py-3 bg-white">
