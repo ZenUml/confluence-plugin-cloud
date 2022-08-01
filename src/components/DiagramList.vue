@@ -40,7 +40,7 @@
               </a>
             </div>
           </div>
-          <div id="workspace-right" class="flex-grow h-full">
+          <div id="workspace-right" class="flex-grow h-full bg-white border-t">
             <iframe id='embedded-viewer' src='' width='100%' height='100%'></iframe>
           </div>
         </main>
