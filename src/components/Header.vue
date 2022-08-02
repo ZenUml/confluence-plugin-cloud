@@ -1,6 +1,6 @@
 <template>
-  <div class="toolbar header">
-    <div class="group p-0.5 rounded-lg flex bg-gray-100 hover:bg-gray-200">
+  <div class="toolbar header flex items-center justify-between">
+    <div class="inline-block group p-0.5 rounded-lg flex bg-gray-100 hover:bg-gray-200">
       <button type="button"
               class="flex focus-visible:ring-2 focus-visible:ring-teal-500 focus-visible:ring-offset-2 rounded-md focus:outline-none focus-visible:ring-offset-gray-100"
               :class="activeTab === 'sequence' ? 'bg-white shadow-sm ring-1 ring-black ring-opacity-5' : ''"
@@ -20,11 +20,17 @@
             :class="activeTab === 'mermaid' ? 'text-gray-900' : 'text-gray-600 group-hover:text-gray-900'">Mermaid</span>
       </button>
     </div>
-    <a class="help mx-1" target="_blank" :href="helpUrl">
-      <va-button type="default"><va-icon type="question-circle" /><span class="ml-1">Help</span></va-button>
-    </a>
-    <send-feedback/>
-    <save-and-go-back-button :save-and-exit="saveAndExit"/>
+    <div class="inline-block flex items-center">
+      <div class="inline-block ml-2">
+        <send-feedback class="ml-2"/>
+      </div>
+      <a class="inline-block help mx-1 ml-2" target="_blank" :href="helpUrl">
+        <va-button type="default"><va-icon type="question-circle" /><span class="ml-1">Help</span></va-button>
+      </a>
+      <div class="inline-block ml-2">
+        <save-and-go-back-button class="ml-2" :saveAndExit="saveAndExit"/>
+      </div>
+    </div>
   </div>
 </template>
 
