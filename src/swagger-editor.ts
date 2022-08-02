@@ -3,7 +3,7 @@ import SpecListener from './utils/spec-listener'
 
 import Vue from 'vue'
 import BaseMacro2 from "./model/BaseMacro2";
-import SaveAndGoBackButtonOpenAPI from "@/components/SaveAndGoBackButtonOpenAPI.vue";
+import SaveAndGoBackButton from "@/components/SaveAndGoBackButton.vue";
 // @ts-ignore
 import Va from 'vue-atlas'
 import 'vue-atlas/dist/vue-atlas.css'
@@ -13,14 +13,14 @@ import '@/components/Debug/DebugMounter.ts'
 import Example from '@/model/OpenApi/OpenApiExample'
 import globals from '@/model/globals';
 import AP from "@/model/AP";
+import {DiagramType} from "@/model/Diagram";
 
 Vue.use(Va, 'en')
 
 new Vue({
-  render: h => h(SaveAndGoBackButtonOpenAPI, {
+  render: h => h(SaveAndGoBackButton, {
     props: {
       saveAndExit: async function () {
-        // eslint-disable-next-line no-undef
         // @ts-ignore
         await globals.macro.save({title: '', code: window.specContent, styles: '', mermaidCode: '', diagramType: DiagramType.OpenAPI, source: 'CustomContent'});
 
