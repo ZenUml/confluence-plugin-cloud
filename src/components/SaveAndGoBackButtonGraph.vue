@@ -6,13 +6,6 @@
 
 export default {
   name: "SaveAndGoBackButtonGraph",
-  methods: {
-    saveAndExit: async function () {
-      // eslint-disable-next-line no-undef
-      await window.macro.save2(getGraphXml());
-      /* eslint-disable no-undef */
-      AP.dialog.close();
-    }
-  }
+  props: ['saveAndExit'],
 }
 </script>

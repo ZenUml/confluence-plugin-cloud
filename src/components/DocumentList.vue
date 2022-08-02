@@ -13,7 +13,7 @@
         </div>
         <div class="w-80 flex-shrink-0 px-4 py-3 bg-white">
           <button class="flex items-center float-right h-8 text-white text-sm font-medium">
-            <save-and-go-back-button />
+            <save-and-go-back-button :save-and-exit="saveAndExit" />
           </button>
         </div>
 
@@ -53,6 +53,7 @@
   import globals from '@/model/globals';
   import SaveAndGoBackButton from "@/components/SaveAndGoBackButton";
   import {DiagramType} from "@/model/Diagram";
+  import EventBus from "@/EventBus";
 
   export default {
     name: 'DocumentList',
@@ -69,6 +70,11 @@
           return this.diagrams;
         }
         return this.diagrams.filter(diagram => diagram.value.diagramType?.toLowerCase() === this.docTypeFilter?.toLowerCase());
+      },
+      saveAndExit: function () {
+        return function () {
+          EventBus.$emit('save')
+        }
       }
     },
     created() {

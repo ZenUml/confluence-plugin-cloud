@@ -12,11 +12,23 @@ import './assets/tailwind.css'
 import '@/components/Debug/DebugMounter.ts'
 import Example from '@/model/OpenApi/OpenApiExample'
 import globals from '@/model/globals';
+import AP from "@/model/AP";
 
 Vue.use(Va, 'en')
 
 new Vue({
-  render: h => h(SaveAndGoBackButtonOpenAPI)
+  render: h => h(SaveAndGoBackButtonOpenAPI, {
+    props: {
+      saveAndExit: async function () {
+        // eslint-disable-next-line no-undef
+        // @ts-ignore
+        await globals.macro.save({title: '', code: window.specContent, styles: '', mermaidCode: '', diagramType: DiagramType.OpenAPI, source: 'CustomContent'});
+
+        /* eslint-disable no-undef */
+        AP.dialog.close();
+      }
+    },
+  })
 }).$mount('#save-and-go-back');
 
 async function initializeMacro() {

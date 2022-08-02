@@ -9,7 +9,7 @@
       <va-button type="default"><va-icon type="question-circle" /><span class="ml-1">Help</span></va-button>
     </a>
     <send-feedback/>
-    <save-and-go-back-button />
+    <save-and-go-back-button :save-and-exit="saveAndExit"/>
   </div>
 </template>
 
@@ -18,6 +18,7 @@ import {mapState} from 'vuex';
 import SaveAndGoBackButton from "@/components/SaveAndGoBackButton";
 import {DiagramType} from "@/model/Diagram";
 import SendFeedback from "@/components/SendFeedback";
+import EventBus from "@/EventBus";
 export default {
   name: "Header",
   components: {
@@ -40,6 +41,11 @@ export default {
       },
       get() {
         return this.$store.state.diagramType || DiagramType.Sequence
+      }
+    },
+    saveAndExit: function () {
+      return function () {
+        EventBus.$emit('save')
       }
     }
   },
