@@ -5,8 +5,6 @@ import Workspace from './components/Workspace.vue'
 import mermaid from 'mermaid'
 
 // @ts-ignore
-import Va from 'vue-atlas'
-import 'vue-atlas/dist/vue-atlas.css'
 import './assets/tailwind.css'
 import 'vue-sequence/dist/vue-sequence.css'
 
@@ -14,7 +12,6 @@ import ExtendedStore from './model/Store'
 import {initializeMacro} from "@/model/macro/InitializeMacro";
 
 import './GTagConfig'
-Vue.use(Va, 'en')
 
 // eslint-disable-next-line
 // @ts-ignore

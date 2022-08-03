@@ -5,8 +5,6 @@ import Vue from 'vue'
 import BaseMacro2 from "./model/BaseMacro2";
 import SaveAndGoBackButton from "@/components/SaveAndGoBackButton.vue";
 // @ts-ignore
-import Va from 'vue-atlas'
-import 'vue-atlas/dist/vue-atlas.css'
 import './assets/tailwind.css'
 
 import '@/components/Debug/DebugMounter.ts'
@@ -14,8 +12,6 @@ import Example from '@/model/OpenApi/OpenApiExample'
 import globals from '@/model/globals';
 import AP from "@/model/AP";
 import {DiagramType} from "@/model/Diagram";
-
-Vue.use(Va, 'en')
 
 new Vue({
   render: h => h(SaveAndGoBackButton, {

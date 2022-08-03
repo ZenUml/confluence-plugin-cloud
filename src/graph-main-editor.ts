@@ -2,14 +2,10 @@ import Vue from 'vue'
 import GraphMacro from "@/model/GraphMacro";
 import SaveAndGoBackButton from "@/components/SaveAndGoBackButton.vue";
 // @ts-ignore
-import Va from 'vue-atlas'
-import 'vue-atlas/dist/vue-atlas.css'
 import './assets/tailwind.css'
 
 import globals from '@/model/globals';
 import AP from "@/model/AP";
-
-Vue.use(Va, 'en')
 
 new Vue({
   render: h => h(SaveAndGoBackButton, {

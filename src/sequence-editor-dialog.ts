@@ -6,8 +6,6 @@ import mermaid from 'mermaid'
 
 // ==== CSS ====
 // @ts-ignore
-import Va from 'vue-atlas'
-import 'vue-atlas/dist/vue-atlas.css'
 import './assets/tailwind.css'
 import 'vue-sequence/dist/vue-sequence.css'
 
@@ -16,8 +14,6 @@ import EventBus from './EventBus'
 import './GTagConfig'
 import globals from '@/model/globals';
 import {initializeMacro} from "@/model/macro/InitializeMacro";
-
-Vue.use(Va, 'en')
 
 // eslint-disable-next-line
 // @ts-ignore

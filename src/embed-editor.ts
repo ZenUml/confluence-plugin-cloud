@@ -2,11 +2,8 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 
 import DocumentList from './components/DocumentList.vue'
-// @ts-ignore
-import Va from 'vue-atlas'
 
 // ==== CSS ====
-import 'vue-atlas/dist/vue-atlas.css'
 import './assets/tailwind.css'
 import 'vue-sequence/dist/vue-sequence.css'
 
@@ -16,8 +13,6 @@ import {initializeMacro} from "@/model/macro/InitializeMacro";
 import './GTagConfig'
 import globals from '@/model/globals';
 import AP from "@/model/AP";
-
-Vue.use(Va, 'en')
 
 Vue.config.productionTip = false
 

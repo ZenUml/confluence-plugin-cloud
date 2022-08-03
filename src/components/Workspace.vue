@@ -1,11 +1,11 @@
 <template>
   <div class="content h-screen flex flex-col">
     <Header class="flex-shrink-0"/>
-    <div class="workspace flex-grow">
-      <div id="workspace-left" class="split editor">
+    <div class="workspace flex-grow split">
+      <div id="workspace-left" class="editor overflow-auto">
         <editor/>
       </div>
-      <div id="workspace-right" class="split diagram">
+      <div id="workspace-right" class="diagram overflow-auto">
         <Viewer />
       </div>
     </div>
@@ -25,7 +25,7 @@
     },
     mounted () {
       if (window.split) {
-        Split(['#workspace-left', '#workspace-right'], { sizes: [35, 65]})
+        Split(['#workspace-left', '#workspace-right'])
       }
     },
     components: {
@@ -38,6 +38,11 @@
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style>
+.split {
+  display: flex;
+  flex-direction: row;
+}
+
 .gutter {
   background-color: #eee;
   background-repeat: no-repeat;
@@ -46,16 +51,6 @@
 
 .gutter.gutter-horizontal {
   background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAeCAYAAADkftS9AAAAIklEQVQoU2M4c+bMfxAGAgYYmwGrIIiDjrELjpo5aiZeMwF+yNnOs5KSvgAAAABJRU5ErkJggg==');
-  cursor: ew-resize;
-}
-
-.split, .gutter.gutter-horizontal {
-  float: left;
-  height: 100%;
-}
-
-.split {
-  overflow-y: auto;
-  overflow-x: auto;
+  cursor: col-resize;
 }
 </style>

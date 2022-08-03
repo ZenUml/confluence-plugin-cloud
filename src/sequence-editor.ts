@@ -3,11 +3,8 @@ import Vuex from 'vuex'
 
 import Workspace from './components/Workspace.vue'
 import mermaid from 'mermaid'
-// @ts-ignore
-import Va from 'vue-atlas'
 
 // ==== CSS ====
-import 'vue-atlas/dist/vue-atlas.css'
 import './assets/tailwind.css'
 import 'vue-sequence/dist/vue-sequence.css'
 
@@ -17,8 +14,6 @@ import {initializeMacro} from "@/model/macro/InitializeMacro";
 import './GTagConfig'
 import globals from '@/model/globals';
 import AP from "@/model/AP";
-
-Vue.use(Va, 'en')
 
 // eslint-disable-next-line
 // @ts-ignore
