@@ -38,10 +38,6 @@
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style>
-#workspace-right {
-  position: relative;
-}
-
 .gutter {
   background-color: #eee;
   background-repeat: no-repeat;
