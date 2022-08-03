@@ -45,7 +45,6 @@
 
 .workspace {
   height: calc(100% - 50px);
-  margin-top: 5px;
 }
 
 #workspace-right .get-support-container {

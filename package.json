@@ -28,7 +28,6 @@
     "swagger-editor": "^4.2.9",
     "tailwindcss": "npm:@tailwindcss/postcss7-compat@^2.0.2",
     "vue": "^2.6.12",
-    "vue-atlas": "^2.1.8",
     "vue-codemirror": "^4.0.6",
     "vue-gtag": "^1.16.1",
     "vue-sequence": "^1.0.237",
