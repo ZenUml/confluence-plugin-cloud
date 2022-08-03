@@ -1,7 +1,7 @@
 <template>
-  <div class="content">
-    <Header />
-    <div class="workspace">
+  <div class="content h-screen flex flex-col">
+    <Header class="flex-shrink-0"/>
+    <div class="workspace flex-grow">
       <div id="workspace-left" class="split editor">
         <editor/>
       </div>
@@ -38,22 +38,6 @@
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style>
-
-.content {
-  height: 100%;
-}
-
-.workspace {
-  height: calc(100% - 50px);
-}
-
-#workspace-right .get-support-container {
-  display: block;
-  position: absolute;
-  bottom: 5px;
-  left: 11px;
-}
-
 #workspace-right {
   position: relative;
 }
@@ -78,22 +62,4 @@
   overflow-y: auto;
   overflow-x: auto;
 }
-
-/*Do not show get support icon in view mode.*/
-.view #workspace-right .get-support-container {
-  display: none;
-}
-
-.view .gutter.gutter-horizontal {
-  display: none;
-}
-
-.view .editor {
-  display: none;
-}
-
-.view .diagram {
-  width: 100%;
-}
-
 </style>
