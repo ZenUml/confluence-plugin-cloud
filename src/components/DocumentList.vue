@@ -54,7 +54,7 @@
                 <span class="text-sm font-semibold text-gray-900">{{ diagram.title }}</span>
                 <div class="flex justify-between">
                   <span class="text-sm font-semibold text-gray-500">{{ diagram.value.diagramType }}</span>
-                  <span class="text-sm text-gray-600">2 days ago</span>
+<!--                  <span class="text-sm text-gray-600">2 days ago</span>-->
                 </div>
                 <p class="mt-2 text-sm text-gray-600">Source page: {{ diagram.container.id }}</p>
               </a>
