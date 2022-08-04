@@ -1,10 +1,7 @@
 <template>
 <div class="send-feedback">
   <a target="_blank" href="https://github.com/ZenUml/vue-sequence/discussions/352">
-    <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px"
-         width="20" height="20"
-         viewBox="0 0 24 24"
-         style=" fill:#505e77;"><path d="M 5 3 C 3.9069372 3 3 3.9069372 3 5 L 3 19 C 3 20.093063 3.9069372 21 5 21 L 19 21 C 20.093063 21 21 20.093063 21 19 L 21 12 L 19 12 L 19 19 L 5 19 L 5 5 L 12 5 L 12 3 L 5 3 z M 14 3 L 14 5 L 17.585938 5 L 8.2929688 14.292969 L 9.7070312 15.707031 L 19 6.4140625 L 19 10 L 21 10 L 21 3 L 14 3 z"></path></svg>
+    <svg class="w-5 h-5" viewBox="0 0 24 24"><path d="M0 0h24v24H0z"/><path d="M10 3v2H5v14h14v-5h2v6a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h6zm7.586 2H13V3h8v8h-2V6.414l-7 7L10.586 12l7-7z"/></svg>
     Feedback on the new layout engine
     <span class="inline-block w-2 h-2 mr-2 bg-red-600 rounded-full"></span>
   </a>
