@@ -48,7 +48,7 @@
               </button>
             </div>
             <div class="flex-1 overflow-y-auto">
-              <a @click="this.picked = diagram" href="#" v-for="diagram in filteredDiagrams" :key="diagram.id"
+              <a @click="picked = diagram" href="#" v-for="diagram in filteredDiagrams" :key="diagram.id"
                  :class="{'bg-gray-100': diagram.id === (picked && picked.id)}"
                  class="block px-6 py-3 bg-white border-t hover:bg-gray-50">
                 <span class="text-sm font-semibold text-gray-900">{{ diagram.title }}</span>
@@ -110,7 +110,9 @@
 
       },
       saveAndExit: function () {
+        const that = this;
         return function () {
+          window.picked = that.picked;
           EventBus.$emit('save')
         }
       }
