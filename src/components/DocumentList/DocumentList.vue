@@ -36,7 +36,14 @@
                   <span class="text-sm font-semibold text-gray-500">{{ diagram.value.diagramType }}</span>
 <!--                  <span class="text-sm text-gray-600">2 days ago</span>-->
                 </div>
-                <p class="mt-2 text-sm text-gray-600">Source page: {{ diagram.container.id }}</p>
+                <div class="mt-2 text-sm text-gray-600">
+                  <a :href="`${baseUrl}${ diagram.container.id }`" target="_blank" class="flex items-center justify-between hover:underline group">
+                    <span>Source page</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="inline-block h-5 w-5 invisible group-hover:visible" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                    </svg>
+                  </a>
+                </div>
               </a>
             </div>
           </div>
@@ -54,6 +61,8 @@
   import SaveAndGoBackButton from "@/components/SaveAndGoBackButton";
   import {DiagramType} from "@/model/Diagram";
   import EventBus from "@/EventBus";
+  import {AtlasPage} from "@/model/page/AtlasPage";
+  import AP from "@/model/AP";
 
   export default {
     name: 'DocumentList',
@@ -62,9 +71,11 @@
         customContentList: [],
         picked: '',
         docTypeFilter: '',
+        baseUrl: ''
       };
     },
     computed: {
+
       filteredDiagrams() {
         if (this.docTypeFilter === '') {
           return this.customContentList;
@@ -100,7 +111,16 @@
     async created() {
       this.customContentList = await globals.apWrapper.listCustomContentByType(['zenuml-content-sequence', 'zenuml-content-graph'])
       const customContentId = (await globals.macro.load()).id;
-      this.picked = this.customContentList.filter(diagram => diagram.id === customContentId)[0]
+      this.picked = this.customContentList.filter(diagram => diagram.id === customContentId)[0];
+      const atlasPage = new AtlasPage(AP);
+      const pages = 'pages/';
+      const currentPageUrl = await atlasPage.getHref();
+      const pagesIndex = currentPageUrl.indexOf(pages);
+      if (pagesIndex < 0) {
+        throw Error(`Invalid currentPageUrl: ${currentPageUrl}. It should contain ${pages}`);
+      } else {
+        this.baseUrl = currentPageUrl.substring(0, pagesIndex + pages.length);
+      }
     },
     methods: {
       setFilter(docType) {
