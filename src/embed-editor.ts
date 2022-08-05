@@ -1,5 +1,5 @@
 import Vue from 'vue'
-import DocumentList from './components/DocumentList.vue'
+import DocumentList from './components/DocumentList/DocumentList.vue'
 
 import EventBus from './EventBus'
 import './GTagConfig'
