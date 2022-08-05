@@ -49,7 +49,7 @@
             </div>
             <div class="flex-1 overflow-y-auto">
               <a @click="pick(diagram)" href="#" v-for="diagram in filteredDiagrams" :key="diagram.id"
-                 :class="{'bg-gray-100': diagram.id === picked.id}"
+                 :class="{'bg-gray-100': diagram.id === (picked && picked.id)}"
                  class="block px-6 py-3 bg-white border-t hover:bg-gray-50">
                 <span class="text-sm font-semibold text-gray-900">{{ diagram.title }}</span>
                 <div class="flex justify-between">
@@ -61,7 +61,7 @@
             </div>
           </div>
           <div id="workspace-right" class="flex-grow h-full bg-white border-t">
-            <iframe id='embedded-viewer' src='' width='100%' height='100%'></iframe>
+            <iframe id='embedded-viewer' :src='previewSrc' width='100%' height='100%'></iframe>
           </div>
         </main>
       </div>
@@ -91,19 +91,7 @@
         }
         return this.diagrams.filter(diagram => diagram.value.diagramType?.toLowerCase() === this.docTypeFilter?.toLowerCase());
       },
-      saveAndExit: function () {
-        return function () {
-          EventBus.$emit('save')
-        }
-      }
-    },
-    created() {
-      globals.apWrapper.listCustomContentByType(['zenuml-content-sequence', 'zenuml-content-graph']).then(d => this.diagrams = d);
-    },
-    methods: {
-      pick(doc) {
-        this.picked = doc;
-        window.picked = doc;
+      previewSrc() {
         function getViewerUrl(diagramType) {
           if(diagramType === DiagramType.Sequence || diagramType === DiagramType.Mermaid) {
             return '/sequence-viewer.html';
@@ -117,10 +105,34 @@
 
           console.warn(`Unknown diagramType: ${diagramType}`);
         }
+        return `${getViewerUrl(this.picked.value.diagramType)}${window.location.search}&rendered.for=custom-content-native&content.id=${this.picked.id}&embedded=true`;
 
-        // eslint-disable-next-line
-        const iframe = document.getElementById('embedded-viewer');
-        iframe.src = `${getViewerUrl(doc.value.diagramType)}${window.location.search}&rendered.for=custom-content-native&content.id=${doc.id}&embedded=true`;
+      },
+      saveAndExit: function () {
+        return function () {
+          EventBus.$emit('save')
+        }
+      }
+    },
+    created() {
+      globals.apWrapper.listCustomContentByType(['zenuml-content-sequence', 'zenuml-content-graph'])
+        .then(d => this.diagrams = d)
+      .then(() => {
+        this.picked = this.diagrams.filter(diagram => diagram.id === globals.macro._customContentId)[0]
+      })
+      ;
+    },
+    mounted() {
+      this.picked = this.diagrams.filter(diagram => diagram.id === globals.macro._customContentId)[0]
+    },
+    updated() {
+      this.pick(this.picked);
+    },
+    methods: {
+      pick(doc) {
+        if (!doc) return;
+        this.picked = doc;
+        window.picked = doc;
       },
       setFilter(docType) {
         this.docTypeFilter = docType;
