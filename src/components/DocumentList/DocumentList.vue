@@ -59,7 +59,7 @@
     name: 'DocumentList',
     data() {
       return {
-        diagrams: [],
+        customContentList: [],
         picked: '',
         docTypeFilter: '',
       };
@@ -67,9 +67,9 @@
     computed: {
       filteredDiagrams() {
         if (this.docTypeFilter === '') {
-          return this.diagrams;
+          return this.customContentList;
         }
-        return this.diagrams.filter(diagram => diagram.value.diagramType?.toLowerCase() === this.docTypeFilter?.toLowerCase());
+        return this.customContentList.filter(diagram => diagram.value.diagramType?.toLowerCase() === this.docTypeFilter?.toLowerCase());
       },
       previewSrc() {
         if (!this.picked) return;
@@ -98,9 +98,9 @@
       }
     },
     async created() {
-      this.diagrams = await globals.apWrapper.listCustomContentByType(['zenuml-content-sequence', 'zenuml-content-graph'])
+      this.customContentList = await globals.apWrapper.listCustomContentByType(['zenuml-content-sequence', 'zenuml-content-graph'])
       const customContentId = (await globals.macro.load()).id;
-      this.picked = this.diagrams.filter(diagram => diagram.id === customContentId)[0]
+      this.picked = this.customContentList.filter(diagram => diagram.id === customContentId)[0]
     },
     methods: {
       setFilter(docType) {
