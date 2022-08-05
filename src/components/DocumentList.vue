@@ -24,11 +24,11 @@
       <header class="flex flex-shrink-0">
         <div class="flex-1 flex items-center justify-between bg-white px-6">
           <nav class="flex text-sm font-medium leading-none text-slate-800">
-            <a href="#" class="inline-block ml-2 px-3 py-2 hover:bg-gray-200 rounded-lg bg-gray-200" @click="setFilter('')">All</a>
-            <a href="#" class="inline-block ml-2 px-3 py-2 hover:bg-gray-200 rounded-lg" @click="setFilter('sequence')">Sequence</a>
-            <a href="#" class="inline-block ml-2 px-3 py-2 hover:bg-gray-200 rounded-lg" @click="setFilter('mermaid')">Mermaid</a>
-            <a href="#" class="inline-block ml-2 px-3 py-2 hover:bg-gray-200 rounded-lg" @click="setFilter('graph')">Graph</a>
-            <a href="#" class="inline-block ml-2 px-3 py-2 hover:bg-gray-200 rounded-lg" @click="setFilter('OpenApi')">Open API</a>
+            <a href="#" class="inline-block ml-2 px-3 py-2 hover:bg-gray-200 rounded-lg" :class="{'bg-gray-200': this.docTypeFilter === ''}" @click="setFilter('')">All</a>
+            <a href="#" class="inline-block ml-2 px-3 py-2 hover:bg-gray-200 rounded-lg" :class="{'bg-gray-200': this.docTypeFilter === 'sequence'}" @click="setFilter('sequence')">Sequence</a>
+            <a href="#" class="inline-block ml-2 px-3 py-2 hover:bg-gray-200 rounded-lg" :class="{'bg-gray-200': this.docTypeFilter === 'mermaid'}" @click="setFilter('mermaid')">Mermaid</a>
+            <a href="#" class="inline-block ml-2 px-3 py-2 hover:bg-gray-200 rounded-lg" :class="{'bg-gray-200': this.docTypeFilter === 'graph'}" @click="setFilter('graph')">Graph</a>
+            <a href="#" class="inline-block ml-2 px-3 py-2 hover:bg-gray-200 rounded-lg" :class="{'bg-gray-200': this.docTypeFilter === 'OpenApi'}" @click="setFilter('OpenApi')">Open API</a>
           </nav>
         </div>
         <div class="w-80 flex-shrink-0 px-4 py-3 bg-white">
