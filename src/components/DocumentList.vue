@@ -48,7 +48,7 @@
               </button>
             </div>
             <div class="flex-1 overflow-y-auto">
-              <a @click="pick(diagram)" href="#" v-for="diagram in filteredDiagrams" :key="diagram.id"
+              <a @click="this.picked = diagram" href="#" v-for="diagram in filteredDiagrams" :key="diagram.id"
                  :class="{'bg-gray-100': diagram.id === (picked && picked.id)}"
                  class="block px-6 py-3 bg-white border-t hover:bg-gray-50">
                 <span class="text-sm font-semibold text-gray-900">{{ diagram.title }}</span>
@@ -114,26 +114,12 @@
         }
       }
     },
-    created() {
-      globals.apWrapper.listCustomContentByType(['zenuml-content-sequence', 'zenuml-content-graph'])
-        .then(d => this.diagrams = d)
-      .then(() => {
-        this.picked = this.diagrams.filter(diagram => diagram.id === globals.macro._customContentId)[0]
-      })
-      ;
-    },
-    mounted() {
-      this.picked = this.diagrams.filter(diagram => diagram.id === globals.macro._customContentId)[0]
-    },
-    updated() {
-      this.pick(this.picked);
+    async created() {
+      this.diagrams = await globals.apWrapper.listCustomContentByType(['zenuml-content-sequence', 'zenuml-content-graph'])
+      const customContentId = (await globals.macro.load()).id;
+      this.picked = this.diagrams.filter(diagram => diagram.id === customContentId)[0]
     },
     methods: {
-      pick(doc) {
-        if (!doc) return;
-        this.picked = doc;
-        window.picked = doc;
-      },
       setFilter(docType) {
         this.docTypeFilter = docType;
       }

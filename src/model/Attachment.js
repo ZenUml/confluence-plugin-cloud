@@ -106,7 +106,7 @@ function uploadNewAttachment(hash) {
 }
 
 async function updateAttachmentProperties(attachmentMeta) {
-  await window.AP.request(buildPutRequestToUpdateAttachmentProperties(getUrlParam("pageId"),
+  await window.AP?.request(buildPutRequestToUpdateAttachmentProperties(getUrlParam("pageId"),
     attachmentMeta.attachmentId, attachmentMeta.versionNumber, attachmentMeta.hash));
 }
 
