@@ -1,6 +1,8 @@
 import * as htmlToImage from 'html-to-image';
 import md5 from 'md5';
 import {getUrlParam, trackEvent} from '@/utils/window.ts';
+import AP from "@/model/AP";
+
 
 function toPng() {
   try {
@@ -31,7 +33,7 @@ export function parseAttachmentsFromResponse(response) {
 
 async function getAttachments(pageId) {
   trackEvent(pageId, 'get_attachments', 'before_request');
-  const response = await window.AP.request(buildGetRequestForAttachments(pageId));
+  const response = await AP.request(buildGetRequestForAttachments(pageId));
   trackEvent(response?.xhr?.status, 'get_attachments', 'after_request');
   return parseAttachmentsFromResponse(response);
 }
@@ -49,7 +51,7 @@ async function uploadAttachment(attachmentName, uri, hash) {
   const blob = await toPng();
   const file = new File([blob], attachmentName, {type: 'image/png'});
   console.debug('Uploading attachment to', uri);
-  return await window.AP.request(buildPostRequestToUploadAttachment(uri, hash, file));
+  return await AP.request(buildPostRequestToUploadAttachment(uri, hash, file));
 }
 
 function buildPutRequestToUpdateAttachmentProperties(pageId, attachmentId, versionNumber, hash) {
@@ -106,7 +108,7 @@ function uploadNewAttachment(hash) {
 }
 
 async function updateAttachmentProperties(attachmentMeta) {
-  await window.AP?.request(buildPutRequestToUpdateAttachmentProperties(getUrlParam("pageId"),
+  await AP.request(buildPutRequestToUpdateAttachmentProperties(getUrlParam("pageId"),
     attachmentMeta.attachmentId, attachmentMeta.versionNumber, attachmentMeta.hash));
 }
 

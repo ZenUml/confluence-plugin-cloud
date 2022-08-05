@@ -9,7 +9,6 @@ import 'vue-sequence/dist/vue-sequence.css'
 
 import ExtendedStore from './model/Store'
 import EventBus from './EventBus'
-import {initializeMacro} from "@/model/macro/InitializeMacro";
 import './GTagConfig'
 import globals from '@/model/globals';
 import AP from "@/model/AP";
@@ -25,9 +24,6 @@ if(document.getElementById('app')) {
       render: h => h(DocumentList)
     }).$mount('#app')
 }
-// @ts-ignore
-window.store = store
-
 EventBus.$on('save', async () => {
   // eslint-disable-next-line
   // @ts-ignore
@@ -44,5 +40,3 @@ EventBus.$on('save', async () => {
   // @ts-ignore
   AP.dialog.close();
 });
-
-initializeMacro(store);
