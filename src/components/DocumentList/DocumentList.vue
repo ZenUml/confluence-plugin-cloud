@@ -1,26 +1,6 @@
 <template>
   <div class="content">
     <div class="workspace h-screen flex flex-col">
-      <div class="bg-indigo-600">
-        <div class="max-w-7xl mx-auto py-3 px-3 sm:px-6 lg:px-8">
-          <div class="flex items-center justify-between flex-wrap">
-            <div class="w-0 flex-1 flex items-center">
-        <span class="flex p-2 rounded-lg bg-indigo-800">
-          <!-- Heroicon name: outline/speakerphone -->
-          <svg class="h-6 w-6 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z" />
-          </svg>
-        </span>
-              <p class="ml-3 font-medium text-white truncate">
-                <span class=""> You will need to upgrade to the Full version to use this feature in the future. </span>
-              </p>
-            </div>
-            <div class="order-3 mt-2 flex-shrink-0 w-full sm:order-2 sm:mt-0 sm:w-auto">
-              <a href="https://zenuml.atlassian.net/wiki/spaces/Doc/pages/1727922177/How+to+embed+existing+macros" target="_blank" class="flex items-center justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-indigo-600 bg-white hover:bg-indigo-50"> Learn more </a>
-            </div>
-          </div>
-        </div>
-      </div>
       <header class="flex flex-shrink-0">
         <div class="flex-1 flex items-center justify-between bg-white px-6">
           <nav class="flex text-sm font-medium leading-none text-slate-800">
@@ -44,19 +24,26 @@
           <div class="flex flex-col w-full max-w-xs flex-grow border-l border-r">
             <div class="flex flex-shrink-0 items-center px-4 py-2 justify-between border-b">
               <button class="flex items-center text-xs font-semibold text-gray-600">
-                Sorted by Date
+                Recent diagrams and API specs
               </button>
             </div>
             <div class="flex-1 overflow-y-auto">
-              <a @click="this.picked = diagram" href="#" v-for="diagram in filteredDiagrams" :key="diagram.id"
-                 :class="{'bg-gray-100': diagram.id === (picked && picked.id)}"
+              <a @click="picked = customContentItem" href="#" v-for="customContentItem in filteredCustomContentList" :key="customContentItem.id"
+                 :class="{'bg-gray-100': customContentItem.id === (picked && picked.id)}"
                  class="block px-6 py-3 bg-white border-t hover:bg-gray-50">
-                <span class="text-sm font-semibold text-gray-900">{{ diagram.title }}</span>
+                <span class="text-sm font-semibold text-gray-900">{{ customContentItem.title }}</span>
                 <div class="flex justify-between">
-                  <span class="text-sm font-semibold text-gray-500">{{ diagram.value.diagramType }}</span>
+                  <span class="text-sm font-semibold text-gray-500">{{ customContentItem.value.diagramType }}</span>
 <!--                  <span class="text-sm text-gray-600">2 days ago</span>-->
                 </div>
-                <p class="mt-2 text-sm text-gray-600">Source page: {{ diagram.container.id }}</p>
+                <div class="mt-2 text-sm text-gray-600">
+                  <a :href="`${baseUrl}${ customContentItem.container.id }`" target="_blank" class="flex items-center justify-between hover:underline group">
+                    <span class="inline-block truncate">Page: {{ customContentItem.container.title }}</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="inline-block h-5 w-5 flex-shrink-0 invisible group-hover:visible" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                    </svg>
+                  </a>
+                </div>
               </a>
             </div>
           </div>
@@ -74,22 +61,26 @@
   import SaveAndGoBackButton from "@/components/SaveAndGoBackButton";
   import {DiagramType} from "@/model/Diagram";
   import EventBus from "@/EventBus";
+  import {AtlasPage} from "@/model/page/AtlasPage";
+  import AP from "@/model/AP";
 
   export default {
     name: 'DocumentList',
     data() {
       return {
-        diagrams: [],
+        customContentList: [],
         picked: '',
         docTypeFilter: '',
+        baseUrl: ''
       };
     },
     computed: {
-      filteredDiagrams() {
+
+      filteredCustomContentList() {
         if (this.docTypeFilter === '') {
-          return this.diagrams;
+          return this.customContentList;
         }
-        return this.diagrams.filter(diagram => diagram.value.diagramType?.toLowerCase() === this.docTypeFilter?.toLowerCase());
+        return this.customContentList.filter(customContentItem => customContentItem.value.diagramType?.toLowerCase() === this.docTypeFilter?.toLowerCase());
       },
       previewSrc() {
         if (!this.picked) return;
@@ -110,15 +101,26 @@
 
       },
       saveAndExit: function () {
+        const that = this;
         return function () {
+          window.picked = that.picked;
           EventBus.$emit('save')
         }
       }
     },
     async created() {
-      this.diagrams = await globals.apWrapper.listCustomContentByType(['zenuml-content-sequence', 'zenuml-content-graph'])
+      this.customContentList = await globals.apWrapper.listCustomContentByType(['zenuml-content-sequence', 'zenuml-content-graph'])
       const customContentId = (await globals.macro.load()).id;
-      this.picked = this.diagrams.filter(diagram => diagram.id === customContentId)[0]
+      this.picked = this.customContentList.filter(diagram => diagram.id === customContentId)[0];
+      const atlasPage = new AtlasPage(AP);
+      const pages = 'pages/';
+      const currentPageUrl = await atlasPage.getHref();
+      const pagesIndex = currentPageUrl.indexOf(pages);
+      if (pagesIndex < 0) {
+        throw Error(`Invalid currentPageUrl: ${currentPageUrl}. It should contain ${pages}`);
+      } else {
+        this.baseUrl = currentPageUrl.substring(0, pagesIndex + pages.length);
+      }
     },
     methods: {
       setFilter(docType) {

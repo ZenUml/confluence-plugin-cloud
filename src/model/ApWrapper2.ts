@@ -300,6 +300,7 @@ export default class ApWrapper2 implements IApWrapper {
       return result as ICustomContent;
     };
 
+    // This method retrieves upto 25 custom content with its raw content. We need the raw content for its diagram type.
     const getCustomContentList = async (type: string): Promise<Array<ICustomContent>> => {
       const response = await this._requestFn({type: 'GET', url: url(type)});
       const customContentList = this.parseCustomContentListResponse(response);
