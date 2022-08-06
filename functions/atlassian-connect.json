@@ -180,7 +180,7 @@
       {
         "key": "zenuml-embed-macro",
         "name": {
-          "value": "Embed ZenUML Diagram"
+          "value": "Embed a ZenUML Diagram or API Spec (Beta)"
         },
         "renderModes": {
           "default": {
