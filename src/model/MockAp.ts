@@ -50,10 +50,11 @@ export default class MockAp implements IAp {
         const result = matchContract(r, 'createCustomContent');
         return !!result;
       }, handle: r => ({body: JSON.stringify({id: 1234, body: {raw: {value: JSON.stringify('content')}}})})});
-    this.request = (request: any) => {
-      const handler = this.requestHandlers.find(h => h.match(request));
+    this.request = (req: any) => {
+      if(!req) return 'OK. (req is empty)';
+      const handler = this.requestHandlers.find(h => h.match(req));
       if(handler) {
-        return handler.handle(request);
+        return handler.handle(req);
       }
     };
   }
