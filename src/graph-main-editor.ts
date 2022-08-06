@@ -1,17 +1,24 @@
 import Vue from 'vue'
 import GraphMacro from "@/model/GraphMacro";
-import SaveAndGoBackButtonGraph from "@/components/SaveAndGoBackButtonGraph.vue";
+import SaveAndGoBackButton from "@/components/SaveAndGoBackButton.vue";
 // @ts-ignore
-import Va from 'vue-atlas'
-import 'vue-atlas/dist/vue-atlas.css'
 import './assets/tailwind.css'
 
 import globals from '@/model/globals';
-
-Vue.use(Va, 'en')
+import AP from "@/model/AP";
 
 new Vue({
-  render: h => h(SaveAndGoBackButtonGraph)
+  render: h => h(SaveAndGoBackButton, {
+    props: {
+      saveAndExit: async () => {
+        // eslint-disable-next-line no-undef
+        // @ts-ignore
+        await window.macro.save2(getGraphXml());
+        /* eslint-disable no-undef */
+        AP.dialog.close();
+      }
+    }
+  })
 }).$mount('#save-and-go-back');
 async function initializeMacro() {
   const apWrapper = globals.apWrapper;

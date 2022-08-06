@@ -156,12 +156,20 @@ export default class ApWrapper2 implements IApWrapper {
     return getUrlParam('contentKey');
   }
 
+  getCustomContentTypePrefix() {
+    return `ac:${getUrlParam('addonKey')}`;
+  }
+
   getCustomContentType() {
-    return `ac:${getUrlParam('addonKey')}:${this.getContentKey()}`;
+    return `${this.getCustomContentTypePrefix()}:${this.getContentKey()}`;
   }
 
   parseCustomContentResponse(response: { body: string; }): ICustomContentResponseBody {
     return response && response.body && JSON.parse(response.body);
+  }
+
+  parseCustomContentListResponse(response: { body: string; }): Array<ICustomContentResponseBody> {
+    return response && response.body && JSON.parse(response.body)?.results;
   }
 
   async createCustomContent(content: Diagram) {
@@ -233,6 +241,7 @@ export default class ApWrapper2 implements IApWrapper {
     let diagram = JSON.parse(customContent.body.raw.value);
     diagram.source = DataSource.CustomContent;
     const count = (await this._page.countMacros((m) => {
+      //TODO: filter by macro type
       return m?.customContentId?.value === id;
     }));
     console.debug(`Found ${count} macros on page`);
@@ -267,6 +276,45 @@ export default class ApWrapper2 implements IApWrapper {
       trackEvent(JSON.stringify(e), 'load_custom_content', 'error');
       // TODO: return a NullCustomContentObject
       return undefined;
+    }
+  }
+
+  async listCustomContentByType(types: Array<string>): Promise<Array<ICustomContent>> {
+    const customContentType = (type: string) => `${this.getCustomContentTypePrefix()}:${type}`;
+    const spaceKey = await this._getCurrentSpace();
+
+    const url = (type: string) => `/rest/api/content?spaceKey=${spaceKey}&type=${customContentType(type)}&expand=body.raw,version.number,container,space`;
+
+    const parseCustomContentBody = (customContent: ICustomContentResponseBody): ICustomContent => {
+      let diagram: any = {};
+      const rawValue = customContent?.body?.raw?.value;
+      try {
+        diagram = JSON.parse(rawValue);
+        diagram.source = DataSource.CustomContent;
+      } catch(e) {
+        console.error(`parseCustomContentBody error: `, e, `raw value: ${rawValue}`);
+        trackEvent(JSON.stringify(e), 'parseCustomContentBody', 'error');
+      }
+      const result = <unknown>Object.assign({}, customContent, {value: diagram});
+      console.debug(`converted result: `, result);
+      return result as ICustomContent;
+    };
+
+    // This method retrieves upto 25 custom content with its raw content. We need the raw content for its diagram type.
+    const getCustomContentList = async (type: string): Promise<Array<ICustomContent>> => {
+      const response = await this._requestFn({type: 'GET', url: url(type)});
+      const customContentList = this.parseCustomContentListResponse(response);
+      console.debug(`Listed custom content by type ${customContentType(type)}: ${customContentList.length} found.`);
+      return customContentList.map(parseCustomContentBody);
+    };
+
+    try {
+      const results: Array<Promise<Array<ICustomContent>>> = types.map(getCustomContentList);
+      return (await Promise.all(results)).flatMap( a => a);
+    } catch (e) {
+      console.error('listCustomContentByType', e);
+      trackEvent(JSON.stringify(e), 'listCustomContentByType', 'error');
+      return [] as Array<ICustomContent>;
     }
   }
 

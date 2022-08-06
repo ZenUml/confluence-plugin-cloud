@@ -1,0 +1,38 @@
+name: 'Build the application with functions and publish it to cloudflare'
+
+inputs:
+  node-version:
+    description: 'The node version'
+    required: true
+  cloudflare-api-token:
+    descriptio: 'Cloudflare API Token'
+    requierd: true
+  cloudflare-account-id:
+    description: 'Cloudflare account ID'
+    required: true
+  license:
+    description: 'Full or Lite'
+    required: true
+  project:
+    description: 'Project name of cloudflare pages'
+    required: true
+runs:
+  using: 'composite'
+  steps:
+    - uses: actions/checkout@v3
+    - uses: actions/setup-node@v2
+      with:
+        node-version: ${{ inputs.node-version }}
+        cache: 'yarn'
+    - name: yarn install
+      shell: bash
+      run: yarn install
+    - name: yarn install
+      shell: bash
+      run: yarn build:${{ inputs.license }}
+    - name: Publish
+      uses: cloudflare/wrangler-action@2.0.0
+      with:
+        apiToken: ${{ inputs.cloudflare-api-token }}
+        accountId: ${{ inputs.cloudflare-account-id }}
+        command: pages publish dist --branch production --project-name=${{ inputs.project }}

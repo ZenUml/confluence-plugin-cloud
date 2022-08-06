@@ -1,11 +1,11 @@
 <template>
-  <div class="content">
-    <Header />
-    <div class="workspace">
-      <div id="workspace-left" class="split editor">
+  <div class="content h-screen flex flex-col">
+    <Header class="flex-shrink-0"/>
+    <div class="workspace flex-grow split">
+      <div id="workspace-left" class="editor overflow-auto">
         <editor/>
       </div>
-      <div id="workspace-right" class="split diagram">
+      <div id="workspace-right" class="diagram overflow-auto">
         <Viewer />
       </div>
     </div>
@@ -25,7 +25,7 @@
     },
     mounted () {
       if (window.split) {
-        Split(['#workspace-left', '#workspace-right'], { sizes: [35, 65]})
+        Split(['#workspace-left', '#workspace-right'])
       }
     },
     components: {
@@ -38,25 +38,9 @@
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style>
-
-.content {
-  height: 100%;
-}
-
-.workspace {
-  height: calc(100% - 50px);
-  margin-top: 5px;
-}
-
-#workspace-right .get-support-container {
-  display: block;
-  position: absolute;
-  bottom: 5px;
-  left: 11px;
-}
-
-#workspace-right {
-  position: relative;
+.split {
+  display: flex;
+  flex-direction: row;
 }
 
 .gutter {
@@ -67,34 +51,6 @@
 
 .gutter.gutter-horizontal {
   background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAeCAYAAADkftS9AAAAIklEQVQoU2M4c+bMfxAGAgYYmwGrIIiDjrELjpo5aiZeMwF+yNnOs5KSvgAAAABJRU5ErkJggg==');
-  cursor: ew-resize;
+  cursor: col-resize;
 }
-
-.split, .gutter.gutter-horizontal {
-  float: left;
-  height: 100%;
-}
-
-.split {
-  overflow-y: auto;
-  overflow-x: auto;
-}
-
-/*Do not show get support icon in view mode.*/
-.view #workspace-right .get-support-container {
-  display: none;
-}
-
-.view .gutter.gutter-horizontal {
-  display: none;
-}
-
-.view .editor {
-  display: none;
-}
-
-.view .diagram {
-  width: 100%;
-}
-
 </style>

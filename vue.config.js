@@ -1,3 +1,6 @@
+const SpeedMeasureWebpackPlugin = require('speed-measure-webpack-plugin');
+const { ESBuildMinifyPlugin } = require('esbuild-loader')
+
 module.exports = {
   pages: {
     "index": {
@@ -56,9 +59,46 @@ module.exports = {
       entry: 'src/swagger-ui.ts',
       template: 'public/swagger-ui.html',
       chunks: ['chunk-common', 'chunk-swagger-ui-vendors', 'swagger-ui']
+    },
+    "embed-viewer": {
+      entry: 'src/embed-viewer.ts',
+      template: 'public/embed-viewer.html',
+      chunks: ['chunk-common', 'chunk-embed-viewer-vendors', 'embed-viewer']
+    },
+    "embed-editor": {
+      entry: 'src/embed-editor.ts',
+      template: 'public/embed-editor.html',
+      chunks: ['chunk-common', 'chunk-embed-editor-vendors', 'embed-editor']
     }
   },
   chainWebpack: config => {
+    const rule = config.module.rule('js');
+    // clear babel-loader
+    rule.uses.clear()
+
+    // add esbuild-loader
+    rule.use('esbuild-loader').loader('esbuild-loader');
+
+    const ruleTs = config.module.rule('ts');
+    // clear babel-loader
+    ruleTs.uses.clear()
+
+    // add esbuild-loader
+    ruleTs.use('esbuild-loader').loader('esbuild-loader')
+      .options( {
+          loader: 'ts', // 如果使用了 ts, 或者 vue 的 class 装饰器，则需要加上这个 option 配置， 否则会报错： ERROR: Unexpected "@"
+          target: 'es2015',
+          tsconfigRaw: require('./tsconfig.json')
+        } );
+
+    // 删除底层 terser, 换用 esbuild-minimize-plugin
+    config.optimization.minimizers.delete('terser');
+
+    // 使用 esbuild 优化 css 压缩
+    config.optimization
+      .minimizer('esbuild')
+      .use(ESBuildMinifyPlugin, [{ minify: true, css: true }]);
+
     const options = module.exports
     const pages = options.pages
     const pageKeys = Object.keys(pages)
@@ -97,6 +137,9 @@ module.exports = {
   },
   productionSourceMap: false,
   configureWebpack: {
+    plugins: [
+      new SpeedMeasureWebpackPlugin(),
+    ],
     resolve: {
       fallback: {"stream": false},
       alias: {
@@ -107,30 +150,30 @@ module.exports = {
   devServer: {
     historyApiFallback: true,
     hot: true,
-    host: 'localhost',
+    host: '0.0.0.0',
     port: 8080,
     client: {
       webSocketURL: 'auto://0.0.0.0:0/ws',
     },
     proxy: {
-      '/atlassian-connect.json': {
-        target: 'http://localhost:5000/',
+      '/descriptor': {
+        target: 'http://localhost:8788/',
         changeOrigin: true
       },
       '/atlassian-connect-lite.json': {
-        target: 'http://localhost:5000/',
+        target: 'http://localhost:8788/',
         changeOrigin: true
       },
       '/installed': {
-        target: 'http://localhost:5000/',
+        target: 'http://localhost:8788/',
         changeOrigin: true
       },
       '/uninstalled': {
-        target: 'http://localhost:5000/',
+        target: 'http://localhost:8788/',
         changeOrigin: true
       },
       '/attachment': {
-        target: 'http://localhost:5000/',
+        target: 'http://localhost:8788/',
         changeOrigin: true
       }
     },

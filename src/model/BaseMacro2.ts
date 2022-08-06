@@ -169,6 +169,20 @@ class BaseMacro2 {
     }
   }
 
+  async saveEmbedded(customContentId: string, customContentType: string, diagram: Diagram) {
+    if (!this._loaded) {
+      throw new Error('You have to call load before calling save')
+    }
+    const uuid = this._uuid || uuidv4();
+
+    const macroParam = {uuid: uuid, updatedAt: new Date(), customContentId, customContentType} as IMacroData;
+
+    console.log('Save embedded: ', macroParam);
+
+    this._apWrapper.saveMacro(macroParam, '');
+    this.trackDiagramEvent(diagram, 'save_macro', 'embedded');
+  }
+
   // 20/07/2022 Limit editing on dialog to custom content only.
   async canEditOnDialog(): Promise<boolean> {
     const isVersionSupported = this._addonVersion >= '2021.11';
