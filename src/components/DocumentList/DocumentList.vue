@@ -80,7 +80,7 @@
         if (this.docTypeFilter === '') {
           return this.customContentList.filter(item => item?.id);
         }
-        return this.customContentList.filter(customContentItem => customContentItem.value.diagramType?.toLowerCase() === this.docTypeFilter?.toLowerCase());
+        return this.customContentList.filter(customContentItem => customContentItem?.value?.diagramType?.toLowerCase() === this.docTypeFilter?.toLowerCase());
       },
       previewSrc() {
         if (!this.picked) return;

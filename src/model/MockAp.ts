@@ -1,6 +1,7 @@
 import MockApConfluence from "@/model/MockApConfluence";
 import {IAp} from "@/model/IAp";
 import customContentListSeq from "@/model/Ap/MockedResponse/custom-content-list-sequence.json";
+import customContentListGraph from "@/model/Ap/MockedResponse/custom-content-list-graph.json";
 const CONTRACT: any = {
   customContent: {method: 'get', URL: /\/rest\/api\/content\/(\d+)/},
   createCustomContent: { method: 'post', URL: /\/rest\/api\/content/}
@@ -30,7 +31,7 @@ export default class MockAp implements IAp {
       // if request.url contains 'zenuml-content-graph', return {}
       if (req.url.includes('zenuml-content-graph')) {
         console.log('req.url.includes(\'zenuml-content-graph\')');
-        return customContentListSeq;
+        return {body: JSON.stringify(customContentListGraph)};
       }
 
       if (req.url.includes('zenuml-content-sequence')) {
