@@ -28,17 +28,17 @@
               </button>
             </div>
             <div class="flex-1 overflow-y-auto">
-              <a @click="picked = diagram" href="#" v-for="diagram in filteredDiagrams" :key="diagram.id"
-                 :class="{'bg-gray-100': diagram.id === (picked && picked.id)}"
+              <a @click="picked = customeContentItem" href="#" v-for="customeContentItem in filteredCustomContentList" :key="customeContentItem.id"
+                 :class="{'bg-gray-100': customeContentItem.id === (picked && picked.id)}"
                  class="block px-6 py-3 bg-white border-t hover:bg-gray-50">
-                <span class="text-sm font-semibold text-gray-900">{{ diagram.title }}</span>
+                <span class="text-sm font-semibold text-gray-900">{{ customeContentItem.title }}</span>
                 <div class="flex justify-between">
-                  <span class="text-sm font-semibold text-gray-500">{{ diagram.value.diagramType }}</span>
+                  <span class="text-sm font-semibold text-gray-500">{{ customeContentItem.value.diagramType }}</span>
 <!--                  <span class="text-sm text-gray-600">2 days ago</span>-->
                 </div>
                 <div class="mt-2 text-sm text-gray-600">
-                  <a :href="`${baseUrl}${ diagram.container.id }`" target="_blank" class="flex items-center justify-between hover:underline group">
-                    <span class="inline-block truncate">Page: {{ diagram.container.title }}</span>
+                  <a :href="`${baseUrl}${ customeContentItem.container.id }`" target="_blank" class="flex items-center justify-between hover:underline group">
+                    <span class="inline-block truncate">Page: {{ customeContentItem.container.title }}</span>
                     <svg xmlns="http://www.w3.org/2000/svg" class="inline-block h-5 w-5 flex-shrink-0 invisible group-hover:visible" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                       <path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
                     </svg>
@@ -76,11 +76,11 @@
     },
     computed: {
 
-      filteredDiagrams() {
+      filteredCustomContentList() {
         if (this.docTypeFilter === '') {
           return this.customContentList;
         }
-        return this.customContentList.filter(diagram => diagram.value.diagramType?.toLowerCase() === this.docTypeFilter?.toLowerCase());
+        return this.customContentList.filter(customContentItem => customContentItem.value.diagramType?.toLowerCase() === this.docTypeFilter?.toLowerCase());
       },
       previewSrc() {
         if (!this.picked) return;
