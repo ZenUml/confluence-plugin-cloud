@@ -70,7 +70,8 @@ export default class MockAp implements IAp {
     this.contentId = pageId;
     this.navigator = {
       getLocation: (cb: any) => cb({
-          context: { contentId: this.contentId, spaceKey: 'fake-space' }
+          context: { contentId: this.contentId, spaceKey: 'fake-space' },
+          href: 'http://localhost:8080/wiki/space/fake-space/pages/fake-page-id'
         }
       )
     };

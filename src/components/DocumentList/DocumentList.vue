@@ -97,7 +97,7 @@
 
           console.warn(`Unknown diagramType: ${diagramType}`);
         }
-        return `${getViewerUrl(this.picked.value.diagramType)}${window.location.search}&rendered.for=custom-content-native&content.id=${this.picked.id}&embedded=true`;
+        return `${getViewerUrl(this.picked.value.diagramType)}${window.location.search || '?'}&rendered.for=custom-content-native&content.id=${this.picked.id}&embedded=true`;
 
       },
       saveAndExit: function () {
@@ -118,7 +118,7 @@
         const currentPageUrl = await atlasPage.getHref();
         const pagesIndex = currentPageUrl.indexOf(pages);
         if (pagesIndex < 0) {
-          throw Error(`Invalid currentPageUrl: ${currentPageUrl}. It should contain ${pages}`);
+          console.warn(`Invalid currentPageUrl: ${currentPageUrl}. It should contain ${pages}`);
         } else {
           this.baseUrl = currentPageUrl.substring(0, pagesIndex + pages.length);
         }
