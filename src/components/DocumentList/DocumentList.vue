@@ -78,7 +78,7 @@
 
       filteredCustomContentList() {
         if (this.docTypeFilter === '') {
-          return this.customContentList;
+          return this.customContentList.filter(item => item?.id);
         }
         return this.customContentList.filter(customContentItem => customContentItem.value.diagramType?.toLowerCase() === this.docTypeFilter?.toLowerCase());
       },
@@ -111,15 +111,19 @@
     async created() {
       this.customContentList = await globals.apWrapper.listCustomContentByType(['zenuml-content-sequence', 'zenuml-content-graph'])
       const customContentId = (await globals.macro.load()).id;
-      this.picked = this.customContentList.filter(diagram => diagram.id === customContentId)[0];
-      const atlasPage = new AtlasPage(AP);
-      const pages = 'pages/';
-      const currentPageUrl = await atlasPage.getHref();
-      const pagesIndex = currentPageUrl.indexOf(pages);
-      if (pagesIndex < 0) {
-        throw Error(`Invalid currentPageUrl: ${currentPageUrl}. It should contain ${pages}`);
-      } else {
-        this.baseUrl = currentPageUrl.substring(0, pagesIndex + pages.length);
+      this.picked = this.customContentList.filter(customContentItem => customContentItem?.id === customContentId)[0];
+      try {
+        const atlasPage = new AtlasPage(AP);
+        const pages = 'pages/';
+        const currentPageUrl = await atlasPage.getHref();
+        const pagesIndex = currentPageUrl.indexOf(pages);
+        if (pagesIndex < 0) {
+          throw Error(`Invalid currentPageUrl: ${currentPageUrl}. It should contain ${pages}`);
+        } else {
+          this.baseUrl = currentPageUrl.substring(0, pagesIndex + pages.length);
+        }
+      } catch (e) {
+        console.error(e);
       }
     },
     methods: {

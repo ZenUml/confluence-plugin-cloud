@@ -304,8 +304,8 @@ export default class ApWrapper2 implements IApWrapper {
     const getCustomContentList = async (type: string): Promise<Array<ICustomContent>> => {
       const response = await this._requestFn({type: 'GET', url: url(type)});
       const customContentList = this.parseCustomContentListResponse(response);
-      console.debug(`Listed custom content by type ${customContentType(type)}: ${customContentList.length} found.`);
-      return customContentList.map(parseCustomContentBody);
+      console.debug(`Listed custom content by type ${customContentType(type)}: ${customContentList?.length} found.`);
+      return customContentList?.map(parseCustomContentBody);
     };
 
     try {

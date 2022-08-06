@@ -1,9 +1,9 @@
 import MockAp from "@/model/MockAp";
 
 describe('MockAp', function () {
-  it('request', () => {
+  it('request', async () => {
     const mockedAp = new MockAp();
-    const resp = mockedAp.request();
+    const resp = await mockedAp.request();
     expect(resp).toBe('OK. (req is empty)')
   })
 });
