@@ -134,7 +134,7 @@ class BaseMacro2 {
     const uuid = this._uuid || uuidv4();
 
     let customContent;
-    if(this._customContentId && !this._diagram?.isCopy) {
+    if(this._diagram?.source === 'custom-content' && this._customContentId && !this._diagram?.isCopy) {
       customContent = await this._apWrapper.saveCustomContent(this._customContentId, diagram);
     } else {
       customContent = await this._apWrapper.createCustomContent(diagram);

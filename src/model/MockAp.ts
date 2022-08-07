@@ -1,6 +1,7 @@
 import MockApConfluence from "@/model/MockApConfluence";
 import {IAp} from "@/model/IAp";
-
+import customContentListSeq from "@/model/Ap/MockedResponse/custom-content-list-sequence.json";
+import customContentListGraph from "@/model/Ap/MockedResponse/custom-content-list-graph.json";
 const CONTRACT: any = {
   customContent: {method: 'get', URL: /\/rest\/api\/content\/(\d+)/},
   createCustomContent: { method: 'post', URL: /\/rest\/api\/content/}
@@ -18,7 +19,35 @@ interface RequestHandler {
 
 export default class MockAp implements IAp {
   public confluence: any
-  public request: any
+  public request: any = async (req: any) => {
+    console.log('req', req);
+    if (!req) {
+      return 'OK. (req is empty)'
+    }
+
+    // if request.url start with '/rest/api/content?', return {}
+    if (req.url.startsWith('/rest/api/content?')) {
+      console.log('req.url.startsWith(\'/rest/api/content?\')');
+      // if request.url contains 'zenuml-content-graph', return {}
+      if (req.url.includes('zenuml-content-graph')) {
+        console.log('req.url.includes(\'zenuml-content-graph\')');
+        return {body: JSON.stringify(customContentListGraph)};
+      }
+
+      if (req.url.includes('zenuml-content-sequence')) {
+        console.log('req.url.includes(\'zenuml-content-sequence\')', customContentListSeq);
+        return {body: JSON.stringify(customContentListSeq)};
+      }
+
+
+      return {body: JSON.stringify({id: 1234, body: {raw: {value: JSON.stringify('content')}}})};
+    }
+
+    const handler = this.requestHandlers.find(h => h.match(req));
+    if(handler) {
+      return handler.handle(req);
+    }
+  }
   public navigator: any
   public dialog: any;
   public user: any;
@@ -41,7 +70,8 @@ export default class MockAp implements IAp {
     this.contentId = pageId;
     this.navigator = {
       getLocation: (cb: any) => cb({
-          context: { contentId: this.contentId, spaceKey: 'fake-space' }
+          context: { contentId: this.contentId, spaceKey: 'fake-space' },
+          href: 'http://localhost:8080/wiki/space/fake-space/pages/fake-page-id'
         }
       )
     };
@@ -50,13 +80,6 @@ export default class MockAp implements IAp {
         const result = matchContract(r, 'createCustomContent');
         return !!result;
       }, handle: r => ({body: JSON.stringify({id: 1234, body: {raw: {value: JSON.stringify('content')}}})})});
-    this.request = (req: any) => {
-      if(!req) return 'OK. (req is empty)';
-      const handler = this.requestHandlers.find(h => h.match(req));
-      if(handler) {
-        return handler.handle(req);
-      }
-    };
   }
 
   setCustomContent(customContentId: any, content: any) {
