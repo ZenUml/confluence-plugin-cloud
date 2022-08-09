@@ -3,9 +3,9 @@ import DocumentList from './components/DocumentList/DocumentList.vue'
 
 import EventBus from './EventBus'
 import './GTagConfig'
-import globals from '@/model/globals';
 import AP from "@/model/AP";
 import './assets/tailwind.css'
+import {MacroIdProvider} from "@/model/ContentProvider/MacroIdProvider";
 
 Vue.config.productionTip = false
 
@@ -15,15 +15,9 @@ if(document.getElementById('app')) {
     }).$mount('#app')
 }
 EventBus.$on('save', async () => {
-
-  // eslint-disable-next-line
+  const idProvider = new MacroIdProvider(AP);
   // @ts-ignore
-  const diagram = JSON.parse(window.picked.body.raw.value);
-
-  // eslint-disable-next-line
-  // @ts-ignore
-  await globals.macro.saveEmbedded(window.picked.id, window.picked.type, diagram);
-
+  await idProvider.save(window.picked.id)
   // @ts-ignore
   AP.dialog.close();
 });
