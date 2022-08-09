@@ -83,7 +83,7 @@ export default {
       this.$store.dispatch('updateMermaidCode', content.mermaidCode)
     } else {
       this.$store.commit('code', content.code);
-      this.rawStyles = content.styles;
+      this.rawStyles = content.styles || {};
     }
     EventBus.$emit('diagramLoaded');
   },
