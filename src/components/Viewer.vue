@@ -42,6 +42,7 @@ import AP from "@/model/AP";
 import {MacroIdProvider} from "@/model/ContentProvider/MacroIdProvider";
 import {CustomContentStorageProvider} from "@/model/ContentProvider/CustomContentStorageProvider";
 import {ContentProvider} from "@/model/ContentProvider/ContentProvider";
+import {DiagramType} from "@/model/Diagram";
 
 const DiagramFrame = VueSequence.DiagramFrame;
 
@@ -49,6 +50,7 @@ export default {
   name: "Viewer",
   data: () => {
     return {
+      diagramType: DiagramType.Sequence,
       rawStyles: {},
     }
   },
@@ -60,7 +62,7 @@ export default {
     DiagramFrame
   },
   computed: {
-    ...mapGetters({isDisplayMode: 'isDisplayMode', diagramType: 'diagramType', canEdit: 'canEdit'}),
+    ...mapGetters({isDisplayMode: 'isDisplayMode', canEdit: 'canEdit'}),
     isLite() {
       return globals.apWrapper.isLite();
     },
@@ -76,8 +78,13 @@ export default {
     const customContentStorageProvider = new CustomContentStorageProvider(AP);
     const contentProvider = new ContentProvider(macroIdProvider, customContentStorageProvider);
     const {content} = await contentProvider.load();
-    this.$store.commit('code', content.code);
-    this.rawStyles = content.styles;
+    this.diagramType = content.diagramType;
+    if (this.diagramType === 'mermaid') {
+      this.$store.dispatch('updateMermaidCode', content.mermaidCode)
+    } else {
+      this.$store.commit('code', content.code);
+      this.rawStyles = content.styles;
+    }
     EventBus.$emit('diagramLoaded');
   },
   methods: {

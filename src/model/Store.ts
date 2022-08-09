@@ -68,7 +68,6 @@ export default {
     ...storeConfig.state,
     mermaidCode: 'graph TD; A-->B;',
     mermaidSvg: '',
-    diagramType: DiagramType.Sequence,
     canEdit: false,
     error: null,
     onElementClick: (codeRange: any) => {

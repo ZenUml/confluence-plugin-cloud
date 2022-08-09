@@ -13,10 +13,7 @@ export class CustomContentStorageProvider implements StorageProvider {
     const customContent = await this.apWrapper.getCustomContentById(id);
     // @ts-ignore
     const value = customContent?.body?.raw.value;
-    const parsedValue = JSON.parse(value);
-    const code = parsedValue.code;
-    const styles = parsedValue.styles;
-    return {code, styles};
+    return JSON.parse(value);
   }
 
   async getCustomContentList() {
