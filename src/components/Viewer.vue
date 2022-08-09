@@ -39,12 +39,15 @@ import StylingPanel from "@/components/StylingPanel";
 import ErrorBoundary from "@/components/ErrorBoundary";
 import globals from '@/model/globals';
 import AP from "@/model/AP";
-import {MacroIdProvider} from "@/model/ContentProvider/MacroIdProvider";
-import {CustomContentStorageProvider} from "@/model/ContentProvider/CustomContentStorageProvider";
-import {ContentProvider} from "@/model/ContentProvider/ContentProvider";
 import {DiagramType} from "@/model/Diagram";
+import {MacroIdProvider} from "@/model/ContentProvider/MacroIdProvider";
+import {ContentProvider} from "@/model/ContentProvider/ContentProvider";
+import {ContentPropertyStorageProvider} from "@/model/ContentProvider/ContentPropertyStorageProvider";
+import {CustomContentStorageProvider} from "@/model/ContentProvider/CustomContentStorageProvider";
+import {CompositeContentProvider} from "@/model/ContentProvider/CompositeContentProvider";
 
 const DiagramFrame = VueSequence.DiagramFrame;
+
 
 export default {
   name: "Viewer",
@@ -76,8 +79,11 @@ export default {
   async created() {
     const macroIdProvider = new MacroIdProvider(AP);
     const customContentStorageProvider = new CustomContentStorageProvider(AP);
-    const contentProvider = new ContentProvider(macroIdProvider, customContentStorageProvider);
-    const {content} = await contentProvider.load();
+    const ccContentProvider = new ContentProvider(macroIdProvider, customContentStorageProvider);
+    const contentPropertyStorageProvider = new ContentPropertyStorageProvider(AP);
+    const cpContentProvider = new ContentProvider(macroIdProvider, contentPropertyStorageProvider);
+    const compositeContentProvider = new CompositeContentProvider([ccContentProvider, cpContentProvider]);
+    const {content} = await compositeContentProvider.load();
     this.diagramType = content.diagramType;
     if (this.diagramType === 'mermaid') {
       this.$store.dispatch('updateMermaidCode', content.mermaidCode)
