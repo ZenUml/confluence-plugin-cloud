@@ -47,6 +47,11 @@ const DiagramFrame = VueSequence.DiagramFrame;
 
 export default {
   name: "Viewer",
+  data: () => {
+    return {
+      rawStyles: {},
+    }
+  },
   components: {
     Debug,
     ErrorBoundary,
@@ -60,9 +65,8 @@ export default {
       return globals.apWrapper.isLite();
     },
     styles() {
-      const stylesInStore = this.$store.state.styles || {};
-      const statements = Object.keys(stylesInStore)
-          .map(k => `${k} .participant { background: ${stylesInStore[k].backgroundColor}; }`)
+      const statements = Object.keys(this.rawStyles)
+          .map(k => `${k} .participant { background: ${(this.rawStyles)[k].backgroundColor}; }`)
           .join('\n');
       return `<style> ${statements}</style>`;
     },
@@ -73,6 +77,7 @@ export default {
     const contentProvider = new ContentProvider(macroIdProvider, customContentStorageProvider);
     const {content} = await contentProvider.load();
     this.$store.commit('code', content.code);
+    this.rawStyles = content.styles;
     EventBus.$emit('diagramLoaded');
   },
   methods: {

@@ -30,7 +30,11 @@ export default class MockAp implements IAp {
       return {body: JSON.stringify({
           body: {
             raw: {
-              value: JSON.stringify({source: 'custom-content', code: 'A.method'})
+              value: JSON.stringify({
+                source: 'custom-content',
+                code: 'A.method',
+                styles:{"#A":{"backgroundColor":"#57d9a3"}}
+              })
             }
           }
       })};

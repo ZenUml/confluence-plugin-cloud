@@ -70,7 +70,6 @@ export default {
     mermaidSvg: '',
     diagramType: DiagramType.Sequence,
     canEdit: false,
-    styles: {},
     error: null,
     onElementClick: (codeRange: any) => {
       EventBus.$emit('highlight', codeRange)
