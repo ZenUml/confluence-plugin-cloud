@@ -10,7 +10,11 @@ export class CustomContentStorageProvider implements StorageProvider {
   }
 
   async getContent(id: string): Promise<Object | undefined> {
-    return await this.apWrapper.getCustomContentById(id);
+    const customContent = await this.apWrapper.getCustomContentById(id);
+    // @ts-ignore
+    const value = customContent?.body?.raw.value;
+    const code = JSON.parse(value).code;
+    return {code};
   }
 
   async getCustomContentList() {

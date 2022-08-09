@@ -97,5 +97,3 @@ EventBus.$on('fullscreen', () => {
       height: "100%",
     });
 });
-
-initializeMacro(store);

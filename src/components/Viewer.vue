@@ -38,6 +38,10 @@ import Debug from '@/components/Debug/Debug.vue'
 import StylingPanel from "@/components/StylingPanel";
 import ErrorBoundary from "@/components/ErrorBoundary";
 import globals from '@/model/globals';
+import AP from "@/model/AP";
+import {MacroIdProvider} from "@/model/ContentProvider/MacroIdProvider";
+import {CustomContentStorageProvider} from "@/model/ContentProvider/CustomContentStorageProvider";
+import {ContentProvider} from "@/model/ContentProvider/ContentProvider";
 
 const DiagramFrame = VueSequence.DiagramFrame;
 
@@ -62,6 +66,14 @@ export default {
           .join('\n');
       return `<style> ${statements}</style>`;
     },
+  },
+  async created() {
+    const macroIdProvider = new MacroIdProvider(AP);
+    const customContentStorageProvider = new CustomContentStorageProvider(AP);
+    const contentProvider = new ContentProvider(macroIdProvider, customContentStorageProvider);
+    const {content} = await contentProvider.load();
+    this.$store.commit('code', content.code);
+    EventBus.$emit('diagramLoaded');
   },
   methods: {
     deselectAll(event) {

@@ -25,6 +25,17 @@ export default class MockAp implements IAp {
       return 'OK. (req is empty)'
     }
 
+    // if request.url start with '/rest/api/content/fake-content-id', return mocked response
+    if (req.url.startsWith('/rest/api/content/fake-content-id')) {
+      return {body: JSON.stringify({
+          body: {
+            raw: {
+              value: JSON.stringify({source: 'custom-content', code: 'A.method'})
+            }
+          }
+      })};
+    }
+
     // if request.url start with '/rest/api/content?', return {}
     if (req.url.startsWith('/rest/api/content?')) {
       console.log('req.url.startsWith(\'/rest/api/content?\')');
