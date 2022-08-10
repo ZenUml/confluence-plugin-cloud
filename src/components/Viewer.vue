@@ -38,16 +38,10 @@ import Debug from '@/components/Debug/Debug.vue'
 import StylingPanel from "@/components/StylingPanel";
 import ErrorBoundary from "@/components/ErrorBoundary";
 import globals from '@/model/globals';
-import AP from "@/model/AP";
 import {DiagramType} from "@/model/Diagram";
-import {MacroIdProvider} from "@/model/ContentProvider/MacroIdProvider";
-import {ContentProvider} from "@/model/ContentProvider/ContentProvider";
-import {ContentPropertyStorageProvider} from "@/model/ContentProvider/ContentPropertyStorageProvider";
-import {CustomContentStorageProvider} from "@/model/ContentProvider/CustomContentStorageProvider";
-import {CompositeContentProvider} from "@/model/ContentProvider/CompositeContentProvider";
-import {MacroBodyStorageProvider} from "@/model/ContentProvider/MacroBodyStorageProvider";
-
+import defaultCompositeContentProvider from "@/model/ContentProvider/CompositeContentProvider";
 const DiagramFrame = VueSequence.DiagramFrame;
+
 
 
 export default {
@@ -78,14 +72,7 @@ export default {
     },
   },
   async created() {
-    const macroIdProvider = new MacroIdProvider(AP);
-    const customContentStorageProvider = new CustomContentStorageProvider(AP);
-    const ccContentProvider = new ContentProvider(macroIdProvider, customContentStorageProvider);
-    const contentPropertyStorageProvider = new ContentPropertyStorageProvider(AP);
-    const cpContentProvider = new ContentProvider(macroIdProvider, contentPropertyStorageProvider);
-    const macroBodyStorageProvider = new MacroBodyStorageProvider(AP);
-    const mbContentProvider = new ContentProvider(null, macroBodyStorageProvider);
-    const compositeContentProvider = new CompositeContentProvider([ccContentProvider, cpContentProvider, mbContentProvider]);
+    const compositeContentProvider = defaultCompositeContentProvider();
     const {content} = await compositeContentProvider.load();
     this.diagramType = content.diagramType || DiagramType.Sequence;
     if (this.diagramType === 'mermaid') {
