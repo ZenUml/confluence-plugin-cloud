@@ -45,6 +45,7 @@ import {ContentProvider} from "@/model/ContentProvider/ContentProvider";
 import {ContentPropertyStorageProvider} from "@/model/ContentProvider/ContentPropertyStorageProvider";
 import {CustomContentStorageProvider} from "@/model/ContentProvider/CustomContentStorageProvider";
 import {CompositeContentProvider} from "@/model/ContentProvider/CompositeContentProvider";
+import {MacroBodyStorageProvider} from "@/model/ContentProvider/MacroBodyStorageProvider";
 
 const DiagramFrame = VueSequence.DiagramFrame;
 
@@ -82,9 +83,11 @@ export default {
     const ccContentProvider = new ContentProvider(macroIdProvider, customContentStorageProvider);
     const contentPropertyStorageProvider = new ContentPropertyStorageProvider(AP);
     const cpContentProvider = new ContentProvider(macroIdProvider, contentPropertyStorageProvider);
-    const compositeContentProvider = new CompositeContentProvider([ccContentProvider, cpContentProvider]);
+    const macroBodyStorageProvider = new MacroBodyStorageProvider(AP);
+    const mbContentProvider = new ContentProvider(null, macroBodyStorageProvider);
+    const compositeContentProvider = new CompositeContentProvider([ccContentProvider, cpContentProvider, mbContentProvider]);
     const {content} = await compositeContentProvider.load();
-    this.diagramType = content.diagramType;
+    this.diagramType = content.diagramType || DiagramType.Sequence;
     if (this.diagramType === 'mermaid') {
       this.$store.dispatch('updateMermaidCode', content.mermaidCode)
     } else {

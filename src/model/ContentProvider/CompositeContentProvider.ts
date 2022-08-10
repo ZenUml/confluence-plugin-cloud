@@ -1,7 +1,7 @@
 import {ContentProvider} from "@/model/ContentProvider/ContentProvider";
 
 export class CompositeContentProvider {
-  private _contentProviders: Array<ContentProvider>;
+  private readonly _contentProviders: Array<ContentProvider>;
 
   constructor(contentProviders: Array<ContentProvider>) {
     this._contentProviders = contentProviders;

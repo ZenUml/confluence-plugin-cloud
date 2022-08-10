@@ -11,7 +11,7 @@ export class ContentProvider {
   }
 
   async load() {
-    const id = await this._idProvider.getId();
+    const id = await this._idProvider?.getId();
     let content: Object | undefined;
     // content property provider relies on uuid as the key
     content = await this._storageProvider.getContent(id);
