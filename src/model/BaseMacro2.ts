@@ -128,9 +128,9 @@ class BaseMacro2 {
   // Warning! Do not call getXXX in save. Do retest if you want to call getXXX.
   // It does not work as of 17th May 2020. That is why we have stored key and version
   async save(diagram: Diagram) {
-    if (!this._loaded) {
-      throw new Error('You have to call load before calling save()')
-    }
+    // if (!this._loaded) {
+    //   throw new Error('You have to call load before calling save()')
+    // }
     const uuid = this._uuid || uuidv4();
 
     let customContent;

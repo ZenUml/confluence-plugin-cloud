@@ -2,7 +2,6 @@ import SwaggerEditorBundle from 'swagger-editor'
 import SpecListener from './utils/spec-listener'
 
 import Vue from 'vue'
-import BaseMacro2 from "./model/BaseMacro2";
 import SaveAndGoBackButton from "@/components/SaveAndGoBackButton.vue";
 // @ts-ignore
 import './assets/tailwind.css'
@@ -12,6 +11,7 @@ import Example from '@/model/OpenApi/OpenApiExample'
 import globals from '@/model/globals';
 import AP from "@/model/AP";
 import {DiagramType} from "@/model/Diagram";
+import defaultCompositeContentProvider from "@/model/ContentProvider/CompositeContentProvider";
 
 new Vue({
   render: h => h(SaveAndGoBackButton, {
@@ -31,17 +31,13 @@ async function initializeMacro() {
   const apWrapper = globals.apWrapper;
   await apWrapper.initializeContext();
 
-  const macro = new BaseMacro2(apWrapper);
-  // await macro.load();
-
-  // @ts-ignore
-  globals.macro = macro;
-  const {code} = await macro.load();
-  console.log('-------------- loaded spec:', code)
+  const compositeContentProvider = defaultCompositeContentProvider();
+  const {content} = await compositeContentProvider.load();
+  console.log('-------------- loaded spec:', content?.code)
     // eslint-disable-next-line
     // @ts-ignore
-    window.updateSpec(code || Example);
-    console.log('-------------- updateSpec with:', code)
+    window.updateSpec(content?.code || Example);
+    console.log('-------------- updateSpec with:', content?.code)
 }
 
 
