@@ -1,30 +1,35 @@
-import MockApConfluence from './model/MockApConfluence'
-import GraphMacro from './model/GraphMacro'
 import AP from "@/model/AP";
 import createAttachmentIfContentChanged from "@/model/Attachment";
 import {trackEvent} from "@/utils/window";
 import '@/components/Debug/DebugMounter.ts'
 import './assets/tailwind.css'
 import globals from '@/model/globals';
+import {MacroIdProvider} from "@/model/ContentProvider/MacroIdProvider";
+import {CustomContentStorageProvider} from "@/model/ContentProvider/CustomContentStorageProvider";
+import {ContentProvider} from "@/model/ContentProvider/ContentProvider";
+import {ContentPropertyStorageProvider} from "@/model/ContentProvider/ContentPropertyStorageProvider";
+import {MacroBodyStorageProvider} from "@/model/ContentProvider/MacroBodyStorageProvider";
+import {CompositeContentProvider} from "@/model/ContentProvider/CompositeContentProvider";
+import {decompress} from '@/utils/compress';
 
-console.debug('Running graph main viewer');
-if (window.location.href.includes('localhost')) {
-  // eslint-disable-next-line
-  console.log('You are using a mocked AP.confluence')
-  // @ts-ignore
-    window.AP = {
-    confluence: new MockApConfluence()
-  }
-}
-async function initializeMacro() {
+(async function initializeMacro() {
   const apWrapper = globals.apWrapper;
   await apWrapper.initializeContext();
 
-  const macro = new GraphMacro(apWrapper);
-  // @ts-ignore
-  window.macro = macro;
-  const {graphXml} = await macro.load();
-
+  const macroIdProvider = new MacroIdProvider(AP);
+  const customContentStorageProvider = new CustomContentStorageProvider(AP);
+  const ccContentProvider = new ContentProvider(macroIdProvider, customContentStorageProvider);
+  const contentPropertyStorageProvider = new ContentPropertyStorageProvider(AP);
+  const cpContentProvider = new ContentProvider(macroIdProvider, contentPropertyStorageProvider);
+  const macroBodyStorageProvider = new MacroBodyStorageProvider(AP);
+  const mbContentProvider = new ContentProvider(undefined, macroBodyStorageProvider);
+  const compositeContentProvider = new CompositeContentProvider([ccContentProvider, cpContentProvider, mbContentProvider]);
+  const {content} = await compositeContentProvider.load();
+  let graphXml = content.graphXml;
+  if (content?.compressed) {
+    graphXml = decompress(content.graphXml);
+  }
+  console.debug('graphXml', graphXml);
   if(graphXml) {
     // setGraphStyle is only available on viewer and maybe should only be used on viewer.
     // @ts-ignore
@@ -43,6 +48,4 @@ async function initializeMacro() {
       }
     }, 1500);
   }
-}
-
-initializeMacro();
+})()

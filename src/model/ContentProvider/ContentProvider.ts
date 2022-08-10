@@ -2,10 +2,10 @@ import {MacroIdProvider} from "@/model/ContentProvider/MacroIdProvider";
 import {StorageProvider} from "@/model/ContentProvider/StorageProvider";
 
 export class ContentProvider {
-  private _idProvider: MacroIdProvider;
+  private _idProvider: MacroIdProvider | undefined;
   private _storageProvider: StorageProvider;
 
-  constructor(idProvider: MacroIdProvider, storageProvider: StorageProvider) {
+  constructor(idProvider: MacroIdProvider | undefined, storageProvider: StorageProvider) {
     this._idProvider = idProvider;
     this._storageProvider = storageProvider;
   }
