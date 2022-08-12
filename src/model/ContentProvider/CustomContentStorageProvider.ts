@@ -10,7 +10,7 @@ export class CustomContentStorageProvider implements StorageProvider {
     this.apWrapper = new ApWrapper2(AP);
   }
 
-  async getContent(id: string | undefined): Promise<Diagram> {
+  async getDiagram(id: string | undefined): Promise<Diagram> {
     if (!id) {
       return NULL_DIAGRAM;
     }

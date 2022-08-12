@@ -14,7 +14,7 @@ export class ContentProvider {
     const id = await this._idProvider?.getId();
     let content: Object | undefined;
     // content property provider relies on uuid as the key
-    content = await this._storageProvider.getContent(id);
+    content = await this._storageProvider.getDiagram(id);
     return {id, content}
   }
 }

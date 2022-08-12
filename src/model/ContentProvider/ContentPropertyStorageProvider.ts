@@ -29,7 +29,7 @@ export class ContentPropertyStorageProvider implements StorageProvider {
     this.apWrapper = new ApWrapper2(AP);
   }
 
-  async getContent(id: string | undefined): Promise<Diagram> {
+  async getDiagram(id: string | undefined): Promise<Diagram> {
     const contentProperty = await this.apWrapper.getContentProperty2();
     console.log('content property', contentProperty);
     if(contentProperty?.value.source === DataSource.ContentPropertyOld) {

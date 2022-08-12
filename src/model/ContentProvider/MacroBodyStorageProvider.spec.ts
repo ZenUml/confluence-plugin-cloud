@@ -6,7 +6,7 @@ describe('MacroBodyStorageProvider', () => {
   test('macro body is empty', async () => {
     const mockAp = new MockAp(undefined);
     const storageProvider = new MacroBodyStorageProvider(mockAp);
-    const diagram = await storageProvider.getContent(undefined)
+    const diagram = await storageProvider.getDiagram(undefined)
     expect(diagram).toStrictEqual(NULL_DIAGRAM);
   })
 
@@ -15,7 +15,7 @@ describe('MacroBodyStorageProvider', () => {
     mockAp.confluence.saveMacro({}, 'A.method')
     const storageProvider = new MacroBodyStorageProvider(mockAp);
 
-    const diagram = await storageProvider.getContent('fake-content-id')
+    const diagram = await storageProvider.getDiagram('fake-content-id')
     expect(diagram).toStrictEqual({
       "code": "A.method",
       "diagramType": "sequence"

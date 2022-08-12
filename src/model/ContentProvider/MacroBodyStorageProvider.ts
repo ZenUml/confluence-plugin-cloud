@@ -10,7 +10,7 @@ export class MacroBodyStorageProvider implements StorageProvider {
     this.apWrapper = new ApWrapper2(AP);
   }
 
-  async getContent(id: string | undefined): Promise<Diagram> {
+  async getDiagram(id: string | undefined): Promise<Diagram> {
     const macroBody = await this.apWrapper.getMacroBody();
     if(!macroBody) {
       return NULL_DIAGRAM;

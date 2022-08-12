@@ -51,7 +51,7 @@ describe('Content Provider', () => {
   test('cannot find content property', async () => {
     const contentPropertyStorageProvider = new ContentPropertyStorageProvider(mockAp);
     try {
-      await contentPropertyStorageProvider.getContent(undefined)
+      await contentPropertyStorageProvider.getDiagram(undefined)
     } catch (e: any) {
       expect(e.message).toBe('property is not found with key:zenuml-sequence-macro-fake-macro-uuid-body')
     }
@@ -60,7 +60,7 @@ describe('Content Provider', () => {
   // body
   test('get macro body', async () => {
     const storageProvider = new MacroBodyStorageProvider(mockAp);
-    await storageProvider.getContent(undefined)
+    await storageProvider.getDiagram(undefined)
   })
 
   test('or content property old', async () => {
@@ -69,7 +69,7 @@ describe('Content Provider', () => {
       key: 'zenuml-sequence-macro-1234-body', version: {number: 1}, value: 'A.method'
     }, () => {})
     const contentPropertyStorageProvider = new ContentPropertyStorageProvider(mockAp);
-    const diagram = await contentPropertyStorageProvider.getContent(undefined)
+    const diagram = await contentPropertyStorageProvider.getDiagram(undefined)
     expect(diagram?.code).toBe('A.method')
 
 
@@ -91,7 +91,7 @@ describe('Content Provider', () => {
       key: 'zenuml-sequence-macro-1234-body', version: {number: 1}, value: {code: 'A.method'}
     }, () => {})
     const contentPropertyStorageProvider = new ContentPropertyStorageProvider(mockAp);
-    const diagram = await contentPropertyStorageProvider.getContent(undefined)
+    const diagram = await contentPropertyStorageProvider.getDiagram(undefined)
     expect(diagram?.code).toBe('A.method')
 
     expect(gtag.mock.calls).toEqual([
@@ -113,7 +113,7 @@ describe('Content Provider', () => {
       value: {code: 'A.method', styles: {'#A': {backgroundColor: '#FFF'}}}
     }, () => {})
     const contentPropertyStorageProvider = new ContentPropertyStorageProvider(mockAp);
-    const diagram = await contentPropertyStorageProvider.getContent(undefined)
+    const diagram = await contentPropertyStorageProvider.getDiagram(undefined)
 
     expect(diagram?.code).toBe('A.method')
     const styles = diagram?.styles || {}
@@ -126,7 +126,7 @@ describe('Content Provider', () => {
     mockApConfluence.saveMacro({uuid: '1234'}, 'body')
     mockApConfluence.setContentProperty({version: {number: 0}, key: 'zenuml-sequence-macro-1234-body', value: 'A.method'}, () => {})
     const contentPropertyStorageProvider = new ContentPropertyStorageProvider(mockAp);
-    const diagram = await contentPropertyStorageProvider.getContent(undefined)
+    const diagram = await contentPropertyStorageProvider.getDiagram(undefined)
     expect(diagram?.code).toBe('A.method')
   })
 
@@ -134,7 +134,7 @@ describe('Content Provider', () => {
   test('if no macro data', async () => {
     mockApConfluence.saveMacro({}, 'body')
     const storageProvider = new MacroBodyStorageProvider(mockAp);
-    const diagram = await storageProvider.getContent(undefined)
+    const diagram = await storageProvider.getDiagram(undefined)
     expect(diagram?.code).toBe('body')
   })
 
@@ -142,7 +142,7 @@ describe('Content Provider', () => {
     mockApConfluence.saveMacro({customContentId: 1234}, '')
     mockAp.setCustomContent(1234, {code: 'A.m'})
     const storageProvider = new CustomContentStorageProvider(mockAp);
-    const diagram = await storageProvider.getContent('1234')
+    const diagram = await storageProvider.getDiagram('1234')
     expect(diagram?.code).toBe('A.m')
   })
 
@@ -152,7 +152,7 @@ describe('Content Provider', () => {
       return buildResponse({code: 'A.m', diagramType: DiagramType.Sequence})
     }
     const storageProvider = new CustomContentStorageProvider(mockAp);
-    const diagram = await storageProvider.getContent('1234')
+    const diagram = await storageProvider.getDiagram('1234')
     expect(diagram?.code).toBe('A.m')
   })
 

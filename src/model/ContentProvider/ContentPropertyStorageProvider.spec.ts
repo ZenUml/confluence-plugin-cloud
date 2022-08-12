@@ -25,7 +25,7 @@ describe('ContentPropertyStorageProvider', () => {
   test('cannot find content property', async () => {
     const contentPropertyStorageProvider = new ContentPropertyStorageProvider(mockAp);
     try {
-      await contentPropertyStorageProvider.getContent(undefined)
+      await contentPropertyStorageProvider.getDiagram(undefined)
     } catch (e: any) {
       expect(e.message).toBe('property is not found with key:zenuml-sequence-macro-fake-macro-uuid-body')
     }
@@ -37,7 +37,7 @@ describe('ContentPropertyStorageProvider', () => {
       key: 'zenuml-sequence-macro-1234-body', version: {number: 1}, value: 'A.method'
     }, () => {})
     const contentPropertyStorageProvider = new ContentPropertyStorageProvider(mockAp);
-    const diagram = await contentPropertyStorageProvider.getContent(undefined)
+    const diagram = await contentPropertyStorageProvider.getDiagram(undefined)
     expect(diagram?.code).toBe('A.method')
 
     expect(gtag.mock.calls).toEqual([
@@ -59,7 +59,7 @@ describe('ContentPropertyStorageProvider', () => {
       value: {code: 'A.method', styles: {'#A': {backgroundColor: '#FFF'}}}
     }, () => {})
     const contentPropertyStorageProvider = new ContentPropertyStorageProvider(mockAp);
-    const diagram = await contentPropertyStorageProvider.getContent(undefined)
+    const diagram = await contentPropertyStorageProvider.getDiagram(undefined)
 
     expect(diagram?.code).toBe('A.method')
     const styles = diagram?.styles || {}

@@ -7,7 +7,7 @@ describe('ContentPropertyStorageProvider', () => {
   test('cannot find custom content', async () => {
     const mockAp = new MockAp(undefined);
     const storageProvider = new CustomContentStorageProvider(mockAp);
-    const diagram = await storageProvider.getContent(undefined)
+    const diagram = await storageProvider.getDiagram(undefined)
     expect(diagram).toStrictEqual(NULL_DIAGRAM);
   })
 
@@ -15,7 +15,7 @@ describe('ContentPropertyStorageProvider', () => {
     const mockAp = new MockAp('abcd');
 
     const storageProvider = new CustomContentStorageProvider(mockAp);
-    const diagram = await storageProvider.getContent('fake-content-id')
+    const diagram = await storageProvider.getDiagram('fake-content-id')
     expect(diagram).toStrictEqual({
       "code": "A.method",
       "source": "custom-content",
