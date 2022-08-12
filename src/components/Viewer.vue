@@ -38,7 +38,7 @@ import Debug from '@/components/Debug/Debug.vue'
 import StylingPanel from "@/components/StylingPanel";
 import ErrorBoundary from "@/components/ErrorBoundary";
 import globals from '@/model/globals';
-import {DiagramType} from "@/model/Diagram/Diagram";
+import {DataSource, DiagramType, NULL_DIAGRAM} from "@/model/Diagram/Diagram";
 import defaultCompositeContentProvider from "@/model/ContentProvider/CompositeContentProvider";
 import AP from "@/model/AP";
 const DiagramFrame = VueSequence.DiagramFrame;
@@ -49,6 +49,8 @@ export default {
   name: "Viewer",
   data: () => {
     return {
+      doc: NULL_DIAGRAM,
+      canUserEdit: false,
       diagramType: DiagramType.Sequence,
       rawStyles: {},
     }
@@ -62,7 +64,9 @@ export default {
   },
   computed: {
     ...mapGetters({isDisplayMode: 'isDisplayMode', canEdit: 'canEdit'}),
-
+    canEdit() {
+      return this.doc.source === DataSource.CustomContent && !this.doc.isCopy && this.canUserEdit;
+    },
     isLite() {
       return globals.apWrapper.isLite();
     },
@@ -76,6 +80,9 @@ export default {
   async created() {
     const compositeContentProvider = defaultCompositeContentProvider(AP);
     const {doc} = await compositeContentProvider.load();
+    this.doc = doc;
+    await globals.apWrapper.initializeContext();
+    this.canUserEdit = await globals.apWrapper.canUserEdit();
     this.diagramType = doc.diagramType || DiagramType.Sequence;
     if (this.diagramType === 'mermaid') {
       this.$store.dispatch('updateMermaidCode', doc.mermaidCode)
