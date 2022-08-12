@@ -4,6 +4,7 @@ import {IAp} from "@/model/IAp";
 import {CustomContentStorageProvider} from "@/model/ContentProvider/CustomContentStorageProvider";
 import {ContentPropertyStorageProvider} from "@/model/ContentProvider/ContentPropertyStorageProvider";
 import {MacroBodyStorageProvider} from "@/model/ContentProvider/MacroBodyStorageProvider";
+import {NULL_DIAGRAM} from "@/model/Diagram/Diagram";
 
 export class CompositeContentProvider {
   private readonly _contentProviders: Array<ContentProvider>;
@@ -17,7 +18,7 @@ export class CompositeContentProvider {
     for (const contentProvider of this._contentProviders) {
       try {
         const { id, content } = await contentProvider.load();
-        if (content) {
+        if (content !== NULL_DIAGRAM) {
           return {id, content};
         }
       } catch (e) {
