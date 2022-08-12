@@ -1,7 +1,7 @@
 import ApWrapper2 from "@/model/ApWrapper2";
 import {IAp} from "@/model/IAp";
 import {StorageProvider} from "@/model/ContentProvider/StorageProvider";
-import {Diagram, DiagramType} from "@/model/Diagram/Diagram";
+import {Diagram, DiagramType, NULL_DIAGRAM} from "@/model/Diagram/Diagram";
 
 export class MacroBodyStorageProvider implements StorageProvider {
   private apWrapper: ApWrapper2;
@@ -12,7 +12,9 @@ export class MacroBodyStorageProvider implements StorageProvider {
 
   async getContent(id: string | undefined): Promise<Diagram | undefined> {
     const macroBody = await this.apWrapper.getMacroBody();
-    console.log('macro body', macroBody);
+    if(!macroBody) {
+      return NULL_DIAGRAM;
+    }
     return {diagramType: DiagramType.Sequence, code: macroBody};
   }
 
