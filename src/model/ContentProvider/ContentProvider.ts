@@ -12,7 +12,7 @@ export class ContentProvider {
 
   async load() {
     const id = await this._idProvider?.getId();
-    const content = await this._storageProvider.getDiagram(id);
-    return {id, content}
+    const doc = await this._storageProvider.getDiagram(id);
+    return {id, doc}
   }
 }

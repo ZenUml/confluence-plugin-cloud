@@ -33,9 +33,9 @@ async function initializeMacro() {
     const idProvider = new MacroIdProvider(AP);
     const customContentStorageProvider = new CustomContentStorageProvider(AP);
     const contentProvider = new ContentProvider(idProvider, customContentStorageProvider);
-    const { content } = await contentProvider.load()
+    const { doc } = await contentProvider.load()
     // @ts-ignore
-    const { diagramType } = content.value;
+    const { diagramType } = doc.value;
 
     if(diagramType) {
       const url = `${getViewerUrl(diagramType)}${window.location.search}`;

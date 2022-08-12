@@ -12,8 +12,8 @@ describe('ContentPropertyStorageProvider', () => {
     mockAp.confluence.saveMacro({}, 'body')
 
     const contentProvider = defaultCompositeContentProvider(mockAp);
-    const {content} = (await contentProvider.load());
-    expect(content.code).toBe('body');
+    const {doc} = (await contentProvider.load());
+    expect(doc.code).toBe('body');
   })
 
 })

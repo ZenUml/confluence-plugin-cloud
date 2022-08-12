@@ -17,9 +17,9 @@ export class CompositeContentProvider {
     let content = {};
     for (const contentProvider of this._contentProviders) {
       try {
-        const { id, content } = await contentProvider.load();
-        if (content !== NULL_DIAGRAM) {
-          return {id, content};
+        const { id, doc } = await contentProvider.load();
+        if (doc !== NULL_DIAGRAM) {
+          return {id, doc};
         }
       } catch (e) {
         console.error(e);

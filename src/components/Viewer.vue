@@ -62,6 +62,7 @@ export default {
   },
   computed: {
     ...mapGetters({isDisplayMode: 'isDisplayMode', canEdit: 'canEdit'}),
+
     isLite() {
       return globals.apWrapper.isLite();
     },
@@ -74,13 +75,13 @@ export default {
   },
   async created() {
     const compositeContentProvider = defaultCompositeContentProvider(AP);
-    const {content} = await compositeContentProvider.load();
-    this.diagramType = content.diagramType || DiagramType.Sequence;
+    const {doc} = await compositeContentProvider.load();
+    this.diagramType = doc.diagramType || DiagramType.Sequence;
     if (this.diagramType === 'mermaid') {
-      this.$store.dispatch('updateMermaidCode', content.mermaidCode)
+      this.$store.dispatch('updateMermaidCode', doc.mermaidCode)
     } else {
-      this.$store.commit('code', content.code);
-      this.rawStyles = content.styles || {};
+      this.$store.commit('code', doc.code);
+      this.rawStyles = doc.styles || {};
     }
     EventBus.$emit('diagramLoaded');
   },
