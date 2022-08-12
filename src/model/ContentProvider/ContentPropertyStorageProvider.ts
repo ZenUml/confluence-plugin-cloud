@@ -44,13 +44,8 @@ export class ContentPropertyStorageProvider implements StorageProvider {
     let key = this.apWrapper.propertyKey(uuid);
     let property = await this.apWrapper.getContentProperty(key);
     if (!property) {
-      let message = 'property is not found with key:' + key;
-      console.error(message);
-      trackEvent(message, 'get_content_property', 'warning');
-      throw {
-        message: message,
-        data: macroData
-      }
+      console.warn('property is not found with key:' + key);
+      return NULL_DIAGRAM;
     }
     contentProperty = Object.assign({}, property) as IContentPropertyNormalised;
     if (typeof property.value === "string") {
