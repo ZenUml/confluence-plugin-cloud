@@ -1,79 +1,30 @@
 import MockAp from '@/model/MockAp'
-import helper from '../../../tests/unit/TestHelper';
 import {ContentPropertyStorageProvider} from "@/model/ContentProvider/ContentPropertyStorageProvider";
-import MockApConfluence from "@/model/MockApConfluence";
 import {CustomContentStorageProvider} from "@/model/ContentProvider/CustomContentStorageProvider";
 import {NULL_DIAGRAM} from "@/model/Diagram/Diagram";
 
-let mockAp: MockAp, mockApConfluence: MockApConfluence;
-
-
-// generate response for AP.request. The parameter is the `value` at {body:"body: raw: { value }"}
 describe('ContentPropertyStorageProvider', () => {
-  let gtag: any;
-  const contentId = 'abcd'
-
-  beforeEach(() => {
-    helper.setUpUrlParam('contentKey=sequence');
-
-    mockAp = new MockAp(contentId);
-    mockApConfluence = mockAp.confluence as MockApConfluence;
-
-    gtag = jest.fn();
-    // @ts-ignore
-    window.gtag = gtag;
-  });
-
   test('cannot find custom content', async () => {
+    const mockAp = new MockAp(undefined);
     const storageProvider = new CustomContentStorageProvider(mockAp);
     const diagram = await storageProvider.getContent(undefined)
     expect(diagram).toStrictEqual(NULL_DIAGRAM);
   })
 
-  test('or content property old', async () => {
-    mockApConfluence.saveMacro({uuid: '1234'}, '')
-    mockApConfluence.setContentProperty({
-      key: 'zenuml-sequence-macro-1234-body', version: {number: 1}, value: 'A.method'
-    }, () => {})
-    const contentPropertyStorageProvider = new ContentPropertyStorageProvider(mockAp);
-    const diagram = await contentPropertyStorageProvider.getContent(undefined)
-    expect(diagram?.code).toBe('A.method')
+  test('custom content', async () => {
+    const mockAp = new MockAp('abcd');
 
-    expect(gtag.mock.calls).toEqual([
-      ['event', 'load_macro', {
-        event_category: 'content_property_old',
-        event_label: 'sequence',
-        client_domain: 'unknown_atlassian_domain',
-        user_account_id: 'unknown_user_account_id',
-        confluence_space: 'unknown_space'
-      }],
-    ])
+    const storageProvider = new CustomContentStorageProvider(mockAp);
+    const diagram = await storageProvider.getContent('fake-content-id')
+    expect(diagram).toStrictEqual({
+      "code": "A.method",
+      "source": "custom-content",
+      "styles": {
+        "#A": {
+          "backgroundColor": "#57d9a3"
+        }
+      }
+    });
   })
 
-  test('or content property as object {code, styles}', async () => {
-    mockApConfluence.saveMacro({uuid: '1234'}, '')
-    mockApConfluence.setContentProperty({
-      key: 'zenuml-sequence-macro-1234-body',
-      version: {number: 1},
-      value: {code: 'A.method', styles: {'#A': {backgroundColor: '#FFF'}}}
-    }, () => {})
-    const contentPropertyStorageProvider = new ContentPropertyStorageProvider(mockAp);
-    const diagram = await contentPropertyStorageProvider.getContent(undefined)
-
-    expect(diagram?.code).toBe('A.method')
-    const styles = diagram?.styles || {}
-    // @ts-ignore
-    expect(styles['#A'].backgroundColor).toBe('#FFF')
-
-    expect(gtag.mock.calls).toEqual([
-      ['event', 'load_macro', {
-        event_category: 'content_property',
-        event_label: '_sequence',
-        client_domain: 'unknown_atlassian_domain',
-        user_account_id: 'unknown_user_account_id',
-        confluence_space: 'unknown_space'
-      }],
-    ])
-
-  })
 })
