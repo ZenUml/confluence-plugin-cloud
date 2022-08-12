@@ -3,7 +3,7 @@ import {IAp} from "@/model/IAp";
 import {StorageProvider} from "@/model/ContentProvider/StorageProvider";
 import {DataSource, Diagram, DiagramType, NULL_DIAGRAM} from "@/model/Diagram/Diagram";
 import {trackEvent} from "@/utils/window";
-import {IContentPropertyNormalised} from "@/model/IContentProperty";
+import {IContentProperty, IContentPropertyNormalised} from "@/model/IContentProperty";
 
 // deprecated: We should rely on diagram.diagramType. For old diagrams we do not have that saved.
 function getDiagramType(diagram: Diagram | undefined): string {
@@ -33,8 +33,6 @@ export class ContentPropertyStorageProvider implements StorageProvider {
   // We load content property only if the entry is a macro but not a dialog.
   // So we do not need id to be passed in.
   async getDiagram(id: undefined): Promise<Diagram> {
-    let contentProperty;
-
     let macroData = await this.apWrapper.getMacroData();
     const uuid = macroData?.uuid;
     if (!uuid) {
@@ -47,25 +45,27 @@ export class ContentPropertyStorageProvider implements StorageProvider {
       console.warn('property is not found with key:' + key);
       return NULL_DIAGRAM;
     }
-    contentProperty = Object.assign({}, property) as IContentPropertyNormalised;
+    const contentProperty = ContentPropertyStorageProvider._normaliseContentProperty(property, key);
+
+    return contentProperty.value;
+  }
+
+  private static _normaliseContentProperty(property: IContentProperty, key: string) {
+    const contentProperty = Object.assign({}, property) as IContentPropertyNormalised;
     if (typeof property.value === "string") {
       contentProperty.value = {
         diagramType: DiagramType.Sequence,
         source: DataSource.ContentPropertyOld,
         code: property.value
       }
+      trackDiagramEvent(contentProperty?.value, 'load_macro', 'content_property_old');
     } else {
       contentProperty.value.source = DataSource.ContentProperty;
+      trackDiagramEvent(contentProperty?.value, 'load_macro', 'content_property');
     }
     contentProperty.value.id = key;
     contentProperty.value.payload = contentProperty; // To cache content property key and version on Diagram object
-
-    if(contentProperty?.value.source === DataSource.ContentPropertyOld) {
-      trackDiagramEvent(contentProperty?.value, 'load_macro', 'content_property_old');
-    } else {
-      trackDiagramEvent(contentProperty?.value, 'load_macro', 'content_property');
-    }
-    return contentProperty?.value || NULL_DIAGRAM;
+    return contentProperty;
   }
 
   async getCustomContentList() {
