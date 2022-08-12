@@ -1,7 +1,7 @@
 import ApWrapper2 from "@/model/ApWrapper2";
 import {IAp} from "@/model/IAp";
 import {StorageProvider} from "@/model/ContentProvider/StorageProvider";
-import {DataSource, Diagram} from "@/model/Diagram/Diagram";
+import {DataSource, Diagram, NULL_DIAGRAM} from "@/model/Diagram/Diagram";
 import {trackEvent} from "@/utils/window";
 
 // deprecated: We should rely on diagram.diagramType. For old diagrams we do not have that saved.
@@ -29,7 +29,7 @@ export class ContentPropertyStorageProvider implements StorageProvider {
     this.apWrapper = new ApWrapper2(AP);
   }
 
-  async getContent(id: string | undefined): Promise<Diagram | undefined> {
+  async getContent(id: string | undefined): Promise<Diagram> {
     const contentProperty = await this.apWrapper.getContentProperty2();
     console.log('content property', contentProperty);
     if(contentProperty?.value.source === DataSource.ContentPropertyOld) {
@@ -37,7 +37,7 @@ export class ContentPropertyStorageProvider implements StorageProvider {
     } else {
       trackDiagramEvent(contentProperty?.value, 'load_macro', 'content_property');
     }
-    return contentProperty?.value;
+    return contentProperty?.value || NULL_DIAGRAM;
   }
 
   async getCustomContentList() {
