@@ -10,7 +10,7 @@ import '@/components/Debug/DebugMounter.ts'
 import Example from '@/model/OpenApi/OpenApiExample'
 import globals from '@/model/globals';
 import AP from "@/model/AP";
-import {DiagramType} from "@/model/Diagram";
+import {DiagramType} from "@/model/Diagram/Diagram";
 import defaultCompositeContentProvider from "@/model/ContentProvider/CompositeContentProvider";
 
 new Vue({
@@ -31,7 +31,7 @@ async function initializeMacro() {
   const apWrapper = globals.apWrapper;
   await apWrapper.initializeContext();
 
-  const compositeContentProvider = defaultCompositeContentProvider();
+  const compositeContentProvider = defaultCompositeContentProvider(AP);
   const {content} = await compositeContentProvider.load();
   console.log('-------------- loaded spec:', content?.code)
     // eslint-disable-next-line

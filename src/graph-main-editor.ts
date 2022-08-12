@@ -1,11 +1,12 @@
 import Vue from 'vue'
-import GraphMacro from "@/model/GraphMacro";
 import SaveAndGoBackButton from "@/components/SaveAndGoBackButton.vue";
 // @ts-ignore
 import './assets/tailwind.css'
 
 import globals from '@/model/globals';
 import AP from "@/model/AP";
+import defaultCompositeContentProvider from "@/model/ContentProvider/CompositeContentProvider";
+import {decompress} from "@/utils/compress";
 
 new Vue({
   render: h => h(SaveAndGoBackButton, {
@@ -24,11 +25,12 @@ async function initializeMacro() {
   const apWrapper = globals.apWrapper;
   await apWrapper.initializeContext();
 
-  const macro = new GraphMacro(apWrapper);
-
-  // @ts-ignore
-  window.macro = macro;
-  const {graphXml} = await macro.load();
+  const compositeContentProvider = defaultCompositeContentProvider(AP);
+  const {content} = await compositeContentProvider.load();
+  let graphXml = content.graphXml;
+  if (content?.compressed) {
+    graphXml = decompress(content.graphXml);
+  }
 
   if(graphXml) {
     // set diagram content

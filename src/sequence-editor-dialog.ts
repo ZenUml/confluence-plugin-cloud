@@ -46,4 +46,4 @@ EventBus.$on('save', async () => {
   AP.dialog.close();
 });
 
-initializeMacro(store);
+initializeMacro();

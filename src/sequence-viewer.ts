@@ -84,7 +84,7 @@ EventBus.$on('edit', () => {
         chrome: false,
         width: "100%",
         height: "100%",
-    }).on('close', () => initializeMacro(store));
+    }).on('close', () => initializeMacro());
 });
 
 EventBus.$on('fullscreen', () => {

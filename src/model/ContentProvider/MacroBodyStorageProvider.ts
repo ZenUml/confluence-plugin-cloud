@@ -1,7 +1,7 @@
 import ApWrapper2 from "@/model/ApWrapper2";
 import {IAp} from "@/model/IAp";
 import {StorageProvider} from "@/model/ContentProvider/StorageProvider";
-import {Diagram, DiagramType} from "@/model/Diagram";
+import {Diagram, DiagramType} from "@/model/Diagram/Diagram";
 
 export class MacroBodyStorageProvider implements StorageProvider {
   private apWrapper: ApWrapper2;

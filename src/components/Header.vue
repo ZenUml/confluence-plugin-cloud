@@ -43,7 +43,7 @@
 <script>
 import {mapState} from 'vuex';
 import SaveAndGoBackButton from "@/components/SaveAndGoBackButton";
-import {DiagramType} from "@/model/Diagram";
+import {DiagramType} from "@/model/Diagram/Diagram";
 import SendFeedback from "@/components/SendFeedback";
 import EventBus from "@/EventBus";
 export default {

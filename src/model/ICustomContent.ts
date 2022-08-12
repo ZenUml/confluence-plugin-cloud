@@ -1,4 +1,4 @@
-import {Diagram} from "@/model/Diagram";
+import {Diagram} from "@/model/Diagram/Diagram";
 
 export interface ICustomContent {
   container?: { id: string, type: string, title?: string };

@@ -38,8 +38,9 @@ import Debug from '@/components/Debug/Debug.vue'
 import StylingPanel from "@/components/StylingPanel";
 import ErrorBoundary from "@/components/ErrorBoundary";
 import globals from '@/model/globals';
-import {DiagramType} from "@/model/Diagram";
+import {DiagramType} from "@/model/Diagram/Diagram";
 import defaultCompositeContentProvider from "@/model/ContentProvider/CompositeContentProvider";
+import AP from "@/model/AP";
 const DiagramFrame = VueSequence.DiagramFrame;
 
 
@@ -72,7 +73,7 @@ export default {
     },
   },
   async created() {
-    const compositeContentProvider = defaultCompositeContentProvider();
+    const compositeContentProvider = defaultCompositeContentProvider(AP);
     const {content} = await compositeContentProvider.load();
     this.diagramType = content.diagramType || DiagramType.Sequence;
     if (this.diagramType === 'mermaid') {

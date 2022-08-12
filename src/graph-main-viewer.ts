@@ -11,7 +11,7 @@ import defaultCompositeContentProvider from "@/model/ContentProvider/CompositeCo
   const apWrapper = globals.apWrapper;
   await apWrapper.initializeContext();
 
-  const compositeContentProvider = defaultCompositeContentProvider();
+  const compositeContentProvider = defaultCompositeContentProvider(AP);
   const {content} = await compositeContentProvider.load();
   let graphXml = content.graphXml;
   if (content?.compressed) {

@@ -1,10 +1,8 @@
 import uuidv4 from '../utils/uuid';
 import {getUrlParam, trackEvent} from '@/utils/window';
 import {IApWrapper} from "@/model/IApWrapper";
-import {IContentPropertyNormalised} from "@/model/IContentProperty";
-import {ICustomContent} from "@/model/ICustomContent";
 import {IMacroData} from "@/model/IMacroData";
-import {DataSource, Diagram, DiagramType} from "@/model/Diagram";
+import {DataSource, Diagram, DiagramType} from "@/model/Diagram/Diagram";
 
 class BaseMacro2 {
   _diagram?: Diagram;
@@ -44,87 +42,6 @@ class BaseMacro2 {
   trackDiagramEvent(diagram: Diagram | undefined, event: string, category: string) {
     trackEvent(diagram?.diagramType || this.getDiagramType(diagram), event, category);
   }
-
-  async getCustomContent() {
-    if(this._customContentId) {
-      const result = await this._apWrapper.getCustomContentById(this._customContentId);
-      this.trackDiagramEvent(result?.value, 'load_macro', 'custom_content');
-      return result;
-    }
-  }
-
-  async getContentProperty(): Promise<IContentPropertyNormalised | undefined> {
-    let content = await this._apWrapper.getContentProperty2();
-    if(content?.value.source === DataSource.ContentPropertyOld) {
-      this.trackDiagramEvent(content?.value, 'load_macro', 'content_property_old');
-    } else {
-      this.trackDiagramEvent(content?.value, 'load_macro', 'content_property');
-    }
-    return content;
-  }
-
-  async getMacroBody() {
-    const body = await this._apWrapper.getMacroBody();
-    if(body) {
-      trackEvent('sequence', 'load_macro', 'macro_body');
-    }
-    return body;
-  }
-
-  async getContent(): Promise<IContentPropertyNormalised | ICustomContent | undefined> {
-    if(this._standaloneCustomContent) {
-      // @ts-ignore
-      this._customContentId = getUrlParam('content.id');
-      return await this.getCustomContent();
-    }
-    const macroData = await this._apWrapper.getMacroData();
-
-    // When the macro is edited for the first time, macro data is not available in the preview mode
-    // Fall back to the uuid parameter in the URL.
-    // This is defined in the descriptor and is only available for sequence-viewer.html.
-    this._uuid = macroData?.uuid || getUrlParam('uuid');
-
-    this._customContentId = macroData?.customContentId;
-
-    if(this._customContentId) {
-      return await this.getCustomContent();
-    }
-    if(this._uuid) {
-      return await this.getContentProperty();
-    }
-    return undefined;
-  }
-
-  async load(): Promise<Diagram> {
-    let payload, body;
-    try {
-      payload = await this.getContent();
-      if(!payload?.value) {
-        body = await this.getMacroBody();
-      }
-    } catch(e) { //get content property could fail sometimes
-      console.debug('Load content error, fallback to macro body');
-      body = await this.getMacroBody();
-      if(!body) {
-        trackEvent('Fallback to macro body failed', 'get_content_fallback', 'error');
-        throw e;
-      }
-    }
-
-    this._loaded = true;
-    this._diagram = payload?.value || this.diagramForCode(body);
-    return this._diagram;
-  }
-
-  diagramForCode(code: string | undefined): Diagram {
-    return {
-      id: this._uuid,
-      diagramType: DiagramType.Sequence,
-      code: code,
-      source: DataSource.MacroBody
-    };
-  }
-
   // Warning! Do not call getXXX in save. Do retest if you want to call getXXX.
   // It does not work as of 17th May 2020. That is why we have stored key and version
   async save(diagram: Diagram) {
@@ -154,9 +71,9 @@ class BaseMacro2 {
   }
 
   async saveOnDialog(diagram: Diagram) {
-    if (!this._loaded) {
-      throw new Error('You have to call load before calling save()')
-    }
+    // if (!this._loaded) {
+    //   throw new Error('You have to call load before calling save()')
+    // }
 
     if(this._diagram?.source === DataSource.ContentProperty) {
       this.trackDiagramEvent(diagram, 'save_macro_skipped', 'content_property');
@@ -170,9 +87,9 @@ class BaseMacro2 {
   }
 
   async saveEmbedded(customContentId: string, customContentType: string, diagram: Diagram) {
-    if (!this._loaded) {
-      throw new Error('You have to call load before calling save')
-    }
+    // if (!this._loaded) {
+    //   throw new Error('You have to call load before calling save')
+    // }
     const uuid = this._uuid || uuidv4();
 
     const macroParam = {uuid: uuid, updatedAt: new Date(), customContentId, customContentType} as IMacroData;

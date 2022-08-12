@@ -7,7 +7,7 @@ import '@/components/Debug/DebugMounter.ts'
 import Example from '@/model/OpenApi/OpenApiExample'
 import createAttachmentIfContentChanged from "@/model/Attachment";
 import {trackEvent} from "@/utils/window";
-import {DiagramType} from "@/model/Diagram";
+import {DiagramType} from "@/model/Diagram/Diagram";
 import globals from '@/model/globals';
 import defaultCompositeContentProvider from "@/model/ContentProvider/CompositeContentProvider";
 
@@ -18,7 +18,7 @@ async function initializeMacro() {
   const apWrapper = globals.apWrapper;
   await apWrapper.initializeContext();
 
-  const compositeContentProvider = defaultCompositeContentProvider();
+  const compositeContentProvider = defaultCompositeContentProvider(AP);
   const {content} = await compositeContentProvider.load();
 
   // eslint-disable-next-line

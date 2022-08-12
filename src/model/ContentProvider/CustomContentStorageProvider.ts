@@ -1,7 +1,7 @@
 import ApWrapper2 from "@/model/ApWrapper2";
 import {IAp} from "@/model/IAp";
 import {StorageProvider} from "@/model/ContentProvider/StorageProvider";
-import {Diagram} from "@/model/Diagram";
+import {Diagram, NULL_DIAGRAM} from "@/model/Diagram/Diagram";
 
 export class CustomContentStorageProvider implements StorageProvider {
   private apWrapper: ApWrapper2;
@@ -10,9 +10,9 @@ export class CustomContentStorageProvider implements StorageProvider {
     this.apWrapper = new ApWrapper2(AP);
   }
 
-  async getContent(id: string | undefined): Promise<Diagram | undefined> {
+  async getContent(id: string | undefined): Promise<Diagram> {
     if (!id) {
-      return undefined;
+      return NULL_DIAGRAM;
     }
     const customContent = await this.apWrapper.getCustomContentById(id);
     // @ts-ignore

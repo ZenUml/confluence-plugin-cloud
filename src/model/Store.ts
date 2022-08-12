@@ -1,7 +1,7 @@
 import {VueSequence} from 'vue-sequence'
 import mermaid from "mermaid";
 import EventBus from '../EventBus'
-import {DiagramType} from "@/model/Diagram";
+import {DiagramType} from "@/model/Diagram/Diagram";
 import globals from '@/model/globals';
 
 const storeConfig = VueSequence.Store()

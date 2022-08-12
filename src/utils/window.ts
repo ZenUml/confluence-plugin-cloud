@@ -1,4 +1,4 @@
-import {DiagramType} from "@/model/Diagram";
+import {DiagramType} from "@/model/Diagram/Diagram";
 let clientDomain = '';
 
 export function getUrlParam (param: string): string | undefined {

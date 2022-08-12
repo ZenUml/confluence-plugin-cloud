@@ -1,4 +1,4 @@
-import {DataSource, Diagram, DiagramType} from "@/model/Diagram";
+import {DataSource, Diagram, DiagramType} from "@/model/Diagram/Diagram";
 import {IApWrapper} from "@/model/IApWrapper";
 import Example from "@/utils/sequence/Example";
 

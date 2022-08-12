@@ -3,7 +3,8 @@ export enum DataSource {
   ContentProperty = 'content-property',
   ContentPropertyOld = 'content-property-old',
   CustomContent = 'custom-content',
-  Example = 'example'
+  Example = 'example',
+  Unknown = 'unknown',
 }
 
 export enum DiagramType {
@@ -11,6 +12,7 @@ export enum DiagramType {
   Mermaid = 'mermaid',
   Graph = 'graph',
   OpenApi = 'OpenAPI',
+  Unknown = 'unknown'
 }
 
 export interface Diagram {
@@ -27,3 +29,19 @@ export interface Diagram {
   source?: DataSource,
   payload?: any   // Only used for content-property to keep the version and key which are used at `saveOnDialog`.
 }
+
+const NULL_DIAGRAM = {
+    id: '',
+    diagramType: DiagramType.Unknown,
+    code: '',
+    title: '',
+    styles: {},
+    mermaidCode: '',
+    graphXml: '',
+    compressed: false,
+    source: DataSource.Unknown,
+    payload: undefined
+  } as const;
+
+
+export {NULL_DIAGRAM};

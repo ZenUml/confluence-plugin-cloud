@@ -58,7 +58,7 @@
 
 <script>
   import SaveAndGoBackButton from "@/components/SaveAndGoBackButton";
-  import {DiagramType} from "@/model/Diagram";
+  import {DiagramType} from "@/model/Diagram/Diagram";
   import EventBus from "@/EventBus";
   import {AtlasPage} from "@/model/page/AtlasPage";
   import AP from "@/model/AP";

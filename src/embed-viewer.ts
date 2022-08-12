@@ -1,6 +1,6 @@
 import {trackEvent} from "@/utils/window";
 import './GTagConfig'
-import {DiagramType} from "@/model/Diagram";
+import {DiagramType} from "@/model/Diagram/Diagram";
 import AP from "@/model/AP";
 import {MacroIdProvider} from "@/model/ContentProvider/MacroIdProvider";
 import {CustomContentStorageProvider} from "@/model/ContentProvider/CustomContentStorageProvider";

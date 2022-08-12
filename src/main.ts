@@ -33,4 +33,4 @@ if(document.getElementById('app')) {
     }).$mount('#app')
 }
 
-initializeMacro(store);
+initializeMacro();
