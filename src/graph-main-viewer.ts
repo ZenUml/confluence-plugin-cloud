@@ -12,10 +12,10 @@ import defaultCompositeContentProvider from "@/model/ContentProvider/CompositeCo
   await apWrapper.initializeContext();
 
   const compositeContentProvider = defaultCompositeContentProvider(AP);
-  const {content} = await compositeContentProvider.load();
-  let graphXml = content.graphXml;
-  if (content?.compressed) {
-    graphXml = decompress(content.graphXml);
+  const {doc} = await compositeContentProvider.load();
+  let graphXml = doc.graphXml;
+  if (doc?.compressed) {
+    graphXml = decompress(doc.graphXml);
   }
   console.debug('graphXml', graphXml);
   if(graphXml) {
