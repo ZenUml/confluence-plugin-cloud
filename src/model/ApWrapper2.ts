@@ -6,7 +6,6 @@ import {ICustomContent} from "@/model/ICustomContent";
 import {IUser} from "@/model/IUser";
 import {IConfluence} from "@/model/IConfluence";
 import {IAp} from "@/model/IAp";
-import {MacroIdentifier} from "@/model/MacroIdentifier";
 import {DataSource, Diagram} from "@/model/Diagram/Diagram";
 import {ICustomContentResponseBody} from "@/model/ICustomContentResponseBody";
 import {AtlasPage} from "@/model/page/AtlasPage";
@@ -20,7 +19,6 @@ export default class ApWrapper2 implements IApWrapper {
   };
   _navigator: any;
   _dialog: any;
-  _macroIdentifier: MacroIdentifier;
   _user: any;
   _page: AtlasPage;
   currentUser: IUser | undefined;
@@ -29,22 +27,6 @@ export default class ApWrapper2 implements IApWrapper {
 
   constructor(ap: IAp) {
     this.versionType = this.isLite() ? VersionType.Lite : VersionType.Full;
-    let macroIdentifier: MacroIdentifier;
-    let contentKey = getUrlParam('contentKey');
-    if (!contentKey) {
-      console.warn('contentKey URL parameter is not provided. It can be `sequence` or `graph`. Falling back to `sequence`');
-      contentKey = 'sequence';
-    }
-    if (contentKey?.includes('sequence')) {
-      macroIdentifier = MacroIdentifier.Sequence;
-    } else if (contentKey?.includes('graph')) {
-      macroIdentifier = MacroIdentifier.Graph
-    } else {
-      console.warn('Wrong value in contentKey URL parameter. Fall back to `sequence`.')
-      macroIdentifier = MacroIdentifier.Sequence;
-    }
-
-    this._macroIdentifier = macroIdentifier;
     this._confluence = ap.confluence;
     this._requestFn = ap.request;
     this._navigator = ap.navigator;
@@ -95,11 +77,6 @@ export default class ApWrapper2 implements IApWrapper {
         resolve(undefined)
       }
     })
-  }
-
-  propertyKey(uuid: string) {
-    const macroKey = `zenuml-${this._macroIdentifier}-macro`;
-    return `${macroKey}-${uuid}-body`;
   }
 
   getContentProperty(key: any): Promise<IContentProperty|undefined> {
