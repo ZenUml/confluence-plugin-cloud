@@ -66,14 +66,11 @@ async function createAttachment(macro: BaseMacro2) {
 EventBus.$on('diagramLoaded', async () => {
   // @ts-ignore
   const macro = globals.macro;
-  if(!macro?._standaloneCustomContent) {
-
-    const canEdit = await macro.canEditOnDialog();
-    store.dispatch('updateCanEdit', canEdit);
-    setTimeout(async () => {
-      await createAttachment(macro);
-    }, 1500);
-  }
+  const canEdit = await macro.canEditOnDialog();
+  store.dispatch('updateCanEdit', canEdit);
+  setTimeout(async () => {
+    await createAttachment(macro);
+  }, 1500);
 });
 
 EventBus.$on('edit', () => {

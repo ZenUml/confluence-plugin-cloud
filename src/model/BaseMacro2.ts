@@ -9,15 +9,11 @@ class BaseMacro2 {
   _uuid: any;
   _customContentId: string | undefined;
   _loaded = false;
-  _standaloneCustomContent: boolean;
   _addonVersion: string;
   _apWrapper: IApWrapper;
 
   constructor(apWrapper2: IApWrapper) {
     this._apWrapper = apWrapper2;
-
-    const renderedFor = getUrlParam('rendered.for');
-    this._standaloneCustomContent = renderedFor === 'custom-content-native';
 
     this._addonVersion = getUrlParam('version') || '';
   }
