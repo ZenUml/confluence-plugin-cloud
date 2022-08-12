@@ -39,32 +39,31 @@ export class ContentPropertyStorageProvider implements StorageProvider {
     const uuid = macroData?.uuid;
     if (!uuid) {
       console.warn('`uuid` is empty. This diagram has not been initialised. Most likely it has not been edited.')
-      contentProperty = undefined;
-    } else {
-      let key = this.apWrapper.propertyKey(uuid);
-      let property = await this.apWrapper.getContentProperty(key);
-      if (!property) {
-        let message = 'property is not found with key:' + key;
-        console.error(message);
-        trackEvent(message, 'get_content_property', 'warning');
-        throw {
-          message: message,
-          data: macroData
-        }
-      }
-      contentProperty = Object.assign({}, property) as IContentPropertyNormalised;
-      if(typeof property.value === "string") {
-        contentProperty.value = {
-          diagramType: DiagramType.Sequence,
-          source: DataSource.ContentPropertyOld,
-          code: property.value
-        }
-      } else {
-        contentProperty.value.source = DataSource.ContentProperty;
-      }
-      contentProperty.value.id = key;
-      contentProperty.value.payload = contentProperty; // To cache content property key and version on Diagram object
+      return NULL_DIAGRAM;
     }
+    let key = this.apWrapper.propertyKey(uuid);
+    let property = await this.apWrapper.getContentProperty(key);
+    if (!property) {
+      let message = 'property is not found with key:' + key;
+      console.error(message);
+      trackEvent(message, 'get_content_property', 'warning');
+      throw {
+        message: message,
+        data: macroData
+      }
+    }
+    contentProperty = Object.assign({}, property) as IContentPropertyNormalised;
+    if (typeof property.value === "string") {
+      contentProperty.value = {
+        diagramType: DiagramType.Sequence,
+        source: DataSource.ContentPropertyOld,
+        code: property.value
+      }
+    } else {
+      contentProperty.value.source = DataSource.ContentProperty;
+    }
+    contentProperty.value.id = key;
+    contentProperty.value.payload = contentProperty; // To cache content property key and version on Diagram object
 
     if(contentProperty?.value.source === DataSource.ContentPropertyOld) {
       trackDiagramEvent(contentProperty?.value, 'load_macro', 'content_property_old');

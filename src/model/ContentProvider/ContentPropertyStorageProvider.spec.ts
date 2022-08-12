@@ -1,5 +1,4 @@
 import MockAp from '@/model/MockAp'
-import helper from '../../../tests/unit/TestHelper';
 import {ContentPropertyStorageProvider} from "@/model/ContentProvider/ContentPropertyStorageProvider";
 import MockApConfluence from "@/model/MockApConfluence";
 
@@ -12,8 +11,6 @@ describe('ContentPropertyStorageProvider', () => {
   const contentId = 'abcd'
 
   beforeEach(() => {
-    helper.setUpUrlParam('contentKey=sequence');
-
     mockAp = new MockAp(contentId);
     mockApConfluence = mockAp.confluence as MockApConfluence;
 
