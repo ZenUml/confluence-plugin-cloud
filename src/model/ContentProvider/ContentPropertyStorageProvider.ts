@@ -1,8 +1,9 @@
 import ApWrapper2 from "@/model/ApWrapper2";
 import {IAp} from "@/model/IAp";
 import {StorageProvider} from "@/model/ContentProvider/StorageProvider";
-import {DataSource, Diagram, NULL_DIAGRAM} from "@/model/Diagram/Diagram";
+import {DataSource, Diagram, DiagramType, NULL_DIAGRAM} from "@/model/Diagram/Diagram";
 import {trackEvent} from "@/utils/window";
+import {IContentPropertyNormalised} from "@/model/IContentProperty";
 
 // deprecated: We should rely on diagram.diagramType. For old diagrams we do not have that saved.
 function getDiagramType(diagram: Diagram | undefined): string {
@@ -32,8 +33,39 @@ export class ContentPropertyStorageProvider implements StorageProvider {
   // We load content property only if the entry is a macro but not a dialog.
   // So we do not need id to be passed in.
   async getDiagram(id: undefined): Promise<Diagram> {
-    const contentProperty = await this.apWrapper.getContentProperty2();
-    console.log('content property', contentProperty);
+    let contentProperty;
+
+    let macroData = await this.apWrapper.getMacroData();
+    const uuid = macroData?.uuid;
+    if (!uuid) {
+      console.warn('`uuid` is empty. This diagram has not been initialised. Most likely it has not been edited.')
+      contentProperty = undefined;
+    } else {
+      let key = this.apWrapper.propertyKey(uuid);
+      let property = await this.apWrapper.getContentProperty(key);
+      if (!property) {
+        let message = 'property is not found with key:' + key;
+        console.error(message);
+        trackEvent(message, 'get_content_property', 'warning');
+        throw {
+          message: message,
+          data: macroData
+        }
+      }
+      contentProperty = Object.assign({}, property) as IContentPropertyNormalised;
+      if(typeof property.value === "string") {
+        contentProperty.value = {
+          diagramType: DiagramType.Sequence,
+          source: DataSource.ContentPropertyOld,
+          code: property.value
+        }
+      } else {
+        contentProperty.value.source = DataSource.ContentProperty;
+      }
+      contentProperty.value.id = key;
+      contentProperty.value.payload = contentProperty; // To cache content property key and version on Diagram object
+    }
+
     if(contentProperty?.value.source === DataSource.ContentPropertyOld) {
       trackDiagramEvent(contentProperty?.value, 'load_macro', 'content_property_old');
     } else {
