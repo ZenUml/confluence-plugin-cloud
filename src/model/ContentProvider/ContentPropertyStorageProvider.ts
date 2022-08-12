@@ -29,7 +29,9 @@ export class ContentPropertyStorageProvider implements StorageProvider {
     this.apWrapper = new ApWrapper2(AP);
   }
 
-  async getDiagram(id: string | undefined): Promise<Diagram> {
+  // We load content property only if the entry is a macro but not a dialog.
+  // So we do not need id to be passed in.
+  async getDiagram(id: undefined): Promise<Diagram> {
     const contentProperty = await this.apWrapper.getContentProperty2();
     console.log('content property', contentProperty);
     if(contentProperty?.value.source === DataSource.ContentPropertyOld) {
