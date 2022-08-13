@@ -58,9 +58,6 @@ export default {
     diagramType: (state: any) => {
       return state.diagramType?.toLowerCase() || DiagramType.Sequence
     },
-    content: (state: any, getters: any) => {
-      return getters.diagramType === 'mermaid' ? state.mermaidCode : state.code
-    },
     isDisplayMode: () => globals.apWrapper.isDisplayMode(),
     canEdit: (state: any) => state.canEdit
   },
