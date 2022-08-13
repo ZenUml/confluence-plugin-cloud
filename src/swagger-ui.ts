@@ -19,18 +19,18 @@ async function initializeMacro() {
   await apWrapper.initializeContext();
 
   const compositeContentProvider = defaultCompositeContentProvider(AP);
-  const {content} = await compositeContentProvider.load();
+  const {doc} = await compositeContentProvider.load();
 
   // eslint-disable-next-line
   // @ts-ignore
-  window.updateSpec(content?.code || Example);
+  window.updateSpec(doc?.code || Example);
 
   setTimeout(async function () {
     AP.resize();
     try {
       if(await apWrapper.canUserEdit()) {
         trackEvent(DiagramType.OpenApi, 'before_create_attachment', 'info');
-        await createAttachmentIfContentChanged(content?.code);
+        await createAttachmentIfContentChanged(doc?.code);
       } else {
         trackEvent(DiagramType.OpenApi, 'skip_create_attachment', 'warning');
       }

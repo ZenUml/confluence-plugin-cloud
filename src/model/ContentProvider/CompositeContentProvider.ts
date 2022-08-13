@@ -4,7 +4,9 @@ import {IAp} from "@/model/IAp";
 import {CustomContentStorageProvider} from "@/model/ContentProvider/CustomContentStorageProvider";
 import {ContentPropertyStorageProvider} from "@/model/ContentProvider/ContentPropertyStorageProvider";
 import {MacroBodyStorageProvider} from "@/model/ContentProvider/MacroBodyStorageProvider";
-import {NULL_DIAGRAM} from "@/model/Diagram/Diagram";
+import {Diagram, NULL_DIAGRAM} from "@/model/Diagram/Diagram";
+import {getUrlParam} from "@/utils/window";
+import {UrlIdProvider} from "@/model/ContentProvider/UrlIdProvider";
 
 export class CompositeContentProvider {
   private readonly _contentProviders: Array<ContentProvider>;
@@ -13,7 +15,7 @@ export class CompositeContentProvider {
     this._contentProviders = contentProviders;
   }
 
-  async load(): Promise<any> {
+  async load(): Promise<{ id: string | undefined, doc: Diagram }> {
     let content = {};
     for (const contentProvider of this._contentProviders) {
       try {
@@ -25,11 +27,18 @@ export class CompositeContentProvider {
         console.error(e);
       }
     }
-    return content;
+    return {id: undefined, doc: NULL_DIAGRAM};
   }
 }
 
 const defaultCompositeContentProvider = function getCompositeContentProvider(ap: IAp) {
+  const renderedFor = getUrlParam('rendered.for');
+  if (renderedFor === 'custom-content-native') {
+    const idProvider = new UrlIdProvider();
+    const customContentStorageProvider = new CustomContentStorageProvider(ap);
+    const ccContentProvider = new ContentProvider(idProvider, customContentStorageProvider);
+    return new CompositeContentProvider([ccContentProvider]);
+  }
   const macroIdProvider = new MacroIdProvider(ap);
   const customContentStorageProvider = new CustomContentStorageProvider(ap);
   const ccContentProvider = new ContentProvider(macroIdProvider, customContentStorageProvider);
