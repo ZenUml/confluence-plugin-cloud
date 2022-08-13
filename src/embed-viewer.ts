@@ -2,9 +2,7 @@ import {trackEvent} from "@/utils/window";
 import './GTagConfig'
 import {DiagramType} from "@/model/Diagram/Diagram";
 import AP from "@/model/AP";
-import {MacroIdProvider} from "@/model/ContentProvider/MacroIdProvider";
-import {CustomContentStorageProvider} from "@/model/ContentProvider/CustomContentStorageProvider";
-import {ContentProvider} from "@/model/ContentProvider/ContentProvider";
+import defaultContentProvider from "@/model/ContentProvider/CompositeContentProvider";
 
 function loadViewer(url: string) {
   const e = document.createElement('meta');
@@ -30,12 +28,9 @@ function getViewerUrl(diagramType: DiagramType) {
 
 async function initializeMacro() {
   try {
-    const idProvider = new MacroIdProvider(AP);
-    const customContentStorageProvider = new CustomContentStorageProvider(AP);
-    const contentProvider = new ContentProvider(idProvider, customContentStorageProvider);
+    const contentProvider = defaultContentProvider(AP);
     const { doc } = await contentProvider.load()
-    // @ts-ignore
-    const { diagramType } = doc.value;
+    const { diagramType } = doc;
 
     if(diagramType) {
       const url = `${getViewerUrl(diagramType)}${window.location.search}`;
