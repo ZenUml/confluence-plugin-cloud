@@ -5,7 +5,7 @@ import './assets/tailwind.css'
 
 import globals from '@/model/globals';
 import AP from "@/model/AP";
-import defaultCompositeContentProvider from "@/model/ContentProvider/CompositeContentProvider";
+import defaultContentProvider from "@/model/ContentProvider/CompositeContentProvider";
 import {decompress} from "@/utils/compress";
 
 new Vue({
@@ -25,7 +25,7 @@ async function initializeMacro() {
   const apWrapper = globals.apWrapper;
   await apWrapper.initializeContext();
 
-  const compositeContentProvider = defaultCompositeContentProvider(AP);
+  const compositeContentProvider = defaultContentProvider(AP);
   const {doc} = await compositeContentProvider.load();
   let graphXml = doc.graphXml;
   if (doc?.compressed) {

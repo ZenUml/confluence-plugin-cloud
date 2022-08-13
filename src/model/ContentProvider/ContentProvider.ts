@@ -1,7 +1,12 @@
 import {StorageProvider} from "@/model/ContentProvider/StorageProvider";
 import {IdProvider} from "@/model/ContentProvider/IdProvider";
+import {Diagram} from "@/model/Diagram/Diagram";
 
-export class ContentProvider {
+export interface IContentProvider {
+  load(): Promise<{ id: string | undefined, doc: Diagram }>;
+}
+
+export class ContentProvider implements IContentProvider {
   private _idProvider: IdProvider | undefined;
   private _storageProvider: StorageProvider;
 
@@ -10,7 +15,7 @@ export class ContentProvider {
     this._storageProvider = storageProvider;
   }
 
-  async load() {
+  async load(): Promise<{ id: string | undefined, doc: Diagram }> {
     const id = await this._idProvider?.getId();
     const doc = await this._storageProvider.getDiagram(id);
     return {id, doc}

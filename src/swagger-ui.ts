@@ -9,7 +9,7 @@ import createAttachmentIfContentChanged from "@/model/Attachment";
 import {trackEvent} from "@/utils/window";
 import {DiagramType} from "@/model/Diagram/Diagram";
 import globals from '@/model/globals';
-import defaultCompositeContentProvider from "@/model/ContentProvider/CompositeContentProvider";
+import defaultContentProvider from "@/model/ContentProvider/CompositeContentProvider";
 
 // @ts-ignore
 window.SwaggerUIBundle = SwaggerUIBundle;
@@ -18,7 +18,7 @@ async function initializeMacro() {
   const apWrapper = globals.apWrapper;
   await apWrapper.initializeContext();
 
-  const compositeContentProvider = defaultCompositeContentProvider(AP);
+  const compositeContentProvider = defaultContentProvider(AP);
   const {doc} = await compositeContentProvider.load();
 
   // eslint-disable-next-line

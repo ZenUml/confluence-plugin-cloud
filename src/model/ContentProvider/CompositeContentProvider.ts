@@ -1,4 +1,4 @@
-import {ContentProvider} from "@/model/ContentProvider/ContentProvider";
+import {ContentProvider, IContentProvider} from "@/model/ContentProvider/ContentProvider";
 import {MacroIdProvider} from "@/model/ContentProvider/MacroIdProvider";
 import {IAp} from "@/model/IAp";
 import {CustomContentStorageProvider} from "@/model/ContentProvider/CustomContentStorageProvider";
@@ -8,7 +8,7 @@ import {Diagram, NULL_DIAGRAM} from "@/model/Diagram/Diagram";
 import {getUrlParam} from "@/utils/window";
 import {UrlIdProvider} from "@/model/ContentProvider/UrlIdProvider";
 
-export class CompositeContentProvider {
+export class CompositeContentProvider implements IContentProvider{
   private readonly _contentProviders: Array<ContentProvider>;
 
   constructor(contentProviders: Array<ContentProvider>) {
@@ -16,7 +16,6 @@ export class CompositeContentProvider {
   }
 
   async load(): Promise<{ id: string | undefined, doc: Diagram }> {
-    let content = {};
     for (const contentProvider of this._contentProviders) {
       try {
         const { id, doc } = await contentProvider.load();
@@ -31,13 +30,12 @@ export class CompositeContentProvider {
   }
 }
 
-const defaultCompositeContentProvider = function getCompositeContentProvider(ap: IAp) {
+const defaultContentProvider = function getCompositeContentProvider(ap: IAp): IContentProvider {
   const renderedFor = getUrlParam('rendered.for');
   if (renderedFor === 'custom-content-native') {
     const idProvider = new UrlIdProvider();
     const customContentStorageProvider = new CustomContentStorageProvider(ap);
-    const ccContentProvider = new ContentProvider(idProvider, customContentStorageProvider);
-    return new CompositeContentProvider([ccContentProvider]);
+    return new ContentProvider(idProvider, customContentStorageProvider);
   }
   const macroIdProvider = new MacroIdProvider(ap);
   const customContentStorageProvider = new CustomContentStorageProvider(ap);
@@ -49,4 +47,4 @@ const defaultCompositeContentProvider = function getCompositeContentProvider(ap:
   return new CompositeContentProvider([ccContentProvider, cpContentProvider, mbContentProvider]);
 }
 
-export default defaultCompositeContentProvider;
+export default defaultContentProvider;

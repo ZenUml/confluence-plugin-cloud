@@ -39,7 +39,7 @@ import StylingPanel from "@/components/StylingPanel";
 import ErrorBoundary from "@/components/ErrorBoundary";
 import globals from '@/model/globals';
 import {DataSource, DiagramType, NULL_DIAGRAM} from "@/model/Diagram/Diagram";
-import defaultCompositeContentProvider from "@/model/ContentProvider/CompositeContentProvider";
+import defaultContentProvider from "@/model/ContentProvider/CompositeContentProvider";
 import AP from "@/model/AP";
 const DiagramFrame = VueSequence.DiagramFrame;
 
@@ -78,7 +78,7 @@ export default {
     },
   },
   async created() {
-    const compositeContentProvider = defaultCompositeContentProvider(AP);
+    const compositeContentProvider = defaultContentProvider(AP);
     const {doc} = await compositeContentProvider.load();
     this.doc = doc;
     await globals.apWrapper.initializeContext();
