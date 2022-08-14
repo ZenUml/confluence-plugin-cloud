@@ -27,7 +27,7 @@
   // theme css
   import 'codemirror/theme/base16-dark.css'
 
-  import EventBus from '../EventBus'
+  import EventBus from '@/EventBus'
   import defaultContentProvider from "@/model/ContentProvider/CompositeContentProvider";
   import AP from "@/model/AP";
   import globals from "@/model/globals";
@@ -69,7 +69,7 @@
     computed: {
       ...mapState(['diagramType']),
       code() {
-        return this.diagramType === DiagramType.Mermaid? this.doc.mermaidCode || 'graph TD; A-->B;' : this.doc.code;
+        return this.diagramType === DiagramType.Mermaid? this.doc.mermaidCode || 'graph TD; A-->B;' : this.doc.code || 'A.method';
       },
       codemirror() {
         return this.$refs.myCm.codemirror
@@ -94,7 +94,7 @@
           line: codeRange.stop.line-1, ch: codeRange.stop.col
         }, {css: 'background: gray'})
       })
-      this.codemirror.on('cursorActivity',_.debounce(() => {
+      this.codemirror?.on('cursorActivity',_.debounce(() => {
         if (this.mark) {
           this.mark.clear()
         }
@@ -120,9 +120,8 @@
   .CodeMirror {
     font-family: Menlo, 'Fira Code', Monaco, source-code-pro, "Ubuntu Mono", "DejaVu sans mono", Consolas, monospace;
     font-size: 16px;
-  }
-  .CodeMirror {
     height: 100%;
+    width: 100%;
   }
 
 </style>
