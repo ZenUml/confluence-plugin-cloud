@@ -15,7 +15,7 @@
 <script>
   import Editor from './Editor.vue'
   import Split from 'split.js'
-  import Header from "@/components/Header";
+  import Header from "@/components/Header/Header.vue";
   import Viewer from "@/components/Viewer";
 
   export default {
