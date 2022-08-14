@@ -32,6 +32,7 @@
   import AP from "@/model/AP";
   import globals from "@/model/globals";
   import {DiagramType, NULL_DIAGRAM} from "@/model/Diagram/Diagram";
+  import Example from "@/utils/sequence/Example";
 
   export default {
     name: 'editor',
@@ -69,7 +70,7 @@
     computed: {
       ...mapState(['diagramType']),
       code() {
-        return this.diagramType === DiagramType.Mermaid? this.doc.mermaidCode || 'graph TD; A-->B;' : this.doc.code || 'A.method';
+        return this.diagramType === DiagramType.Mermaid? this.doc.mermaidCode || 'graph TD; A-->B;' : this.doc.code || Example;
       },
       codemirror() {
         return this.$refs.myCm.codemirror

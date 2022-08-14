@@ -41,6 +41,7 @@ import globals from '@/model/globals';
 import {DataSource, DiagramType, NULL_DIAGRAM} from "@/model/Diagram/Diagram";
 import defaultContentProvider from "@/model/ContentProvider/CompositeContentProvider";
 import AP from "@/model/AP";
+import Example from "@/utils/sequence/Example";
 const DiagramFrame = VueSequence.DiagramFrame;
 
 
@@ -85,9 +86,9 @@ export default {
     this.canUserEdit = await globals.apWrapper.canUserEdit();
     this.$store.commit('updateDiagramType', ( !this.doc.diagramType || this.doc.diagramType === DiagramType.Unknown) ? DiagramType.Sequence : this.doc.diagramType);
     if (doc.diagramType === 'mermaid') {
-      this.$store.dispatch('updateMermaidCode', doc.mermaidCode)
+      this.$store.dispatch('updateMermaidCode', doc.mermaidCode || 'graph TD; A-->B;');
     } else {
-      this.$store.commit('code', doc.code);
+      this.$store.commit('code', doc.code || Example);
       this.rawStyles = doc.styles || {};
     }
     EventBus.$emit('diagramLoaded');
