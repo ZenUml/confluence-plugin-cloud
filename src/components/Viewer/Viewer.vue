@@ -32,8 +32,8 @@
 <script>
 import {mapState, mapGetters} from "vuex";
 import { VueSequence } from 'vue-sequence'
-import Mermaid from './Mermaid'
-import EventBus from '../EventBus'
+import Mermaid from '../Mermaid'
+import EventBus from '../../EventBus'
 import Debug from '@/components/Debug/Debug.vue'
 import StylingPanel from "@/components/StylingPanel";
 import ErrorBoundary from "@/components/ErrorBoundary";
@@ -63,7 +63,8 @@ export default {
     DiagramFrame
   },
   computed: {
-    ...mapState(['diagramType']),
+    // We use {} instead of [] to get type checking
+    ...mapState({diagramType: 'diagramType' }),
     ...mapGetters({isDisplayMode: 'isDisplayMode', canEdit: 'canEdit'}),
     canEdit() {
       return this.doc.source === DataSource.CustomContent && !this.doc.isCopy && this.canUserEdit;

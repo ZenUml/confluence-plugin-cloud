@@ -3,6 +3,7 @@ import Vuex from 'vuex'
 import Editor from '@/components/Editor/Editor.vue'
 import Store from "@/model/Store";
 import {DiagramType} from "@/model/Diagram/Diagram";
+import Example from "@/utils/sequence/Example";
 const localVue = createLocalVue()
 localVue.use(Vuex)
 
@@ -26,7 +27,7 @@ describe('Editor', () => {
     const store = new Vuex.Store(Store) as any;
     const editorWrapper = mount(Editor, {store, localVue})
     const vm = editorWrapper.vm as any;
-    expect(vm.code).toBe('A.method');
+    expect(vm.code).toBe(Example);
     store.commit('updateDiagramType', DiagramType.Mermaid);
     expect(store.state.diagramType).toBe(DiagramType.Mermaid);
     expect(vm.code).toBe('graph TD; A-->B;');

@@ -8,7 +8,7 @@ import mermaid from 'mermaid'
 
 import ExtendedStore from './model/Store'
 import EventBus from './EventBus'
-import Viewer from "@/components/Viewer.vue";
+import Viewer from "@/components/Viewer/Viewer.vue";
 import {trackEvent} from "@/utils/window";
 import {initializeMacro} from "@/model/macro/InitializeMacro";
 import createAttachmentIfContentChanged from "@/model/Attachment";

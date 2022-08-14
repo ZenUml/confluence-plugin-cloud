@@ -16,7 +16,7 @@
   import Editor from '@/components/Editor/Editor.vue'
   import Split from 'split.js'
   import Header from "@/components/Header/Header.vue";
-  import Viewer from "@/components/Viewer";
+  import Viewer from "@/components/Viewer/Viewer";
 
   export default {
     name: 'Workspace',
