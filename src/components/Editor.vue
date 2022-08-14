@@ -13,6 +13,8 @@
 </template>
 
 <script>
+  import {mapState} from 'vuex';
+
   import _ from 'lodash'
   import { codemirror } from 'vue-codemirror'
   import 'codemirror/keymap/sublime'
@@ -29,13 +31,13 @@
   import defaultContentProvider from "@/model/ContentProvider/CompositeContentProvider";
   import AP from "@/model/AP";
   import globals from "@/model/globals";
-  import {DiagramType} from "@/model/Diagram/Diagram";
+  import {DiagramType, NULL_DIAGRAM} from "@/model/Diagram/Diagram";
 
   export default {
     name: 'editor',
     data() {
       return {
-        code: '',
+        doc: NULL_DIAGRAM,
         cmOptions: {
           tabSize: 4,
           mode: 'text/javascript',
@@ -65,6 +67,10 @@
       },
     },
     computed: {
+      ...mapState(['diagramType']),
+      code() {
+        return this.diagramType === DiagramType.Mermaid? this.doc.mermaidCode || 'graph TD; A-->B;' : this.doc.code;
+      },
       codemirror() {
         return this.$refs.myCm.codemirror
       },
@@ -75,12 +81,6 @@
       this.doc = doc;
       await globals.apWrapper.initializeContext();
       this.canUserEdit = await globals.apWrapper.canUserEdit();
-      this.diagramType = doc.diagramType || DiagramType.Sequence;
-      if (this.diagramType === 'mermaid') {
-        this.code = doc.mermaidCode;
-      } else {
-        this.code = doc.code;
-      }
     },
     mounted() {
       const that = this
