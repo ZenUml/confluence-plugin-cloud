@@ -55,15 +55,13 @@ export default {
     svg: (state: any) => {
       return state.mermaidSvg
     },
-    diagramType: (state: any) => {
-      return state.diagramType?.toLowerCase() || DiagramType.Sequence
-    },
     isDisplayMode: () => globals.apWrapper.isDisplayMode(),
     canEdit: (state: any) => state.canEdit
   },
   state: {
     ...storeConfig.state,
     mermaidCode: 'graph TD; A-->B;',
+    diagramType: DiagramType.Sequence,
     mermaidSvg: '',
     canEdit: false,
     error: null,

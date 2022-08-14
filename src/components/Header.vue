@@ -2,6 +2,7 @@
   <header class="toolbar header border-b border-gray-800 p-2 flex items-center justify-between">
     <div class="inline-block group ml-2 p-0.5 rounded-lg flex bg-gray-100 hover:bg-gray-200">
       <button type="button"
+              ref = "btn-sequence"
               class="flex focus-visible:ring-2 focus-visible:ring-teal-500 focus-visible:ring-offset-2 rounded-md focus:outline-none focus-visible:ring-offset-gray-100"
               :class="diagramType === 'sequence' ? 'bg-white shadow-sm ring-1 ring-black ring-opacity-5' : ''"
               @click="setActiveTab('sequence')"
@@ -13,6 +14,7 @@
           </span>
       </button>
       <button type="button"
+              ref = "btn-mermaid"
               class="ml-0.5 p-1.5 lg:pl-2.5 lg:pr-3.5 rounded-md flex items-center text-sm text-gray-600 font-medium focus-visible:ring-2 focus-visible:ring-teal-500 focus-visible:ring-offset-2 focus:outline-none focus-visible:ring-offset-gray-100"
               :class="diagramType === 'mermaid' ? 'bg-white shadow-sm ring-1 ring-black ring-opacity-5' : ''"
               @click="setActiveTab('mermaid')">
@@ -41,7 +43,7 @@
 </template>
 
 <script>
-import {mapState} from 'vuex';
+import {mapState, mapMutations} from 'vuex';
 import SaveAndGoBackButton from "@/components/SaveAndGoBackButton";
 import {DiagramType} from "@/model/Diagram/Diagram";
 import SendFeedback from "@/components/SendFeedback";
@@ -59,9 +61,6 @@ export default {
   },
   computed: {
     ...mapState(['code', 'styles', 'mermaidCode', 'diagramType']),
-    diagramType() {
-      return this.$store.state.diagramType || DiagramType.Sequence
-    },
     saveAndExit: function () {
       return function () {
         EventBus.$emit('save')
@@ -69,9 +68,10 @@ export default {
     }
   },
   methods: {
+    ...mapMutations(['updateDiagramType']),
     setActiveTab(tab) {
       let type = tab === 'sequence' ? DiagramType.Sequence : DiagramType.Mermaid;
-      this.$store.dispatch('updateDiagramType', type)
+      this.updateDiagramType(type);
       if (type === DiagramType.Sequence) {
         this.$store.dispatch('reloadZenUML')
       }
