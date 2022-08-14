@@ -57,7 +57,7 @@
     },
     methods: {
       onEditorCodeChange: function (newCode) {
-        const isMermaid = this.$store.getters.diagramType === 'mermaid';
+        const isMermaid = this.$store.state.diagramType === 'mermaid';
 
         if (isMermaid) {
           this.$store.dispatch('updateMermaidCode', newCode);

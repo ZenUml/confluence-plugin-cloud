@@ -30,7 +30,7 @@
 </template>
 
 <script>
-import {mapGetters} from "vuex";
+import {mapState, mapGetters} from "vuex";
 import { VueSequence } from 'vue-sequence'
 import Mermaid from './Mermaid'
 import EventBus from '../EventBus'
@@ -51,7 +51,6 @@ export default {
     return {
       doc: NULL_DIAGRAM,
       canUserEdit: false,
-      diagramType: DiagramType.Sequence,
       rawStyles: {},
     }
   },
@@ -63,6 +62,7 @@ export default {
     DiagramFrame
   },
   computed: {
+    ...mapState(['diagramType']),
     ...mapGetters({isDisplayMode: 'isDisplayMode', canEdit: 'canEdit'}),
     canEdit() {
       return this.doc.source === DataSource.CustomContent && !this.doc.isCopy && this.canUserEdit;
@@ -83,8 +83,8 @@ export default {
     this.doc = doc;
     await globals.apWrapper.initializeContext();
     this.canUserEdit = await globals.apWrapper.canUserEdit();
-    this.diagramType = doc.diagramType || DiagramType.Sequence;
-    if (this.diagramType === 'mermaid') {
+    this.$store.commit('updateDiagramType', ( !this.doc.diagramType || this.doc.diagramType === DiagramType.Unknown) ? DiagramType.Sequence : this.doc.diagramType);
+    if (doc.diagramType === 'mermaid') {
       this.$store.dispatch('updateMermaidCode', doc.mermaidCode)
     } else {
       this.$store.commit('code', doc.code);
