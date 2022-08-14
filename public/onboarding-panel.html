@@ -9,6 +9,7 @@
   <title>Onboarding</title>
   <script>
   const STORAGE_KEY = 'onboardingState';
+  const STORAGE_KEY_DEMO_CONTENT = 'ZenUMLDemoContentConsent';
   const DEFAULT_STATE = {users: {}, lastUpdated: new Date()};
   const HELP_DESK_URL = 'https://zenuml.atlassian.net/servicedesk/customer/portals';
 
@@ -32,6 +33,18 @@
     });
   };
 
+  const demoContentPopup = () => {
+    flag = AP.flag.create({
+      title: 'ZenUML Demo Page',
+      body: 'We have prepared a demo page, would you like to check it out?',
+      type: 'info',
+      actions: {
+        'demoContent.yes': 'Yes please',
+        'demoContent.no': 'No thanks'
+      }
+    });
+  };
+
   async function init() {
     if(!isGoogleChrome()) {
       return;
@@ -46,8 +59,11 @@
         trackEvent('error', 'getCurrentSpace', e.message);
       }
 
-      const localState = getLocalState();
+      const localState = getLocalState(STORAGE_KEY);
       const remoteState = await getAppProperty();
+
+      const demoContentChoiceState = getLocalState(STORAGE_KEY_DEMO_CONTENT);
+      const demoContentExists = await checkDemoContentExists();
 
       const isOnboarded = (u, state) => {
         const ver = version();
@@ -77,6 +93,11 @@
 
           trackEvent(userId, 'copy_remote_onboarded_state_to_local', 'onboarding');
         }
+
+        if(!demoContentExists && !demoContentChoiceState?.displayed) { //TODO: check user can edit
+          demoContentPopup();
+          setLocalState(STORAGE_KEY_DEMO_CONTENT, {displayed: true, created: new Date()});
+        }
       }
 
       AP.user.getCurrentUser(checkUser);
@@ -85,7 +106,7 @@
     }
   }
 
-  AP.events.on('flag.action', function(e) {
+  AP.events.on('flag.action', async function(e) {
     try {
       flag && flag.close();
 
@@ -102,6 +123,17 @@
 
         setOnboardedForOneYear();
       }
+
+      else if(e.actionIdentifier === 'demoContent.yes') {
+        trackEvent(userId, 'yes', 'demoContent');
+
+        await createDemoContent();
+        //TODO: navigate to the new page
+      }
+      else if(e.actionIdentifier === 'demoContent.no') {
+        trackEvent(userId, 'no', 'demoContent');
+      }
+
     } catch(e) {
       reportError(e, 'onFlagAction');
     }
@@ -123,7 +155,7 @@
   };
 
   function setOnboardedLocalState(user, expires) {
-    setLocalState(getOnboardedState(getLocalState(), user, expires));
+    setLocalState(STORAGE_KEY, getOnboardedState(getLocalState(STORAGE_KEY), user, expires));
   };
 
   function setOnboardedRemoteState(user, expires) {
@@ -142,21 +174,21 @@
     AP.navigator.go('addonModule', {addonKey: addonKey(), moduleKey: postInstallPageKey()});
   }
 
-  function getLocalState(_state) {
+  function getLocalState(key) {
     try {
-      const localState = window.localStorage.getItem(getLocalStorageKey());
+      const localState = window.localStorage.getItem(getLocalStorageKey(key));
       return localState && JSON.parse(localState) || DEFAULT_STATE;
     } catch(e) {
       return DEFAULT_STATE;
     }
   }
 
-  function setLocalState(state) {
-    window.localStorage.setItem(getLocalStorageKey(), JSON.stringify(state));
+  function setLocalState(key, state) {
+    window.localStorage.setItem(getLocalStorageKey(key), JSON.stringify(state));
   }
 
-  function getLocalStorageKey() {
-    return `${STORAGE_KEY}-${getClientDomain()}`;
+  function getLocalStorageKey(key) {
+    return `${key || STORAGE_KEY}-${getClientDomain()}`;
   }
 
   async function getAppProperty() {
@@ -266,6 +298,20 @@
     } else {
       // not Google Chrome
     }
+  }
+
+  const DEMO_CONTENT_TITLE = 'ZenUML add-on Demo Page';
+
+  async function checkDemoContentExists() {
+    const url = `/rest/api/content/search?cql=(title="${DEMO_CONTENT_TITLE}" and space=${currentSpace})`;
+    const response = await AP.request({type: 'GET', contentType: 'application/json', url});
+    return JSON.parse(response.body)?.size > 0;
+  }
+
+  async function createDemoContent() {
+    const url = `/rest/api/content`;
+    const data = {type: 'page', title: DEMO_CONTENT_TITLE, space: {key: currentSpace}, body: {raw: {value: '', representation: 'raw'}}};
+    await AP.request({type: 'POST', contentType: 'application/json', data: JSON.stringify(data), url});
   }
   </script>
 
