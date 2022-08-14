@@ -65,9 +65,6 @@
       },
     },
     computed: {
-      editor() {
-        return this.$refs.myEditor.Editor
-      },
       codemirror() {
         return this.$refs.myCm.codemirror
       },
