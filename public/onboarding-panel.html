@@ -6,6 +6,8 @@
   <!-- Global site tag (gtag.js) - Google Analytics -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=UA-114996686-1"></script>
   <script type="text/javascript" src="js/google-analytics.js?version=2022.01"></script>
+
+  <script type="text/javascript" src="js/demo/resources.js?version=2022.08"></script>
   <title>Onboarding</title>
   <script>
   const STORAGE_KEY = 'onboardingState';
@@ -63,7 +65,7 @@
       const remoteState = await getAppProperty();
 
       const demoContentChoiceState = getLocalState(STORAGE_KEY_DEMO_CONTENT);
-      const demoContentExists = await checkDemoContentExists();
+      const demoContentExists = await checkDemoPageExists();
 
       const isOnboarded = (u, state) => {
         const ver = version();
@@ -127,7 +129,7 @@
       else if(e.actionIdentifier === 'demoContent.yes') {
         trackEvent(userId, 'yes', 'demoContent');
 
-        await createDemoContent();
+        await createDemoPage();
         //TODO: navigate to the new page
       }
       else if(e.actionIdentifier === 'demoContent.no') {
@@ -300,18 +302,52 @@
     }
   }
 
-  const DEMO_CONTENT_TITLE = 'ZenUML add-on Demo Page';
-
-  async function checkDemoContentExists() {
-    const url = `/rest/api/content/search?cql=(title="${DEMO_CONTENT_TITLE}" and space=${currentSpace})`;
+  async function checkDemoPageExists() {
+    const url = `/rest/api/content/search?cql=(title="${demoPageTitle}" and space=${currentSpace})`;
     const response = await AP.request({type: 'GET', contentType: 'application/json', url});
     return JSON.parse(response.body)?.size > 0;
   }
 
-  async function createDemoContent() {
+  async function createCustomContent(title, body, containerPageId) {
     const url = `/rest/api/content`;
-    const data = {type: 'page', title: DEMO_CONTENT_TITLE, space: {key: currentSpace}, body: {raw: {value: '', representation: 'raw'}}};
-    await AP.request({type: 'POST', contentType: 'application/json', data: JSON.stringify(data), url});
+    const type = 'ac:com.zenuml.confluence-addon:zenuml-content-graph'
+    const data = {type, title, container: {id: containerPageId, type: 'page'}, space: {key: currentSpace}, body: {raw: {value: JSON.stringify(body), representation: 'raw'}}};
+
+    const response = await AP.request({type: 'POST', contentType: 'application/json', data: JSON.stringify(data), url});
+    return response.body && JSON.parse(response.body);
+  }
+
+  async function createDemoPage() {
+    const data = {type: 'page', title: demoPageTitle, space: {key: currentSpace}, body: {raw: {value: '', representation: 'raw'}}};
+    const page = await createContent(data);
+
+    const [sequence, openAPI, mermaid, graph] = await Promise.all([
+      createCustomContent(demoSequenceTitle, demoSequenceContent, page.id),
+      createCustomContent(demoOpenAPITitle, demoOpenAPIContent, page.id),
+      createCustomContent(demoMermaidTitle, demoMermaidContent, page.id),
+      createCustomContent(demoGraphTitle, demoGraphContent, page.id)
+    ]);
+
+    const body = JSON.stringify(demoPageContent)
+      .replaceAll('$$_SEQUENCE_CONTENT_ID', sequence.id)
+      .replaceAll('$$_OPENAPI_CONTENT_ID', openAPI.id)
+      .replaceAll('$$_MERMAID_CONTENT_ID', mermaid.id)
+      .replaceAll('$$_GRAPH_CONTENT_ID', graph.id);
+
+    const newData = Object.assign({}, data, {version: {number: page.version.number + 1}, body: {atlas_doc_format: {value: body, representation: 'atlas_doc_format'}}});
+    await updateContent(page.id, newData);
+  }
+
+  async function createContent(data) {
+    const url = `/rest/api/content`;
+    const response = await AP.request({type: 'POST', contentType: 'application/json', data: JSON.stringify(data), url});
+    return response.body && JSON.parse(response.body);
+  }
+
+  async function updateContent(id, data) {
+    const url = `/rest/api/content/${id}`;
+    const response = await AP.request({type: 'PUT', contentType: 'application/json', data: JSON.stringify(data), url});
+    return response.body && JSON.parse(response.body);
   }
   </script>
 
