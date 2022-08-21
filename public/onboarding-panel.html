@@ -21,7 +21,7 @@
 
   const url = () => `/rest/atlassian-connect/1/addons/${addonKey()}/properties/${STORAGE_KEY}`;
 
-  var flag, userId = '', clientDomain = '', currentSpace = '', demoPageDraft;
+  var flag, userId = '', clientDomain = '', currentSpace = '';
 
   const popup = () => {
     flag = AP.flag.create({
@@ -38,7 +38,7 @@
   const demoPagePopup = () => {
     flag = AP.flag.create({
       title: 'ZenUML Demo Page',
-      body: 'We have prepared a demo page, would you like to check it out?',
+      body: 'We have prepared a demo page. Would you like to check it out?',
       type: 'info',
       actions: {
         'demoPage.yes': 'Yes please',
@@ -97,13 +97,8 @@
         }
 
         if(!demoPageExists && !demoPagePopupState?.displayed) {
-           createDemoPageDraft().then(() => {
-            //can create draft page
-            demoPagePopup();
-            setLocalState(STORAGE_KEY_DEMO_PAGE, {displayed: true, created: new Date()});
-           }, () => {
-            trackEvent(userId, 'user_can_not_create_page', 'demoPage');
-           });
+          demoPagePopup();
+          setLocalState(STORAGE_KEY_DEMO_PAGE, {displayed: true, created: new Date()});
         }
       }
 
@@ -134,8 +129,12 @@
       else if(e.actionIdentifier === 'demoPage.yes') {
         trackEvent(userId, 'yes', 'demoPage');
 
-        const page = await createDemoPage();
-        AP.navigator.go('contentview', {contentId: page.id});
+        try {
+          const page = await createDemoPage();
+          AP.navigator.go('contentview', {contentId: page.id});
+        } catch(e) {
+          reportDemoPageError(e, 'createDemoPage');
+        }
       }
       else if(e.actionIdentifier === 'demoPage.no') {
         trackEvent(userId, 'no', 'demoPage');
@@ -282,6 +281,11 @@
     console.error(`Error in ${context}. Please report to our helpdesk: ${HELP_DESK_URL}`, error);
   }
 
+  function reportDemoPageError(error, context) {
+    trackEvent(`${context} error: ${error && JSON.stringify(error)}`, 'unexpected_error', 'demoPage');
+    console.error(`Error in ${context}. Please report to our helpdesk: ${HELP_DESK_URL}`, error);
+  }
+
   function isGoogleChrome() {
     //https://stackoverflow.com/questions/4565112/javascript-how-to-find-out-if-the-user-browser-is-chrome/13348618#13348618
     var isChromium = window.chrome;
@@ -324,16 +328,13 @@
 
   async function createDemoPageDraft() {
     const data = {type: 'page', title: demoPageTitle, status: 'draft', space: {key: currentSpace}, body: {raw: {value: '', representation: 'raw'}}};
-    demoPageDraft = await createContent(data);
+    const demoPageDraft = await createContent(data);
     trackEvent(userId, 'created_demo_page_draft', 'demoPage');
     return demoPageDraft;
   }
 
   async function createDemoPage() {
-    if(!demoPageDraft) {
-      await createDemoPageDraft();
-    }
-    const page = demoPageDraft;
+    const page = await createDemoPageDraft();
 
     const [sequence, openAPI, mermaid, graph] = await Promise.all([
       createCustomContent(demoSequenceTitle, demoSequenceContent, page.id),
