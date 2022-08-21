@@ -11,7 +11,7 @@
   <title>Onboarding</title>
   <script>
   const STORAGE_KEY = 'onboardingState';
-  const STORAGE_KEY_DEMO_CONTENT = 'ZenUMLDemoContentConsent';
+  const STORAGE_KEY_DEMO_PAGE = 'ZenUMLDemoPagePopupState';
   const DEFAULT_STATE = {users: {}, lastUpdated: new Date()};
   const HELP_DESK_URL = 'https://zenuml.atlassian.net/servicedesk/customer/portals';
 
@@ -21,7 +21,7 @@
 
   const url = () => `/rest/atlassian-connect/1/addons/${addonKey()}/properties/${STORAGE_KEY}`;
 
-  var flag, userId = '', clientDomain = '', currentSpace = '';
+  var flag, userId = '', clientDomain = '', currentSpace = '', demoPageDraft;
 
   const popup = () => {
     flag = AP.flag.create({
@@ -35,7 +35,7 @@
     });
   };
 
-  const demoContentPopup = () => {
+  const demoPagePopup = () => {
     flag = AP.flag.create({
       title: 'ZenUML Demo Page',
       body: 'We have prepared a demo page, would you like to check it out?',
@@ -64,8 +64,8 @@
       const localState = getLocalState(STORAGE_KEY);
       const remoteState = await getAppProperty();
 
-      const demoContentChoiceState = getLocalState(STORAGE_KEY_DEMO_CONTENT);
-      const demoContentExists = await checkDemoPageExists();
+      const demoPagePopupState = getLocalState(STORAGE_KEY_DEMO_PAGE);
+      const demoPageExists = await checkDemoPageExists();
 
       const isOnboarded = (u, state) => {
         const ver = version();
@@ -96,9 +96,14 @@
           trackEvent(userId, 'copy_remote_onboarded_state_to_local', 'onboarding');
         }
 
-        if(!demoContentExists && !demoContentChoiceState?.displayed) { //TODO: check user can edit
-          demoContentPopup();
-          setLocalState(STORAGE_KEY_DEMO_CONTENT, {displayed: true, created: new Date()});
+        if(!demoPageExists && !demoPagePopupState?.displayed) {
+           createDemoPageDraft().then(() => {
+            //can create draft page
+            demoPagePopup();
+            setLocalState(STORAGE_KEY_DEMO_PAGE, {displayed: true, created: new Date()});
+           }, () => {
+            trackEvent(userId, 'user_can_not_create_page', 'demoPage');
+           });
         }
       }
 
@@ -317,9 +322,18 @@
     return response.body && JSON.parse(response.body);
   }
 
+  async function createDemoPageDraft() {
+    const data = {type: 'page', title: demoPageTitle, status: 'draft', space: {key: currentSpace}, body: {raw: {value: '', representation: 'raw'}}};
+    demoPageDraft = await createContent(data);
+    trackEvent(userId, 'created_demo_page_draft', 'demoPage');
+    return demoPageDraft;
+  }
+
   async function createDemoPage() {
-    const data = {type: 'page', title: demoPageTitle, space: {key: currentSpace}, body: {raw: {value: '', representation: 'raw'}}};
-    const page = await createContent(data);
+    if(!demoPageDraft) {
+      await createDemoPageDraft();
+    }
+    const page = demoPageDraft;
 
     const [sequence, openAPI, mermaid, graph] = await Promise.all([
       createCustomContent(demoSequenceTitle, demoSequenceContent, page.id),
@@ -334,8 +348,8 @@
       .replaceAll('$$_MERMAID_CONTENT_ID', mermaid.id)
       .replaceAll('$$_GRAPH_CONTENT_ID', graph.id);
 
-    const newData = Object.assign({}, data, {version: {number: page.version.number + 1}, body: {atlas_doc_format: {value: body, representation: 'atlas_doc_format'}}});
-    return await updateContent(page.id, newData);
+    const data = {type: 'page', title: demoPageTitle, status: 'current', space: {key: currentSpace}, version: {number: page.version.number}, body: {atlas_doc_format: {value: body, representation: 'atlas_doc_format'}}};
+    return await updateContent(page.id, data);
   }
 
   async function createContent(data) {
