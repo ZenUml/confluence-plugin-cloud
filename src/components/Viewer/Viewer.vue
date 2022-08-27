@@ -44,8 +44,6 @@ import AP from "@/model/AP";
 import Example from "@/utils/sequence/Example";
 const DiagramFrame = VueSequence.DiagramFrame;
 
-
-
 export default {
   name: "Viewer",
   data: () => {

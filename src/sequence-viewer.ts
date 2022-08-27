@@ -4,8 +4,6 @@ import 'vue-sequence/dist/vue-sequence.css'
 import './assets/tailwind.css'
 
 import './model/MockApConfluence'
-import mermaid from 'mermaid'
-
 import ExtendedStore from './model/Store'
 import EventBus from './EventBus'
 import Viewer from "@/components/Viewer/Viewer.vue";
@@ -14,14 +12,6 @@ import {initializeMacro} from "@/model/macro/InitializeMacro";
 import createAttachmentIfContentChanged from "@/model/Attachment";
 import globals from '@/model/globals';
 import BaseMacro2 from "@/model/BaseMacro2";
-
-// eslint-disable-next-line
-// @ts-ignore
-window.mermaid = mermaid
-
-mermaid.mermaidAPI.initialize({
-  startOnLoad:true
-})
 
 Vue.config.productionTip = false
 Vue.use(Vuex)

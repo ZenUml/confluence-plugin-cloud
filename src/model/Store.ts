@@ -1,5 +1,4 @@
 import {VueSequence} from 'vue-sequence'
-import mermaid from "mermaid";
 import EventBus from '../EventBus'
 import {DiagramType} from "@/model/Diagram/Diagram";
 import globals from '@/model/globals';
@@ -12,9 +11,6 @@ export default {
     updateMermaidCode(state: any, payload: any) {
       state.mermaidCode = payload
     },
-    updateMermaidDiagram(state: any, payload: any) {
-      state.mermaidSvg = payload
-    },
     updateDiagramType(state: any, payload: any) {
       state.diagramType = payload
     },
@@ -26,17 +22,6 @@ export default {
     ...storeConfig.actions,
     updateMermaidCode({commit}: any, payload: any) {
       commit('updateMermaidCode', payload)
-      try {
-        mermaid.parse(payload);
-        mermaid.mermaidAPI.render('any-id',
-          payload,
-          (svg) => {
-            commit('updateMermaidDiagram', svg);
-          }
-        );
-      } catch (e) {
-        return false;
-      }
     },
     updateDiagramType({commit}: any, payload: DiagramType) {
       commit('updateDiagramType', payload)
@@ -52,6 +37,9 @@ export default {
   },
   getters: {
     ...storeConfig.getters,
+    mermaidCode: (state: any) => {
+      return state.mermaidCode;
+    },
     svg: (state: any) => {
       return state.mermaidSvg
     },
