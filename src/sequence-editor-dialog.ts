@@ -11,7 +11,6 @@ import 'vue-sequence/dist/vue-sequence.css'
 
 import ExtendedStore from './model/Store'
 import EventBus from './EventBus'
-import './GTagConfig'
 import globals from '@/model/globals';
 import {initializeMacro} from "@/model/macro/InitializeMacro";
 

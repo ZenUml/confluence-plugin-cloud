@@ -11,8 +11,6 @@ import 'vue-sequence/dist/vue-sequence.css'
 import ExtendedStore from './model/Store'
 import {initializeMacro} from "@/model/macro/InitializeMacro";
 
-import './GTagConfig'
-
 // eslint-disable-next-line
 // @ts-ignore
 window.mermaid = mermaid
