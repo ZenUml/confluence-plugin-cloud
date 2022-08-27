@@ -24,7 +24,7 @@
     "md5": "^2.3.0",
     "mermaid": "^8.5.2",
     "split.js": "^1.6.5",
-    "swagger-editor": "^4.2.9",
+    "swagger-editor": "^4.4.0",
     "tailwindcss": "npm:@tailwindcss/postcss7-compat@^2.0.2",
     "vue": "^2.6.12",
     "vue-codemirror": "^4.0.6",
