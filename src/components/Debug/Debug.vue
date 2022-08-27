@@ -1,6 +1,6 @@
 <template>
   <div v-show="debug">
-    <div class="flex flex-wrap m-2 text-sm">
+    <div class="flex flex-nowrap m-2 text-sm">
       <div class="text-xs inline-flex items-center font-bold leading-sm px-3 py-1 bg-blue-200 text-blue-700 rounded-full">
         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2m-2-4h.01M17 16h.01"></path></svg>
         <span class="inline-block px-2">{{ app.host }}</span>
@@ -14,7 +14,7 @@
       <div class="flex gap-2 items-center">
         <div class="ml-4 text-xs inline-flex items-center font-bold leading-sm uppercase px-3 py-1 bg-yellow-200 text-yellow-700 rounded-full">
           <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
-          <span class="inline-block px-2">[{{ shortUuid }}] {{ diagram.source }}:{{diagram.id}}</span>
+          <span class="inline-block px-2">[{{ shortUuid || 'macro uuid' }}] {{ diagram.source || 'source' }}:{{diagram.id || 'content id'}}</span>
         </div>
       </div>
     </div>
