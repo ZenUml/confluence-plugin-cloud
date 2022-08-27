@@ -1,5 +1,9 @@
 const SpeedMeasureWebpackPlugin = require('speed-measure-webpack-plugin');
 const { ESBuildMinifyPlugin } = require('esbuild-loader')
+const { execSync } = require('child_process');
+
+process.env.VUE_APP_GIT_HASH = execSync('git rev-parse --short HEAD').toString().trim()
+process.env.VUE_APP_GIT_BRANCH = execSync('git branch --show-current').toString().trim();
 
 module.exports = {
   pages: {
