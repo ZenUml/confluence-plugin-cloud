@@ -13,7 +13,7 @@
     "lint:vue": "vue-cli-service lint",
     "git:branch:clean:gone": "git fetch -p && git branch -vv | awk '/: gone]/{print $1}' | xargs git branch -d",
     "git:branch:clean:merged": "git branch --merged|egrep -v \"(\\*|master|main|dev|skip_branch_name)\" | xargs git branch -d",
-    "start:local": "VERSION=latest PRODUCT_TYPE=lite vue-cli-service serve --open",
+    "start:local": "VERSION=latest PRODUCT_TYPE=lite vue-cli-service serve",
     "start:sit": "concurrently \"yarn wrangler:serve\" \"yarn start:local\" ",
     "install:stg": "pluploader --base-url https://zenuml-stg.atlassian.net/wiki install --cloud --plugin-uri https://air.zenuml.com/descriptor"
   },
