@@ -2,7 +2,6 @@ import Vue from 'vue'
 import DocumentList from './components/DocumentList/DocumentList.vue'
 
 import EventBus from './EventBus'
-import './GTagConfig'
 import globals from '@/model/globals';
 import AP from "@/model/AP";
 import './assets/tailwind.css'

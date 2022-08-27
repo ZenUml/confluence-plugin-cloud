@@ -1,6 +1,5 @@
 import {trackEvent} from "@/utils/window";
 import globals from '@/model/globals';
-import './GTagConfig'
 import {DiagramType} from "@/model/Diagram";
 
 function loadViewer(url: string) {
@@ -30,7 +29,7 @@ async function initializeMacro() {
   try {
     await macro.initializeContext();
     const { diagramType } = await macro.load();
-    
+
     if(diagramType) {
       const url = `${getViewerUrl(diagramType)}${window.location.search}`;
       loadViewer(url);
