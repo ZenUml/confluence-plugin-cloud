@@ -49,7 +49,7 @@ const demoPageContent = {
             {
               "type": "link",
               "attrs": {
-                "href": "https://marketplace.atlassian.com/apps/1218380/zenuml-diagrams-for-confluence-freemium?hosting=cloud&tab=overview"
+                "href": getAddOnLink()
               }
             }
           ]
@@ -147,7 +147,7 @@ const demoPageContent = {
             {
               "type": "link",
               "attrs": {
-                "href": "https://marketplace.atlassian.com/apps/1218380/zenuml-diagrams-for-confluence-freemium?hosting=cloud&tab=support"
+                "href": getSupportLink()
               }
             }
           ]
@@ -581,4 +581,29 @@ function uuidv4() {
   return ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, c =>
     (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
   );
+}
+
+function getUrlParam (param) {
+  let codeParams = (new RegExp(param + '=([^&]*)')).exec(window.location.search);
+  if(codeParams && codeParams.length >= 1) {
+    const codedParam = codeParams[1];
+    return decodeURIComponent(codedParam);
+  }
+  return null;
+}
+
+function isLite() {
+  return getUrlParam('addonKey')?.includes('lite');
+}
+
+function getAddOnLink() {
+  return isLite() 
+    ? 'https://marketplace.atlassian.com/apps/1218380/zenuml-diagrams-for-confluence-freemium?hosting=cloud&tab=overview'
+    : 'https://marketplace.atlassian.com/apps/1219422/zenuml-diagrams-and-open-api-lite?tab=overview&hosting=cloud';
+}
+
+function getSupportLink() {
+  return isLite() 
+    ? 'https://marketplace.atlassian.com/apps/1218380/zenuml-diagrams-for-confluence-freemium?hosting=cloud&tab=support'
+    : 'https://marketplace.atlassian.com/apps/1219422/zenuml-diagrams-and-open-api-lite?tab=support&hosting=cloud';
 }

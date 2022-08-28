@@ -319,7 +319,7 @@
 
   async function createCustomContent(title, body, containerPageId) {
     const url = `/rest/api/content`;
-    const type = 'ac:com.zenuml.confluence-addon:zenuml-content-graph'
+    const type = `ac:${addonKey()}:zenuml-content-graph`;
     const data = {type, title, container: {id: containerPageId, type: 'page'}, space: {key: currentSpace}, body: {raw: {value: JSON.stringify(body), representation: 'raw'}}};
 
     const response = await AP.request({type: 'POST', contentType: 'application/json', data: JSON.stringify(data), url});
@@ -351,7 +351,7 @@
 
     const data = {type: 'page', title: demoPageTitle, status: 'current', space: {key: currentSpace}, version: {number: page.version.number}, body: {atlas_doc_format: {value: body, representation: 'atlas_doc_format'}}};
     const response = await updateContent(page.id, data);
-    
+
     trackEvent(userId, 'published_demo_page', 'demoPage');
     return response;
   }
