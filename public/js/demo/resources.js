@@ -297,7 +297,7 @@ const demoPageContent = {
             {
               "type": "link",
               "attrs": {
-                "href": "/wiki/plugins/servlet/ac/com.zenuml.confluence-addon/onboarding-page"
+                "href": getOnboardingPageLink()
               }
             }
           ]
@@ -592,8 +592,12 @@ function getUrlParam (param) {
   return null;
 }
 
+function addonKey() {
+  return getUrlParam('addonKey');
+}
+
 function isLite() {
-  return getUrlParam('addonKey')?.includes('lite');
+  return addonKey()?.includes('lite');
 }
 
 function getAddOnLink() {
@@ -606,6 +610,10 @@ function getSupportLink() {
   return isLite() 
     ? 'https://marketplace.atlassian.com/apps/1219422/zenuml-diagrams-and-open-api-lite?tab=support&hosting=cloud'
     : 'https://marketplace.atlassian.com/apps/1218380/zenuml-diagrams-for-confluence-freemium?hosting=cloud&tab=support';
+}
+
+function getOnboardingPageLink() {
+  return `/wiki/plugins/servlet/ac/${addonKey()}/onboarding-page`;
 }
 
 function getModuleKeySuffix() {
