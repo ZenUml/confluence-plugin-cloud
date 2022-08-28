@@ -332,27 +332,40 @@
     return demoPageDraft;
   }
 
+  async function deleteDemoPageDraft(page) {
+    //We can't use "Delete content" API as it requires Connect app scope: DELETE
+    await updateContent(page.id, Object.assign({}, page, {status: 'trashed'}));
+    trackEvent(userId, 'deleted_demo_page_draft', 'demoPage');
+    return demoPageDraft;
+  }
+
   async function createDemoPage() {
     const page = await createDemoPageDraft();
 
-    const [sequence, openAPI, mermaid, graph] = await Promise.all([
-      createCustomContent(demoSequenceTitle, demoSequenceContent, page.id),
-      createCustomContent(demoOpenAPITitle, demoOpenAPIContent, page.id),
-      createCustomContent(demoMermaidTitle, demoMermaidContent, page.id),
-      createCustomContent(demoGraphTitle, demoGraphContent, page.id)
-    ]);
+    try {
+      const [sequence, openAPI, mermaid, graph] = await Promise.all([
+        createCustomContent(demoSequenceTitle, demoSequenceContent, page.id),
+        createCustomContent(demoOpenAPITitle, demoOpenAPIContent, page.id),
+        createCustomContent(demoMermaidTitle, demoMermaidContent, page.id),
+        createCustomContent(demoGraphTitle, demoGraphContent, page.id)
+      ]);
 
-    const body = JSON.stringify(demoPageContent)
-      .replaceAll('$$_SEQUENCE_CONTENT_ID', sequence.id)
-      .replaceAll('$$_OPENAPI_CONTENT_ID', openAPI.id)
-      .replaceAll('$$_MERMAID_CONTENT_ID', mermaid.id)
-      .replaceAll('$$_GRAPH_CONTENT_ID', graph.id);
+      const body = JSON.stringify(demoPageContent)
+        .replaceAll('$$_SEQUENCE_CONTENT_ID', sequence.id)
+        .replaceAll('$$_OPENAPI_CONTENT_ID', openAPI.id)
+        .replaceAll('$$_MERMAID_CONTENT_ID', mermaid.id)
+        .replaceAll('$$_GRAPH_CONTENT_ID', graph.id);
 
-    const data = {type: 'page', title: demoPageTitle, status: 'current', space: {key: currentSpace}, version: {number: page.version.number}, body: {atlas_doc_format: {value: body, representation: 'atlas_doc_format'}}};
-    const response = await updateContent(page.id, data);
+      const data = {type: 'page', title: demoPageTitle, status: 'current', space: {key: currentSpace}, version: {number: page.version.number}, body: {atlas_doc_format: {value: body, representation: 'atlas_doc_format'}}};
+      const response = await updateContent(page.id, data);
 
-    trackEvent(userId, 'published_demo_page', 'demoPage');
-    return response;
+      trackEvent(userId, 'published_demo_page', 'demoPage');
+      return response;
+    }
+    catch(e) {
+      await deleteDemoPageDraft(page);
+      throw e;
+    }
   }
 
   async function createContent(data) {
