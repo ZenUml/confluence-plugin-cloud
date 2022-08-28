@@ -14,7 +14,7 @@ new Vue({
       saveAndExit: async () => {
         // eslint-disable-next-line no-undef
         // @ts-ignore
-        await window.macro.save2(getGraphXml());
+        await globals.macro.save2(getGraphXml());
         /* eslint-disable no-undef */
         AP.dialog.close();
       }
