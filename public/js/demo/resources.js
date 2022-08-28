@@ -242,7 +242,7 @@ const demoPageContent = {
               "attrs": {
                 "layout": "default",
                 "extensionType": "com.atlassian.confluence.macro.core",
-                "extensionKey": "zenuml-sequence-macro",
+                "extensionKey": `zenuml-sequence-macro${getModuleKeySuffix()}`,
                 "parameters": {
                   "macroParams": {
                     "uuid": {
@@ -334,7 +334,7 @@ const demoPageContent = {
       "attrs": {
         "layout": "default",
         "extensionType": "com.atlassian.confluence.macro.core",
-        "extensionKey": "zenuml-graph-macro",
+        "extensionKey": `zenuml-graph-macro${getModuleKeySuffix()}`,
         "parameters": {
           "macroParams": {
             "uuid": {
@@ -394,7 +394,7 @@ const demoPageContent = {
       "attrs": {
         "layout": "default",
         "extensionType": "com.atlassian.confluence.macro.core",
-        "extensionKey": "zenuml-openapi-macro",
+        "extensionKey": `zenuml-openapi-macro${getModuleKeySuffix()}`,
         "parameters": {
           "macroParams": {
             "uuid": {
@@ -454,7 +454,7 @@ const demoPageContent = {
       "attrs": {
         "layout": "default",
         "extensionType": "com.atlassian.confluence.macro.core",
-        "extensionKey": "zenuml-sequence-macro",
+        "extensionKey": `zenuml-sequence-macro${getModuleKeySuffix()}`,
         "parameters": {
           "macroParams": {
             "uuid": {
@@ -536,7 +536,7 @@ const demoPageContent = {
       "attrs": {
         "layout": "default",
         "extensionType": "com.atlassian.confluence.macro.core",
-        "extensionKey": "zenuml-embed-macro",
+        "extensionKey": `zenuml-embed-macro${getModuleKeySuffix()}`,
         "parameters": {
           "macroParams": {
             "customContentType": {
@@ -598,12 +598,16 @@ function isLite() {
 
 function getAddOnLink() {
   return isLite() 
-    ? 'https://marketplace.atlassian.com/apps/1218380/zenuml-diagrams-for-confluence-freemium?hosting=cloud&tab=overview'
-    : 'https://marketplace.atlassian.com/apps/1219422/zenuml-diagrams-and-open-api-lite?tab=overview&hosting=cloud';
+    ? 'https://marketplace.atlassian.com/apps/1219422/zenuml-diagrams-and-open-api-lite?tab=overview&hosting=cloud'
+    : 'https://marketplace.atlassian.com/apps/1218380/zenuml-diagrams-for-confluence-freemium?hosting=cloud&tab=overview';
 }
 
 function getSupportLink() {
   return isLite() 
-    ? 'https://marketplace.atlassian.com/apps/1218380/zenuml-diagrams-for-confluence-freemium?hosting=cloud&tab=support'
-    : 'https://marketplace.atlassian.com/apps/1219422/zenuml-diagrams-and-open-api-lite?tab=support&hosting=cloud';
+    ? 'https://marketplace.atlassian.com/apps/1219422/zenuml-diagrams-and-open-api-lite?tab=support&hosting=cloud'
+    : 'https://marketplace.atlassian.com/apps/1218380/zenuml-diagrams-for-confluence-freemium?hosting=cloud&tab=support';
+}
+
+function getModuleKeySuffix() {
+  return isLite() ? '-lite' : '';
 }
