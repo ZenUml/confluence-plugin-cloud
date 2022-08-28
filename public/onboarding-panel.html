@@ -350,7 +350,10 @@
       .replaceAll('$$_GRAPH_CONTENT_ID', graph.id);
 
     const data = {type: 'page', title: demoPageTitle, status: 'current', space: {key: currentSpace}, version: {number: page.version.number}, body: {atlas_doc_format: {value: body, representation: 'atlas_doc_format'}}};
-    return await updateContent(page.id, data);
+    const response = await updateContent(page.id, data);
+    
+    trackEvent(userId, 'published_demo_page', 'demoPage');
+    return response;
   }
 
   async function createContent(data) {
