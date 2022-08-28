@@ -16,7 +16,6 @@
   const HELP_DESK_URL = 'https://zenuml.atlassian.net/servicedesk/customer/portals';
 
   const version = () => getUrlParam('version');
-  const addonKey = () => getUrlParam('addonKey');
   const postInstallPageKey = () => getUrlParam('postInstallPageKey');
 
   const url = () => `/rest/atlassian-connect/1/addons/${addonKey()}/properties/${STORAGE_KEY}`;
