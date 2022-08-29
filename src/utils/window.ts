@@ -1,6 +1,5 @@
 import {DiagramType} from "@/model/Diagram";
-let clientDomain = '';
-
+import {getClientDomain, getSpaceKey} from "@/utils/ContextParameters/ContextParameters";
 export function getUrlParam (param: string): string | undefined {
   try {
     const matches = (new RegExp(param + '=([^&]*)')).exec(window.location.search);
@@ -30,7 +29,7 @@ export function trackEvent(label: DiagramType | string, action: string, category
         ...eventDetails,
         'client_domain': getClientDomain(),
         'user_account_id': getCurrentUserAccountId(),
-        'confluence_space': getCurrentSpace()
+        'confluence_space': getSpaceKey()
       };
     } catch (e) {
       console.error(e);
@@ -42,36 +41,7 @@ export function trackEvent(label: DiagramType | string, action: string, category
   }
 }
 
-// Never throw
-function getClientDomain(): string {
-  try {
-    return clientDomain || _getAtlassianDomain() || 'unknown_atlassian_domain';
-  } catch (e) {
-    return 'unknown_atlassian_domain'
-  }
-}
-
-function _getAtlassianDomain(): string {
-  const pattern = /\/\/([a-z0-9-_]+)\.atlassian\.net/i;
-  const url = getCurrentPageUrl();
-  const result = pattern.exec(url);
-  if(result && result.length > 1) {
-    return result[1];
-  }
-  return 'unknown_atlassian_domain';
-}
-
 function getCurrentUserAccountId(): string {
   // @ts-ignore
   return window.macro?._apWrapper?.currentUser?.atlassianAccountId || 'unknown_user_account_id';
-}
-
-function getCurrentSpace(): string {
-  // @ts-ignore
-  return window.macro?._apWrapper?.currentSpace || 'unknown_space';
-}
-
-function getCurrentPageUrl(): string {
-  // @ts-ignore
-  return window.macro?._apWrapper?.currentPageUrl || 'unknown_page_url';
 }
