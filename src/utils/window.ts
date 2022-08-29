@@ -27,9 +27,9 @@ export function trackEvent(label: DiagramType | string, action: string, category
     try {
       eventDetails =  {
         ...eventDetails,
-        'client_domain': getClientDomain(),
+        'client_domain': getClientDomain() || 'unknown_atlassian_domain',
         'user_account_id': getCurrentUserAccountId(),
-        'confluence_space': getSpaceKey()
+        'confluence_space': getSpaceKey() || 'unknown_space'
       };
     } catch (e) {
       console.error(e);
