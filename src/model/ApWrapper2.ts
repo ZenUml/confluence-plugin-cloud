@@ -228,7 +228,7 @@ export default class ApWrapper2 implements IApWrapper {
     const customContentType = (type: string) => `${this.getCustomContentTypePrefix()}:${type}`;
     const spaceKey = await this._getCurrentSpace();
 
-    const url = (type: string) => `/rest/api/content?spaceKey=${spaceKey}&type=${customContentType(type)}&expand=body.raw,version.number,container,space`;
+    const url = (type: string) => `/rest/api/content?spaceKey=${spaceKey}&type=${customContentType(type)}&expand=body.raw,version.number,container,space&limit=1000`;
 
     const parseCustomContentBody = (customContent: ICustomContentResponseBody): ICustomContent => {
       let diagram: any = {};
