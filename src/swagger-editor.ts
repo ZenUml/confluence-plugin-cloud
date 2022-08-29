@@ -10,15 +10,29 @@ import '@/components/Debug/DebugMounter.ts'
 import Example from '@/model/OpenApi/OpenApiExample'
 import globals from '@/model/globals';
 import AP from "@/model/AP";
-import {DiagramType} from "@/model/Diagram/Diagram";
+import {DataSource, DiagramType} from "@/model/Diagram/Diagram";
 import defaultContentProvider from "@/model/ContentProvider/CompositeContentProvider";
+import {CustomContentStorageProvider} from "@/model/ContentProvider/CustomContentStorageProvider";
+import {MacroIdProvider} from "@/model/ContentProvider/MacroIdProvider";
 
 new Vue({
   render: h => h(SaveAndGoBackButton, {
     props: {
       saveAndExit: async function () {
+        const customContentStorageProvider = new CustomContentStorageProvider(AP);
         // @ts-ignore
-        await globals.macro.save({title: '', code: window.specContent, styles: '', mermaidCode: '', diagramType: DiagramType.OpenAPI, source: 'CustomContent'});
+        const code = window.specContent;
+        const diagram = {
+          title: '',
+          code: code,
+          styles: {},
+          mermaidCode: '',
+          diagramType: DiagramType.OpenApi,
+          source: DataSource.CustomContent
+        };
+        const id = await customContentStorageProvider.save(diagram);
+        const macroIdProvider = new MacroIdProvider(AP);
+        await macroIdProvider.save(id);
 
         /* eslint-disable no-undef */
         AP.dialog.close();
