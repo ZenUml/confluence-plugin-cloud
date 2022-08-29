@@ -25,7 +25,8 @@
 import App from "@/model/app/App";
 import HostIcon from '@/assets/server-svgrepo-com.svg'
 import globals from '@/model/globals';
-
+import {MacroIdProvider} from "@/model/ContentProvider/MacroIdProvider";
+import AP from "@/model/AP";
 const commitHash = process.env.VUE_APP_GIT_HASH;
 const gitBranch = process.env.VUE_APP_GIT_BRANCH;
 export default {
@@ -34,7 +35,8 @@ export default {
     return {
       hostIcon: HostIcon,
       commitHash,
-      gitBranch
+      gitBranch,
+      shortUuid: ''
     }
   },
   computed: {
@@ -47,11 +49,10 @@ export default {
     diagram() {
       return globals.macro._diagram || {};
     },
-
-    shortUuid() {
-      return globals.macro?._uuid?.substring(0, 8);
-    }
-
+  },
+  async mounted() {
+    const macroIdProvider = new MacroIdProvider(AP);
+    this.shortUuid = (await macroIdProvider.getUuid()).substring(0, 8);
   }
 }
 </script>

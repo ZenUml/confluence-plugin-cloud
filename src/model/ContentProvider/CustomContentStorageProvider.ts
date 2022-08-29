@@ -23,4 +23,14 @@ export class CustomContentStorageProvider implements StorageProvider {
   async getCustomContentList() {
     return await this.apWrapper.listCustomContentByType(['zenuml-content-sequence', 'zenuml-content-graph']);
   }
+
+  async save(diagram: Diagram): Promise<string> {
+    let customContent;
+    if (diagram?.source === 'custom-content' && diagram?.id && !diagram?.isCopy) {
+      customContent = await this.apWrapper.saveCustomContent(diagram.id, diagram);
+    } else {
+      customContent = await this.apWrapper.createCustomContent(diagram);
+    }
+    return customContent.id;
+  }
 }
