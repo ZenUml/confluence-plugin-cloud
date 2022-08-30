@@ -1,4 +1,3 @@
-import BaseMacro2 from "@/model/BaseMacro2";
 import MockAp from '@/model/MockAp'
 import {DataSource, DiagramType} from "@/model/Diagram/Diagram";
 import ApWrapper2 from "@/model/ApWrapper2";
@@ -10,20 +9,18 @@ import defaultContentProvider from "@/model/ContentProvider/CompositeContentProv
 
 let mockAp: MockAp;
 let mockApConfluence: MockApConfluence;
-let macro: BaseMacro2;
 
 jest.mock('../../src/utils/uuid', () => {
   return () => 'random_uuid'
 })
 
-describe('BaseMacro2', () => {
+describe('Content loading', () => {
 
   function setUp(param: string) {
     helper.setUpUrlParam(param);
 
     mockAp = new MockAp();
     mockApConfluence = mockAp.confluence;
-    macro = new BaseMacro2(new ApWrapper2(mockAp));
   }
 
   it('creates custom content if _customContentId is null', async () => {
@@ -63,7 +60,6 @@ describe('BaseMacro2', () => {
       apWrapper2._page._getLocationContext = getLocationContext.bind(apWrapper2);
       expect(await apWrapper2._page.getPageId()).toBe('page-001');
       mockApConfluence = mockAp.confluence;
-      macro = new BaseMacro2(new ApWrapper2(mockAp));
 
       const _requestFn = jest.fn().mockImplementation(async () => {
         return buildCustomContentResponse("page-002", "A.method");
