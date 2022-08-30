@@ -12,31 +12,29 @@ import globals from '@/model/globals';
 import AP from "@/model/AP";
 import {DataSource, DiagramType} from "@/model/Diagram/Diagram";
 import defaultContentProvider from "@/model/ContentProvider/CompositeContentProvider";
-import {CustomContentStorageProvider} from "@/model/ContentProvider/CustomContentStorageProvider";
-import {MacroIdProvider} from "@/model/ContentProvider/MacroIdProvider";
+import {saveToPlatform} from "@/model/ContentProvider/Persistence";
+
+async function saveOpenApiAndExit () {
+  // @ts-ignore
+  const code = window.specContent;
+  const diagram = {
+    title: '',
+    code: code,
+    styles: {},
+    mermaidCode: '',
+    diagramType: DiagramType.OpenApi,
+    source: DataSource.CustomContent
+  };
+  await saveToPlatform(diagram);
+
+  /* eslint-disable no-undef */
+  AP.dialog.close();
+}
 
 new Vue({
   render: h => h(SaveAndGoBackButton, {
     props: {
-      saveAndExit: async function () {
-        const customContentStorageProvider = new CustomContentStorageProvider(AP);
-        // @ts-ignore
-        const code = window.specContent;
-        const diagram = {
-          title: '',
-          code: code,
-          styles: {},
-          mermaidCode: '',
-          diagramType: DiagramType.OpenApi,
-          source: DataSource.CustomContent
-        };
-        const id = await customContentStorageProvider.save(diagram);
-        const macroIdProvider = new MacroIdProvider(AP);
-        await macroIdProvider.save(id);
-
-        /* eslint-disable no-undef */
-        AP.dialog.close();
-      }
+      saveAndExit: saveOpenApiAndExit
     },
   })
 }).$mount('#save-and-go-back');

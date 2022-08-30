@@ -8,8 +8,7 @@ import AP from "@/model/AP";
 import defaultContentProvider from "@/model/ContentProvider/CompositeContentProvider";
 import {decompress} from "@/utils/compress";
 import {DiagramType} from "@/model/Diagram/Diagram";
-import {MacroIdProvider} from "@/model/ContentProvider/MacroIdProvider";
-import {CustomContentStorageProvider} from "@/model/ContentProvider/CustomContentStorageProvider";
+import {saveToPlatform} from "@/model/ContentProvider/Persistence";
 
 const compositeContentProvider = defaultContentProvider(AP);
 
@@ -19,10 +18,8 @@ new Vue({
       saveAndExit: async () => {
         // @ts-ignore
         const graphXml = getGraphXml();
-        const customContentStorageProvider = new CustomContentStorageProvider(AP);
-        const id = await customContentStorageProvider.save({diagramType: DiagramType.Graph, graphXml: graphXml});
-        const macroIdProvider = new MacroIdProvider(AP);
-        await macroIdProvider.save(id);
+        const diagram = {diagramType: DiagramType.Graph, graphXml: graphXml};
+        await saveToPlatform(diagram);
         /* eslint-disable no-undef */
         AP.dialog.close();
       }
