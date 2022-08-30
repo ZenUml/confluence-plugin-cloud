@@ -84,8 +84,8 @@ export default {
     this.doc = doc;
     await globals.apWrapper.initializeContext();
     const canUserEditPage = await globals.apWrapper.canUserEdit();
-    const storedWithCustomContent = this._diagram?.source === DataSource.CustomContent;
-    const notCopy = !this._diagram?.isCopy;
+    const storedWithCustomContent = this.doc?.source === DataSource.CustomContent;
+    const notCopy = !this.doc?.isCopy;
     this.canUserEdit = canUserEditPage && storedWithCustomContent && notCopy;
     this.$store.commit('updateDiagramType', ( !this.doc.diagramType || this.doc.diagramType === DiagramType.Unknown) ? DiagramType.Sequence : this.doc.diagramType);
     if (doc.diagramType === 'mermaid') {
