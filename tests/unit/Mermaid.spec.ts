@@ -1,12 +1,11 @@
 import MockAp from '@/model/MockAp'
-import Macro from '@/model/Macro'
 import {IConfluence} from "@/model/IConfluence";
 import ApWrapper2 from "@/model/ApWrapper2";
 import helper from './TestHelper';
+import defaultContentProvider from "@/model/ContentProvider/CompositeContentProvider";
 
 let mockAp: MockAp;
 let mockApConfluence: IConfluence;
-let macro: Macro;
 
 
 describe('Mermaid', () => {
@@ -17,7 +16,6 @@ describe('Mermaid', () => {
 
     mockAp = new MockAp(contentId);
     mockApConfluence = mockAp.confluence;
-    macro = new Macro(new ApWrapper2(mockAp));
   });
 
   it('saved in custom content', async () => {
@@ -29,7 +27,11 @@ describe('Mermaid', () => {
       "diagramType": "mermaid"
     }
     mockAp.setCustomContent(1234, diagram);
-    // const mermaidCode = (await macro.load()).mermaidCode;
-    // expect(mermaidCode).toBe('graph TD; A-->B1;');
+
+    const contentProvider = defaultContentProvider(new ApWrapper2(mockAp));
+    const {id, doc} = await contentProvider.load();
+
+    expect(id).toBe(1234);
+    expect(doc.mermaidCode).toBe('graph TD; A-->B1;');
   })
 })
