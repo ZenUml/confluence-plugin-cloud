@@ -2,7 +2,7 @@ import uuidv4 from '../utils/uuid';
 import {getUrlParam, trackEvent} from '@/utils/window';
 import {IApWrapper} from "@/model/IApWrapper";
 import {IMacroData} from "@/model/IMacroData";
-import {DataSource, Diagram, DiagramType} from "@/model/Diagram/Diagram";
+import {DataSource, Diagram} from "@/model/Diagram/Diagram";
 
 class BaseMacro2 {
   _diagram?: Diagram;
@@ -38,9 +38,6 @@ class BaseMacro2 {
   trackDiagramEvent(diagram: Diagram | undefined, event: string, category: string) {
     trackEvent(diagram?.diagramType || this.getDiagramType(diagram), event, category);
   }
-  async save(diagram: Diagram) {
-    throw new Error('Do not call this method');
-  }
 
   async saveOnDialog(diagram: Diagram) {
     // if (!this._loaded) {
@@ -70,30 +67,6 @@ class BaseMacro2 {
 
     this._apWrapper.saveMacro(macroParam, '');
     this.trackDiagramEvent(diagram, 'save_macro', 'embedded');
-  }
-
-  // 20/07/2022 Limit editing on dialog to custom content only.
-  async canEditOnDialog(): Promise<boolean> {
-    const isVersionSupported = this._addonVersion >= '2021.11';
-    const storedWithCustomContent = this._diagram?.source === DataSource.CustomContent;
-    const notCopy = !this._diagram?.isCopy;
-    return isVersionSupported && this._loaded && storedWithCustomContent && notCopy && (await this._apWrapper.canUserEdit());
-  }
-
-  private static getCoreData(value: Diagram) {
-    let body;
-    switch (value.diagramType) {
-      case DiagramType.Sequence:
-        body = value.code || '';
-        break;
-      case DiagramType.Mermaid:
-        body = value.mermaidCode || '';
-        break;
-      case DiagramType.Graph:
-        body = value.graphXml || '';
-        break;
-    }
-    return body;
   }
 }
 
