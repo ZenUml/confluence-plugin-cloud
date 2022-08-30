@@ -27,7 +27,6 @@ export interface Diagram {
   graphXml?: string,
   compressed?: boolean,
   source?: DataSource,
-  payload?: any   // Only used for content-property to keep the version and key which are used at `saveOnDialog`.
 }
 
 const NULL_DIAGRAM = {

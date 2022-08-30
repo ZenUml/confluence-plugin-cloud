@@ -97,26 +97,4 @@ describe('BaseMacro2', () => {
   it('If there are at least one another macro linked to the same custom content id on the same page, the macro is considered as a clone',
     async () => {
   })
-
-  it('save content property in dialog editor has been DISABLED', async () => {
-    setUp('contentKey=sequence&rendered.for=dialog-editor');
-
-    const key = 'zenuml-sequence-macro-abc-123-body';
-    const value = {code: 'a.foo'};
-
-    mockApConfluence.saveMacro({uuid: 'abc-123'}, JSON.stringify(value));
-    mockApConfluence.setContentProperty({key: key, version: {number: 1}, value}, () => {});
-
-    // const payload = await macro.load();
-    // expect(payload.source).toBe(DataSource.ContentProperty);
-
-    const diagram = {
-      diagramType: DiagramType.Sequence,
-      code: 'A.m',
-      source: DataSource.ContentProperty
-    };
-    await macro.saveOnDialog(diagram);
-    mockApConfluence.getContentProperty(key, (content: any) => expect(content.version.number).toEqual(1));
-    mockApConfluence.getContentProperty(key, (content: any) => expect(content.value.code).toEqual('a.foo'));
-  })
 })

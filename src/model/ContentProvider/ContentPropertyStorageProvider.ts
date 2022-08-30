@@ -85,7 +85,6 @@ export class ContentPropertyStorageProvider implements StorageProvider {
       trackDiagramEvent(contentProperty.value, 'load_macro', 'content_property');
     }
     contentProperty.value.id = key;
-    contentProperty.value.payload = contentProperty; // To cache content property key and version on Diagram object
     return contentProperty;
   }
 

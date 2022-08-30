@@ -1,8 +1,6 @@
-import uuidv4 from '../utils/uuid';
 import {getUrlParam, trackEvent} from '@/utils/window';
 import {IApWrapper} from "@/model/IApWrapper";
-import {IMacroData} from "@/model/IMacroData";
-import {DataSource, Diagram} from "@/model/Diagram/Diagram";
+import {Diagram} from "@/model/Diagram/Diagram";
 
 class BaseMacro2 {
   _diagram?: Diagram;
@@ -37,36 +35,6 @@ class BaseMacro2 {
 
   trackDiagramEvent(diagram: Diagram | undefined, event: string, category: string) {
     trackEvent(diagram?.diagramType || this.getDiagramType(diagram), event, category);
-  }
-
-  async saveOnDialog(diagram: Diagram) {
-    // if (!this._loaded) {
-    //   throw new Error('You have to call load before calling save()')
-    // }
-
-    if(this._diagram?.source === DataSource.ContentProperty) {
-      this.trackDiagramEvent(diagram, 'save_macro_skipped', 'content_property');
-      return;
-    }
-
-    if(this._customContentId) {
-      await this._apWrapper.saveCustomContent(this._customContentId, diagram);
-      this.trackDiagramEvent(diagram, 'save_macro', 'custom_content');
-    }
-  }
-
-  async saveEmbedded(customContentId: string, customContentType: string, diagram: Diagram) {
-    // if (!this._loaded) {
-    //   throw new Error('You have to call load before calling save')
-    // }
-    const uuid = this._uuid || uuidv4();
-
-    const macroParam = {uuid: uuid, updatedAt: new Date(), customContentId, customContentType} as IMacroData;
-
-    console.log('Save embedded: ', macroParam);
-
-    this._apWrapper.saveMacro(macroParam, '');
-    this.trackDiagramEvent(diagram, 'save_macro', 'embedded');
   }
 }
 

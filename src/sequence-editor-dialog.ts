@@ -11,8 +11,8 @@ import 'vue-sequence/dist/vue-sequence.css'
 
 import ExtendedStore from './model/Store'
 import EventBus from './EventBus'
-import globals from '@/model/globals';
 import {initializeMacro} from "@/model/macro/InitializeMacro";
+import {saveToPlatform} from "@/model/ContentProvider/Persistence";
 
 // eslint-disable-next-line
 // @ts-ignore
@@ -35,11 +35,10 @@ if(document.getElementById('app')) {
 }
 
 EventBus.$on('save', async () => {
-  const macro = globals.macro;
   // @ts-ignore
   const value = {code: store.state.code, styles: store.state.styles, mermaidCode: store.state.mermaidCode, diagramType: store.state.diagramType, title: store.getters.title} as Diagram;
 
-  await macro.saveOnDialog(value);
+  await saveToPlatform(value);
 
   // @ts-ignore
   AP.dialog.close();
