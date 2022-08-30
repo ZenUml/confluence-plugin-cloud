@@ -11,7 +11,6 @@ import 'vue-sequence/dist/vue-sequence.css'
 
 import ExtendedStore from './model/Store'
 import EventBus from './EventBus'
-import {initializeMacro} from "@/model/macro/InitializeMacro";
 import {CustomContentStorageProvider} from "@/model/ContentProvider/CustomContentStorageProvider";
 import ApWrapper2 from "@/model/ApWrapper2";
 import AP from "@/model/AP";
@@ -49,5 +48,3 @@ EventBus.$on('save', async () => {
   // @ts-ignore
   AP.dialog.close();
 });
-
-initializeMacro();

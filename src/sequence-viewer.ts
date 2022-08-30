@@ -8,10 +8,12 @@ import ExtendedStore from './model/Store'
 import EventBus from './EventBus'
 import Viewer from "@/components/Viewer/Viewer.vue";
 import {trackEvent} from "@/utils/window";
-import {initializeMacro} from "@/model/macro/InitializeMacro";
 import createAttachmentIfContentChanged from "@/model/Attachment";
 import globals from '@/model/globals';
 import {DiagramType} from "@/model/Diagram/Diagram";
+import defaultContentProvider from "@/model/ContentProvider/CompositeContentProvider";
+import ApWrapper2 from "@/model/ApWrapper2";
+import AP from "@/model/AP";
 
 Vue.config.productionTip = false
 Vue.use(Vuex)
@@ -65,7 +67,12 @@ EventBus.$on('edit', () => {
         chrome: false,
         width: "100%",
         height: "100%",
-    }).on('close', () => initializeMacro());
+    }).on('close', async () => {
+    const compositeContentProvider = defaultContentProvider(new ApWrapper2(AP));
+    const {doc} = await compositeContentProvider.load();
+    // @ts-ignore
+    store.state.diagram = doc;
+  });
 });
 
 EventBus.$on('fullscreen', () => {

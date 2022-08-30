@@ -1,6 +1,6 @@
 import {VueSequence} from 'vue-sequence'
 import EventBus from '../EventBus'
-import {DiagramType} from "@/model/Diagram/Diagram";
+import {DiagramType, NULL_DIAGRAM} from "@/model/Diagram/Diagram";
 import globals from '@/model/globals';
 
 const storeConfig = VueSequence.Store()
@@ -51,6 +51,7 @@ export default {
     mermaidCode: 'graph TD; A-->B;',
     diagramType: DiagramType.Sequence,
     mermaidSvg: '',
+    diagram: NULL_DIAGRAM,
     canEdit: false,
     error: null,
     onElementClick: (codeRange: any) => {

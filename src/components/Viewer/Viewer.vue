@@ -63,7 +63,7 @@ export default {
   },
   computed: {
     // We use {} instead of [] to get type checking
-    ...mapState({diagramType: 'diagramType' }),
+    ...mapState({diagramType: 'diagramType', diagram: 'diagram' }),
     ...mapGetters({isDisplayMode: 'isDisplayMode', canEdit: 'canEdit'}),
     canEdit() {
       return this.doc.source === DataSource.CustomContent && !this.doc.isCopy && this.canUserEdit;
@@ -81,20 +81,26 @@ export default {
   async created() {
     const compositeContentProvider = defaultContentProvider(new ApWrapper2(AP));
     const {doc} = await compositeContentProvider.load();
+    this.$store.state.diagram = doc;
     this.doc = doc;
     await globals.apWrapper.initializeContext();
     const canUserEditPage = await globals.apWrapper.canUserEdit();
     const storedWithCustomContent = this.doc?.source === DataSource.CustomContent;
     const notCopy = !this.doc?.isCopy;
     this.canUserEdit = canUserEditPage && storedWithCustomContent && notCopy;
-    this.$store.commit('updateDiagramType', ( !this.doc.diagramType || this.doc.diagramType === DiagramType.Unknown) ? DiagramType.Sequence : this.doc.diagramType);
-    if (doc.diagramType === 'mermaid') {
-      this.$store.dispatch('updateMermaidCode', doc.mermaidCode || 'graph TD; A-->B;');
-      EventBus.$emit('diagramLoaded', doc.mermaidCode, doc.diagramType);
-    } else {
-      this.$store.commit('code', doc.code || Example);
-      this.rawStyles = doc.styles || {};
-      EventBus.$emit('diagramLoaded', doc.code, doc.diagramType);
+  },
+  watch: {
+    diagram(doc) {
+      console.log('diagram changed', doc);
+      this.$store.commit('updateDiagramType', ( !this.doc.diagramType || this.doc.diagramType === DiagramType.Unknown) ? DiagramType.Sequence : this.doc.diagramType);
+      if (doc.diagramType === 'mermaid') {
+        this.$store.dispatch('updateMermaidCode', doc.mermaidCode || 'graph TD; A-->B;');
+        EventBus.$emit('diagramLoaded', doc.mermaidCode, doc.diagramType);
+      } else {
+        this.$store.commit('code', doc.code || Example);
+        this.rawStyles = doc.styles || {};
+        EventBus.$emit('diagramLoaded', doc.code, doc.diagramType);
+      }
     }
   },
   methods: {

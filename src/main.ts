@@ -9,7 +9,6 @@ import './assets/tailwind.css'
 import 'vue-sequence/dist/vue-sequence.css'
 
 import ExtendedStore from './model/Store'
-import {initializeMacro} from "@/model/macro/InitializeMacro";
 
 // eslint-disable-next-line
 // @ts-ignore
@@ -30,5 +29,3 @@ if(document.getElementById('app')) {
       render: h => h(Workspace) // with this method, we don't need to use full version of vew
     }).$mount('#app')
 }
-
-initializeMacro();

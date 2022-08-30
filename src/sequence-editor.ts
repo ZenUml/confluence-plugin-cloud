@@ -10,7 +10,6 @@ import 'vue-sequence/dist/vue-sequence.css'
 
 import ExtendedStore from './model/Store'
 import EventBus from './EventBus'
-import {initializeMacro} from "@/model/macro/InitializeMacro";
 import AP from "@/model/AP";
 import {DataSource} from "@/model/Diagram/Diagram";
 import {saveToPlatform} from "@/model/ContentProvider/Persistence";
@@ -44,5 +43,3 @@ EventBus.$on('save', async () => {
   // @ts-ignore
   AP.dialog.close();
 });
-
-initializeMacro();
