@@ -3,11 +3,12 @@ import Vuex from 'vuex'
 import {VueSequence} from 'vue-sequence'
 import defaultContentProvider from "@/model/ContentProvider/CompositeContentProvider";
 import AP from "@/model/AP";
+import ApWrapper2 from "@/model/ApWrapper2";
 
 Vue.use(Vuex)
 
 async function getCode() {
-  const contentProvider = defaultContentProvider(AP);
+  const contentProvider = defaultContentProvider(new ApWrapper2(AP));
   let {doc} = await contentProvider.load();
   return doc.code || 'A.method';
 }

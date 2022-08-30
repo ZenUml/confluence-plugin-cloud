@@ -1,6 +1,7 @@
 import MockAp from '@/model/MockAp'
 import {ContentPropertyStorageProvider} from "@/model/ContentProvider/ContentPropertyStorageProvider";
 import defaultContentProvider from "@/model/ContentProvider/CompositeContentProvider";
+import ApWrapper2 from "@/model/ApWrapper2";
 
 describe('ContentPropertyStorageProvider', () => {
 
@@ -11,7 +12,7 @@ describe('ContentPropertyStorageProvider', () => {
     }
     mockAp.confluence.saveMacro({}, 'body')
 
-    const contentProvider = defaultContentProvider(mockAp);
+    const contentProvider = defaultContentProvider(new ApWrapper2(mockAp));
     const {doc} = (await contentProvider.load());
     expect(doc.code).toBe('body');
   })

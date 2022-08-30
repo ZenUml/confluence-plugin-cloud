@@ -11,7 +11,7 @@ import {trackEvent} from "@/utils/window";
 import {initializeMacro} from "@/model/macro/InitializeMacro";
 import createAttachmentIfContentChanged from "@/model/Attachment";
 import globals from '@/model/globals';
-import BaseMacro2 from "@/model/BaseMacro2";
+import {DiagramType} from "@/model/Diagram/Diagram";
 
 Vue.config.productionTip = false
 Vue.use(Vuex)
@@ -36,12 +36,11 @@ EventBus.$on('diagramLoaded', () => {
   setTimeout(window.AP?.resize, 1500)
 });
 
-async function createAttachment(macro: BaseMacro2) {
-  let diagramType = macro._diagram?.diagramType || 'unknown';
+async function createAttachment(code: string, diagramType: DiagramType) {
   try {
     if (await globals.apWrapper.canUserEdit()) {
       trackEvent(diagramType, 'before_create_attachment', 'info');
-      await createAttachmentIfContentChanged(store.getters.content);
+      await createAttachmentIfContentChanged(code);
     } else {
       trackEvent(diagramType, 'skip_create_attachment', 'info');
     }
@@ -52,13 +51,9 @@ async function createAttachment(macro: BaseMacro2) {
   }
 }
 
-EventBus.$on('diagramLoaded', async () => {
-  // @ts-ignore
-  const macro = globals.macro;
-  const canEdit = await macro.canEditOnDialog();
-  store.dispatch('updateCanEdit', canEdit);
+EventBus.$on('diagramLoaded', async (code: string, diagramType: DiagramType) => {
   setTimeout(async () => {
-    await createAttachment(macro);
+    await createAttachment(code, diagramType);
   }, 1500);
 });
 

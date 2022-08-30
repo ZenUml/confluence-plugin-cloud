@@ -1,4 +1,3 @@
-import {IAp} from "@/model/IAp";
 import ApWrapper2 from "@/model/ApWrapper2";
 import uuidv4 from "@/utils/uuid";
 import {IdProvider} from "@/model/ContentProvider/IdProvider";
@@ -6,8 +5,8 @@ import {IdProvider} from "@/model/ContentProvider/IdProvider";
 export class MacroIdProvider implements IdProvider {
   private apWrapper: ApWrapper2;
 
-  constructor(AP: IAp) {
-    this.apWrapper = new ApWrapper2(AP);
+  constructor(apWrapper: ApWrapper2) {
+    this.apWrapper = apWrapper;
   }
 
   async getId(): Promise<string | undefined> {

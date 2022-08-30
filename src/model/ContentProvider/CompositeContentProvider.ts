@@ -1,12 +1,12 @@
 import {ContentProvider, IContentProvider} from "@/model/ContentProvider/ContentProvider";
 import {MacroIdProvider} from "@/model/ContentProvider/MacroIdProvider";
-import {IAp} from "@/model/IAp";
 import {CustomContentStorageProvider} from "@/model/ContentProvider/CustomContentStorageProvider";
 import {ContentPropertyStorageProvider} from "@/model/ContentProvider/ContentPropertyStorageProvider";
 import {MacroBodyStorageProvider} from "@/model/ContentProvider/MacroBodyStorageProvider";
 import {Diagram, NULL_DIAGRAM} from "@/model/Diagram/Diagram";
 import {getUrlParam} from "@/utils/window";
 import {UrlIdProvider} from "@/model/ContentProvider/UrlIdProvider";
+import ApWrapper2 from "@/model/ApWrapper2";
 
 export class CompositeContentProvider implements IContentProvider{
   private readonly _contentProviders: Array<ContentProvider>;
@@ -30,19 +30,20 @@ export class CompositeContentProvider implements IContentProvider{
   }
 }
 
-const defaultContentProvider = function getCompositeContentProvider(ap: IAp): IContentProvider {
+const defaultContentProvider = function getCompositeContentProvider(apWrapper2: ApWrapper2): IContentProvider {
   const renderedFor = getUrlParam('rendered.for');
+  const apWrapper = apWrapper2;
   if (renderedFor === 'custom-content-native') {
     const idProvider = new UrlIdProvider();
-    const customContentStorageProvider = new CustomContentStorageProvider(ap);
+    const customContentStorageProvider = new CustomContentStorageProvider(apWrapper);
     return new ContentProvider(idProvider, customContentStorageProvider);
   }
-  const macroIdProvider = new MacroIdProvider(ap);
-  const customContentStorageProvider = new CustomContentStorageProvider(ap);
+  const macroIdProvider = new MacroIdProvider(apWrapper);
+  const customContentStorageProvider = new CustomContentStorageProvider(apWrapper);
   const ccContentProvider = new ContentProvider(macroIdProvider, customContentStorageProvider);
-  const contentPropertyStorageProvider = new ContentPropertyStorageProvider(ap);
+  const contentPropertyStorageProvider = new ContentPropertyStorageProvider(apWrapper);
   const cpContentProvider = new ContentProvider(macroIdProvider, contentPropertyStorageProvider);
-  const macroBodyStorageProvider = new MacroBodyStorageProvider(ap);
+  const macroBodyStorageProvider = new MacroBodyStorageProvider(apWrapper);
   const mbContentProvider = new ContentProvider(undefined, macroBodyStorageProvider);
   return new CompositeContentProvider([ccContentProvider, cpContentProvider, mbContentProvider]);
 }

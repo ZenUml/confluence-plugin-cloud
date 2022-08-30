@@ -27,6 +27,7 @@ import HostIcon from '@/assets/server-svgrepo-com.svg'
 import globals from '@/model/globals';
 import {MacroIdProvider} from "@/model/ContentProvider/MacroIdProvider";
 import AP from "@/model/AP";
+import ApWrapper2 from "@/model/ApWrapper2";
 const commitHash = process.env.VUE_APP_GIT_HASH;
 const gitBranch = process.env.VUE_APP_GIT_BRANCH;
 export default {
@@ -51,7 +52,7 @@ export default {
     },
   },
   async mounted() {
-    const macroIdProvider = new MacroIdProvider(AP);
+    const macroIdProvider = new MacroIdProvider(new ApWrapper2(AP));
     this.shortUuid = (await macroIdProvider.getUuid())?.substring(0, 8);
   }
 }

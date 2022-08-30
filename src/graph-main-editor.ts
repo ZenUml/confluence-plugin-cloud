@@ -9,8 +9,9 @@ import defaultContentProvider from "@/model/ContentProvider/CompositeContentProv
 import {decompress} from "@/utils/compress";
 import {DiagramType} from "@/model/Diagram/Diagram";
 import {saveToPlatform} from "@/model/ContentProvider/Persistence";
+import ApWrapper2 from "@/model/ApWrapper2";
 
-const compositeContentProvider = defaultContentProvider(AP);
+const compositeContentProvider = defaultContentProvider(new ApWrapper2(AP));
 
 new Vue({
   render: h => h(SaveAndGoBackButton, {

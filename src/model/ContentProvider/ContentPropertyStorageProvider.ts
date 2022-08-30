@@ -1,5 +1,4 @@
 import ApWrapper2 from "@/model/ApWrapper2";
-import {IAp} from "@/model/IAp";
 import {StorageProvider} from "@/model/ContentProvider/StorageProvider";
 import {DataSource, Diagram, DiagramType, NULL_DIAGRAM} from "@/model/Diagram/Diagram";
 import {getUrlParam, trackEvent} from "@/utils/window";
@@ -28,8 +27,8 @@ export class ContentPropertyStorageProvider implements StorageProvider {
   private apWrapper: ApWrapper2;
   private readonly _macroIdentifier: MacroIdentifier;
 
-  constructor(AP: IAp) {
-    this.apWrapper = new ApWrapper2(AP);
+  constructor(apWrapper: ApWrapper2) {
+    this.apWrapper = apWrapper;
     let macroIdentifier: MacroIdentifier;
     let contentKey = getUrlParam('contentKey');
     if (!contentKey) {

@@ -33,6 +33,7 @@
   import globals from "@/model/globals";
   import {DiagramType, NULL_DIAGRAM} from "@/model/Diagram/Diagram";
   import Example from "@/utils/sequence/Example";
+  import ApWrapper2 from "@/model/ApWrapper2";
 
   export default {
     name: 'editor',
@@ -77,7 +78,7 @@
       },
     },
     async created() {
-      const compositeContentProvider = defaultContentProvider(AP);
+      const compositeContentProvider = defaultContentProvider(new ApWrapper2(AP));
       const {doc} = await compositeContentProvider.load();
       this.doc = doc;
       await globals.apWrapper.initializeContext();

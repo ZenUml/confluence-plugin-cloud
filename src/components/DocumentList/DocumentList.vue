@@ -64,6 +64,7 @@
   import AP from "@/model/AP";
   import {MacroIdProvider} from "@/model/ContentProvider/MacroIdProvider";
   import {CustomContentStorageProvider} from "@/model/ContentProvider/CustomContentStorageProvider";
+  import ApWrapper2 from "@/model/ApWrapper2";
 
   export default {
     name: 'DocumentList',
@@ -110,8 +111,9 @@
       }
     },
     async created() {
-      const idProvider = new MacroIdProvider(AP);
-      const customContentStorageProvider = new CustomContentStorageProvider(AP);
+      const apWrapper = new ApWrapper2(AP);
+      const idProvider = new MacroIdProvider(apWrapper);
+      const customContentStorageProvider = new CustomContentStorageProvider(apWrapper);
       const customContentId = idProvider.getId();
       this.customContentList = await customContentStorageProvider.getCustomContentList();
       this.picked = this.customContentList.filter(customContentItem => customContentItem?.id === customContentId)[0];

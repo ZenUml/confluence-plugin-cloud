@@ -2,6 +2,7 @@ import {trackEvent} from "@/utils/window";
 import {DiagramType} from "@/model/Diagram/Diagram";
 import AP from "@/model/AP";
 import defaultContentProvider from "@/model/ContentProvider/CompositeContentProvider";
+import ApWrapper2 from "@/model/ApWrapper2";
 
 function loadViewer(url: string) {
   const e = document.createElement('meta');
@@ -27,7 +28,7 @@ function getViewerUrl(diagramType: DiagramType) {
 
 async function initializeMacro() {
   try {
-    const contentProvider = defaultContentProvider(AP);
+    const contentProvider = defaultContentProvider(new ApWrapper2(AP));
     const { doc } = await contentProvider.load()
     const { diagramType } = doc;
 

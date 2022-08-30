@@ -2,11 +2,11 @@ import BaseMacro2 from "@/model/BaseMacro2";
 import MockAp from '@/model/MockAp'
 import {DataSource, DiagramType} from "@/model/Diagram/Diagram";
 import ApWrapper2 from "@/model/ApWrapper2";
-import Macro from "@/model/Macro";
 import {buildCustomContentResponse} from "../CustomContentFixtures";
 import helper from './TestHelper';
 import MockApConfluence from "@/model/MockApConfluence";
 import {saveToPlatform} from "@/model/ContentProvider/Persistence";
+import defaultContentProvider from "@/model/ContentProvider/CompositeContentProvider";
 
 let mockAp: MockAp;
 let mockApConfluence: MockApConfluence;
@@ -75,7 +75,11 @@ describe('BaseMacro2', () => {
         }
       });
       apWrapper2.getMacroData = getMacroData.bind(apWrapper2);
-      macro = new Macro(apWrapper2)
+      // macro = new Macro(apWrapper2)
+      const contentProvider = defaultContentProvider(apWrapper2);
+      const {id, doc} = await contentProvider.load();
+      expect(id).toBe(1234);
+      expect(doc.isCopy).toBeTruthy();
       // let diagram = await macro.load();
       /**
        * in load method:

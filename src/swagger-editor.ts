@@ -13,6 +13,7 @@ import AP from "@/model/AP";
 import {DataSource, DiagramType} from "@/model/Diagram/Diagram";
 import defaultContentProvider from "@/model/ContentProvider/CompositeContentProvider";
 import {saveToPlatform} from "@/model/ContentProvider/Persistence";
+import ApWrapper2 from "@/model/ApWrapper2";
 
 async function saveOpenApiAndExit () {
   // @ts-ignore
@@ -43,7 +44,7 @@ async function initializeMacro() {
   const apWrapper = globals.apWrapper;
   await apWrapper.initializeContext();
 
-  const compositeContentProvider = defaultContentProvider(AP);
+  const compositeContentProvider = defaultContentProvider(new ApWrapper2(AP));
   const {doc} = await compositeContentProvider.load();
   console.log('-------------- loaded spec:', doc?.code)
     // eslint-disable-next-line

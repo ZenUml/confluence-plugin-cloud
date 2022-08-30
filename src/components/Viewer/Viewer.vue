@@ -42,6 +42,7 @@ import {DataSource, DiagramType, NULL_DIAGRAM} from "@/model/Diagram/Diagram";
 import defaultContentProvider from "@/model/ContentProvider/CompositeContentProvider";
 import AP from "@/model/AP";
 import Example from "@/utils/sequence/Example";
+import ApWrapper2 from "@/model/ApWrapper2";
 const DiagramFrame = VueSequence.DiagramFrame;
 
 export default {
@@ -78,19 +79,23 @@ export default {
     },
   },
   async created() {
-    const compositeContentProvider = defaultContentProvider(AP);
+    const compositeContentProvider = defaultContentProvider(new ApWrapper2(AP));
     const {doc} = await compositeContentProvider.load();
     this.doc = doc;
     await globals.apWrapper.initializeContext();
-    this.canUserEdit = await globals.apWrapper.canUserEdit();
+    const canUserEditPage = await globals.apWrapper.canUserEdit();
+    const storedWithCustomContent = this._diagram?.source === DataSource.CustomContent;
+    const notCopy = !this._diagram?.isCopy;
+    this.canUserEdit = canUserEditPage && storedWithCustomContent && notCopy;
     this.$store.commit('updateDiagramType', ( !this.doc.diagramType || this.doc.diagramType === DiagramType.Unknown) ? DiagramType.Sequence : this.doc.diagramType);
     if (doc.diagramType === 'mermaid') {
       this.$store.dispatch('updateMermaidCode', doc.mermaidCode || 'graph TD; A-->B;');
+      EventBus.$emit('diagramLoaded', doc.mermaidCode, doc.diagramType);
     } else {
       this.$store.commit('code', doc.code || Example);
       this.rawStyles = doc.styles || {};
+      EventBus.$emit('diagramLoaded', doc.code, doc.diagramType);
     }
-    EventBus.$emit('diagramLoaded');
   },
   methods: {
     deselectAll(event) {

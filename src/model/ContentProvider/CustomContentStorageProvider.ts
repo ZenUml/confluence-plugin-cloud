@@ -1,13 +1,12 @@
 import ApWrapper2 from "@/model/ApWrapper2";
-import {IAp} from "@/model/IAp";
 import {StorageProvider} from "@/model/ContentProvider/StorageProvider";
 import {Diagram, NULL_DIAGRAM} from "@/model/Diagram/Diagram";
 
 export class CustomContentStorageProvider implements StorageProvider {
   private apWrapper: ApWrapper2;
 
-  constructor(AP: IAp) {
-    this.apWrapper = new ApWrapper2(AP);
+  constructor(apWrapper: ApWrapper2) {
+    this.apWrapper = apWrapper;
   }
 
   async getDiagram(id: string | undefined): Promise<Diagram> {
@@ -16,8 +15,7 @@ export class CustomContentStorageProvider implements StorageProvider {
     }
     const customContent = await this.apWrapper.getCustomContentById(id);
     // @ts-ignore
-    const value = customContent?.body?.raw.value;
-    return JSON.parse(value);
+    return  customContent?.value;
   }
 
   async getCustomContentList() {

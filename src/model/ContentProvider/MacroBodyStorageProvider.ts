@@ -1,13 +1,12 @@
 import ApWrapper2 from "@/model/ApWrapper2";
-import {IAp} from "@/model/IAp";
 import {StorageProvider} from "@/model/ContentProvider/StorageProvider";
 import {Diagram, DiagramType, NULL_DIAGRAM} from "@/model/Diagram/Diagram";
 
 export class MacroBodyStorageProvider implements StorageProvider {
   private apWrapper: ApWrapper2;
 
-  constructor(AP: IAp) {
-    this.apWrapper = new ApWrapper2(AP);
+  constructor(apWrapper: ApWrapper2) {
+    this.apWrapper = apWrapper;
   }
 
   async getDiagram(id: string | undefined): Promise<Diagram> {

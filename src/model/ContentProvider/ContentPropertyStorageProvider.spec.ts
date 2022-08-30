@@ -1,6 +1,7 @@
 import MockAp from '@/model/MockAp'
 import {ContentPropertyStorageProvider} from "@/model/ContentProvider/ContentPropertyStorageProvider";
 import MockApConfluence from "@/model/MockApConfluence";
+import ApWrapper2 from "@/model/ApWrapper2";
 
 let mockAp: MockAp, mockApConfluence: MockApConfluence;
 
@@ -20,7 +21,7 @@ describe('ContentPropertyStorageProvider', () => {
   });
 
   test('cannot find content property', async () => {
-    const contentPropertyStorageProvider = new ContentPropertyStorageProvider(mockAp);
+    const contentPropertyStorageProvider = new ContentPropertyStorageProvider(new ApWrapper2(mockAp));
     try {
       await contentPropertyStorageProvider.getDiagram(undefined)
     } catch (e: any) {
@@ -33,7 +34,7 @@ describe('ContentPropertyStorageProvider', () => {
     mockApConfluence.setContentProperty({
       key: 'zenuml-sequence-macro-1234-body', version: {number: 1}, value: 'A.method'
     }, () => {})
-    const contentPropertyStorageProvider = new ContentPropertyStorageProvider(mockAp);
+    const contentPropertyStorageProvider = new ContentPropertyStorageProvider(new ApWrapper2(mockAp));
     const diagram = await contentPropertyStorageProvider.getDiagram(undefined)
     expect(diagram?.code).toBe('A.method')
 
@@ -55,7 +56,7 @@ describe('ContentPropertyStorageProvider', () => {
       version: {number: 1},
       value: {code: 'A.method', styles: {'#A': {backgroundColor: '#FFF'}}}
     }, () => {})
-    const contentPropertyStorageProvider = new ContentPropertyStorageProvider(mockAp);
+    const contentPropertyStorageProvider = new ContentPropertyStorageProvider(new ApWrapper2(mockAp));
     const diagram = await contentPropertyStorageProvider.getDiagram(undefined)
 
     expect(diagram?.code).toBe('A.method')

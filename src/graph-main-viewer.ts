@@ -6,12 +6,13 @@ import './assets/tailwind.css'
 import globals from '@/model/globals';
 import {decompress} from '@/utils/compress';
 import defaultContentProvider from "@/model/ContentProvider/CompositeContentProvider";
+import ApWrapper2 from "@/model/ApWrapper2";
 
 (async function initializeMacro() {
   const apWrapper = globals.apWrapper;
   await apWrapper.initializeContext();
 
-  const compositeContentProvider = defaultContentProvider(AP);
+  const compositeContentProvider = defaultContentProvider(new ApWrapper2(AP));
   const {doc} = await compositeContentProvider.load();
   let graphXml = doc.graphXml;
   if (doc?.compressed) {
