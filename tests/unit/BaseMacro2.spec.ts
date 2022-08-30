@@ -6,6 +6,7 @@ import Macro from "@/model/Macro";
 import {buildCustomContentResponse} from "../CustomContentFixtures";
 import helper from './TestHelper';
 import MockApConfluence from "@/model/MockApConfluence";
+import {saveToPlatform} from "@/model/ContentProvider/Persistence";
 
 let mockAp: MockAp;
 let mockApConfluence: MockApConfluence;
@@ -28,7 +29,7 @@ describe('BaseMacro2', () => {
   it('creates custom content if _customContentId is null', async () => {
     setUp('contentKey=sequence');
 
-    const customContentId = await macro.save({
+    const customContentId = await saveToPlatform({
       diagramType: DiagramType.Sequence,
       code: 'A.m',
       source: DataSource.CustomContent
@@ -38,8 +39,7 @@ describe('BaseMacro2', () => {
 
   it('update custom content if _customContentId is not null', async () => {
     setUp('contentKey=sequence');
-
-    const customContentId = await macro.save({
+    const customContentId = await saveToPlatform({
       diagramType: DiagramType.Sequence,
       code: 'A.m',
       source: DataSource.CustomContent

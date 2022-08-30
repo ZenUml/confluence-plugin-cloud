@@ -39,27 +39,7 @@ class BaseMacro2 {
     trackEvent(diagram?.diagramType || this.getDiagramType(diagram), event, category);
   }
   async save(diagram: Diagram) {
-
-    const uuid = this._uuid || uuidv4();
-
-    let customContent;
-    if(this._diagram?.source === 'custom-content' && this._customContentId && !this._diagram?.isCopy) {
-      customContent = await this._apWrapper.saveCustomContent(this._customContentId, diagram);
-    } else {
-      customContent = await this._apWrapper.createCustomContent(diagram);
-    }
-
-    this.trackDiagramEvent(diagram, 'save_macro', 'custom_content');
-
-    const macroParam = {uuid: uuid, updatedAt: new Date()} as IMacroData;
-    macroParam.customContentId = customContent.id;
-
-    // Saving core data to body for disaster recovery
-    let body = BaseMacro2.getCoreData(diagram);
-    this._apWrapper.saveMacro(macroParam, body || '');
-    this.trackDiagramEvent(diagram, 'save_macro', 'macro_body');
-
-    return customContent.id;
+    throw new Error('Do not call this method');
   }
 
   async saveOnDialog(diagram: Diagram) {

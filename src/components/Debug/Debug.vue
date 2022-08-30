@@ -52,7 +52,7 @@ export default {
   },
   async mounted() {
     const macroIdProvider = new MacroIdProvider(AP);
-    this.shortUuid = (await macroIdProvider.getUuid()).substring(0, 8);
+    this.shortUuid = (await macroIdProvider.getUuid())?.substring(0, 8);
   }
 }
 </script>
