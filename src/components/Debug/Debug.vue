@@ -14,7 +14,7 @@
       <div class="flex gap-2 items-center">
         <div class="ml-4 text-xs inline-flex items-center font-bold leading-sm uppercase px-3 py-1 bg-yellow-200 text-yellow-700 rounded-full">
           <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
-          <span class="inline-block px-2">[{{ shortUuid || 'macro uuid' }}] {{ diagram.source || 'source' }}:{{diagram.id || 'content id'}}</span>
+          <span class="inline-block px-2">[{{ shortUuid || 'macro uuid' }}]:{{contentId}}</span>
         </div>
       </div>
     </div>
@@ -24,10 +24,10 @@
 <script>
 import App from "@/model/app/App";
 import HostIcon from '@/assets/server-svgrepo-com.svg'
-import globals from '@/model/globals';
 import {MacroIdProvider} from "@/model/ContentProvider/MacroIdProvider";
 import AP from "@/model/AP";
 import ApWrapper2 from "@/model/ApWrapper2";
+
 const commitHash = process.env.VUE_APP_GIT_HASH;
 const gitBranch = process.env.VUE_APP_GIT_BRANCH;
 export default {
@@ -37,7 +37,8 @@ export default {
       hostIcon: HostIcon,
       commitHash,
       gitBranch,
-      shortUuid: ''
+      shortUuid: '',
+      contentId: ''
     }
   },
   computed: {
@@ -47,13 +48,11 @@ export default {
     app() {
       return new App();
     },
-    diagram() {
-      return globals.macro._diagram || {};
-    },
   },
   async mounted() {
     const macroIdProvider = new MacroIdProvider(new ApWrapper2(AP));
     this.shortUuid = (await macroIdProvider.getUuid())?.substring(0, 8);
+    this.contentId = await macroIdProvider.getId();
   }
 }
 </script>
