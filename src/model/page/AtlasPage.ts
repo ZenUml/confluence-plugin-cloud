@@ -1,5 +1,6 @@
 import {IAp} from "@/model/IAp";
 import {ILocationContext} from "@/model/ILocationContext";
+import {AtlasDocFormat, AtlasDocElement, MacroParams} from "@/model/page/AtlasDocFormat";
 import {trackEvent} from "@/utils/window";
 
 export class AtlasPage {
@@ -68,8 +69,8 @@ export class AtlasPage {
       }
       responseBody = response.body;
       const {body: {atlas_doc_format: {value}}} = JSON.parse(response.body);
-      const {content: contentList} = JSON.parse(value);
-      return contentList.filter(({type}: any) => type === AtlasDocElementType.Extension);
+      const doc = new AtlasDocFormat(value);
+      return doc.getMacros();
     } catch (e: any) {
       trackEvent(responseStatus, 'query_macro_atlas_doc_format', 'warning');
       trackEvent(e.message, 'query_macro_atlas_doc_format', 'warning');
@@ -89,23 +90,5 @@ export class AtlasPage {
       .map(c => c.attrs.parameters.macroParams)
       .filter(matcher)
       .length;
-  }
-}
-enum AtlasDocElementType {
-  Extension = 'extension',
-}
-
-interface AtlasDocElement {
-  type: AtlasDocElementType;
-  attrs: {
-    parameters: {
-      macroParams: MacroParams;
-    }
-  };
-}
-
-interface MacroParams {
-  customContentId?: {
-    value: string;
   }
 }

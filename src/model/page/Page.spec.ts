@@ -32,7 +32,8 @@ describe('Page', () => {
           {
             type: "extension",
             attrs: {
-              extensionKey: "com.atlassian.confluence.macro.core",
+              extensionType: "com.atlassian.confluence.macro.core",
+              extensionKey: "zenuml-sequence-macro",
               parameters: {
                 macroParams: {
                   macroId: "macro-001",
