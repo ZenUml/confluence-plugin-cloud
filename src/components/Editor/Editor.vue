@@ -81,6 +81,13 @@
       const compositeContentProvider = defaultContentProvider(new ApWrapper2(AP));
       const {doc} = await compositeContentProvider.load();
       this.doc = doc;
+      if (doc === NULL_DIAGRAM) {
+        this.doc ={
+          diagramType: DiagramType.Sequence,
+          code: Example
+        }
+        this.$store.dispatch('updateCode', {code: Example});
+      }
       await globals.apWrapper.initializeContext();
       this.canUserEdit = await globals.apWrapper.canUserEdit();
     },
