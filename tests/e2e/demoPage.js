@@ -33,11 +33,13 @@ const searchUri = `/wiki/rest/api/content/search?cql=(title="${demoPageTitle}" a
     await page.goto(`${baseUrl}/pages/${pageId}`);
     await page.waitForSelector('#title-text');
 
-    const macroFrame = await page.waitForSelector('div[data-layout-section=true] iframe');
+    const macroFrame = await page.waitForSelector('div[data-layout-section=true] iframe', {timeout: 30 * 1000});
     console.log('macroFrame', macroFrame)
     const frame = await macroFrame.contentFrame();
     console.log('frame', frame)
-    await frame.waitForSelector('div.diagram-title');
+    const html = await frame.$eval('html', e => e.innerHTML);
+    console.log('html', html)
+    await frame.waitForSelector('div.viewer', {timeout: 30 * 1000});
     const diagramTitle = await frame.$eval('div.diagram-title', e => e.innerText);
     console.log('Diagram title', diagramTitle);
     if(diagramTitle !== 'Order Service (Demonstration only)') {
