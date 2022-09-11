@@ -2,8 +2,8 @@ const puppeteer = require("puppeteer");
 
 const spaceKey = 'ZS';
 const baseUrl = `https://zenuml-stg.atlassian.net/wiki/spaces/${spaceKey}`;
-const title = 'ZenUML add-on Demo Page';
-const searchUri = `/wiki/rest/api/content/search?cql=(title="${title}" and space=${spaceKey})`;
+const demoPageTitle = 'ZenUML add-on Demo Page';
+const searchUri = `/wiki/rest/api/content/search?cql=(title="${demoPageTitle}" and space=${spaceKey})`;
 
 (async () => {
   const browser = await puppeteer.launch({headless: process.env.CI === "true"});
@@ -28,19 +28,35 @@ const searchUri = `/wiki/rest/api/content/search?cql=(title="${title}" and space
       return d.size && d.results[0].id;
     }), searchUri
   );
-  console.log(`Found "${title}" pageId`, pageId);
+  console.log(`Found "${demoPageTitle}" pageId`, pageId);
   if(pageId) {
     await page.goto(`${baseUrl}/pages/${pageId}`);
     await page.waitForSelector('#title-text');
 
     const macroFrame = await page.waitForSelector('div[data-layout-section=true] iframe');
+    console.log('macroFrame', macroFrame)
     const frame = await macroFrame.contentFrame();
-    frame.waitForSelector('.diagram-title');
-    const title = await frame.$eval('.diagram-title', e => e.innerText);
-    if(title !== 'Order Service (Demonstration only)') {
-      throw `Assertion failed: Actual diagram title "${title}" is not equal to "Order Service (Demonstration only)"`
+    console.log('frame', frame)
+    await frame.waitForSelector('div.diagram-title');
+    const diagramTitle = await frame.$eval('div.diagram-title', e => e.innerText);
+    console.log('Diagram title', diagramTitle);
+    if(diagramTitle !== 'Order Service (Demonstration only)') {
+      throw `Assertion failed: Actual diagram title "${diagramTitle}" is not equal to "Order Service (Demonstration only)"`
     }
   }
 
   await browser.close();
+
+  async function assertFrame(frameSelector, contentSelector, expectedContentText) {
+    const macroFrame = await page.waitForSelector(frameSelector);
+    console.log('macroFrame', macroFrame)
+    const frame = await macroFrame.contentFrame();
+    console.log('frame', frame)
+    await frame.waitForSelector(contentSelector);
+    const contentText = await frame.$eval(contentSelector, e => e.innerText);
+    console.log('Content text', contentText);
+    if(contentText !== expectedContentText) {
+      throw `Assertion failed: Actual content text "${contentText}" is not equal to "${expectedContentText}"`
+    }
+  }
 })();
