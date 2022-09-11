@@ -39,7 +39,7 @@ const searchUri = `/wiki/rest/api/content/search?cql=(title="${demoPageTitle}" a
     console.log('frame', frame)
     const html = await frame.$eval('html', e => e.innerHTML);
     console.log('html', html)
-    await frame.waitForSelector('div.viewer', {timeout: 30 * 1000});
+    await frame.waitForSelector('.occurrence', {timeout: 30 * 1000});
     const diagramTitle = await frame.$eval('div.diagram-title', e => e.innerText);
     console.log('Diagram title', diagramTitle);
     if(diagramTitle !== 'Order Service (Demonstration only)') {
