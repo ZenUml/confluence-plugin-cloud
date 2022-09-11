@@ -6,7 +6,7 @@ const demoPageTitle = 'ZenUML add-on Demo Page';
 const searchUri = `/wiki/rest/api/content/search?cql=(title="${demoPageTitle}" and space=${spaceKey})`;
 
 (async () => {
-  const browser = await puppeteer.launch({headless: process.env.CI === "true"});
+  const browser = await puppeteer.launch({headless: process.env.CI === "true", args: ['--disable-web-security', '--disable-features=IsolateOrigins,site-per-process']});
   const page = await browser.newPage();
   await page.goto(`${baseUrl}/overview`);
 
