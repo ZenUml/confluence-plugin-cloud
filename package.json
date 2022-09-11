@@ -5,7 +5,7 @@
   "scripts": {
     "engine": "use yarn to install",
     "test:unit": "vue-cli-service test:unit",
-    "test:e2e": "node tests/e2e/demo.js",
+    "test:e2e": "node tests/e2e/demoPage.js",
     "test:unit:watch": "vue-cli-service test:unit --watch",
     "build:full": "PRODUCT_TYPE=full vue-cli-service build --mode production",
     "build:full:watch": "PRODUCT_TYPE=full vue-cli-service build --watch",
