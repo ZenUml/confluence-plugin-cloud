@@ -71,7 +71,7 @@
     computed: {
       ...mapState(['diagramType']),
       code() {
-        return this.diagramType === DiagramType.Mermaid? this.doc.mermaidCode || 'graph TD; A-->B;' : this.doc.code || Example;
+        return this.diagramType === DiagramType.Mermaid? this.doc.mermaidCode || Example.Mermaid : this.doc.code || Example.Sequence;
       },
       codemirror() {
         return this.$refs.myCm.codemirror
@@ -86,7 +86,7 @@
           diagramType: DiagramType.Sequence,
           code: Example
         }
-        this.$store.dispatch('updateCode', {code: Example});
+        this.$store.dispatch('updateCode', {code: Example.Sequence});
       }
       await globals.apWrapper.initializeContext();
       this.canUserEdit = await globals.apWrapper.canUserEdit();

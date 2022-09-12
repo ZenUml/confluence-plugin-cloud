@@ -94,10 +94,10 @@ export default {
       console.log('diagram changed', doc);
       this.$store.commit('updateDiagramType', ( !this.doc.diagramType || this.doc.diagramType === DiagramType.Unknown) ? DiagramType.Sequence : this.doc.diagramType);
       if (doc.diagramType === 'mermaid') {
-        this.$store.dispatch('updateMermaidCode', doc.mermaidCode || 'graph TD; A-->B;');
+        this.$store.dispatch('updateMermaidCode', doc.mermaidCode || Example.Mermaid);
         EventBus.$emit('diagramLoaded', doc.mermaidCode, doc.diagramType);
       } else {
-        this.$store.commit('code', doc.code || Example);
+        this.$store.commit('code', doc.code || Example.Sequence);
         this.rawStyles = doc.styles || {};
         EventBus.$emit('diagramLoaded', doc.code, doc.diagramType);
       }

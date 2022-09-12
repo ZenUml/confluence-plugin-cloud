@@ -1,4 +1,4 @@
-export default `title Order Service (Demonstration only)
+const Sequence = `title Order Service (Demonstration only)
 // Styling participants with background colors is an experimental feature.
 // This feature is available for users to test and provide feedback.
 @Actor Client #FFEBE6
@@ -21,4 +21,11 @@ OrderController.post(payload) {
       }      
     }
   }
-}`
+}`;
+
+const Mermaid = 'graph TD; A-->B;';
+
+export default {
+    Sequence,
+    Mermaid
+}

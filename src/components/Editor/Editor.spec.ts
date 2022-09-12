@@ -27,9 +27,9 @@ describe('Editor', () => {
     const store = new Vuex.Store(Store) as any;
     const editorWrapper = mount(Editor, {store, localVue})
     const vm = editorWrapper.vm as any;
-    expect(vm.code).toBe(Example);
+    expect(vm.code).toBe(Example.Sequence);
     store.commit('updateDiagramType', DiagramType.Mermaid);
     expect(store.state.diagramType).toBe(DiagramType.Mermaid);
-    expect(vm.code).toBe('graph TD; A-->B;');
+    expect(vm.code).toBe(Example.Mermaid);
   })
 })

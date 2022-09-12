@@ -7,7 +7,7 @@ import SaveAndGoBackButton from "@/components/SaveAndGoBackButton.vue";
 import './assets/tailwind.css'
 
 import '@/components/Debug/DebugMounter.ts'
-import Example from '@/model/OpenApi/OpenApiExample'
+import OpenApiExample from '@/model/OpenApi/OpenApiExample'
 import globals from '@/model/globals';
 import AP from "@/model/AP";
 import {DataSource, DiagramType} from "@/model/Diagram/Diagram";
@@ -49,7 +49,7 @@ async function initializeMacro() {
   console.log('-------------- loaded spec:', doc?.code)
     // eslint-disable-next-line
     // @ts-ignore
-    window.updateSpec(doc?.code || Example);
+    window.updateSpec(doc?.code || OpenApiExample);
     console.log('-------------- updateSpec with:', doc?.code)
 }
 

@@ -4,7 +4,7 @@ import AP from "@/model/AP";
 import './assets/tailwind.css'
 
 import '@/components/Debug/DebugMounter.ts'
-import Example from '@/model/OpenApi/OpenApiExample'
+import OpenApiExample from '@/model/OpenApi/OpenApiExample'
 import createAttachmentIfContentChanged from "@/model/Attachment";
 import {trackEvent} from "@/utils/window";
 import {DiagramType} from "@/model/Diagram/Diagram";
@@ -24,7 +24,7 @@ async function initializeMacro() {
 
   // eslint-disable-next-line
   // @ts-ignore
-  window.updateSpec(doc?.code || Example);
+  window.updateSpec(doc?.code || OpenApiExample);
 
   setTimeout(async function () {
     AP.resize();

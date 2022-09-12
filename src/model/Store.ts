@@ -2,6 +2,7 @@ import {VueSequence} from 'vue-sequence'
 import EventBus from '../EventBus'
 import {DiagramType, NULL_DIAGRAM} from "@/model/Diagram/Diagram";
 import globals from '@/model/globals';
+import Example from "@/utils/sequence/Example";
 
 const storeConfig = VueSequence.Store()
 export default {
@@ -48,7 +49,7 @@ export default {
   },
   state: {
     ...storeConfig.state,
-    mermaidCode: 'graph TD; A-->B;',
+    mermaidCode: Example.Mermaid,
     diagramType: DiagramType.Sequence,
     mermaidSvg: '',
     diagram: NULL_DIAGRAM,
