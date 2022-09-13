@@ -13,6 +13,7 @@ import ExtendedStore from './model/Store'
 import EventBus from './EventBus'
 import globals from '@/model/globals';
 import {initializeMacro} from "@/model/macro/InitializeMacro";
+import './utils/IgnoreEsc.ts'
 
 // eslint-disable-next-line
 // @ts-ignore

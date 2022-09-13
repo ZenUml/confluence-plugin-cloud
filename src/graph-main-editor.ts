@@ -6,6 +6,7 @@ import './assets/tailwind.css'
 
 import globals from '@/model/globals';
 import AP from "@/model/AP";
+import './utils/IgnoreEsc.ts'
 
 new Vue({
   render: h => h(SaveAndGoBackButton, {

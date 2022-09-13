@@ -12,6 +12,7 @@ import Example from '@/model/OpenApi/OpenApiExample'
 import globals from '@/model/globals';
 import AP from "@/model/AP";
 import {DiagramType} from "@/model/Diagram";
+import './utils/IgnoreEsc.ts'
 
 new Vue({
   render: h => h(SaveAndGoBackButton, {

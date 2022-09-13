@@ -5,6 +5,7 @@ import EventBus from './EventBus'
 import globals from '@/model/globals';
 import AP from "@/model/AP";
 import './assets/tailwind.css'
+import './utils/IgnoreEsc.ts'
 
 Vue.config.productionTip = false
 

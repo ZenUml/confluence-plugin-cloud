@@ -14,6 +14,8 @@ import {initializeMacro} from "@/model/macro/InitializeMacro";
 import globals from '@/model/globals';
 import AP from "@/model/AP";
 
+import './utils/IgnoreEsc.ts'
+
 // eslint-disable-next-line
 // @ts-ignore
 window.mermaid = mermaid
