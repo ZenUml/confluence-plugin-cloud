@@ -6,14 +6,14 @@
               :class="diagramType === 'sequence' ? 'bg-white shadow-sm ring-1 ring-black ring-opacity-5' : ''"
               @click="setActiveTab('sequence')"
               :tabindex="diagramType === 'sequence' ? '0' : '-1'">
-          <span class="p-1.5 lg:pl-2.5 lg:pr-3.5 rounded-md flex items-center text-sm font-medium"
+          <span class="p-1 lg:pl-2.5 lg:pr-3.5 rounded-md flex items-center text-sm font-medium"
                 :class="diagramType === 'sequence' ? 'bg-white shadow-sm ring-1 ring-black ring-opacity-5' : ''">
             <span class="sr-only lg:not-sr-only text-gray-600 group-hover:text-gray-900"
                   :class="diagramType === 'sequence' ? 'text-gray-900' : 'text-gray-600 group-hover:text-gray-900'">Sequence</span>
           </span>
       </button>
       <button type="button"
-              class="ml-0.5 p-1.5 lg:pl-2.5 lg:pr-3.5 rounded-md flex items-center text-sm text-gray-600 font-medium focus-visible:ring-2 focus-visible:ring-teal-500 focus-visible:ring-offset-2 focus:outline-none focus-visible:ring-offset-gray-100"
+              class="ml-0.5 p-1 lg:pl-2.5 lg:pr-3.5 rounded-md flex items-center text-sm text-gray-600 font-medium focus-visible:ring-2 focus-visible:ring-teal-500 focus-visible:ring-offset-2 focus:outline-none focus-visible:ring-offset-gray-100"
               :class="diagramType === 'mermaid' ? 'bg-white shadow-sm ring-1 ring-black ring-opacity-5' : ''"
               @click="setActiveTab('mermaid')">
         <span class="sr-only lg:not-sr-only text-gray-900"
