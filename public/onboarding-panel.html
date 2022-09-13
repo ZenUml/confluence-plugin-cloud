@@ -311,7 +311,7 @@
   }
 
   async function checkDemoPageExists() {
-    const url = `/rest/api/content/search?cql=(title="${demoPageTitle}" and space=${currentSpace})`;
+    const url = `/rest/api/content/search?cql=(title="${demoPageTitle}" and space="${currentSpace}")`;
     const response = await AP.request({type: 'GET', contentType: 'application/json', url});
     return JSON.parse(response.body)?.size > 0;
   }
