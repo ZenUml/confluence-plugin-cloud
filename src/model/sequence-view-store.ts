@@ -10,7 +10,8 @@ Vue.use(Vuex)
 async function getCode() {
   const contentProvider = defaultContentProvider(new ApWrapper2(AP));
   let {doc} = await contentProvider.load();
-  return doc.code || 'A.method';
+  // Do not fall back to example. If it is empty show empty.
+  return doc.code;
 }
 
 async function configStoreAsyncFn() {
