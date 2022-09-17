@@ -91,7 +91,7 @@ export default {
   },
   watch: {
     diagram(doc) {
-      console.log('diagram changed', doc);
+      console.debug('Document changed', doc);
       this.$store.commit('updateDiagramType', ( !this.doc.diagramType || this.doc.diagramType === DiagramType.Unknown) ? DiagramType.Sequence : this.doc.diagramType);
       if (doc.diagramType === 'mermaid') {
         this.$store.dispatch('updateMermaidCode', doc.mermaidCode || Example.Mermaid);
