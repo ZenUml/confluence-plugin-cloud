@@ -3,10 +3,11 @@ const puppeteer = require("puppeteer");
 const spaceKey = 'ZS';
 const baseUrl = `https://zenuml-stg.atlassian.net/wiki/spaces/${spaceKey}`;
 const demoPageTitle = 'ZenUML add-on Demo Page';
-const searchUri = `/wiki/rest/api/content/search?cql=(title="${demoPageTitle}" and space=${spaceKey})`;
+const searchUri = `/wiki/rest/api/content/search?cql=(title="${demoPageTitle}" and space="${spaceKey}")`;
 
 (async () => {
-  const browser = await puppeteer.launch({headless: process.env.CI === "true", args: ['--disable-web-security', '--disable-features=IsolateOrigins,site-per-process']});
+  const browser = await puppeteer.launch({headless: process.env.CI === "true", 
+    args: ['--disable-web-security', '--disable-features=IsolateOrigins,site-per-process']});
   const page = await browser.newPage();
   await page.goto(`${baseUrl}/overview`);
 
@@ -33,36 +34,41 @@ const searchUri = `/wiki/rest/api/content/search?cql=(title="${demoPageTitle}" a
     await page.goto(`${baseUrl}/pages/${pageId}`);
     await page.waitForSelector('#title-text');
 
-    const macroFrame = await page.waitForSelector('div[data-layout-section=true] iframe', {timeout: 30 * 1000});
-    console.log('macroFrame', macroFrame)
-    const frame = await macroFrame.contentFrame();
-    console.log('frame', frame)
-    const html = await frame.$eval('html', e => e.innerHTML);
-    console.log('html', html)
-    await frame.waitForSelector('.occurrence', {timeout: 30 * 1000});
-
-    const newHtml = await frame.$eval('html', e => e.innerHTML);
-    console.log('newHtml', newHtml)
-    
-    const diagramTitle = await frame.$eval('div.diagram-title', e => e.innerText);
-    console.log('Diagram title', diagramTitle);
-    if(diagramTitle !== 'Order Service (Demonstration only)') {
-      throw `Assertion failed: Actual diagram title "${diagramTitle}" is not equal to "Order Service (Demonstration only)"`
-    }
+    await assertFrame({frameSelector: '#Demo1---Sequence-Diagram ~ div iframe',
+      frameContentReadySelector: '.occurrence', contentSelector: 'div.diagram-title',
+      expectedContentText: 'Order Service (Demonstration only)'});
   }
 
   await browser.close();
 
-  async function assertFrame(frameSelector, contentSelector, expectedContentText) {
-    const macroFrame = await page.waitForSelector(frameSelector);
-    console.log('macroFrame', macroFrame)
-    const frame = await macroFrame.contentFrame();
-    console.log('frame', frame)
-    await frame.waitForSelector(contentSelector);
+  async function assertFrame({frameSelector, frameContentReadySelector, contentSelector, expectedContentText}) {
+    const iframe = await waitForSelector(page, frameSelector);
+    const frame = await iframe.contentFrame();
+    if(frameContentReadySelector) {
+      await waitForSelector(frame, frameContentReadySelector, {timeout: 30 * 1000});
+    }
+
+    await waitForSelector(frame, contentSelector);
     const contentText = await frame.$eval(contentSelector, e => e.innerText);
-    console.log('Content text', contentText);
+    log('Content text', contentText);
     if(contentText !== expectedContentText) {
       throw `Assertion failed: Actual content text "${contentText}" is not equal to "${expectedContentText}"`
     }
+  }
+
+  async function waitForSelector(page, selector, options) {
+    try {
+      return await page.waitForSelector(selector, options);
+    } catch(e) {
+      try {
+        const html = await page.$eval('html', e => e.innerHTML);
+        console.log(`Selector "${selector}" not found:\n`, html);
+      } catch(e2) {}
+      throw e;
+    }
+  }
+
+  function log(title, ...args) {
+    console.log(`===== ${title} =====\n`, ...args);
   }
 })();
