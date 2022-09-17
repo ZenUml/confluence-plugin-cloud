@@ -1,3 +1,4 @@
+.env
 .pluprc
 ui-debug.log
 .DS_Store
