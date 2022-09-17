@@ -76,14 +76,6 @@ describe('Content loading', () => {
       const {id, doc} = await contentProvider.load();
       expect(id).toBe(1234);
       expect(doc.isCopy).toBeTruthy();
-      // let diagram = await macro.load();
-      /**
-       * in load method:
-       * get the page id from the context
-       * get the container id from the diagram
-       * if the container id is different from the current page id the macro is considered as a clone
-       */
-    // expect(diagram.isCopy).toBe(true);
   })
 
   it('If there are at least one another macro linked to the same custom content id on the same page, the macro is considered as a clone',
