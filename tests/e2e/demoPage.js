@@ -56,6 +56,8 @@ const searchUri = `/wiki/rest/api/content/search?cql=(title="${demoPageTitle}" a
 
   async function assertFrame({frameSelector, frameContentReadySelector, contentSelector, expectedContentText, contentXpath}) {
     const iframe = await waitForSelector(page, frameSelector);
+    console.log(`Found ${frameSelector}`);
+
     const frame = await iframe.contentFrame();
     if(frameContentReadySelector) {
       await waitForSelector(frame, frameContentReadySelector, {timeout: 30 * 1000});
@@ -82,7 +84,8 @@ const searchUri = `/wiki/rest/api/content/search?cql=(title="${demoPageTitle}" a
     } catch(e) {
       try {
         const html = await page.$eval('html', e => e.innerHTML);
-        console.log(`Selector "${selector}" not found:\n`, html);
+        const url = await page.$eval('html', e => window.location.href);
+        console.log(`Selector "${selector}" not found in ${url}:\n`, html);
       } catch(e2) {}
       throw e;
     }
