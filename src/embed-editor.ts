@@ -4,6 +4,7 @@ import DocumentList from './components/DocumentList/DocumentList.vue'
 import EventBus from './EventBus'
 import AP from "@/model/AP";
 import './assets/tailwind.css'
+import './utils/IgnoreEsc.ts'
 import {MacroIdProvider} from "@/model/ContentProvider/MacroIdProvider";
 import ApWrapper2 from "@/model/ApWrapper2";
 

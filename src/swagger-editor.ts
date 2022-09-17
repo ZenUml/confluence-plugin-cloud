@@ -10,6 +10,7 @@ import '@/components/Debug/DebugMounter.ts'
 import OpenApiExample from '@/model/OpenApi/OpenApiExample'
 import globals from '@/model/globals';
 import AP from "@/model/AP";
+import './utils/IgnoreEsc.ts'
 import {DataSource, DiagramType} from "@/model/Diagram/Diagram";
 import defaultContentProvider from "@/model/ContentProvider/CompositeContentProvider";
 import {saveToPlatform} from "@/model/ContentProvider/Persistence";

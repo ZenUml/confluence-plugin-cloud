@@ -6,9 +6,12 @@
   <!-- Global site tag (gtag.js) - Google Analytics -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=UA-114996686-1"></script>
   <script type="text/javascript" src="js/google-analytics.js?version=2022.01"></script>
+
+  <script type="text/javascript" src="js/demo/resources.js?version=2022.08"></script>
   <title>Onboarding</title>
   <script>
   const STORAGE_KEY = 'onboardingState';
+  const STORAGE_KEY_DEMO_PAGE = 'ZenUMLDemoPagePopupState';
   const DEFAULT_STATE = {users: {}, lastUpdated: new Date()};
   const HELP_DESK_URL = 'https://zenuml.atlassian.net/servicedesk/customer/portals';
 
@@ -32,6 +35,18 @@
     });
   };
 
+  const demoPagePopup = () => {
+    flag = AP.flag.create({
+      title: 'ZenUML Demo Page',
+      body: 'We have prepared a demo page. Would you like to check it out?',
+      type: 'info',
+      actions: {
+        'demoPage.yes': 'Yes please',
+        'demoPage.no': 'No thanks'
+      }
+    });
+  };
+
   async function init() {
     if(!isGoogleChrome()) {
       return;
@@ -46,8 +61,11 @@
         trackEvent('error', 'getCurrentSpace', e.message);
       }
 
-      const localState = getLocalState();
+      const localState = getLocalState(STORAGE_KEY);
       const remoteState = await getAppProperty();
+
+      const demoPagePopupState = getLocalState(STORAGE_KEY_DEMO_PAGE);
+      const demoPageExists = await checkDemoPageExists();
 
       const isOnboarded = (u, state) => {
         const ver = version();
@@ -77,6 +95,11 @@
 
           trackEvent(userId, 'copy_remote_onboarded_state_to_local', 'onboarding');
         }
+
+        if(!demoPageExists && !demoPagePopupState?.displayed) {
+          demoPagePopup();
+          setLocalState(STORAGE_KEY_DEMO_PAGE, {displayed: true, created: new Date()});
+        }
       }
 
       AP.user.getCurrentUser(checkUser);
@@ -85,7 +108,7 @@
     }
   }
 
-  AP.events.on('flag.action', function(e) {
+  AP.events.on('flag.action', async function(e) {
     try {
       flag && flag.close();
 
@@ -102,6 +125,21 @@
 
         setOnboardedForOneYear();
       }
+
+      else if(e.actionIdentifier === 'demoPage.yes') {
+        trackEvent(userId, 'yes', 'demoPage');
+
+        try {
+          const page = await createDemoPage();
+          AP.navigator.go('contentview', {contentId: page.id});
+        } catch(e) {
+          reportDemoPageError(e, 'createDemoPage');
+        }
+      }
+      else if(e.actionIdentifier === 'demoPage.no') {
+        trackEvent(userId, 'no', 'demoPage');
+      }
+
     } catch(e) {
       reportError(e, 'onFlagAction');
     }
@@ -123,7 +161,7 @@
   };
 
   function setOnboardedLocalState(user, expires) {
-    setLocalState(getOnboardedState(getLocalState(), user, expires));
+    setLocalState(STORAGE_KEY, getOnboardedState(getLocalState(STORAGE_KEY), user, expires));
   };
 
   function setOnboardedRemoteState(user, expires) {
@@ -142,21 +180,21 @@
     AP.navigator.go('addonModule', {addonKey: addonKey(), moduleKey: postInstallPageKey()});
   }
 
-  function getLocalState(_state) {
+  function getLocalState(key) {
     try {
-      const localState = window.localStorage.getItem(getLocalStorageKey());
+      const localState = window.localStorage.getItem(getLocalStorageKey(key));
       return localState && JSON.parse(localState) || DEFAULT_STATE;
     } catch(e) {
       return DEFAULT_STATE;
     }
   }
 
-  function setLocalState(state) {
-    window.localStorage.setItem(getLocalStorageKey(), JSON.stringify(state));
+  function setLocalState(key, state) {
+    window.localStorage.setItem(getLocalStorageKey(key), JSON.stringify(state));
   }
 
-  function getLocalStorageKey() {
-    return `${STORAGE_KEY}-${getClientDomain()}`;
+  function getLocalStorageKey(key) {
+    return `${key || STORAGE_KEY}-${getClientDomain()}`;
   }
 
   async function getAppProperty() {
@@ -243,6 +281,11 @@
     console.error(`Error in ${context}. Please report to our helpdesk: ${HELP_DESK_URL}`, error);
   }
 
+  function reportDemoPageError(error, context) {
+    trackEvent(`${context} error: ${error && JSON.stringify(error)}`, 'unexpected_error', 'demoPage');
+    console.error(`Error in ${context}. Please report to our helpdesk: ${HELP_DESK_URL}`, error);
+  }
+
   function isGoogleChrome() {
     //https://stackoverflow.com/questions/4565112/javascript-how-to-find-out-if-the-user-browser-is-chrome/13348618#13348618
     var isChromium = window.chrome;
@@ -266,6 +309,76 @@
     } else {
       // not Google Chrome
     }
+  }
+
+  async function checkDemoPageExists() {
+    const url = `/rest/api/content/search?cql=(title="${demoPageTitle}" and space="${currentSpace}")`;
+    const response = await AP.request({type: 'GET', contentType: 'application/json', url});
+    return JSON.parse(response.body)?.size > 0;
+  }
+
+  async function createCustomContent(title, body, containerPageId) {
+    const url = `/rest/api/content`;
+    const type = `ac:${addonKey()}:zenuml-content-graph`;
+    const data = {type, title, container: {id: containerPageId, type: 'page'}, space: {key: currentSpace}, body: {raw: {value: JSON.stringify(body), representation: 'raw'}}};
+
+    const response = await AP.request({type: 'POST', contentType: 'application/json', data: JSON.stringify(data), url});
+    return response.body && JSON.parse(response.body);
+  }
+
+  async function createDemoPageDraft() {
+    const data = {type: 'page', title: demoPageTitle, status: 'draft', space: {key: currentSpace}, body: {raw: {value: '', representation: 'raw'}}};
+    const demoPageDraft = await createContent(data);
+    trackEvent(userId, 'created_demo_page_draft', 'demoPage');
+    return demoPageDraft;
+  }
+
+  async function deleteDemoPageDraft(page) {
+    //We can't use "Delete content" API as it requires Connect app scope: DELETE
+    await updateContent(page.id, Object.assign({}, page, {status: 'trashed'}));
+    trackEvent(userId, 'deleted_demo_page_draft', 'demoPage');
+    return demoPageDraft;
+  }
+
+  async function createDemoPage() {
+    const page = await createDemoPageDraft();
+
+    try {
+      const [sequence, openAPI, mermaid, graph] = await Promise.all([
+        createCustomContent(demoSequenceTitle, demoSequenceContent, page.id),
+        createCustomContent(demoOpenAPITitle, demoOpenAPIContent, page.id),
+        createCustomContent(demoMermaidTitle, demoMermaidContent, page.id),
+        createCustomContent(demoGraphTitle, demoGraphContent, page.id)
+      ]);
+
+      const body = JSON.stringify(demoPageContent)
+        .replaceAll('$$_SEQUENCE_CONTENT_ID', sequence.id)
+        .replaceAll('$$_OPENAPI_CONTENT_ID', openAPI.id)
+        .replaceAll('$$_MERMAID_CONTENT_ID', mermaid.id)
+        .replaceAll('$$_GRAPH_CONTENT_ID', graph.id);
+
+      const data = {type: 'page', title: demoPageTitle, status: 'current', space: {key: currentSpace}, version: {number: page.version.number}, body: {atlas_doc_format: {value: body, representation: 'atlas_doc_format'}}};
+      const response = await updateContent(page.id, data);
+
+      trackEvent(userId, 'published_demo_page', 'demoPage');
+      return response;
+    }
+    catch(e) {
+      await deleteDemoPageDraft(page);
+      throw e;
+    }
+  }
+
+  async function createContent(data) {
+    const url = `/rest/api/content`;
+    const response = await AP.request({type: 'POST', contentType: 'application/json', data: JSON.stringify(data), url});
+    return response.body && JSON.parse(response.body);
+  }
+
+  async function updateContent(id, data) {
+    const url = `/rest/api/content/${id}`;
+    const response = await AP.request({type: 'PUT', contentType: 'application/json', data: JSON.stringify(data), url});
+    return response.body && JSON.parse(response.body);
   }
   </script>
 

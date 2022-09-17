@@ -16,6 +16,7 @@ import ApWrapper2 from "@/model/ApWrapper2";
 import AP from "@/model/AP";
 import {DataSource} from "@/model/Diagram/Diagram";
 import {MacroIdProvider} from "@/model/ContentProvider/MacroIdProvider";
+import './utils/IgnoreEsc.ts'
 
 // eslint-disable-next-line
 // @ts-ignore
