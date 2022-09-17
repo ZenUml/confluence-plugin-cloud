@@ -37,28 +37,48 @@ const searchUri = `/wiki/rest/api/content/search?cql=(title="${demoPageTitle}" a
     await assertFrame({frameSelector: '#Demo1---Sequence-Diagram ~ div iframe',
       frameContentReadySelector: '.occurrence', contentSelector: 'div.diagram-title',
       expectedContentText: 'Order Service (Demonstration only)'});
+
+    await assertFrame({frameSelector: '#Demo2---Graph ~ div iframe',
+      frameContentReadySelector: '#graph svg', contentXpath: '//*[contains(text(), "Lamp doesn\'t work")]'});
+
+    await assertFrame({frameSelector: '#Demo3---OpenAPI ~ div iframe',
+      frameContentReadySelector: '#swagger-ui .scheme-container', contentXpath: '//span[text()="/users"]'});
+
+    await assertFrame({frameSelector: '#Demo4---Mermaid ~ div iframe',
+      frameContentReadySelector: '.viewer svg[role=img]', contentXpath: '//*[text()="A Gantt Diagram"]'});
+      
+    await assertFrame({frameSelector: '#Demo5---Embedding-an-existing-diagram-or-OpenAPI-spec ~ div iframe',
+    frameContentReadySelector: '.occurrence', contentSelector: 'div.diagram-title',
+    expectedContentText: 'Order Service (Demonstration only)'});
   }
 
   await browser.close();
 
-  async function assertFrame({frameSelector, frameContentReadySelector, contentSelector, expectedContentText}) {
+  async function assertFrame({frameSelector, frameContentReadySelector, contentSelector, expectedContentText, contentXpath}) {
     const iframe = await waitForSelector(page, frameSelector);
     const frame = await iframe.contentFrame();
     if(frameContentReadySelector) {
       await waitForSelector(frame, frameContentReadySelector, {timeout: 30 * 1000});
     }
 
-    await waitForSelector(frame, contentSelector);
-    const contentText = await frame.$eval(contentSelector, e => e.innerText);
-    log('Content text', contentText);
-    if(contentText !== expectedContentText) {
-      throw `Assertion failed: Actual content text "${contentText}" is not equal to "${expectedContentText}"`
+    if(contentSelector) {
+      await waitForSelector(frame, contentSelector);
+      const contentText = await frame.$eval(contentSelector, e => e.innerText);
+      log('Content text', contentText);
+      if(contentText !== expectedContentText) {
+        throw `Assertion failed: Actual content text "${contentText}" is not equal to "${expectedContentText}"`
+      }
+    }
+
+    if(contentXpath) {
+      await waitForSelector(frame, contentXpath);
     }
   }
 
   async function waitForSelector(page, selector, options) {
     try {
-      return await page.waitForSelector(selector, options);
+      const isXpath = selector.indexOf('/') === 0;
+      return await (isXpath ? page.waitForXPath(selector, options) : page.waitForSelector(selector, options));
     } catch(e) {
       try {
         const html = await page.$eval('html', e => e.innerHTML);
