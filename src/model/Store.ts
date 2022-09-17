@@ -38,9 +38,6 @@ export default {
   },
   getters: {
     ...storeConfig.getters,
-    mermaidCode: (state: any) => {
-      return state.mermaidCode;
-    },
     svg: (state: any) => {
       return state.mermaidSvg
     },
