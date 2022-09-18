@@ -87,8 +87,4 @@ export class ContentPropertyStorageProvider implements StorageProvider {
     contentProperty.value.id = key;
     return contentProperty;
   }
-
-  async getCustomContentList() {
-    return await this.apWrapper.listCustomContentByType(['zenuml-content-sequence', 'zenuml-content-graph']);
-  }
 }
