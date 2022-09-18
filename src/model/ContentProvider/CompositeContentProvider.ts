@@ -4,7 +4,7 @@ import {CustomContentStorageProvider} from "@/model/ContentProvider/CustomConten
 import {ContentPropertyStorageProvider} from "@/model/ContentProvider/ContentPropertyStorageProvider";
 import {MacroBodyStorageProvider} from "@/model/ContentProvider/MacroBodyStorageProvider";
 import {Diagram, NULL_DIAGRAM} from "@/model/Diagram/Diagram";
-import {getUrlParam} from "@/utils/window";
+import {getUrlParam, trackEvent} from "@/utils/window";
 import {UrlIdProvider} from "@/model/ContentProvider/UrlIdProvider";
 import ApWrapper2 from "@/model/ApWrapper2";
 
@@ -22,8 +22,9 @@ export class CompositeContentProvider implements IContentProvider{
         if (doc !== NULL_DIAGRAM) {
           return {id, doc};
         }
-      } catch (e) {
+      } catch (e: any) {
         console.error(e);
+        trackEvent(JSON.stringify(e), 'load_macro', 'error')
       }
     }
     return {id: undefined, doc: NULL_DIAGRAM};
