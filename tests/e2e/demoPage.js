@@ -1,7 +1,7 @@
 const puppeteer = require("puppeteer");
 
-const testDomain = process.env.ZENUML_DOMAIN || 'zenuml-stg.atlassian.net';
-const spaceKey = process.env.ZENUML_SPACE || 'ZS';
+const testDomain = process.env.ZENUML_DOMAIN || 'whimet4.atlassian.net';
+const spaceKey = process.env.ZENUML_SPACE || 'WHIMET4';
 const baseUrl = `https://${testDomain}/wiki/spaces/${spaceKey}`;
 
 (async () => {
