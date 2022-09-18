@@ -15,32 +15,49 @@ export enum DiagramType {
   Unknown = 'unknown'
 }
 
-export interface Diagram {
+export class Diagram {
   // id is used only for debugging and for display only. It is NOT saved in custom content or content property.
   id?: string; // custom content id or content property id or uuid
   isCopy?: boolean;
-  diagramType: DiagramType,
-  code?: string,
-  title?: string,
-  styles?: object,
-  mermaidCode?: string,
-  graphXml?: string,
-  compressed?: boolean,
-  source?: DataSource,
+  diagramType: DiagramType = DiagramType.Unknown;
+  code?: string = '';
+  title?: string = '';
+  styles?: object = {};
+  mermaidCode?: string = '';
+  graphXml?: string = '';
+  compressed?: boolean = false;
+  source?: DataSource = DataSource.Unknown;
+
+
+  public getCoreData?(): string{
+    let body;
+    switch (this.diagramType) {
+      case DiagramType.Sequence:
+        body = this.code || '';
+        break;
+      case DiagramType.Mermaid:
+        body = this.mermaidCode || '';
+        break;
+      case DiagramType.Graph:
+        body = this.graphXml || '';
+        break;
+    }
+    return body || '';
+  }
 }
 
 const NULL_DIAGRAM = {
-    id: '',
-    diagramType: DiagramType.Unknown,
-    code: '',
-    title: '',
-    styles: {},
-    mermaidCode: '',
-    graphXml: '',
-    compressed: false,
-    source: DataSource.Unknown,
-    payload: undefined
-  } as const;
+  id: '',
+  diagramType: DiagramType.Unknown,
+  code: '',
+  title: '',
+  styles: {},
+  mermaidCode: '',
+  graphXml: '',
+  compressed: false,
+  source: DataSource.Unknown,
+  payload: undefined,
+} as Diagram;
 
 
 export {NULL_DIAGRAM};
