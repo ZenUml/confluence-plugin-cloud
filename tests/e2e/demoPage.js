@@ -3,6 +3,7 @@ const puppeteer = require("puppeteer");
 const testDomain = process.env.ZENUML_DOMAIN || 'zenuml-stg.atlassian.net';
 const spaceKey = process.env.ZENUML_SPACE || 'ZS';
 const baseUrl = `https://${testDomain}/wiki/spaces/${spaceKey}`;
+const isLite = process.env.IS_LITE === 'true';
 
 (async () => {
   const browser = await puppeteer.launch({headless: process.env.CI === "true", 
@@ -22,7 +23,81 @@ const baseUrl = `https://${testDomain}/wiki/spaces/${spaceKey}`;
 
   console.log(await page.title());
 
-  const createResult = await page.evaluate(async (spaceKey, isLite) => {
+  const createResult = await page.evaluate(inBrowserFunction, {spaceKey, isLite}
+  );
+
+  console.log(`Created page with id: ${createResult.id}, title: ${createResult.title}`);
+
+  if(createResult && createResult.id) {
+    try {
+      const pageUrl = `${baseUrl}/pages/${createResult.id}`;
+      await page.goto(pageUrl);
+      console.log(`Navigated to ${pageUrl}`)
+      await page.waitForSelector('#title-text');
+
+      await assertFrame({frameSelector: `//iframe[contains(@id, "zenuml-sequence-macro${getModuleKeySuffix()}")]`,
+        contentXpath: '//*[contains(text(), "Order Service (Demonstration only)")]'});
+
+      // await assertFrame({frameSelector: '#Demo2---Graph ~ div iframe',
+      //   frameContentReadySelector: '#graph svg', contentXpath: '//*[contains(text(), "Lamp doesn\'t work")]'});
+
+      // await assertFrame({frameSelector: '#Demo3---OpenAPI ~ div iframe',
+      //   frameContentReadySelector: '#swagger-ui .scheme-container', contentXpath: '//span[text()="/users"]'});
+
+      // await assertFrame({frameSelector: '#Demo4---Mermaid ~ div iframe', contentXpath: '//*[text()="A Gantt Diagram"]'});
+        
+      // await assertFrame({frameSelector: '#Demo5---Embedding-an-existing-diagram-or-OpenAPI-spec ~ div iframe',
+      // frameContentReadySelector: '.occurrence', contentSelector: 'div.diagram-title',
+      // expectedContentText: 'Order Service (Demonstration only)'});
+    } finally {
+
+      const deleteResult = await page.evaluate(async (pageId) => {
+          const baseUrl = '/wiki/rest/api/content';
+          const contentType = 'application/json';
+      
+          async function getContent(id) {
+            const url = `${baseUrl}/${id}`;
+            return await request({ type: 'GET', contentType, url });
+          }
+
+          async function updateContent(id, data) {
+            const url = `${baseUrl}/${id}`;
+            return await request({ type: 'PUT', contentType, data: JSON.stringify(data), url });
+          }
+      
+          async function deletePage(pageId) {
+            const data = await getContent(pageId);
+            //We can't use "Delete content" API as it requires Connect app scope: DELETE
+            return await updateContent(pageId, Object.assign({}, data, { status: 'trashed', version: {number: data.version.number + 1} }));
+          }
+      
+          async function request(options) {
+            const response = await fetch(options.url, {
+              method: options.type,
+              headers: { 'Content-Type': options.contentType, 'Accept': contentType }, body: options.data
+            });
+            return await response.json();
+          }
+      
+          try {
+            return await deletePage(pageId);
+          } catch(e) {
+            console.error('deletePage error:', e);
+          }
+        }, createResult.id
+      );
+
+      if(deleteResult.status === 'trashed') {
+        console.log(`Deleted page with id: ${deleteResult.id}`);
+      } else {
+        console.log('deletePage result:\n', deleteResult);
+      }
+    }
+  }
+
+  await browser.close();
+
+  async function inBrowserFunction({spaceKey, isLite}) {
     const baseUrl = '/wiki/rest/api/content';
     const contentType = 'application/json';
     const addonKey = 'com.zenuml.confluence-addon';
@@ -146,79 +221,7 @@ const baseUrl = `https://${testDomain}/wiki/spaces/${spaceKey}`;
     } catch(e) {
       console.error('createPage error:', e);
     }
-    }, spaceKey, process.env.IS_LITE === 'true'
-  );
-
-  console.log(`Created page with id: ${createResult.id}, title: ${createResult.title}`);
-
-  if(createResult && createResult.id) {
-    try {
-      const pageUrl = `${baseUrl}/pages/${createResult.id}`;
-      await page.goto(pageUrl);
-      console.log(`Navigated to ${pageUrl}`)
-      await page.waitForSelector('#title-text');
-
-      await assertFrame({frameSelector: '//iframe[contains(@id, "com.zenuml.confluence-addon__zenuml-sequence-macro")]',
-        contentXpath: '//*[contains(text(), "Order Service (Demonstration only)")]'});
-
-      // await assertFrame({frameSelector: '#Demo2---Graph ~ div iframe',
-      //   frameContentReadySelector: '#graph svg', contentXpath: '//*[contains(text(), "Lamp doesn\'t work")]'});
-
-      // await assertFrame({frameSelector: '#Demo3---OpenAPI ~ div iframe',
-      //   frameContentReadySelector: '#swagger-ui .scheme-container', contentXpath: '//span[text()="/users"]'});
-
-      // await assertFrame({frameSelector: '#Demo4---Mermaid ~ div iframe', contentXpath: '//*[text()="A Gantt Diagram"]'});
-        
-      // await assertFrame({frameSelector: '#Demo5---Embedding-an-existing-diagram-or-OpenAPI-spec ~ div iframe',
-      // frameContentReadySelector: '.occurrence', contentSelector: 'div.diagram-title',
-      // expectedContentText: 'Order Service (Demonstration only)'});
-    } finally {
-
-      const deleteResult = await page.evaluate(async (pageId) => {
-          const baseUrl = '/wiki/rest/api/content';
-          const contentType = 'application/json';
-      
-          async function getContent(id) {
-            const url = `${baseUrl}/${id}`;
-            return await request({ type: 'GET', contentType, url });
-          }
-
-          async function updateContent(id, data) {
-            const url = `${baseUrl}/${id}`;
-            return await request({ type: 'PUT', contentType, data: JSON.stringify(data), url });
-          }
-      
-          async function deletePage(pageId) {
-            const data = await getContent(pageId);
-            //We can't use "Delete content" API as it requires Connect app scope: DELETE
-            return await updateContent(pageId, Object.assign({}, data, { status: 'trashed', version: {number: data.version.number + 1} }));
-          }
-      
-          async function request(options) {
-            const response = await fetch(options.url, {
-              method: options.type,
-              headers: { 'Content-Type': options.contentType, 'Accept': contentType }, body: options.data
-            });
-            return await response.json();
-          }
-      
-          try {
-            return await deletePage(pageId);
-          } catch(e) {
-            console.error('deletePage error:', e);
-          }
-        }, createResult.id
-      );
-
-      if(deleteResult.status === 'trashed') {
-        console.log(`Deleted page with id: ${deleteResult.id}`);
-      } else {
-        console.log('deletePage result:\n', deleteResult);
-      }
-    }
   }
-
-  await browser.close();
 
   async function assertFrame({frameSelector, frameContentReadySelector, contentSelector, expectedContentText, contentXpath}) {
     const iframe = await waitForSelector(page, frameSelector);
@@ -255,6 +258,10 @@ const baseUrl = `https://${testDomain}/wiki/spaces/${spaceKey}`;
       } catch(e2) {}
       throw e;
     }
+  }
+
+  function getModuleKeySuffix() {
+    return isLite ? '-lite' : '';
   }
 
   function log(title, ...args) {
