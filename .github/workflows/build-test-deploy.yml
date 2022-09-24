@@ -52,6 +52,7 @@ jobs:
       - run: yarn test:e2e
         env:
           CI: true
+          IS_LITE: true
           ZENUML_STAGE_USERNAME: ${{ secrets.ZENUML_STAGE_USERNAME }}
           ZENUML_STAGE_PASSWORD: ${{ secrets.ZENUML_STAGE_PASSWORD }}
   

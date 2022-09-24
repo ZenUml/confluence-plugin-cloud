@@ -96,7 +96,7 @@ const baseUrl = `https://${testDomain}/wiki/spaces/${spaceKey}`;
           "attrs": {
             "layout": "default",
             "extensionType": "com.atlassian.confluence.macro.core",
-            "extensionKey": `zenuml-sequence-macro`,
+            "extensionKey": `zenuml-sequence-macro${getModuleKeySuffix()}`,
             "parameters": {
               "macroParams": {
                 "uuid": {
@@ -255,5 +255,13 @@ const baseUrl = `https://${testDomain}/wiki/spaces/${spaceKey}`;
 
   function log(title, ...args) {
     console.log(`===== ${title} =====\n`, ...args);
+  }
+
+  function isLite() {
+    return process.env.IS_LITE === 'true';
+  }
+
+  function getModuleKeySuffix() {
+    return isLite() ? '-lite' : '';
   }
 })();
