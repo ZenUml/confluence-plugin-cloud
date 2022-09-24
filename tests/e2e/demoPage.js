@@ -23,12 +23,15 @@ const isLite = process.env.IS_LITE === 'true';
 
   console.log(await page.title());
 
-  const createResult = await page.evaluate(inBrowserFunction, {spaceKey, isLite}
-  );
+  try {
+    const createResult = await page.evaluate(inBrowserFunction, {action: 'createPage', spaceKey, isLite});
+    if(!createResult?.id) {
+      console.log(createResult);
+      return;
+    }
 
-  console.log(`Created page with id: ${createResult.id}, title: ${createResult.title}`);
+    console.log(`Created page with id: ${createResult.id}, title: ${createResult.title}`);
 
-  if(createResult && createResult.id) {
     try {
       const pageUrl = `${baseUrl}/pages/${createResult.id}`;
       await page.goto(pageUrl);
@@ -50,54 +53,19 @@ const isLite = process.env.IS_LITE === 'true';
       // frameContentReadySelector: '.occurrence', contentSelector: 'div.diagram-title',
       // expectedContentText: 'Order Service (Demonstration only)'});
     } finally {
+      const deleteResult = await page.evaluate(inBrowserFunction, {action: 'deletePage', pageId: createResult.id});
 
-      const deleteResult = await page.evaluate(async (pageId) => {
-          const baseUrl = '/wiki/rest/api/content';
-          const contentType = 'application/json';
-      
-          async function getContent(id) {
-            const url = `${baseUrl}/${id}`;
-            return await request({ type: 'GET', contentType, url });
-          }
-
-          async function updateContent(id, data) {
-            const url = `${baseUrl}/${id}`;
-            return await request({ type: 'PUT', contentType, data: JSON.stringify(data), url });
-          }
-      
-          async function deletePage(pageId) {
-            const data = await getContent(pageId);
-            //We can't use "Delete content" API as it requires Connect app scope: DELETE
-            return await updateContent(pageId, Object.assign({}, data, { status: 'trashed', version: {number: data.version.number + 1} }));
-          }
-      
-          async function request(options) {
-            const response = await fetch(options.url, {
-              method: options.type,
-              headers: { 'Content-Type': options.contentType, 'Accept': contentType }, body: options.data
-            });
-            return await response.json();
-          }
-      
-          try {
-            return await deletePage(pageId);
-          } catch(e) {
-            console.error('deletePage error:', e);
-          }
-        }, createResult.id
-      );
-
-      if(deleteResult.status === 'trashed') {
+      if(deleteResult?.status === 'trashed') {
         console.log(`Deleted page with id: ${deleteResult.id}`);
       } else {
         console.log('deletePage result:\n', deleteResult);
       }
     }
+  } finally {
+    await browser.close();
   }
 
-  await browser.close();
-
-  async function inBrowserFunction({spaceKey, isLite}) {
+  async function inBrowserFunction({action, spaceKey, isLite, pageId}) {
     const baseUrl = '/wiki/rest/api/content';
     const contentType = 'application/json';
     const addonKey = 'com.zenuml.confluence-addon';
@@ -118,7 +86,8 @@ const isLite = process.env.IS_LITE === 'true';
         return await updateContent(page.id, data);
       }
       catch (e) {
-        await deletePage(page);
+        await updateContent(page.id, Object.assign({}, page, { status: 'trashed' }));
+        return `createPage error: ${JSON.stringify(e)}`;
       }
     }
 
@@ -132,6 +101,11 @@ const isLite = process.env.IS_LITE === 'true';
 
       return await request({ type: 'POST', contentType, data: JSON.stringify(data), url: baseUrl });
     }
+    
+    async function getContent(id) {
+      const url = `${baseUrl}/${id}`;
+      return await request({ type: 'GET', contentType, url });
+    }
 
     async function createContent(data) {
       return await request({ type: 'POST', contentType, data: JSON.stringify(data), url: baseUrl });
@@ -140,6 +114,12 @@ const isLite = process.env.IS_LITE === 'true';
     async function updateContent(id, data) {
       const url = `${baseUrl}/${id}`;
       return await request({ type: 'PUT', contentType, data: JSON.stringify(data), url });
+    }
+
+    async function deletePage(pageId) {
+      const data = await getContent(pageId);
+      //We can't use "Delete content" API as it requires Connect app scope: DELETE
+      return await updateContent(pageId, Object.assign({}, data, { status: 'trashed', version: {number: data.version.number + 1} }));
     }
 
     async function request(options) {
@@ -217,9 +197,15 @@ const isLite = process.env.IS_LITE === 'true';
     };
 
     try {
-      return await createPage(spaceKey, `E2E test page at ${new Date()} - ${uuidv4()}`);
+      if(action === 'createPage') {
+        return await createPage(spaceKey, `E2E test page at ${new Date()} - ${uuidv4()}`);
+      }
+
+      if(action === 'deletePage') {
+        return await deletePage(pageId);
+      }
     } catch(e) {
-      console.error('createPage error:', e);
+      console.error(`${action} error:`, e);
     }
   }
 
