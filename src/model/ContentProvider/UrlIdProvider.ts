@@ -6,7 +6,4 @@ export class UrlIdProvider implements IdProvider{
   async getId(): Promise<string | undefined> {
     return getUrlParam('content.id');
   }
-
-  async save(id: string) {
-  }
 }
