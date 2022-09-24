@@ -16,8 +16,4 @@ export class MacroBodyStorageProvider implements StorageProvider {
     }
     return {diagramType: DiagramType.Sequence, code: macroBody};
   }
-
-  async getCustomContentList() {
-    return await this.apWrapper.listCustomContentByType(['zenuml-content-sequence', 'zenuml-content-graph']);
-  }
 }
