@@ -14,12 +14,6 @@ export class MacroIdProvider implements IdProvider {
     return macroData?.customContentId;
   }
 
-  async save(id: string) {
-    const macroData = await this.apWrapper.getMacroData();
-    const uuid = macroData?.uuid || uuidv4();
-    this.apWrapper.saveMacro({uuid, customContentId: id, updatedAt: new Date()}, '');
-  }
-
   async getUuid() {
     const macroData = await this.apWrapper.getMacroData();
     return macroData?.uuid;

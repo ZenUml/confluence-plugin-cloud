@@ -7,6 +7,7 @@ import './assets/tailwind.css'
 import './utils/IgnoreEsc.ts'
 import {MacroIdProvider} from "@/model/ContentProvider/MacroIdProvider";
 import ApWrapper2 from "@/model/ApWrapper2";
+import uuidv4 from "@/utils/uuid";
 
 Vue.config.productionTip = false
 
@@ -16,9 +17,12 @@ if(document.getElementById('app')) {
     }).$mount('#app')
 }
 EventBus.$on('save', async () => {
-  const idProvider = new MacroIdProvider(new ApWrapper2(AP));
+  const apWrapper = new ApWrapper2(AP);
+  const macroData = await apWrapper.getMacroData();
+  const uuid = macroData?.uuid || uuidv4();
   // @ts-ignore
-  await idProvider.save(window.picked.id)
+  const params = { uuid, customContentId: window.picked.id, updatedAt: new Date() };
+  apWrapper.saveMacro(params, '');
   // @ts-ignore
   AP.dialog.close();
 });
