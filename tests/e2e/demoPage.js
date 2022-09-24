@@ -22,7 +22,7 @@ const baseUrl = `https://${testDomain}/wiki/spaces/${spaceKey}`;
 
   console.log(await page.title());
 
-  const createResult = await page.evaluate(async (spaceKey) => {
+  const createResult = await page.evaluate(async (spaceKey, isLite) => {
     const baseUrl = '/wiki/rest/api/content';
     const contentType = 'application/json';
     const addonKey = 'com.zenuml.confluence-addon';
@@ -79,6 +79,10 @@ const baseUrl = `https://${testDomain}/wiki/spaces/${spaceKey}`;
       return ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, c =>
         (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
       );
+    }
+
+    function getModuleKeySuffix() {
+      return isLite ? '-lite' : '';
     }
 
     const demoSequenceContent = {
@@ -142,7 +146,7 @@ const baseUrl = `https://${testDomain}/wiki/spaces/${spaceKey}`;
     } catch(e) {
       console.error('createPage error:', e);
     }
-    }, spaceKey
+    }, spaceKey, process.env.IS_LITE === 'true'
   );
 
   console.log(`Created page with id: ${createResult.id}, title: ${createResult.title}`);
@@ -257,11 +261,4 @@ const baseUrl = `https://${testDomain}/wiki/spaces/${spaceKey}`;
     console.log(`===== ${title} =====\n`, ...args);
   }
 
-  function isLite() {
-    return process.env.IS_LITE === 'true';
-  }
-
-  function getModuleKeySuffix() {
-    return isLite() ? '-lite' : '';
-  }
 })();
