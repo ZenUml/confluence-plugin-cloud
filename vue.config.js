@@ -32,6 +32,12 @@ module.exports = {
       template: 'public/sequence-viewer-dialog.html',
       chunks: ['chunk-common', 'chunk-sequence-viewer-dialog-vendors', 'sequence-viewer-dialog']
     },
+    "mermaid-editor": {
+      entry: 'src/mermaid/mermaid-editor.ts',
+      template: 'public/mermaid/mermaid-editor.html',
+      filename: 'mermaid/mermaid-editor.html',
+      chunks: ['chunk-common', 'chunk-mermaid-editor-vendors', 'mermaid-editor']
+    },
     "edit": {
       entry: 'src/sequence-editor.ts',
       template: 'public/sequence-editor.html',
