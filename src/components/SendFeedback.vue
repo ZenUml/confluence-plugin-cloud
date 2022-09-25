@@ -1,6 +1,6 @@
 <template>
   <div class="inline-block">
-    <a class="flex items-center bg-gray-100 text-gray-600 px-2 py-1 text-white text-sm rounded-md"
+    <a class="flex items-center bg-gray-100 text-gray-600 px-2 py-1 text-white text-sm rounded"
        target="_blank" href="https://github.com/ZenUml/vue-sequence/discussions/352">
       <span>
         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
