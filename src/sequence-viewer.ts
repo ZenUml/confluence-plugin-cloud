@@ -4,24 +4,16 @@ import 'vue-sequence/dist/vue-sequence.css'
 import './assets/tailwind.css'
 
 import './model/MockApConfluence'
-import mermaid from 'mermaid'
-
 import ExtendedStore from './model/Store'
 import EventBus from './EventBus'
-import Viewer from "@/components/Viewer.vue";
+import Viewer from "@/components/Viewer/Viewer.vue";
 import {trackEvent} from "@/utils/window";
-import {initializeMacro} from "@/model/macro/InitializeMacro";
 import createAttachmentIfContentChanged from "@/model/Attachment";
 import globals from '@/model/globals';
-import BaseMacro2 from "@/model/BaseMacro2";
-
-// eslint-disable-next-line
-// @ts-ignore
-window.mermaid = mermaid
-
-mermaid.mermaidAPI.initialize({
-  startOnLoad:true
-})
+import {DiagramType} from "@/model/Diagram/Diagram";
+import defaultContentProvider from "@/model/ContentProvider/CompositeContentProvider";
+import ApWrapper2 from "@/model/ApWrapper2";
+import AP from "@/model/AP";
 
 Vue.config.productionTip = false
 Vue.use(Vuex)
@@ -46,12 +38,11 @@ EventBus.$on('diagramLoaded', () => {
   setTimeout(window.AP?.resize, 1500)
 });
 
-async function createAttachment(macro: BaseMacro2) {
-  let diagramType = macro._diagram?.diagramType || 'unknown';
+async function createAttachment(code: string, diagramType: DiagramType) {
   try {
     if (await globals.apWrapper.canUserEdit()) {
       trackEvent(diagramType, 'before_create_attachment', 'info');
-      await createAttachmentIfContentChanged(store.getters.content);
+      await createAttachmentIfContentChanged(code);
     } else {
       trackEvent(diagramType, 'skip_create_attachment', 'info');
     }
@@ -62,17 +53,10 @@ async function createAttachment(macro: BaseMacro2) {
   }
 }
 
-EventBus.$on('diagramLoaded', async () => {
-  // @ts-ignore
-  const macro = globals.macro;
-  if(!macro?._standaloneCustomContent) {
-
-    const canEdit = await macro.canEditOnDialog();
-    store.dispatch('updateCanEdit', canEdit);
-    setTimeout(async () => {
-      await createAttachment(macro);
-    }, 1500);
-  }
+EventBus.$on('diagramLoaded', async (code: string, diagramType: DiagramType) => {
+  setTimeout(async () => {
+    await createAttachment(code, diagramType);
+  }, 1500);
 });
 
 EventBus.$on('edit', () => {
@@ -83,7 +67,12 @@ EventBus.$on('edit', () => {
         chrome: false,
         width: "100%",
         height: "100%",
-    }).on('close', () => initializeMacro(store));
+    }).on('close', async () => {
+    const compositeContentProvider = defaultContentProvider(new ApWrapper2(AP));
+    const {doc} = await compositeContentProvider.load();
+    // @ts-ignore
+    store.state.diagram = doc;
+  });
 });
 
 EventBus.$on('fullscreen', () => {
@@ -96,5 +85,3 @@ EventBus.$on('fullscreen', () => {
       height: "100%",
     });
 });
-
-initializeMacro(store);

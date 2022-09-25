@@ -2,10 +2,11 @@ import Vue from 'vue'
 import DocumentList from './components/DocumentList/DocumentList.vue'
 
 import EventBus from './EventBus'
-import globals from '@/model/globals';
 import AP from "@/model/AP";
 import './assets/tailwind.css'
 import './utils/IgnoreEsc.ts'
+import ApWrapper2 from "@/model/ApWrapper2";
+import uuidv4 from "@/utils/uuid";
 
 Vue.config.productionTip = false
 
@@ -15,15 +16,12 @@ if(document.getElementById('app')) {
     }).$mount('#app')
 }
 EventBus.$on('save', async () => {
-
-  // eslint-disable-next-line
+  const apWrapper = new ApWrapper2(AP);
+  const macroData = await apWrapper.getMacroData();
+  const uuid = macroData?.uuid || uuidv4();
   // @ts-ignore
-  const diagram = JSON.parse(window.picked.body.raw.value);
-
-  // eslint-disable-next-line
-  // @ts-ignore
-  await globals.macro.saveEmbedded(window.picked.id, window.picked.type, diagram);
-
+  const params = { uuid, customContentId: window.picked.id, updatedAt: new Date() };
+  apWrapper.saveMacro(params, '');
   // @ts-ignore
   AP.dialog.close();
 });

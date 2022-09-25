@@ -1,4 +1,4 @@
-import {DiagramType} from "@/model/Diagram";
+import {DiagramType} from "@/model/Diagram/Diagram";
 import {getClientDomain, getSpaceKey} from "@/utils/ContextParameters/ContextParameters";
 export function getUrlParam (param: string): string | undefined {
   try {

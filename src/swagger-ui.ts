@@ -1,15 +1,16 @@
 import SwaggerUIBundle from 'swagger-ui'
 import SpecListener from './utils/spec-listener'
-import BaseMacro2 from "./model/BaseMacro2";
 import AP from "@/model/AP";
 import './assets/tailwind.css'
 
 import '@/components/Debug/DebugMounter.ts'
-import Example from '@/model/OpenApi/OpenApiExample'
+import OpenApiExample from '@/model/OpenApi/OpenApiExample'
 import createAttachmentIfContentChanged from "@/model/Attachment";
 import {trackEvent} from "@/utils/window";
-import {DiagramType} from "@/model/Diagram";
+import {DiagramType} from "@/model/Diagram/Diagram";
 import globals from '@/model/globals';
+import defaultContentProvider from "@/model/ContentProvider/CompositeContentProvider";
+import ApWrapper2 from "@/model/ApWrapper2";
 
 // @ts-ignore
 window.SwaggerUIBundle = SwaggerUIBundle;
@@ -18,22 +19,19 @@ async function initializeMacro() {
   const apWrapper = globals.apWrapper;
   await apWrapper.initializeContext();
 
-  const macro = new BaseMacro2(apWrapper);
-
-  // @ts-ignore
-  window.macro = macro;
-  const {code} = await macro.load();
+  const compositeContentProvider = defaultContentProvider(new ApWrapper2(AP));
+  const {doc} = await compositeContentProvider.load();
 
   // eslint-disable-next-line
   // @ts-ignore
-  window.updateSpec(code || Example);
+  window.updateSpec(doc?.code || OpenApiExample);
 
   setTimeout(async function () {
     AP.resize();
     try {
       if(await apWrapper.canUserEdit()) {
         trackEvent(DiagramType.OpenApi, 'before_create_attachment', 'info');
-        await createAttachmentIfContentChanged(code);
+        await createAttachmentIfContentChanged(doc?.code);
       } else {
         trackEvent(DiagramType.OpenApi, 'skip_create_attachment', 'warning');
       }

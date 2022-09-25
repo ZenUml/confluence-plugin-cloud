@@ -11,8 +11,11 @@ import 'vue-sequence/dist/vue-sequence.css'
 
 import ExtendedStore from './model/Store'
 import EventBus from './EventBus'
-import globals from '@/model/globals';
-import {initializeMacro} from "@/model/macro/InitializeMacro";
+import {CustomContentStorageProvider} from "@/model/ContentProvider/CustomContentStorageProvider";
+import ApWrapper2 from "@/model/ApWrapper2";
+import AP from "@/model/AP";
+import {DataSource} from "@/model/Diagram/Diagram";
+import {MacroIdProvider} from "@/model/ContentProvider/MacroIdProvider";
 import './utils/IgnoreEsc.ts'
 
 // eslint-disable-next-line
@@ -36,14 +39,13 @@ if(document.getElementById('app')) {
 }
 
 EventBus.$on('save', async () => {
-  const macro = globals.macro;
+  const apWrapper = new ApWrapper2(AP);
+  const idProvider = new MacroIdProvider(apWrapper);
   // @ts-ignore
-  const value = {code: store.state.code, styles: store.state.styles, mermaidCode: store.state.mermaidCode, diagramType: store.state.diagramType, title: store.getters.title} as Diagram;
 
-  await macro.saveOnDialog(value);
-
+  const value = {id: await idProvider.getId(),code: store.state.code, styles: store.state.styles, mermaidCode: store.state.mermaidCode, diagramType: store.state.diagramType, title: store.getters.title, source: DataSource.CustomContent} as Diagram;
+  const customContentStorageProvider = new CustomContentStorageProvider(apWrapper);
+  await customContentStorageProvider.save(value);
   // @ts-ignore
   AP.dialog.close();
 });
-
-initializeMacro(store);

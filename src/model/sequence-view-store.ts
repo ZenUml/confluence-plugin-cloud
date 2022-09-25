@@ -1,21 +1,17 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import {VueSequence} from 'vue-sequence'
-import SequenceDiagramLoader from "@/model/SequenceDiagramLoader";
-import globals from '@/model/globals';
+import defaultContentProvider from "@/model/ContentProvider/CompositeContentProvider";
+import AP from "@/model/AP";
+import ApWrapper2 from "@/model/ApWrapper2";
 
 Vue.use(Vuex)
 
 async function getCode() {
-  // @ts-ignore
-  const apWrapper = globals.apWrapper;
-  await apWrapper.initializeContext();
-
-  let sequenceDiagramLoader = new SequenceDiagramLoader(apWrapper);
-  // @ts-ignore
-  window.sequenceDiagramLoader = sequenceDiagramLoader
-  let content = await sequenceDiagramLoader.load();
-  return content.code || 'A.method';
+  const contentProvider = defaultContentProvider(new ApWrapper2(AP));
+  let {doc} = await contentProvider.load();
+  // Do not fall back to example. If it is empty show empty.
+  return doc.code;
 }
 
 async function configStoreAsyncFn() {

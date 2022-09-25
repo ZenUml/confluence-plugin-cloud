@@ -2,28 +2,41 @@ import SwaggerEditorBundle from 'swagger-editor'
 import SpecListener from './utils/spec-listener'
 
 import Vue from 'vue'
-import BaseMacro2 from "./model/BaseMacro2";
 import SaveAndGoBackButton from "@/components/SaveAndGoBackButton.vue";
 // @ts-ignore
 import './assets/tailwind.css'
 
 import '@/components/Debug/DebugMounter.ts'
-import Example from '@/model/OpenApi/OpenApiExample'
+import OpenApiExample from '@/model/OpenApi/OpenApiExample'
 import globals from '@/model/globals';
 import AP from "@/model/AP";
-import {DiagramType} from "@/model/Diagram";
 import './utils/IgnoreEsc.ts'
+import {DataSource, DiagramType} from "@/model/Diagram/Diagram";
+import defaultContentProvider from "@/model/ContentProvider/CompositeContentProvider";
+import {saveToPlatform} from "@/model/ContentProvider/Persistence";
+import ApWrapper2 from "@/model/ApWrapper2";
+
+async function saveOpenApiAndExit () {
+  // @ts-ignore
+  const code = window.specContent;
+  const diagram = {
+    title: '',
+    code: code,
+    styles: {},
+    mermaidCode: '',
+    diagramType: DiagramType.OpenApi,
+    source: DataSource.CustomContent
+  };
+  await saveToPlatform(diagram);
+
+  /* eslint-disable no-undef */
+  AP.dialog.close();
+}
 
 new Vue({
   render: h => h(SaveAndGoBackButton, {
     props: {
-      saveAndExit: async function () {
-        // @ts-ignore
-        await globals.macro.save({title: '', code: window.specContent, styles: '', mermaidCode: '', diagramType: DiagramType.OpenAPI, source: 'CustomContent'});
-
-        /* eslint-disable no-undef */
-        AP.dialog.close();
-      }
+      saveAndExit: saveOpenApiAndExit
     },
   })
 }).$mount('#save-and-go-back');
@@ -32,17 +45,13 @@ async function initializeMacro() {
   const apWrapper = globals.apWrapper;
   await apWrapper.initializeContext();
 
-  const macro = new BaseMacro2(apWrapper);
-  // await macro.load();
-
-  // @ts-ignore
-  globals.macro = macro;
-  const {code} = await macro.load();
-  console.log('-------------- loaded spec:', code)
+  const compositeContentProvider = defaultContentProvider(new ApWrapper2(AP));
+  const {doc} = await compositeContentProvider.load();
+  console.log('-------------- loaded spec:', doc?.code)
     // eslint-disable-next-line
     // @ts-ignore
-    window.updateSpec(code || Example);
-    console.log('-------------- updateSpec with:', code)
+    window.updateSpec(doc?.code || OpenApiExample);
+    console.log('-------------- updateSpec with:', doc?.code)
 }
 
 
