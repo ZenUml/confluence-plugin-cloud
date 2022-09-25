@@ -51,10 +51,6 @@ const isLite = process.env.IS_LITE === 'true';
       contentXpath: '//*[contains(text(), "Order Service (Demonstration only)")]'});
 
       // await assertFrame({frameSelector: '#Demo4---Mermaid ~ div iframe', contentXpath: '//*[text()="A Gantt Diagram"]'});
-        
-      // await assertFrame({frameSelector: '#Demo5---Embedding-an-existing-diagram-or-OpenAPI-spec ~ div iframe',
-      // frameContentReadySelector: '.occurrence', contentSelector: 'div.diagram-title',
-      // expectedContentText: 'Order Service (Demonstration only)'});
     } finally {
       const deleteResult = await page.evaluate(inBrowserFunction, {action: 'deletePage', pageId: createResult.id});
 
@@ -87,7 +83,7 @@ const isLite = process.env.IS_LITE === 'true';
         const body = JSON.stringify(demoPageContent)
           .replaceAll('$$_SEQUENCE_CONTENT_ID', sequence.id)
           .replaceAll('$$_GRAPH_CONTENT_ID', graph.id)
-          .replaceAll('$$_OPENAPI_CONTENT_ID', graph.id)
+          .replaceAll('$$_OPENAPI_CONTENT_ID', openapi.id)
           ;
 
         const data = { type: 'page', title, status: 'current', space: { key: spaceKey }, version: { number: page.version.number }, body: { atlas_doc_format: { value: body, representation: 'atlas_doc_format' } } };
@@ -367,6 +363,7 @@ const isLite = process.env.IS_LITE === 'true';
 
     if(contentXpath) {
       await waitForSelector(frame, contentXpath);
+      console.log(`Found ${contentXpath} in frame ${frameSelector}`);
     }
   }
 
