@@ -25,7 +25,7 @@ const isLite = process.env.IS_LITE === 'true';
 
   try {
     await withNewPage(async () => {
-      
+
       await assertFrame({frameSelector: `//iframe[contains(@id, "zenuml-sequence-macro${getModuleKeySuffix()}")]`,
         contentXpath: '//*[contains(text(), "Order Service (Demonstration only)")]'});
 
@@ -39,13 +39,13 @@ const isLite = process.env.IS_LITE === 'true';
       contentXpath: '//*[contains(text(), "Order Service (Demonstration only)")]'});
 
       // await assertFrame({frameSelector: '#Demo4---Mermaid ~ div iframe', contentXpath: '//*[text()="A Gantt Diagram"]'});
-    });
+    }, {sequence: true, graph: true, openapi: true, embed: true});
   } finally {
     await browser.close();
   }
 
-  async function withNewPage(callback) {
-    const createResult = await page.evaluate(inBrowserFunction, {action: 'createPage', spaceKey, isLite});
+  async function withNewPage(callback, options) {
+    const createResult = await page.evaluate(inBrowserFunction, {action: 'createPage', spaceKey, isLite, options});
     if(!createResult?.id) {
       console.log(createResult);
       return;
@@ -61,7 +61,7 @@ const isLite = process.env.IS_LITE === 'true';
 
       return await callback();
     } finally {
-      const deleteResult = await page.evaluate(inBrowserFunction, {action: 'deletePage', pageId: createResult.id});
+      const deleteResult = await page.evaluate(inBrowserFunction, {action: 'deletePage', pageId: createResult.id, options});
 
       if(deleteResult?.status === 'trashed') {
         console.log(`Deleted page with id: ${deleteResult.id}`);
@@ -71,32 +71,44 @@ const isLite = process.env.IS_LITE === 'true';
     }
   }
 
-  async function inBrowserFunction({action, spaceKey, isLite, pageId}) {
+  async function inBrowserFunction({action, spaceKey, isLite, pageId, options}) {
+    const NULL_PROMISE = Promise.resolve(null);
     const baseUrl = '/wiki/rest/api/content';
     const contentType = 'application/json';
     const addonKey = 'com.zenuml.confluence-addon';
     const customContentType = `ac:${addonKey}:zenuml-content-graph`;
 
+    console.log('inBrowserFunction with arguments', arguments);
+
     async function createPage(title) {
       const page = await createDraft(title);
+      console.log(`Created draft`, page);
 
       try {
-        const [sequence, graph, openapi] = await Promise.all([
-          createCustomContent(`Sequence custom content of page ${title}`, demoSequenceContent, page.id),
-          createCustomContent(`Graph custom content of page ${title}`, demoGraphContent, page.id),
-          createCustomContent(`OpenAPI custom content of page ${title}`, demoOpenAPIContent, page.id),
+        const [sequence, graph, openapi, mermaid] = await Promise.all([
+          options.sequence && createCustomContent(`Sequence custom content of page ${title}`, demoSequenceContent, page.id) 
+            || NULL_PROMISE,
+          options.graph && createCustomContent(`Graph custom content of page ${title}`, demoGraphContent, page.id)
+            || NULL_PROMISE,
+          options.openapi && createCustomContent(`OpenAPI custom content of page ${title}`, demoOpenAPIContent, page.id)
+            || NULL_PROMISE,
+          options.mermaid && createCustomContent(`Mermaid custom content of page ${title}`, demoMermaidContent, page.id)
+            || NULL_PROMISE,
         ]);
 
-        const body = JSON.stringify(demoPageContent)
-          .replaceAll('$$_SEQUENCE_CONTENT_ID', sequence.id)
-          .replaceAll('$$_GRAPH_CONTENT_ID', graph.id)
-          .replaceAll('$$_OPENAPI_CONTENT_ID', openapi.id)
+        const body = JSON.stringify(demoPageContent(options))
+          .replaceAll('$$_SEQUENCE_CONTENT_ID', sequence?.id)
+          .replaceAll('$$_GRAPH_CONTENT_ID', graph?.id)
+          .replaceAll('$$_OPENAPI_CONTENT_ID', openapi?.id)
+          .replaceAll('$$_MERMAID_CONTENT_ID', mermaid?.id)
           ;
+        console.log('Creating page with body', body);
 
         const data = { type: 'page', title, status: 'current', space: { key: spaceKey }, version: { number: page.version.number }, body: { atlas_doc_format: { value: body, representation: 'atlas_doc_format' } } };
         return await updateContent(page.id, data);
       }
       catch (e) {
+        console.log('createPage error', e);
         await updateContent(page.id, Object.assign({}, page, { status: 'trashed' }));
         return `createPage error: ${JSON.stringify(e)}`;
       }
@@ -110,7 +122,9 @@ const isLite = process.env.IS_LITE === 'true';
     async function createCustomContent(title, body, containerId) {
       const data = { type: customContentType, title, container: { id: containerId, type: 'page' }, space: { key: spaceKey }, body: { raw: { value: JSON.stringify(body), representation: 'raw' } } };
 
-      return await request({ type: 'POST', contentType, data: JSON.stringify(data), url: baseUrl });
+      const result = await request({ type: 'POST', contentType, data: JSON.stringify(data), url: baseUrl });
+      console.log('Created custom content', result);
+      return result;
     }
     
     async function getContent(id) {
@@ -171,170 +185,237 @@ const isLite = process.env.IS_LITE === 'true';
       "source": "CustomContent"
     };
 
-    const demoPageContent = {
-      "type": "doc",
-      "content": [
-        {
-          "type": "extension",
-          "attrs": {
-            "layout": "default",
-            "extensionType": "com.atlassian.confluence.macro.core",
-            "extensionKey": `zenuml-sequence-macro${getModuleKeySuffix()}`,
-            "parameters": {
-              "macroParams": {
-                "uuid": {
-                  "value": uuidv4()
-                },
-                "customContentId": {
-                  "value": "$$_SEQUENCE_CONTENT_ID"
-                },
-                "__bodyContent": {
-                  "value": "title Order Service (Demonstration only)\n// Styling participants with background colors is an experimental feature.\n// This feature is available for users to test and provide feedback.\n@Actor Client #FFEBE6\n@Boundary OrderController #0747A6\n@EC2 <<BFF>> OrderService #E3FCEF\ngroup BusinessService {\n  @Lambda PurchaseService\n  @AzureFunction InvoiceService\n}\n\n@Starter(Client)\n//`POST /orders`\nOrderController.post(payload) {\n  OrderService.create(payload) {\n    order = new Order(payload)\n    if(order != null) {\n      par {\n        PurchaseService.createPO(order)\n        InvoiceService.createInvoice(order)      \n      }      \n    }\n  }\n}"
-                },
-                "updatedAt": {
-                  "value": "2022-08-14T12:00:03Z"
-                }
-              },
-              "macroMetadata": {
-                "macroId": {
-                  "value": ""
-                },
-                "schemaVersion": {
-                  "value": "1"
-                },
-                "placeholder": [
-                  {
-                    "type": "icon",
-                    "data": {
-                      "url": "/image/zenuml_logo.png"
-                    }
-                  }
-                ],
-                "title": "ZenUML Diagram"
-              }
+    const sequenceExtension = {
+      "type": "extension",
+      "attrs": {
+        "layout": "default",
+        "extensionType": "com.atlassian.confluence.macro.core",
+        "extensionKey": `zenuml-sequence-macro${getModuleKeySuffix()}`,
+        "parameters": {
+          "macroParams": {
+            "uuid": {
+              "value": uuidv4()
             },
-            "localId": ""
+            "customContentId": {
+              "value": "$$_SEQUENCE_CONTENT_ID"
+            },
+            "__bodyContent": {
+              "value": "title Order Service (Demonstration only)\n// Styling participants with background colors is an experimental feature.\n// This feature is available for users to test and provide feedback.\n@Actor Client #FFEBE6\n@Boundary OrderController #0747A6\n@EC2 <<BFF>> OrderService #E3FCEF\ngroup BusinessService {\n  @Lambda PurchaseService\n  @AzureFunction InvoiceService\n}\n\n@Starter(Client)\n//`POST /orders`\nOrderController.post(payload) {\n  OrderService.create(payload) {\n    order = new Order(payload)\n    if(order != null) {\n      par {\n        PurchaseService.createPO(order)\n        InvoiceService.createInvoice(order)      \n      }      \n    }\n  }\n}"
+            },
+            "updatedAt": {
+              "value": "2022-08-14T12:00:03Z"
+            }
+          },
+          "macroMetadata": {
+            "macroId": {
+              "value": ""
+            },
+            "schemaVersion": {
+              "value": "1"
+            },
+            "placeholder": [
+              {
+                "type": "icon",
+                "data": {
+                  "url": "/image/zenuml_logo.png"
+                }
+              }
+            ],
+            "title": "ZenUML Diagram"
           }
         },
-        {
-          "type": "extension",
-          "attrs": {
-            "layout": "default",
-            "extensionType": "com.atlassian.confluence.macro.core",
-            "extensionKey": `zenuml-graph-macro${getModuleKeySuffix()}`,
-            "parameters": {
-              "macroParams": {
-                "uuid": {
-                  "value": uuidv4()
-                },
-                "customContentId": {
-                  "value": "$$_GRAPH_CONTENT_ID"
-                },
-                "updatedAt": {
-                  "value": "2022-08-21T06:12:37Z"
-                }
-              },
-              "macroMetadata": {
-                "macroId": {
-                  "value": ""
-                },
-                "schemaVersion": {
-                  "value": "1"
-                },
-                "placeholder": [
-                  {
-                    "type": "icon",
-                    "data": {
-                      "url": "/image/zenuml_logo.png"
-                    }
-                  }
-                ],
-                "title": "ZenUML Graph"
-              }
+        "localId": ""
+      }
+    };
+
+    const demoMermaidContent = {
+      "title": "Order Service (Demonstration only)",
+      "code": "title Order Service (Demonstration only)\n// Styling participants with background colors is an experimental feature.\n// This feature is available for users to test and provide feedback.\n@Actor Client #FFEBE6\n@Boundary OrderController #0747A6\n@EC2 <<BFF>> OrderService #E3FCEF\ngroup BusinessService {\n  @Lambda PurchaseService\n  @AzureFunction InvoiceService\n}\n\n@Starter(Client)\n//`POST /orders`\nOrderController.post(payload) {\n  OrderService.create(payload) {\n    order = new Order(payload)\n    if(order != null) {\n      par {\n        PurchaseService.createPO(order)\n        InvoiceService.createInvoice(order)      \n      }      \n    }\n  }\n}",
+      "mermaidCode": "gantt\n    title A Gantt Diagram\n    dateFormat  YYYY-MM-DD\n    section Section\n    A task           :a1, 2014-01-01, 30d\n    Another task     :after a1  , 20d\n    section Another\n    Task in sec      :2014-01-12  , 12d\n    another task      : 24d\n",
+      "diagramType": "mermaid"
+    };
+
+    const graphExtension = {
+      "type": "extension",
+      "attrs": {
+        "layout": "default",
+        "extensionType": "com.atlassian.confluence.macro.core",
+        "extensionKey": `zenuml-graph-macro${getModuleKeySuffix()}`,
+        "parameters": {
+          "macroParams": {
+            "uuid": {
+              "value": uuidv4()
             },
-            "localId": ""
+            "customContentId": {
+              "value": "$$_GRAPH_CONTENT_ID"
+            },
+            "updatedAt": {
+              "value": "2022-08-21T06:12:37Z"
+            }
+          },
+          "macroMetadata": {
+            "macroId": {
+              "value": ""
+            },
+            "schemaVersion": {
+              "value": "1"
+            },
+            "placeholder": [
+              {
+                "type": "icon",
+                "data": {
+                  "url": "/image/zenuml_logo.png"
+                }
+              }
+            ],
+            "title": "ZenUML Graph"
           }
         },
-        {
-          "type": "extension",
-          "attrs": {
-            "layout": "default",
-            "extensionType": "com.atlassian.confluence.macro.core",
-            "extensionKey": `zenuml-openapi-macro${getModuleKeySuffix()}`,
-            "parameters": {
-              "macroParams": {
-                "uuid": {
-                  "value": uuidv4()
-                },
-                "customContentId": {
-                  "value": "$$_OPENAPI_CONTENT_ID"
-                },
-                "updatedAt": {
-                  "value": "2022-08-14T12:34:06Z"
-                }
-              },
-              "macroMetadata": {
-                "macroId": {
-                  "value": ""
-                },
-                "schemaVersion": {
-                  "value": "1"
-                },
-                "placeholder": [
-                  {
-                    "type": "icon",
-                    "data": {
-                      "url": "/image/zenuml_logo.png"
-                    }
-                  }
-                ],
-                "title": "ZenUML OpenAPI"
-              }
+        "localId": ""
+      }
+    };
+
+    const openapiExtension = {
+      "type": "extension",
+      "attrs": {
+        "layout": "default",
+        "extensionType": "com.atlassian.confluence.macro.core",
+        "extensionKey": `zenuml-openapi-macro${getModuleKeySuffix()}`,
+        "parameters": {
+          "macroParams": {
+            "uuid": {
+              "value": uuidv4()
             },
-            "localId": ""
+            "customContentId": {
+              "value": "$$_OPENAPI_CONTENT_ID"
+            },
+            "updatedAt": {
+              "value": "2022-08-14T12:34:06Z"
+            }
+          },
+          "macroMetadata": {
+            "macroId": {
+              "value": ""
+            },
+            "schemaVersion": {
+              "value": "1"
+            },
+            "placeholder": [
+              {
+                "type": "icon",
+                "data": {
+                  "url": "/image/zenuml_logo.png"
+                }
+              }
+            ],
+            "title": "ZenUML OpenAPI"
           }
         },
-        {
-          "type": "extension",
-          "attrs": {
-            "layout": "default",
-            "extensionType": "com.atlassian.confluence.macro.core",
-            "extensionKey": `zenuml-embed-macro${getModuleKeySuffix()}`,
-            "parameters": {
-              "macroParams": {
-                "uuid": {
-                  "value": uuidv4()
-                },
-                "customContentId": {
-                  "value": "$$_SEQUENCE_CONTENT_ID"
-                },
-                "updatedAt": {
-                  "value": "2022-08-14T12:17:08Z"
-                }
-              },
-              "macroMetadata": {
-                "macroId": {
-                  "value": ""
-                },
-                "schemaVersion": {
-                  "value": "1"
-                },
-                "placeholder": [
-                  {
-                    "type": "icon",
-                    "data": {
-                      "url": "/image/zenuml_logo.png"
-                    }
-                  }
-                ],
-                "title": "Embed ZenUML Diagram"
-              }
+        "localId": ""
+      }
+    };
+
+    const embedExtension = {
+      "type": "extension",
+      "attrs": {
+        "layout": "default",
+        "extensionType": "com.atlassian.confluence.macro.core",
+        "extensionKey": `zenuml-embed-macro${getModuleKeySuffix()}`,
+        "parameters": {
+          "macroParams": {
+            "uuid": {
+              "value": uuidv4()
             },
-            "localId": ""
+            "customContentId": {
+              "value": "$$_SEQUENCE_CONTENT_ID"
+            },
+            "updatedAt": {
+              "value": "2022-08-14T12:17:08Z"
+            }
+          },
+          "macroMetadata": {
+            "macroId": {
+              "value": ""
+            },
+            "schemaVersion": {
+              "value": "1"
+            },
+            "placeholder": [
+              {
+                "type": "icon",
+                "data": {
+                  "url": "/image/zenuml_logo.png"
+                }
+              }
+            ],
+            "title": "Embed ZenUML Diagram"
           }
-        }
-      ],
-      "version": 1
+        },
+        "localId": ""
+      }
+    };
+
+    const mermaidExtension = {
+      "type": "extension",
+      "attrs": {
+        "layout": "default",
+        "extensionType": "com.atlassian.confluence.macro.core",
+        "extensionKey": `zenuml-sequence-macro${getModuleKeySuffix()}`,
+        "parameters": {
+          "macroParams": {
+            "uuid": {
+              "value": uuidv4()
+            },
+            "customContentId": {
+              "value": "$$_MERMAID_CONTENT_ID"
+            },
+            "__bodyContent": {
+              "value": "gantt\n    title A Gantt Diagram\n    dateFormat  YYYY-MM-DD\n    section Section\n    A task           :a1, 2014-01-01, 30d\n    Another task     :after a1  , 20d\n    section Another\n    Task in sec      :2014-01-12  , 12d\n    another task      : 24d\n"
+            },
+            "updatedAt": {
+              "value": "2022-08-14T12:11:13Z"
+            }
+          },
+          "macroMetadata": {
+            "macroId": {
+              "value": ""
+            },
+            "schemaVersion": {
+              "value": "1"
+            },
+            "placeholder": [
+              {
+                "type": "icon",
+                "data": {
+                  "url": "/image/zenuml_logo.png"
+                }
+              }
+            ],
+            "title": "ZenUML Diagram"
+          }
+        },
+        "localId": ""
+      }
+    };
+
+    const demoPageContent = (options) => {
+      const content = {"type": "doc", "content": [], "version": 1};
+      if(options.sequence) {
+        content.content.push(sequenceExtension);
+      }
+      if(options.graph) {
+        content.content.push(graphExtension);
+      }
+      if(options.openapi) {
+        content.content.push(openapiExtension);
+      }
+      if(options.embed) {
+        content.content.push(embedExtension);
+      }
+      if(options.mermaid) {
+        content.content.push(mermaidExtension);
+      }
+      return content;
     };
 
     try {
