@@ -41,8 +41,8 @@ const isLite = process.env.IS_LITE === 'true';
       await assertFrame({frameSelector: `//iframe[contains(@id, "zenuml-sequence-macro${getModuleKeySuffix()}")]`,
         contentXpath: '//*[contains(text(), "Order Service (Demonstration only)")]'});
 
-      // await assertFrame({frameSelector: '#Demo2---Graph ~ div iframe',
-      //   frameContentReadySelector: '#graph svg', contentXpath: '//*[contains(text(), "Lamp doesn\'t work")]'});
+      await assertFrame({frameSelector: `//iframe[contains(@id, "zenuml-graph-macro${getModuleKeySuffix()}")]`,
+        contentXpath: '//*[contains(text(), "Lamp doesn\'t work")]'});
 
       // await assertFrame({frameSelector: '#Demo3---OpenAPI ~ div iframe',
       //   frameContentReadySelector: '#swagger-ui .scheme-container', contentXpath: '//span[text()="/users"]'});
@@ -71,18 +71,21 @@ const isLite = process.env.IS_LITE === 'true';
     const addonKey = 'com.zenuml.confluence-addon';
     const customContentType = `ac:${addonKey}:zenuml-content-graph`;
 
-    async function createPage(space, title) {
-      const page = await createDraft(space, title);
+    async function createPage(title) {
+      const page = await createDraft(title);
 
       try {
-        const [sequence] = await Promise.all([
-          createCustomContent(`Custom content of page ${title}`, demoSequenceContent, page.id)
+        const [sequence, graph] = await Promise.all([
+          createCustomContent(`Sequence custom content of page ${title}`, demoSequenceContent, page.id),
+          createCustomContent(`Graph custom content of page ${title}`, demoGraphContent, page.id),
         ]);
 
         const body = JSON.stringify(demoPageContent)
-          .replaceAll('$$_SEQUENCE_CONTENT_ID', sequence.id);
+          .replaceAll('$$_SEQUENCE_CONTENT_ID', sequence.id)
+          .replaceAll('$$_GRAPH_CONTENT_ID', graph.id)
+          ;
 
-        const data = { type: 'page', title, status: 'current', space: { key: space }, version: { number: page.version.number }, body: { atlas_doc_format: { value: body, representation: 'atlas_doc_format' } } };
+        const data = { type: 'page', title, status: 'current', space: { key: spaceKey }, version: { number: page.version.number }, body: { atlas_doc_format: { value: body, representation: 'atlas_doc_format' } } };
         return await updateContent(page.id, data);
       }
       catch (e) {
@@ -91,13 +94,13 @@ const isLite = process.env.IS_LITE === 'true';
       }
     }
 
-    async function createDraft(space, title) {
-      const data = { type: 'page', title, status: 'draft', space: { key: space }, body: { raw: { value: '', representation: 'raw' } } };
+    async function createDraft(title) {
+      const data = { type: 'page', title, status: 'draft', space: { key: spaceKey }, body: { raw: { value: '', representation: 'raw' } } };
       return await createContent(data);
     }
 
-    async function createCustomContent(space, title, body, containerId) {
-      const data = { type: customContentType, title, container: { id: containerId, type: 'page' }, space: { key: space }, body: { raw: { value: JSON.stringify(body), representation: 'raw' } } };
+    async function createCustomContent(title, body, containerId) {
+      const data = { type: customContentType, title, container: { id: containerId, type: 'page' }, space: { key: spaceKey }, body: { raw: { value: JSON.stringify(body), representation: 'raw' } } };
 
       return await request({ type: 'POST', contentType, data: JSON.stringify(data), url: baseUrl });
     }
@@ -147,6 +150,11 @@ const isLite = process.env.IS_LITE === 'true';
       "diagramType": "sequence"
     };
 
+    const demoGraphContent = {
+      "diagramType": "graph",
+      "graphXml": "<mxGraphModel dx=\"1426\" dy=\"694\" grid=\"1\" gridSize=\"10\" guides=\"1\" tooltips=\"1\" connect=\"1\" arrows=\"1\" fold=\"1\" page=\"1\" pageScale=\"1\" pageWidth=\"827\" pageHeight=\"1169\"><root><mxCell id=\"WIyWlLk6GJQsqaUBKTNV-0\"/><mxCell id=\"WIyWlLk6GJQsqaUBKTNV-1\" parent=\"WIyWlLk6GJQsqaUBKTNV-0\"/><mxCell id=\"WIyWlLk6GJQsqaUBKTNV-2\" value=\"\" style=\"rounded=0;html=1;jettySize=auto;orthogonalLoop=1;fontSize=11;endArrow=block;endFill=0;endSize=8;strokeWidth=1;shadow=0;labelBackgroundColor=none;edgeStyle=orthogonalEdgeStyle;\" parent=\"WIyWlLk6GJQsqaUBKTNV-1\" source=\"WIyWlLk6GJQsqaUBKTNV-3\" target=\"WIyWlLk6GJQsqaUBKTNV-6\" edge=\"1\"><mxGeometry relative=\"1\" as=\"geometry\"/></mxCell><mxCell id=\"WIyWlLk6GJQsqaUBKTNV-3\" value=\"Lamp doesn't work\" style=\"rounded=1;whiteSpace=wrap;html=1;fontSize=12;glass=0;strokeWidth=1;shadow=0;\" parent=\"WIyWlLk6GJQsqaUBKTNV-1\" vertex=\"1\"><mxGeometry x=\"160\" y=\"80\" width=\"120\" height=\"40\" as=\"geometry\"/></mxCell><mxCell id=\"WIyWlLk6GJQsqaUBKTNV-4\" value=\"Yes\" style=\"rounded=0;html=1;jettySize=auto;orthogonalLoop=1;fontSize=11;endArrow=block;endFill=0;endSize=8;strokeWidth=1;shadow=0;labelBackgroundColor=none;edgeStyle=orthogonalEdgeStyle;\" parent=\"WIyWlLk6GJQsqaUBKTNV-1\" source=\"WIyWlLk6GJQsqaUBKTNV-6\" target=\"WIyWlLk6GJQsqaUBKTNV-10\" edge=\"1\"><mxGeometry y=\"20\" relative=\"1\" as=\"geometry\"><mxPoint as=\"offset\"/></mxGeometry></mxCell><mxCell id=\"WIyWlLk6GJQsqaUBKTNV-5\" value=\"No\" style=\"edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;jettySize=auto;orthogonalLoop=1;fontSize=11;endArrow=block;endFill=0;endSize=8;strokeWidth=1;shadow=0;labelBackgroundColor=none;\" parent=\"WIyWlLk6GJQsqaUBKTNV-1\" source=\"WIyWlLk6GJQsqaUBKTNV-6\" target=\"WIyWlLk6GJQsqaUBKTNV-7\" edge=\"1\"><mxGeometry y=\"10\" relative=\"1\" as=\"geometry\"><mxPoint as=\"offset\"/></mxGeometry></mxCell><mxCell id=\"WIyWlLk6GJQsqaUBKTNV-6\" value=\"Lamp&lt;br&gt;plugged in?\" style=\"rhombus;whiteSpace=wrap;html=1;shadow=0;fontFamily=Helvetica;fontSize=12;align=center;strokeWidth=1;spacing=6;spacingTop=-4;\" parent=\"WIyWlLk6GJQsqaUBKTNV-1\" vertex=\"1\"><mxGeometry x=\"170\" y=\"170\" width=\"100\" height=\"80\" as=\"geometry\"/></mxCell><mxCell id=\"WIyWlLk6GJQsqaUBKTNV-7\" value=\"Plug in lamp\" style=\"rounded=1;whiteSpace=wrap;html=1;fontSize=12;glass=0;strokeWidth=1;shadow=0;\" parent=\"WIyWlLk6GJQsqaUBKTNV-1\" vertex=\"1\"><mxGeometry x=\"320\" y=\"190\" width=\"120\" height=\"40\" as=\"geometry\"/></mxCell><mxCell id=\"WIyWlLk6GJQsqaUBKTNV-8\" value=\"No\" style=\"rounded=0;html=1;jettySize=auto;orthogonalLoop=1;fontSize=11;endArrow=block;endFill=0;endSize=8;strokeWidth=1;shadow=0;labelBackgroundColor=none;edgeStyle=orthogonalEdgeStyle;\" parent=\"WIyWlLk6GJQsqaUBKTNV-1\" source=\"WIyWlLk6GJQsqaUBKTNV-10\" target=\"WIyWlLk6GJQsqaUBKTNV-11\" edge=\"1\"><mxGeometry x=\"0.3333\" y=\"20\" relative=\"1\" as=\"geometry\"><mxPoint as=\"offset\"/></mxGeometry></mxCell><mxCell id=\"WIyWlLk6GJQsqaUBKTNV-9\" value=\"Yes\" style=\"edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;jettySize=auto;orthogonalLoop=1;fontSize=11;endArrow=block;endFill=0;endSize=8;strokeWidth=1;shadow=0;labelBackgroundColor=none;\" parent=\"WIyWlLk6GJQsqaUBKTNV-1\" source=\"WIyWlLk6GJQsqaUBKTNV-10\" target=\"WIyWlLk6GJQsqaUBKTNV-12\" edge=\"1\"><mxGeometry y=\"10\" relative=\"1\" as=\"geometry\"><mxPoint as=\"offset\"/></mxGeometry></mxCell><mxCell id=\"WIyWlLk6GJQsqaUBKTNV-10\" value=\"Bulb&lt;br&gt;burned out?\" style=\"rhombus;whiteSpace=wrap;html=1;shadow=0;fontFamily=Helvetica;fontSize=12;align=center;strokeWidth=1;spacing=6;spacingTop=-4;\" parent=\"WIyWlLk6GJQsqaUBKTNV-1\" vertex=\"1\"><mxGeometry x=\"170\" y=\"290\" width=\"100\" height=\"80\" as=\"geometry\"/></mxCell><mxCell id=\"WIyWlLk6GJQsqaUBKTNV-11\" value=\"Repair Lamp\" style=\"rounded=1;whiteSpace=wrap;html=1;fontSize=12;glass=0;strokeWidth=1;shadow=0;\" parent=\"WIyWlLk6GJQsqaUBKTNV-1\" vertex=\"1\"><mxGeometry x=\"160\" y=\"430\" width=\"120\" height=\"40\" as=\"geometry\"/></mxCell><mxCell id=\"WIyWlLk6GJQsqaUBKTNV-12\" value=\"Replace Bulb\" style=\"rounded=1;whiteSpace=wrap;html=1;fontSize=12;glass=0;strokeWidth=1;shadow=0;\" parent=\"WIyWlLk6GJQsqaUBKTNV-1\" vertex=\"1\"><mxGeometry x=\"320\" y=\"310\" width=\"120\" height=\"40\" as=\"geometry\"/></mxCell></root></mxGraphModel>"
+    };
+
     const demoPageContent = {
       "type": "doc",
       "content": [
@@ -191,6 +199,45 @@ const isLite = process.env.IS_LITE === 'true';
             },
             "localId": ""
           }
+        },
+        {
+          "type": "extension",
+          "attrs": {
+            "layout": "default",
+            "extensionType": "com.atlassian.confluence.macro.core",
+            "extensionKey": `zenuml-graph-macro${getModuleKeySuffix()}`,
+            "parameters": {
+              "macroParams": {
+                "uuid": {
+                  "value": uuidv4()
+                },
+                "customContentId": {
+                  "value": "$$_GRAPH_CONTENT_ID"
+                },
+                "updatedAt": {
+                  "value": "2022-08-21T06:12:37Z"
+                }
+              },
+              "macroMetadata": {
+                "macroId": {
+                  "value": ""
+                },
+                "schemaVersion": {
+                  "value": "1"
+                },
+                "placeholder": [
+                  {
+                    "type": "icon",
+                    "data": {
+                      "url": "/image/zenuml_logo.png"
+                    }
+                  }
+                ],
+                "title": "ZenUML Graph"
+              }
+            },
+            "localId": ""
+          }
         }
       ],
       "version": 1
@@ -198,7 +245,7 @@ const isLite = process.env.IS_LITE === 'true';
 
     try {
       if(action === 'createPage') {
-        return await createPage(spaceKey, `E2E test page at ${new Date()} - ${uuidv4()}`);
+        return await createPage(`E2E test page at ${new Date()} - ${uuidv4()}`);
       }
 
       if(action === 'deletePage') {
