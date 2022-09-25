@@ -3,13 +3,15 @@ const puppeteer = require("puppeteer");
 const testDomain = process.env.ZENUML_DOMAIN || 'zenuml-stg.atlassian.net';
 const spaceKey = process.env.ZENUML_SPACE || 'ZS';
 const baseUrl = `https://${testDomain}/wiki/spaces/${spaceKey}`;
+const pageUrl = (id) => `${baseUrl}/pages/${id}`;
 const isLite = process.env.IS_LITE === 'true';
+const existingPageId = process.env.PAGE_ID;
 
 (async () => {
   const browser = await puppeteer.launch({headless: process.env.CI === "true", 
     args: ['--disable-web-security', '--disable-features=IsolateOrigins,site-per-process']});
   const page = await browser.newPage();
-  await page.goto(`${baseUrl}/overview`);
+  await page.goto(existingPageId ? pageUrl(existingPageId) : `${baseUrl}/overview`);
 
   const username = process.env.ZENUML_STAGE_USERNAME;
   await page.$eval('input[name=username]', (el, value) => el.value = value, username);
@@ -24,6 +26,7 @@ const isLite = process.env.IS_LITE === 'true';
   console.log(await page.title());
 
   try {
+    //view sequence/graph/openapi/embed macros
     await withNewPage(async () => {
 
       await assertFrame({frameSelector: `//iframe[contains(@id, "zenuml-sequence-macro${getModuleKeySuffix()}")]`,
@@ -40,17 +43,43 @@ const isLite = process.env.IS_LITE === 'true';
 
     }, {sequence: true, graph: true, openapi: true, embed: true});
 
+    // view mermaid macro
     await withNewPage(async () => {
 
       await assertFrame({frameSelector: `//iframe[contains(@id, "zenuml-sequence-macro${getModuleKeySuffix()}")]`,
         contentXpath: '//*[text()="A Gantt Diagram"]'});
 
     }, {mermaid: true});
+
+    //----------------------- edit sequence macro
+    await withNewPage(async () => {
+
+      await page.$eval('#editPageLink', e => {
+        console.log(e);
+        e.click();
+      });
+
+      const editMacro = 'button[data-testid=extension-toolbar-edit-button]';
+      await page.waitForSelector(editMacro);
+
+      await page.$eval(editMacro, e => {
+        console.log(e);
+        e.click();
+      });
+
+      return await assertFrame({frameSelector: '//iframe[contains(@src, "sequence-editor.html")]'});
+      //TODO: Save and Go back to Confluence
+
+    }, {sequence: true});
   } finally {
     await browser.close();
   }
 
   async function withNewPage(callback, options) {
+    if(existingPageId) {
+      return await callback({id: existingPageId});
+    }
+
     const createResult = await page.evaluate(inBrowserFunction, {action: 'createPage', spaceKey, isLite, options});
     if(!createResult?.id) {
       console.log(createResult);
@@ -60,13 +89,14 @@ const isLite = process.env.IS_LITE === 'true';
     console.log(`Created page with id: ${createResult.id}, title: ${createResult.title}`);
 
     try {
-      const pageUrl = `${baseUrl}/pages/${createResult.id}`;
-      await page.goto(pageUrl);
-      console.log(`Navigated to ${pageUrl}`)
+      const url = pageUrl(createResult.id);
+      await page.goto(url);
+      console.log(`Navigated to ${url}`)
       await page.waitForSelector('#title-text');
 
-      return await callback();
+      return await callback(createResult);
     } finally {
+      //TODO: delete page using Confluence API directly, as page.evaluate fails if there's existing unhandled error in page
       const deleteResult = await page.evaluate(inBrowserFunction, {action: 'deletePage', pageId: createResult.id, options});
 
       if(deleteResult?.status === 'trashed') {
@@ -438,27 +468,33 @@ const isLite = process.env.IS_LITE === 'true';
   }
 
   async function assertFrame({frameSelector, frameContentReadySelector, contentSelector, expectedContentText, contentXpath}) {
+    let result;
     const iframe = await waitForSelector(page, frameSelector);
     console.log(`Found ${frameSelector}`);
 
     const frame = await iframe.contentFrame();
+    result = frame;
     if(frameContentReadySelector) {
-      await waitForSelector(frame, frameContentReadySelector, {timeout: 30 * 1000});
+      result = await waitForSelector(frame, frameContentReadySelector, {timeout: 30 * 1000});
     }
 
     if(contentSelector) {
-      await waitForSelector(frame, contentSelector);
-      const contentText = await frame.$eval(contentSelector, e => e.innerText);
-      log('Content text', contentText);
-      if(contentText !== expectedContentText) {
-        throw `Assertion failed: Actual content text "${contentText}" is not equal to "${expectedContentText}"`
+      result = await waitForSelector(frame, contentSelector);
+
+      if(expectedContentText) {
+        result = await frame.$eval(contentSelector, e => e.innerText);
+        log('Content text', contentText);
+        if(result !== expectedContentText) {
+          throw `Assertion failed: Actual content text "${result}" is not equal to "${expectedContentText}"`
+        }
       }
     }
 
     if(contentXpath) {
-      await waitForSelector(frame, contentXpath);
+      result = await waitForSelector(frame, contentXpath);
       console.log(`Found ${contentXpath} in frame ${frameSelector}`);
     }
+    return result;
   }
 
   async function waitForSelector(page, selector, options) {
