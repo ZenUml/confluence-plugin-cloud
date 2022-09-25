@@ -38,8 +38,14 @@ const isLite = process.env.IS_LITE === 'true';
       await assertFrame({frameSelector: `//iframe[contains(@id, "zenuml-embed-macro${getModuleKeySuffix()}")]`,
       contentXpath: '//*[contains(text(), "Order Service (Demonstration only)")]'});
 
-      // await assertFrame({frameSelector: '#Demo4---Mermaid ~ div iframe', contentXpath: '//*[text()="A Gantt Diagram"]'});
     }, {sequence: true, graph: true, openapi: true, embed: true});
+
+    await withNewPage(async () => {
+
+      await assertFrame({frameSelector: `//iframe[contains(@id, "zenuml-sequence-macro${getModuleKeySuffix()}")]`,
+        contentXpath: '//*[text()="A Gantt Diagram"]'});
+
+    }, {mermaid: true});
   } finally {
     await browser.close();
   }
