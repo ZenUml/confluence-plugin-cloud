@@ -1,13 +1,12 @@
 import {getUrlParam, trackEvent} from '@/utils/window';
 import {IApWrapper, VersionType} from "@/model/IApWrapper";
 import {IMacroData} from "@/model/IMacroData";
-import {IContentProperty, IContentPropertyNormalised} from "@/model/IContentProperty";
+import {IContentProperty} from "@/model/IContentProperty";
 import {ICustomContent} from "@/model/ICustomContent";
 import {IUser} from "@/model/IUser";
 import {IConfluence} from "@/model/IConfluence";
 import {IAp} from "@/model/IAp";
-import {MacroIdentifier} from "@/model/MacroIdentifier";
-import {DataSource, Diagram, DiagramType} from "@/model/Diagram";
+import {DataSource, Diagram} from "@/model/Diagram/Diagram";
 import {ICustomContentResponseBody} from "@/model/ICustomContentResponseBody";
 import {AtlasPage} from "@/model/page/AtlasPage";
 import CheckPermission, {PermissionCheckRequestFunc} from "@/model/page/CheckPermission";
@@ -20,7 +19,6 @@ export default class ApWrapper2 implements IApWrapper {
   };
   _navigator: any;
   _dialog: any;
-  _macroIdentifier: MacroIdentifier;
   _user: any;
   _page: AtlasPage;
   currentUser: IUser | undefined;
@@ -29,22 +27,6 @@ export default class ApWrapper2 implements IApWrapper {
 
   constructor(ap: IAp) {
     this.versionType = this.isLite() ? VersionType.Lite : VersionType.Full;
-    let macroIdentifier: MacroIdentifier;
-    let contentKey = getUrlParam('contentKey');
-    if (!contentKey) {
-      console.warn('contentKey URL parameter is not provided. It can be `sequence` or `graph`. Falling back to `sequence`');
-      contentKey = 'sequence';
-    }
-    if (contentKey?.includes('sequence')) {
-      macroIdentifier = MacroIdentifier.Sequence;
-    } else if (contentKey?.includes('graph')) {
-      macroIdentifier = MacroIdentifier.Graph
-    } else {
-      console.warn('Wrong value in contentKey URL parameter. Fall back to `sequence`.')
-      macroIdentifier = MacroIdentifier.Sequence;
-    }
-
-    this._macroIdentifier = macroIdentifier;
     this._confluence = ap.confluence;
     this._requestFn = ap.request;
     this._navigator = ap.navigator;
@@ -71,6 +53,7 @@ export default class ApWrapper2 implements IApWrapper {
   getMacroData(): Promise<IMacroData | undefined> {
     return new Promise(((resolve) => {
       try {
+        console.debug('get macro data from', this._confluence);
         this._confluence.getMacroData((data) => {
           resolve(data)
         })
@@ -94,44 +77,6 @@ export default class ApWrapper2 implements IApWrapper {
         resolve(undefined)
       }
     })
-  }
-
-  propertyKey(uuid: string) {
-    const macroKey = `zenuml-${this._macroIdentifier}-macro`;
-    return `${macroKey}-${uuid}-body`;
-  }
-
-  async getContentProperty2(): Promise<IContentPropertyNormalised | undefined> {
-    let macroData = await this.getMacroData();
-    const uuid = macroData?.uuid;
-    if (!uuid) {
-      console.warn('`uuid` is empty. This diagram has not been initialised. Most likely it has not been edited.')
-      return undefined;
-    }
-    let key = this.propertyKey(uuid);
-    let property = await this.getContentProperty(key);
-    if (!property) {
-      let message = 'property is not found with key:' + key;
-      console.error(message);
-      trackEvent(message, 'get_content_property', 'warning');
-      throw {
-        message: message,
-        data: macroData
-      }
-    }
-    let result = Object.assign({}, property) as IContentPropertyNormalised;
-    if(typeof property.value === "string") {
-      result.value = {
-        diagramType: DiagramType.Sequence,
-        source: DataSource.ContentPropertyOld,
-        code: property.value
-      }
-    } else {
-      result.value.source = DataSource.ContentProperty;
-    }
-    result.value.id = key;
-    result.value.payload = result; // To cache content property key and version on Diagram object
-    return result;
   }
 
   getContentProperty(key: any): Promise<IContentProperty|undefined> {

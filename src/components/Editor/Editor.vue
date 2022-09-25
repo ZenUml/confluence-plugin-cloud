@@ -1,7 +1,7 @@
 <template>
-  <div class="editor">
-    <div class="body">
-      <codemirror class="dsl-editor"
+  <div class="flex flex-col h-full">
+    <div class="flex flex-col h-full justify-between">
+      <codemirror class="dsl-editor flex flex-1"
         ref="myCm"
         :code="code"
         :options="cmOptions"
@@ -13,6 +13,8 @@
 </template>
 
 <script>
+  import {mapState} from 'vuex';
+
   import _ from 'lodash'
   import { codemirror } from 'vue-codemirror'
   import 'codemirror/keymap/sublime'
@@ -25,13 +27,19 @@
   // theme css
   import 'codemirror/theme/base16-dark.css'
 
-
-  import EventBus from '../EventBus'
+  import EventBus from '@/EventBus'
+  import defaultContentProvider from "@/model/ContentProvider/CompositeContentProvider";
+  import AP from "@/model/AP";
+  import globals from "@/model/globals";
+  import {DiagramType, NULL_DIAGRAM} from "@/model/Diagram/Diagram";
+  import Example from "@/utils/sequence/Example";
+  import ApWrapper2 from "@/model/ApWrapper2";
 
   export default {
     name: 'editor',
     data() {
       return {
+        doc: NULL_DIAGRAM,
         cmOptions: {
           tabSize: 4,
           mode: 'text/javascript',
@@ -51,7 +59,7 @@
     },
     methods: {
       onEditorCodeChange: function (newCode) {
-        const isMermaid = this.$store.getters.diagramType === 'mermaid';
+        const isMermaid = this.diagramType === 'mermaid';
 
         if (isMermaid) {
           this.$store.dispatch('updateMermaidCode', newCode);
@@ -61,15 +69,27 @@
       },
     },
     computed: {
-      editor() {
-        return this.$refs.myEditor.Editor
-      },
+      ...mapState(['diagramType']),
       code() {
-        return this.$store.getters.content;
+        return this.diagramType === DiagramType.Mermaid? this.doc.mermaidCode || Example.Mermaid : this.doc.code || Example.Sequence;
       },
       codemirror() {
         return this.$refs.myCm.codemirror
       },
+    },
+    async created() {
+      const compositeContentProvider = defaultContentProvider(new ApWrapper2(AP));
+      const {doc} = await compositeContentProvider.load();
+      this.doc = doc;
+      if (doc === NULL_DIAGRAM) {
+        this.doc ={
+          diagramType: DiagramType.Sequence,
+          code: Example
+        }
+        this.$store.dispatch('updateCode', {code: Example.Sequence});
+      }
+      await globals.apWrapper.initializeContext();
+      this.canUserEdit = await globals.apWrapper.canUserEdit();
     },
     mounted() {
       const that = this
@@ -83,7 +103,7 @@
           line: codeRange.stop.line-1, ch: codeRange.stop.col
         }, {css: 'background: gray'})
       })
-      this.codemirror.on('cursorActivity',_.debounce(() => {
+      this.codemirror?.on('cursorActivity',_.debounce(() => {
         if (this.mark) {
           this.mark.clear()
         }
@@ -105,76 +125,12 @@
 <style>
   @import "~codemirror/lib/codemirror.css";
   @import "~codemirror/theme/monokai.css";
-  .CodeMirror pre.CodeMirror-placeholder {
-    color: #777;
-  }
 
-  .dsl-editor .CodeMirror * {
+  .CodeMirror {
     font-family: Menlo, 'Fira Code', Monaco, source-code-pro, "Ubuntu Mono", "DejaVu sans mono", Consolas, monospace;
     font-size: 16px;
-  }
-
-</style>
-
-
-<style scoped>
-
-  .editor {
-    display: flex;
-    flex-direction: column;
     height: 100%;
-  }
-
-  .header, .body {
-    display: flex;
-    justify-content: space-between;
-  }
-
-  .body {
-    height: 100%;
-    min-height: 400px;
-  }
-
-  .Editor-subheader {
-    background: #252526;
-    height: 38px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    cursor: default;
-    font-family: Lato,sans-serif;
-  }
-
-  .FilePath {
-    white-space: nowrap;
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
-    color: #777;
-    padding: 0 16px;
-    font-size: 13px;
-  }
-
-  .Editor-subheader .prettify-btn {
-    padding: 5px;
-    cursor: pointer;
-    position: relative;
-    text-transform: uppercase;
-    font-size: 11px;
-    letter-spacing: .5px;
-    font-weight: 600;
-    color: #fff;
-    margin-right: 11px;
-    opacity: .4;
-  }
-  .dsl-editor {
-    flex: 1;
-    background: red;
-  }
-
-  .dsl-editor >>> .CodeMirror {
-    height: 100%;
+    width: 100%;
   }
 
 </style>

@@ -13,10 +13,10 @@
 </template>
 
 <script>
-  import Editor from './Editor.vue'
+  import Editor from '@/components/Editor/Editor.vue'
   import Split from 'split.js'
-  import Header from "@/components/Header";
-  import Viewer from "@/components/Viewer";
+  import Header from "@/components/Header/Header.vue";
+  import Viewer from "@/components/Viewer/Viewer";
 
   export default {
     name: 'Workspace',

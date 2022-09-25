@@ -1,6 +1,8 @@
 import {trackEvent} from "@/utils/window";
-import globals from '@/model/globals';
-import {DiagramType} from "@/model/Diagram";
+import {DiagramType} from "@/model/Diagram/Diagram";
+import AP from "@/model/AP";
+import defaultContentProvider from "@/model/ContentProvider/CompositeContentProvider";
+import ApWrapper2 from "@/model/ApWrapper2";
 
 function loadViewer(url: string) {
   const e = document.createElement('meta');
@@ -25,10 +27,10 @@ function getViewerUrl(diagramType: DiagramType) {
 }
 
 async function initializeMacro() {
-  const macro = globals.macro;
   try {
-    await macro.initializeContext();
-    const { diagramType } = await macro.load();
+    const contentProvider = defaultContentProvider(new ApWrapper2(AP));
+    const { doc } = await contentProvider.load()
+    const { diagramType } = doc;
 
     if(diagramType) {
       const url = `${getViewerUrl(diagramType)}${window.location.search}`;

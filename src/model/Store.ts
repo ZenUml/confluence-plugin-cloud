@@ -1,8 +1,8 @@
 import {VueSequence} from 'vue-sequence'
-import mermaid from "mermaid";
 import EventBus from '../EventBus'
-import {DiagramType} from "@/model/Diagram";
+import {DiagramType, NULL_DIAGRAM} from "@/model/Diagram/Diagram";
 import globals from '@/model/globals';
+import Example from "@/utils/sequence/Example";
 
 const storeConfig = VueSequence.Store()
 export default {
@@ -12,37 +12,17 @@ export default {
     updateMermaidCode(state: any, payload: any) {
       state.mermaidCode = payload
     },
-    updateMermaidDiagram(state: any, payload: any) {
-      state.mermaidSvg = payload
-    },
     updateDiagramType(state: any, payload: any) {
       state.diagramType = payload
     },
-    updateCanEdit(state: any, payload: any) {
-      state.canEdit = payload
-    }
   },
   actions: {
     ...storeConfig.actions,
     updateMermaidCode({commit}: any, payload: any) {
       commit('updateMermaidCode', payload)
-      try {
-        mermaid.parse(payload);
-        mermaid.mermaidAPI.render('any-id',
-          payload,
-          (svg) => {
-            commit('updateMermaidDiagram', svg);
-          }
-        );
-      } catch (e) {
-        return false;
-      }
     },
     updateDiagramType({commit}: any, payload: DiagramType) {
       commit('updateDiagramType', payload)
-    },
-    updateCanEdit({commit}: any, payload: any) {
-      commit('updateCanEdit', payload)
     },
     reloadZenUML({commit, state}: any) {
       const code = state.code
@@ -55,22 +35,14 @@ export default {
     svg: (state: any) => {
       return state.mermaidSvg
     },
-    diagramType: (state: any) => {
-      return state.diagramType?.toLowerCase() || DiagramType.Sequence
-    },
-    content: (state: any, getters: any) => {
-      return getters.diagramType === 'mermaid' ? state.mermaidCode : state.code
-    },
     isDisplayMode: () => globals.apWrapper.isDisplayMode(),
-    canEdit: (state: any) => state.canEdit
   },
   state: {
     ...storeConfig.state,
-    mermaidCode: 'graph TD; A-->B;',
-    mermaidSvg: '',
+    mermaidCode: Example.Mermaid,
     diagramType: DiagramType.Sequence,
-    canEdit: false,
-    styles: {},
+    mermaidSvg: '',
+    diagram: NULL_DIAGRAM,
     error: null,
     onElementClick: (codeRange: any) => {
       EventBus.$emit('highlight', codeRange)

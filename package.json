@@ -18,7 +18,8 @@
     "git:branch:clean:merged": "git branch --merged|egrep -v \"(\\*|master|main|dev|skip_branch_name)\" | xargs git branch -d",
     "start:local": "VERSION=latest PRODUCT_TYPE=lite vue-cli-service serve",
     "start:sit": "concurrently \"yarn wrangler:serve\" \"yarn start:local\" ",
-    "install:stg": "pluploader --base-url https://zenuml-stg.atlassian.net/wiki install --cloud --plugin-uri https://air.zenuml.com/descriptor"
+    "install:stg": "pluploader --base-url https://zenuml-stg.atlassian.net/wiki install --cloud --plugin-uri https://air.zenuml.com/descriptor",
+    "install:stg:lite": "pluploader --base-url https://zenuml-stg.atlassian.net/wiki install --cloud --plugin-uri https://air.zenuml.com/descriptor?lite"
   },
   "dependencies": {
     "html-to-image": "^1.9.0",

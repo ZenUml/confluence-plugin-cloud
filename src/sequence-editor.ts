@@ -10,9 +10,11 @@ import 'vue-sequence/dist/vue-sequence.css'
 
 import ExtendedStore from './model/Store'
 import EventBus from './EventBus'
-import {initializeMacro} from "@/model/macro/InitializeMacro";
-import globals from '@/model/globals';
 import AP from "@/model/AP";
+import {DataSource} from "@/model/Diagram/Diagram";
+import {saveToPlatform} from "@/model/ContentProvider/Persistence";
+
+import './utils/IgnoreEsc.ts'
 
 // eslint-disable-next-line
 // @ts-ignore
@@ -38,10 +40,8 @@ window.store = store
 
 EventBus.$on('save', async () => {
   // @ts-ignore
-  await globals.macro.save2(store.state.code, store.state.styles, store.state.mermaidCode, store.state.diagramType, store.getters.title);
-
+  const diagram = { title: store.getters.title, code: store.state.code, styles: store.state.styles, mermaidCode: store.state.mermaidCode, diagramType: store.state.diagramType, source: DataSource.CustomContent };
+  await saveToPlatform(diagram);
   // @ts-ignore
   AP.dialog.close();
 });
-
-initializeMacro(store);
