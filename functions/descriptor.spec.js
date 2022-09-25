@@ -22,6 +22,5 @@ describe('descriptor', function() {
     const response = await onRequestGet(params);
     expect(response.status).toBe(200);
     expect(await response.json()).toStrictEqual(expectedDescriptor)
-
   });
 });
