@@ -24,6 +24,27 @@ const isLite = process.env.IS_LITE === 'true';
   console.log(await page.title());
 
   try {
+    await withNewPage(async () => {
+      
+      await assertFrame({frameSelector: `//iframe[contains(@id, "zenuml-sequence-macro${getModuleKeySuffix()}")]`,
+        contentXpath: '//*[contains(text(), "Order Service (Demonstration only)")]'});
+
+      await assertFrame({frameSelector: `//iframe[contains(@id, "zenuml-graph-macro${getModuleKeySuffix()}")]`,
+        contentXpath: '//*[contains(text(), "Lamp doesn\'t work")]'});
+
+      await assertFrame({frameSelector: `//iframe[contains(@id, "zenuml-openapi-macro${getModuleKeySuffix()}")]`,
+        contentXpath: '//span[text()="/users"]'});
+
+      await assertFrame({frameSelector: `//iframe[contains(@id, "zenuml-embed-macro${getModuleKeySuffix()}")]`,
+      contentXpath: '//*[contains(text(), "Order Service (Demonstration only)")]'});
+
+      // await assertFrame({frameSelector: '#Demo4---Mermaid ~ div iframe', contentXpath: '//*[text()="A Gantt Diagram"]'});
+    });
+  } finally {
+    await browser.close();
+  }
+
+  async function withNewPage(callback) {
     const createResult = await page.evaluate(inBrowserFunction, {action: 'createPage', spaceKey, isLite});
     if(!createResult?.id) {
       console.log(createResult);
@@ -38,19 +59,7 @@ const isLite = process.env.IS_LITE === 'true';
       console.log(`Navigated to ${pageUrl}`)
       await page.waitForSelector('#title-text');
 
-      await assertFrame({frameSelector: `//iframe[contains(@id, "zenuml-sequence-macro${getModuleKeySuffix()}")]`,
-        contentXpath: '//*[contains(text(), "Order Service (Demonstration only)")]'});
-
-      await assertFrame({frameSelector: `//iframe[contains(@id, "zenuml-graph-macro${getModuleKeySuffix()}")]`,
-        contentXpath: '//*[contains(text(), "Lamp doesn\'t work")]'});
-
-      await assertFrame({frameSelector: `//iframe[contains(@id, "zenuml-openapi-macro${getModuleKeySuffix()}")]`,
-        contentXpath: '//span[text()="/users"]'});
-
-      await assertFrame({frameSelector: `//iframe[contains(@id, "zenuml-embed-macro${getModuleKeySuffix()}")]`,
-      contentXpath: '//*[contains(text(), "Order Service (Demonstration only)")]'});
-
-      // await assertFrame({frameSelector: '#Demo4---Mermaid ~ div iframe', contentXpath: '//*[text()="A Gantt Diagram"]'});
+      return await callback();
     } finally {
       const deleteResult = await page.evaluate(inBrowserFunction, {action: 'deletePage', pageId: createResult.id});
 
@@ -60,8 +69,6 @@ const isLite = process.env.IS_LITE === 'true';
         console.log('deletePage result:\n', deleteResult);
       }
     }
-  } finally {
-    await browser.close();
   }
 
   async function inBrowserFunction({action, spaceKey, isLite, pageId}) {
