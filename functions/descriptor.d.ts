@@ -195,7 +195,7 @@ declare module descriptorNs {
     url: string;
   }
 
-  export interface RootObject {
+  export interface Descriptor {
     key: string;
     name: string;
     description: string;
