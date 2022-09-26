@@ -3,6 +3,32 @@ const liteKeySuffix = '-lite';
 const liteNameSuffix = ' Lite';
 const VERSION = '2022.07';
 
+export const replaceUrls = (modules: any, replaceFunction: any) => {
+  modules.dynamicContentMacros.forEach((macro: any) => {
+    macro.url = replaceFunction(macro.url, macro);
+    if (macro.editor && macro.editor.url) {
+      macro.editor.url = replaceFunction(macro.editor.url, macro);
+    }
+    if (macro.renderModes && macro.renderModes.default && macro.renderModes.default.url) {
+      macro.renderModes.default.url = replaceFunction(macro.renderModes.default.url, macro);
+    }
+  });
+
+  if (modules.generalPages) {
+    modules.generalPages.forEach((page: any) => {
+      page.url = replaceFunction(page.url, page);
+    });
+  }
+  if (modules.postInstallPage) {
+    modules.postInstallPage.url = replaceFunction(modules.postInstallPage.url)
+  }
+  if (modules.webPanels) {
+    modules.webPanels.forEach((m: any) => {
+      m.url = replaceFunction(m.url, m);
+    });
+  }
+}
+
 export function getDescriptor(params: any) {
   const req = params.request;
   let host = req.headers.get('x-forwarded-host');
@@ -19,31 +45,6 @@ export function getDescriptor(params: any) {
   // This is not necessary but works as a defense.
   data.links.self = self;
 
-  const replaceUrls = (modules: any, replaceFunction: any) => {
-    modules.dynamicContentMacros.forEach((macro: any) => {
-      macro.url = replaceFunction(macro.url, macro);
-      if (macro.editor && macro.editor.url) {
-        macro.editor.url = replaceFunction(macro.editor.url, macro);
-      }
-      if (macro.renderModes && macro.renderModes.default && macro.renderModes.default.url) {
-        macro.renderModes.default.url = replaceFunction(macro.renderModes.default.url, macro);
-      }
-    });
-
-    if (modules.generalPages) {
-      modules.generalPages.forEach((page: any) => {
-        page.url = replaceFunction(page.url, page);
-      });
-    }
-    if (modules.postInstallPage) {
-      modules.postInstallPage.url = replaceFunction(modules.postInstallPage.url)
-    }
-    if (modules.webPanels) {
-      modules.webPanels.forEach((m: any) => {
-        m.url = replaceFunction(m.url, m);
-      });
-    }
-  }
 
   const getCustomContentKeyForModule = (module: any, modules: any) => {
     // Open API is saved with custom content of graph.
