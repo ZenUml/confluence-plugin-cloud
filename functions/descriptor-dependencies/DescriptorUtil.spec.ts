@@ -1,4 +1,4 @@
-import {descriptorNs} from '../descriptor'
+import '../descriptor';
 import {getDescriptor, replaceUrls} from "./DescriptorUtil";
 import expectedDescriptor from "../test-data/expected-descriptor-full";
 import DynamicContentMacro = descriptorNs.DynamicContentMacro;
@@ -16,7 +16,7 @@ describe('DescriptorUtil', () => {
         url: 'https://example.com/path/to/resource',
       }
     }
-    const descriptor = getDescriptor(params);
+    const descriptor = getDescriptor(params.request);
     expect(descriptor).toEqual(expectedDescriptor);
   });
 

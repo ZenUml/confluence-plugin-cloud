@@ -1,4 +1,3 @@
-import {descriptorNs, Parameters} from '../descriptor';
 import Modules = descriptorNs.Modules;
 import GeneralPage = descriptorNs.GeneralPage;
 import WebPanel = descriptorNs.WebPanel;
@@ -6,6 +5,23 @@ import DynamicContentMacro = descriptorNs.DynamicContentMacro;
 import CustomContent = descriptorNs.CustomContent;
 import PostInstallPage = descriptorNs.PostInstallPage;
 type Module = DynamicContentMacro | GeneralPage | PostInstallPage | WebPanel;
+
+declare module cloudflareNs {
+  export interface Parameters {
+    request: Request;
+  }
+
+  export interface Request {
+    headers: Headers;
+    url:     string;
+  }
+
+  export interface Headers {
+    get: (header: string) => string;
+  }
+}
+
+
 const descriptor = require('../atlassian-connect.json');
 const liteKeySuffix = '-lite';
 const liteNameSuffix = ' Lite';
@@ -37,9 +53,8 @@ export const replaceUrls = (modules: Modules, replaceFunction: (url: string, mod
   }
 }
 
-
-export function getDescriptor(params: Parameters): descriptorNs.Descriptor  {
-  const req = params.request;
+export function getDescriptor(request: cloudflareNs.Request): descriptorNs.Descriptor  {
+  const req = request;
   let host = req.headers.get('x-forwarded-host');
   let basePath;
   const url = req.url.replace('http://', 'https://');
