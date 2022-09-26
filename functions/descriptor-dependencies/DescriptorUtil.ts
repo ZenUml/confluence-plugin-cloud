@@ -7,21 +7,6 @@ import CustomContent = descriptorNs.CustomContent;
 import PostInstallPage = descriptorNs.PostInstallPage;
 type Module = DynamicContentMacro | GeneralPage | PostInstallPage | WebPanel;
 
-declare module cloudflareNs {
-  export interface Parameters {
-    request: Request;
-  }
-
-  export interface Request {
-    headers: Headers;
-    url:     string;
-  }
-
-  export interface Headers {
-    get: (header: string) => string;
-  }
-}
-export default cloudflareNs;
 const descriptor = require('../atlassian-connect.json');
 const liteKeySuffix = '-lite';
 const liteNameSuffix = ' Lite';

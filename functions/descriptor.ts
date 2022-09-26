@@ -1,4 +1,5 @@
-import cloudflareNs, {getDescriptor} from "./descriptor-dependencies/DescriptorUtil";
+import {getDescriptor} from "./descriptor-dependencies/DescriptorUtil";
+import cloudflareNs from "./types/cloudflare";
 import Parameters = cloudflareNs.Parameters;
 
 export const onRequestGet = async (params: Parameters) => {
