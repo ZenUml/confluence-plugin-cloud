@@ -53,11 +53,9 @@ export const replaceUrls = (modules: Modules, replaceFunction: (url: string, mod
   }
 }
 
-export function getDescriptor(request: cloudflareNs.Request): descriptorNs.Descriptor  {
-  const req = request;
-  let host = req.headers.get('x-forwarded-host');
+export function getDescriptor(host: string, originalUrl: string): descriptorNs.Descriptor  {
   let basePath;
-  const url = req.url.replace('http://', 'https://');
+  const url = originalUrl.replace('http://', 'https://');
   if (!host) {
     basePath = url.substring(0, url.lastIndexOf('/'));
   } else {
