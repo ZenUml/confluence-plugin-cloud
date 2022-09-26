@@ -1,3 +1,4 @@
+import {Parameters} from '../descriptor';
 const descriptor = require('../atlassian-connect.json');
 const liteKeySuffix = '-lite';
 const liteNameSuffix = ' Lite';
@@ -29,7 +30,8 @@ export const replaceUrls = (modules: any, replaceFunction: any) => {
   }
 }
 
-export function getDescriptor(params: any) {
+
+export function getDescriptor(params: Parameters) {
   const req = params.request;
   let host = req.headers.get('x-forwarded-host');
   let basePath;

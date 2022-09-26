@@ -1,7 +1,7 @@
-import '../descriptor'
+import {descriptorNs} from '../descriptor'
 import {getDescriptor, replaceUrls} from "./DescriptorUtil";
 import expectedDescriptor from "../test-data/expected-descriptor-full";
-import DynamicContentMacro = descriptor.DynamicContentMacro;
+import DynamicContentMacro = descriptorNs.DynamicContentMacro;
 const descriptor = require('../atlassian-connect.json');
 
 describe('DescriptorUtil', () => {
