@@ -1,3 +1,4 @@
+import descriptorNs from "../types/descriptor";
 import Modules = descriptorNs.Modules;
 import GeneralPage = descriptorNs.GeneralPage;
 import WebPanel = descriptorNs.WebPanel;
@@ -20,8 +21,7 @@ declare module cloudflareNs {
     get: (header: string) => string;
   }
 }
-
-
+export default cloudflareNs;
 const descriptor = require('../atlassian-connect.json');
 const liteKeySuffix = '-lite';
 const liteNameSuffix = ' Lite';

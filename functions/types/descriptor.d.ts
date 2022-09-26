@@ -211,3 +211,4 @@ declare module descriptorNs {
   }
 
 }
+export default descriptorNs;
