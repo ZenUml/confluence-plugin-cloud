@@ -62,14 +62,23 @@ export class DynamicContentMacroImpl implements DynamicContentMacro {
     "ZenUML Diagram",
     "Create a ZenUML Sequence Diagram",
     "/sequence-editor.html",
-    "/attachment.html",
+    "/attachment",
     "/sequence-viewer.html"
     );
+
   public static GraphMacro = new DynamicContentMacroImpl("zenuml-graph-macro",
     "ZenUML Graph",
     "Create a ZenUML Graph",
     "/drawio/editor.html",
-    "/attachment.html",
+    "/attachment",
     "/drawio/viewer.html"
+    );
+
+  public static OpenApiMacro = new DynamicContentMacroImpl("zenuml-openapi-macro",
+    "ZenUML OpenAPI",
+    "Create a ZenUML OpenAPI Document",
+    "/swagger-editor.html",
+    "/attachment",
+    "/swagger-ui.html"
     );
 }

@@ -4,7 +4,7 @@ export default {
         "visuals"
     ],
     "description": {
-        "value": "Create a ZenUML Sequence Diagram"
+        "value": "Create a ZenUML OpenAPI Document"
     },
     "documentation": {
         "url": "https://zenuml.atlassian.net/wiki/spaces/Doc/overview"
@@ -12,13 +12,13 @@ export default {
     "editor": {
         "cacheable": true,
         "editTitle": {
-            "value": "Edit ZenUML Diagram"
+            "value": "Edit ZenUML OpenAPI"
         },
         "height": "100%",
         "insertTitle": {
-            "value": "Insert ZenUML Diagram"
+            "value": "Insert ZenUML OpenAPI"
         },
-        "url": "/sequence-editor.html",
+        "url": "/swagger-editor.html",
         "width": "100%"
     },
     "featured": true,
@@ -27,9 +27,9 @@ export default {
         "url": "image/zenuml_logo.png",
         "width": 16
     },
-    "key": "zenuml-sequence-macro",
+    "key": "zenuml-openapi-macro",
     "name": {
-        "value": "ZenUML Diagram"
+        "value": "ZenUML OpenAPI"
     },
     "outputType": "block",
     "parameters": [
@@ -50,5 +50,5 @@ export default {
             "url": "/attachment"
         }
     },
-    "url": "/sequence-viewer.html"
+    "url": "/swagger-ui.html"
 }

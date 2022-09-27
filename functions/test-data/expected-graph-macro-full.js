@@ -47,7 +47,7 @@ export default {
     ],
     "renderModes": {
         "default": {
-            "url": "/attachment.html"
+            "url": "/attachment"
         }
     },
     "url": "/drawio/viewer.html"
