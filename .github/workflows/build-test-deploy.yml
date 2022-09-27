@@ -39,6 +39,32 @@ jobs:
           cloudflare-account-id: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           license: lite
           project: conf-stg-lite
+
+  staging-lite-test:
+    needs: staging-lite
+    name: Test staging lite
+    environment:
+      name: staging-lite
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.10' 
+      - run: pip3 install pluploader
+      - run: pluploader --base-url https://zenuml-stg.atlassian.net/wiki --user ${{ secrets.ZENUML_STAGE_UPM_USER }} --password ${{ secrets.ZENUML_STAGE_UPM_PASSWORD }} install --cloud --plugin-uri https://conf-stg-lite.pages.dev/descriptor
+      - uses: actions/setup-node@v2
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'yarn'
+      - run: yarn install
+      - run: yarn test:e2e
+        env:
+          CI: true
+          IS_LITE: true
+          ZENUML_STAGE_USERNAME: ${{ secrets.ZENUML_STAGE_USERNAME }}
+          ZENUML_STAGE_PASSWORD: ${{ secrets.ZENUML_STAGE_PASSWORD }}
+  
   staging-full:
     needs: build
     name: Deploy to staging full
@@ -55,6 +81,30 @@ jobs:
           cloudflare-account-id: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           license: full
           project: conf-stg-full
+  
+  staging-full-test:
+    needs: staging-full
+    name: Test staging full
+    environment:
+      name: staging-full
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.10' 
+      - run: pip3 install pluploader
+      - run: pluploader --base-url https://zenuml-stg.atlassian.net/wiki --user ${{ secrets.ZENUML_STAGE_UPM_USER }} --password ${{ secrets.ZENUML_STAGE_UPM_PASSWORD }} install --cloud --plugin-uri https://conf-stg-full.pages.dev/descriptor
+      - uses: actions/setup-node@v2
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'yarn'
+      - run: yarn install
+      - run: yarn test:e2e
+        env:
+          CI: true
+          ZENUML_STAGE_USERNAME: ${{ secrets.ZENUML_STAGE_USERNAME }}
+          ZENUML_STAGE_PASSWORD: ${{ secrets.ZENUML_STAGE_PASSWORD }}
 
   prod-lite:
     needs: staging-lite
