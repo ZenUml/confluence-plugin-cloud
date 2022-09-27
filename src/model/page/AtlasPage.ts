@@ -2,6 +2,7 @@ import {IAp} from "@/model/IAp";
 import {ILocationContext} from "@/model/ILocationContext";
 import {AtlasDocFormat, AtlasDocElement, MacroParams} from "@/model/page/AtlasDocFormat";
 import {trackEvent} from "@/utils/window";
+import ContainerContentType = atlassian.ContainerContentType;
 
 export class AtlasPage {
   _requestFn?: (req: IApRequest) => any;
@@ -38,8 +39,8 @@ export class AtlasPage {
     return (await this._getLocationContext()).spaceKey;
   }
 
-  async getContentType() {
-    return (await this._getLocationContext()).contentType;
+  async getContentType(): Promise<ContainerContentType> {
+    return (await this._getLocationContext()).contentType as ContainerContentType;
   }
 
   async getHref() {

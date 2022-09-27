@@ -119,8 +119,9 @@ export default class ApWrapper2 implements IApWrapper {
 
   async createCustomContent(content: Diagram) {
     const type = this.getCustomContentType();
-    // TODO: Can the type be blog?
-    const container = {id: await this._page.getPageId(), type: await this._page.getContentType()};
+    // page or blogpost
+    const containerType = await this._page.getContentType();
+    const container = {id: await this._page.getPageId(), type: containerType};
     const bodyData = {
       "type": type,
       "title": content.title || `Untitled ${new Date().toISOString()}`,
