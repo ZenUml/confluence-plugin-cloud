@@ -1,4 +1,4 @@
-declare module descriptorNs {
+declare module 'atlassian-descriptor' {
 
   export interface Authentication {
     type: string;
@@ -211,4 +211,3 @@ declare module descriptorNs {
   }
 
 }
-export default descriptorNs;

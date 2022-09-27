@@ -1,10 +1,13 @@
-import descriptorNs from "../types/descriptor";
-import Modules = descriptorNs.Modules;
-import GeneralPage = descriptorNs.GeneralPage;
-import WebPanel = descriptorNs.WebPanel;
-import DynamicContentMacro = descriptorNs.DynamicContentMacro;
-import CustomContent = descriptorNs.CustomContent;
-import PostInstallPage = descriptorNs.PostInstallPage;
+import {
+  WebPanel,
+  Modules,
+  PostInstallPage,
+  DynamicContentMacro,
+  GeneralPage,
+  Descriptor,
+  CustomContent
+} from "atlassian-descriptor";
+
 type Module = DynamicContentMacro | GeneralPage | PostInstallPage | WebPanel;
 
 const descriptor = require('../atlassian-connect.json');
@@ -38,7 +41,7 @@ export const replaceUrls = (modules: Modules, replaceFunction: (url: string, mod
   }
 }
 
-export function getDescriptor(host: string, originalUrl: string): descriptorNs.Descriptor  {
+export function getDescriptor(host: string, originalUrl: string): Descriptor  {
   let basePath;
   const url = originalUrl.replace('http://', 'https://');
   if (!host) {

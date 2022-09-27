@@ -1,6 +1,5 @@
 import {getDescriptor} from "./descriptor-dependencies/DescriptorUtil";
-import cloudflareNs from "./types/cloudflare";
-import Parameters = cloudflareNs.Parameters;
+import {Parameters} from "cloudflare";
 
 export const onRequestGet = async (params: Parameters) => {
   const originalHost = params.request.headers.get('x-forwarded-host');

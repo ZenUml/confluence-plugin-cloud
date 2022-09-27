@@ -1,4 +1,4 @@
-declare module cloudflareNs {
+declare module 'cloudflare' {
   export interface Parameters {
     request: Request;
   }
@@ -12,4 +12,3 @@ declare module cloudflareNs {
     get: (header: string) => string;
   }
 }
-export default cloudflareNs;
