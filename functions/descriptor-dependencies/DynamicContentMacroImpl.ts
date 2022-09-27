@@ -65,4 +65,11 @@ export class DynamicContentMacroImpl implements DynamicContentMacro {
     "/attachment.html",
     "/sequence-viewer.html"
     );
+  public static GraphMacro = new DynamicContentMacroImpl("zenuml-graph-macro",
+    "ZenUML Graph",
+    "Create a ZenUML Graph",
+    "/drawio/editor.html",
+    "/attachment.html",
+    "/drawio/viewer.html"
+    );
 }

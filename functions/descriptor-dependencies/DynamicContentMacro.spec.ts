@@ -1,6 +1,7 @@
 import {DynamicContentMacro} from "atlassian-descriptor";
 import {DynamicContentMacroImpl} from "./DynamicContentMacroImpl";
 import expectedSequenceDiagramMacroFull from "../test-data/expected-sequence-diagram-macro-full"
+import expectedGraphMacroFull from "../test-data/expected-graph-macro-full"
 describe('DynamicContentMacro', function () {
   it('should return a dynamic content macro object', function () {
     const macro = new DynamicContentMacroImpl('macro-key', 'macro-name','macro-description',
@@ -13,9 +14,13 @@ describe('DynamicContentMacro', function () {
     expect(macro.url).toEqual('macro-viewer-url');
   });
 
-  // test SequenceDiagramMacro
   it('should return a sequence diagram macro object', function () {
     const macro = DynamicContentMacroImpl.SequenceDiagramMacro;
     expect(macro).toEqual(expectedSequenceDiagramMacroFull);
+  })
+
+  it('should return a graph macro object', function () {
+    const macro = DynamicContentMacroImpl.GraphMacro;
+    expect(macro).toEqual(expectedGraphMacroFull);
   })
 });
