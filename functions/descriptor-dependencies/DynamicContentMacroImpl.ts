@@ -81,4 +81,12 @@ export class DynamicContentMacroImpl implements DynamicContentMacro {
     "/attachment",
     "/swagger-ui.html"
     );
+
+  public static EmbedMacro = new DynamicContentMacroImpl("zenuml-embed-macro",
+    "Embed a ZenUML Diagram or API Spec (Beta)",
+    "Embed ZenUML Diagram",
+    "/embed-editor.html",
+    "/attachment",
+    "/embed-viewer.html"
+    );
 }

@@ -1,8 +1,8 @@
-import {DynamicContentMacro} from "atlassian-descriptor";
 import {DynamicContentMacroImpl} from "./DynamicContentMacroImpl";
 import expectedSequenceDiagramMacroFull from "../test-data/expected-sequence-diagram-macro-full"
 import expectedGraphMacroFull from "../test-data/expected-graph-macro-full"
 import expectedOpenApiMacroFull from "../test-data/expected-openapi-macro-full"
+import expectedEmbedMacroFull from "../test-data/expected-embed-macro-full"
 describe('DynamicContentMacro', function () {
   it('should return a dynamic content macro object', function () {
     const macro = new DynamicContentMacroImpl('macro-key', 'macro-name','macro-description',
@@ -28,5 +28,10 @@ describe('DynamicContentMacro', function () {
   it('should return an openapi macro object', function () {
     const macro = DynamicContentMacroImpl.OpenApiMacro;
     expect(macro).toEqual(expectedOpenApiMacroFull);
+  })
+
+  it('should return an embed-macro macro object', function () {
+    const macro = DynamicContentMacroImpl.EmbedMacro;
+    expect(macro).toEqual(expectedEmbedMacroFull);
   })
 });
