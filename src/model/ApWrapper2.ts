@@ -97,8 +97,11 @@ export default class ApWrapper2 implements IApWrapper {
     this._confluence.saveMacro(params, body)
   }
 
+  // All document types will be using the same content key.
+  // Old documents that uses the old content key will not be migrated.
+  // We may migrate them in the future.
   getContentKey() {
-    return getUrlParam('contentKey');
+    return 'zenuml-content-sequence';
   }
 
   getCustomContentTypePrefix() {
