@@ -5,6 +5,9 @@
   "scripts": {
     "engine": "use yarn to install",
     "test:unit": "vue-cli-service test:unit",
+    "test:e2e": "ZENUML_STAGE_USERNAME=robot1.yanhui@gmail.com node tests/e2e/demoPage.js",
+    "test:e2e:yanhui": "ZENUML_STAGE_USERNAME=robot1.yanhui@gmail.com ZENUML_DOMAIN=whimet4.atlassian.net ZENUML_SPACE=WHIMET4 node tests/e2e/demoPage.js",
+    "test:e2e:yanhui:existing": "ZENUML_STAGE_USERNAME=robot1.yanhui@gmail.com ZENUML_DOMAIN=whimet4.atlassian.net PAGE_ID=437289021 ZENUML_SPACE=WHIMET4 node tests/e2e/demoPage.js",
     "test:unit:watch": "vue-cli-service test:unit --watch",
     "build:full": "PRODUCT_TYPE=full vue-cli-service build --mode production",
     "build:full:watch": "PRODUCT_TYPE=full vue-cli-service build --watch",
@@ -20,10 +23,12 @@
   },
   "dependencies": {
     "html-to-image": "^1.9.0",
+    "jest-puppeteer": "^6.1.1",
     "lodash": "^4.17.21",
     "lzutf8": "^0.5.6",
     "md5": "^2.3.0",
     "mermaid": "^9.1.6",
+    "puppeteer": "^17.1.3",
     "split.js": "^1.6.5",
     "swagger-editor": "^4.4.0",
     "tailwindcss": "npm:@tailwindcss/postcss7-compat@^2.0.2",
