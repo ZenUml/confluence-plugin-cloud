@@ -1,4 +1,4 @@
-import AP from "@/model/AP";
+import {getUrlParam} from "@/utils/window";
 
 function isGoogleChrome() {
   //https://stackoverflow.com/questions/4565112/javascript-how-to-find-out-if-the-user-browser-is-chrome/13348618#13348618
@@ -14,6 +14,10 @@ function isGoogleChrome() {
   }
   return isChromium !== null && typeof isChromium !== "undefined" && vendorName === "Google Inc." && !isOpera && !isIEedge;
 }
-console.log('Hello, Setup isGoogleChrome!', AP);
+
+const version = () => getUrlParam('version') || '';
+const postInstallPageKey = () => getUrlParam('postInstallPageKey') || '';
 
 window.isGoogleChrome = isGoogleChrome;
+window.version = version;
+window.postInstallPageKey = postInstallPageKey;

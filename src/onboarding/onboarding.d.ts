@@ -4,5 +4,7 @@ declare global {
     isGoogleChrome: () => boolean;
     chrome: boolean;
     opr: boolean;
+    version: () => string;
+    postInstallPageKey: () => string;
   }
 }
