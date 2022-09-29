@@ -6,5 +6,6 @@ declare global {
     opr: boolean;
     version: () => string;
     postInstallPageKey: () => string;
+    gtag: (type: string, event: string, params: any) => void;
   }
 }
