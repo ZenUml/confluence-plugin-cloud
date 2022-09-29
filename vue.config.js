@@ -73,6 +73,11 @@ module.exports = {
       entry: 'src/embed-editor.ts',
       template: 'public/embed-editor.html',
       chunks: ['chunk-common', 'chunk-embed-editor-vendors', 'embed-editor']
+    },
+    "onboarding-panel": {
+      entry: 'src/onboarding/onboarding-panel.ts',
+      template: 'public/onboarding-panel.html',
+      chunks: ['chunk-common', 'chunk-onboarding-panel-vendors', 'onboarding-panel']
     }
   },
   chainWebpack: config => {

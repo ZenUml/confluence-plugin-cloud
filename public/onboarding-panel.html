@@ -102,47 +102,44 @@
       }
 
       AP.user.getCurrentUser(checkUser);
+
+      AP.events.on('flag.action', async function (e) {
+        try {
+          flag && flag.close();
+
+          if (e.actionIdentifier === 'seeHowItWorks') {
+            trackEvent(userId, 'see_how_it_works', 'onboarding');
+
+            AP.user.getCurrentUser(u => {
+              setOnboarded(u).then(gotoOnboardingPage);
+            });
+
+          } else if (e.actionIdentifier === 'noThanks') {
+            trackEvent(userId, 'no_thanks', 'onboarding');
+
+            setOnboardedForOneYear();
+          } else if (e.actionIdentifier === 'demoPage.yes') {
+            trackEvent(userId, 'yes', 'demoPage');
+
+            try {
+              const page = await createDemoPage();
+              AP.navigator.go('contentview', {contentId: page.id});
+            } catch (e) {
+              reportDemoPageError(e, 'createDemoPage');
+            }
+          } else if (e.actionIdentifier === 'demoPage.no') {
+            trackEvent(userId, 'no', 'demoPage');
+          }
+
+        } catch (e) {
+          reportError(e, 'onFlagAction');
+        }
+      })
+
     } catch(e) {
       reportError(e, 'init');
     }
   }
-
-  AP.events.on('flag.action', async function(e) {
-    try {
-      flag && flag.close();
-
-      if(e.actionIdentifier === 'seeHowItWorks') {
-        trackEvent(userId, 'see_how_it_works', 'onboarding');
-
-        AP.user.getCurrentUser(u => {
-          setOnboarded(u).then(gotoOnboardingPage);
-        });
-
-      }
-      else if(e.actionIdentifier === 'noThanks') {
-        trackEvent(userId, 'no_thanks', 'onboarding');
-
-        setOnboardedForOneYear();
-      }
-
-      else if(e.actionIdentifier === 'demoPage.yes') {
-        trackEvent(userId, 'yes', 'demoPage');
-
-        try {
-          const page = await createDemoPage();
-          AP.navigator.go('contentview', {contentId: page.id});
-        } catch(e) {
-          reportDemoPageError(e, 'createDemoPage');
-        }
-      }
-      else if(e.actionIdentifier === 'demoPage.no') {
-        trackEvent(userId, 'no', 'demoPage');
-      }
-
-    } catch(e) {
-      reportError(e, 'onFlagAction');
-    }
-  });
 
   function setOnboardedForOneYear() {
     AP.user.getCurrentUser(u => setOnboarded(u, getOneYearLater()));
@@ -157,15 +154,15 @@
 
       return setOnboardedRemoteState(user, expires);
     }
-  };
+  }
 
   function setOnboardedLocalState(user, expires) {
     setLocalState(STORAGE_KEY, getOnboardedState(getLocalState(STORAGE_KEY), user, expires));
-  };
+  }
 
   function setOnboardedRemoteState(user, expires) {
     return getAppProperty().then(s => setAppProperty(getOnboardedState(s, user, expires)));
-  };
+  }
 
   function getOnboardedState(state, user, expires) {
     const lastUpdated = new Date();
@@ -173,7 +170,7 @@
     newState.users[user.atlassianAccountId] = {[version()]: {lastUpdated, expires}};
     newState.lastUpdated = lastUpdated;
     return newState;
-  };
+  }
 
   function gotoOnboardingPage() {
     AP.navigator.go('addonModule', {addonKey: addonKey(), moduleKey: postInstallPageKey()});
