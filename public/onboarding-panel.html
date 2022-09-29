@@ -282,30 +282,6 @@
     console.error(`Error in ${context}. Please report to our helpdesk: ${HELP_DESK_URL}`, error);
   }
 
-  function isGoogleChrome() {
-    //https://stackoverflow.com/questions/4565112/javascript-how-to-find-out-if-the-user-browser-is-chrome/13348618#13348618
-    var isChromium = window.chrome;
-    var winNav = window.navigator;
-    var vendorName = winNav.vendor;
-    var isOpera = typeof window.opr !== "undefined";
-    var isIEedge = winNav.userAgent.indexOf("Edg") > -1;
-    var isIOSChrome = winNav.userAgent.match("CriOS");
-
-    if (isIOSChrome) {
-      // is Google Chrome on IOS
-    } else if(
-      isChromium !== null &&
-      typeof isChromium !== "undefined" &&
-      vendorName === "Google Inc." &&
-      isOpera === false &&
-      isIEedge === false
-    ) {
-      // is Google Chrome
-      return true;
-    } else {
-      // not Google Chrome
-    }
-  }
 
   async function checkDemoPageExists() {
     const url = `/rest/api/content/search?cql=(title="${demoPageTitle}" and space="${currentSpace}")`;
@@ -376,9 +352,14 @@
     const response = await AP.request({type: 'PUT', contentType: 'application/json', data: JSON.stringify(data), url});
     return response.body && JSON.parse(response.body);
   }
+
+  // add listener to window for load event
+  window.addEventListener('load', () => {
+    init()
+  });
   </script>
 
-  <script type="text/javascript" src="js/util.js" onload="init()"></script>
+  <script type="text/javascript" src="js/util.js"></script>
 
 </head>
 <body>
