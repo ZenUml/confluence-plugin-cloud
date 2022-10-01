@@ -1,0 +1,28 @@
+{
+  "hosting": {
+    "public": "dist",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ],
+    "rewrites": [
+      {
+        "source": "/atlassian-connect*.json",
+        "function": "descriptor"
+      },
+      {
+        "source": "/attachment",
+        "function": "renderAttachment"
+      },
+      {
+        "source": "/installed",
+        "function": "installedEndpoint"
+      },
+      {
+        "source": "/uninstalled",
+        "function": "uninstalledEndpoint"
+      }
+    ]
+  }
+}
