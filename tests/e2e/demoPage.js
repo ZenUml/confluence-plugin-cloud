@@ -18,6 +18,9 @@ const existingPageId = process.env.PAGE_ID;
   await page.click("#login-submit");
   
   const password = process.env.ZENUML_STAGE_PASSWORD;
+  if(!password) {
+    throw 'Error: Missing password';
+  }
   await page.$eval('input[name=password]', (el, value) => el.value = value, password);
   await page.waitForXPath('//span[text() = "Log in"]');
   await page.click("#login-submit");
@@ -26,7 +29,7 @@ const existingPageId = process.env.PAGE_ID;
   console.log(await page.title());
 
   try {
-    //view sequence/graph/openapi/embed macros
+    console.log('Case - view sequence/graph/openapi/embed macros');
     await withNewPage(async () => {
 
       await assertFrame({frameSelector: `//iframe[contains(@id, "zenuml-sequence-macro${getModuleKeySuffix()}")]`,
@@ -43,7 +46,7 @@ const existingPageId = process.env.PAGE_ID;
 
     }, {sequence: true, graph: true, openapi: true, embed: true});
 
-    // view mermaid macro
+    console.log('Case - view mermaid macro');
     await withNewPage(async () => {
 
       await assertFrame({frameSelector: `//iframe[contains(@id, "zenuml-sequence-macro${getModuleKeySuffix()}")]`,
@@ -51,7 +54,7 @@ const existingPageId = process.env.PAGE_ID;
 
     }, {mermaid: true});
 
-    //----------------------- edit sequence macro
+    console.log('Case - edit sequence macro');
     await withNewPage(async () => {
 
       await page.$eval('#editPageLink', e => {
@@ -71,6 +74,14 @@ const existingPageId = process.env.PAGE_ID;
       //TODO: Save and Go back to Confluence
 
     }, {sequence: true});
+
+    console.log('Case - view macro body only sequence');
+    await withNewPage(async () => {
+
+      await assertFrame({frameSelector: `//iframe[contains(@id, "zenuml-sequence-macro${getModuleKeySuffix()}")]`,
+        contentXpath: '//*[contains(text(), "Order Service (Demonstration only)")]'});
+
+    }, {sequence: {bodyOnly: true}});
   } finally {
     await browser.close();
   }
@@ -437,7 +448,12 @@ const existingPageId = process.env.PAGE_ID;
     const demoPageContent = (options) => {
       const content = {"type": "doc", "content": [], "version": 1};
       if(options.sequence) {
-        content.content.push(sequenceExtension);
+        let extension = sequenceExtension;
+        if(options.sequence.bodyOnly) {
+          extension = JSON.parse(JSON.stringify(sequenceExtension));
+          delete extension.attrs.parameters.macroParams.customContentId;
+        }
+        content.content.push(extension);
       }
       if(options.graph) {
         content.content.push(graphExtension);
