@@ -2,7 +2,7 @@ import {getUrlParam, trackEvent} from '@/utils/window';
 import {IApWrapper, VersionType} from "@/model/IApWrapper";
 import {IMacroData} from "@/model/IMacroData";
 import {IContentProperty} from "@/model/IContentProperty";
-import {ICustomContent} from "@/model/ICustomContent";
+import {ICustomContent, SearchResults} from "@/model/ICustomContent";
 import {IUser} from "@/model/IUser";
 import {IConfluence} from "@/model/IConfluence";
 import {IAp} from "@/model/IAp";
@@ -10,6 +10,8 @@ import {DataSource, Diagram} from "@/model/Diagram/Diagram";
 import {ICustomContentResponseBody} from "@/model/ICustomContentResponseBody";
 import {AtlasPage} from "@/model/page/AtlasPage";
 import CheckPermission, {PermissionCheckRequestFunc} from "@/model/page/CheckPermission";
+
+const CUSTOM_CONTENT_TYPES = ['zenuml-content-sequence', 'zenuml-content-graph'];
 
 export default class ApWrapper2 implements IApWrapper {
   versionType: VersionType;
@@ -227,11 +229,12 @@ export default class ApWrapper2 implements IApWrapper {
     }
   }
 
-  async listCustomContentByType(types: Array<string>): Promise<Array<ICustomContent>> {
-    const customContentType = (type: string) => `${this.getCustomContentTypePrefix()}:${type}`;
+  async searchCustomContent(): Promise<Array<ICustomContent>> {
     const spaceKey = await this._getCurrentSpace();
-
-    const url = (type: string) => `/rest/api/content?spaceKey=${spaceKey}&type=${customContentType(type)}&expand=body.raw,version.number,container,space&limit=1000`;
+    const customContentType = (t: string) => `${this.getCustomContentTypePrefix()}:${t}`;
+    const typeClause = (t: string) => `type="${customContentType(t)}"`;
+    const typesClause = (a: Array<string>) => a.map(typeClause).join(' or ');
+    const searchUrl = `/rest/api/content/search?cql=(space="${spaceKey}" and (${typesClause(CUSTOM_CONTENT_TYPES)}))&expand=body.raw,version.number,container,space`;
 
     const parseCustomContentBody = (customContent: ICustomContentResponseBody): ICustomContent => {
       let diagram: any = {};
@@ -248,20 +251,32 @@ export default class ApWrapper2 implements IApWrapper {
       return result as ICustomContent;
     };
 
-    // This method retrieves upto 25 custom content with its raw content. We need the raw content for its diagram type.
-    const getCustomContentList = async (type: string): Promise<Array<ICustomContent>> => {
-      const response = await this._requestFn({type: 'GET', url: url(type)});
-      const customContentList = this.parseCustomContentListResponse(response);
-      console.debug(`Listed custom content by type ${customContentType(type)}: ${customContentList?.length} found.`);
-      return customContentList?.map(parseCustomContentBody);
+    const searchOnce = async (url: string): Promise<SearchResults> => {
+      console.debug(`Searching content with ${url}`);
+      const data = await this.request(url);
+      console.debug(`${data?.size} results returned, has next? ${data?._links?.next != null}`);
+
+      data.results = data?.results.map(parseCustomContentBody);
+      return data;
+    };
+
+    const searchAll = async (): Promise<Array<ICustomContent>> => {
+      let results: Array<ICustomContent> = [];
+      let url = searchUrl, data;
+
+      do {
+        data = await searchOnce(url);
+        results = results.concat(data?.results);
+        url = data?._links?.next || '';
+      } while(url);
+      return results;
     };
 
     try {
-      const results: Array<Promise<Array<ICustomContent>>> = types.map(getCustomContentList);
-      return (await Promise.all(results)).flatMap( a => a);
+      return await searchAll();
     } catch (e) {
-      console.error('listCustomContentByType', e);
-      trackEvent(JSON.stringify(e), 'listCustomContentByType', 'error');
+      console.error('searchCustomContent', e);
+      trackEvent(JSON.stringify(e), 'searchCustomContent', 'error');
       return [] as Array<ICustomContent>;
     }
   }
@@ -338,5 +353,10 @@ export default class ApWrapper2 implements IApWrapper {
   isLite(): boolean {
     // @ts-ignore
     return getUrlParam('addonKey')?.includes('lite');
+  }
+
+  async request(url: string, method: string = 'GET'): Promise<any> {
+    const response = await this._requestFn({type: method, url});
+    return response && response.body && JSON.parse(response.body);
   }
 }

@@ -19,7 +19,7 @@ export interface IApWrapper {
 
   getCustomContent(): Promise<ICustomContent | undefined>;
   getCustomContentById(id: string): Promise<ICustomContent | undefined>;
-  listCustomContentByType(types: Array<string>): Promise<Array<ICustomContent>>;
+  searchCustomContent(): Promise<Array<ICustomContent>>;
   createCustomContent(content: Diagram): Promise<any>;
   updateCustomContent(contentObj: ICustomContent, newBody: Diagram): Promise<any>;
   saveCustomContent(customContentId: string, value: Diagram): Promise<any>;
