@@ -27,6 +27,9 @@
                 Recent diagrams and API specs
               </button>
             </div>
+            <div class="flex flex-shrink-0 items-center px-4 py-2 justify-between border-b">
+              <input v-model="filterKeyword" placeholder="filter" class="flex items-center text-xs font-semibold text-gray-600">
+            </div>
             <div class="flex-1 overflow-y-auto">
               <div v-for="containerPage in filteredPageList" :key="containerPage.id" class="block px-6 py-3 bg-white border-t hover:bg-gray-50">
                 <div class="mt-2 text-sm text-gray-600">
@@ -76,15 +79,32 @@
         customContentList: [],
         picked: '',
         docTypeFilter: '',
-        baseUrl: ''
+        baseUrl: '',
+        filterKeyword: ''
       };
     },
     computed: {
       filteredCustomContentList() {
-        if (this.docTypeFilter === '') {
-          return this.customContentList.filter(item => item?.id);
-        }
-        return this.customContentList.filter(customContentItem => customContentItem?.value?.diagramType?.toLowerCase() === this.docTypeFilter?.toLowerCase());
+        console.debug(`current filterKeyword: ${this.filterKeyword}`);
+
+        const results = this.customContentList.filter(item => {
+          if(!item?.id) {
+            return false;
+          }
+          if(this.docTypeFilter && item?.value?.diagramType?.toLowerCase() !== this.docTypeFilter?.toLowerCase()) {
+            return false;
+          }
+          if(!this.filterKeyword || this.filterKeyword && (
+            item.container?.title && item.container?.title.toLowerCase().includes(this.filterKeyword.toLowerCase()) ||
+            item.value?.title && item.value?.title.toLowerCase().includes(this.filterKeyword.toLowerCase()) ||
+            item.value?.getCoreData && item.value?.getCoreData().toLowerCase().includes(this.filterKeyword.toLowerCase())
+            )) {
+              return true;
+          }
+          return false;
+        });
+        console.debug(`filteredCustomContentList:`, results);
+        return results;
       },
       filteredPageList() {
         const map = _.groupBy(this.filteredCustomContentList, c => c.container?.id || '0');
