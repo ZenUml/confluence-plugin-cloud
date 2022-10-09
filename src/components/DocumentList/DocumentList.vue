@@ -28,23 +28,25 @@
               </button>
             </div>
             <div class="flex-1 overflow-y-auto">
-              <a @click="picked = customContentItem" href="#" v-for="customContentItem in filteredCustomContentList" :key="customContentItem.id"
-                 :class="{'bg-gray-100': customContentItem.id === (picked && picked.id)}"
-                 class="block px-6 py-3 bg-white border-t hover:bg-gray-50">
-                <span class="text-sm font-semibold text-gray-900">{{ customContentItem.title }}</span>
-                <div class="flex justify-between">
-                  <span class="text-sm font-semibold text-gray-500">{{ customContentItem.value.diagramType }}</span>
-<!--                  <span class="text-sm text-gray-600">2 days ago</span>-->
-                </div>
+              <div v-for="containerPage in filteredPageList" :key="containerPage.id" class="block px-6 py-3 bg-white border-t hover:bg-gray-50">
                 <div class="mt-2 text-sm text-gray-600">
-                  <a :href="`${baseUrl}${ customContentItem.container.id }`" target="_blank" class="flex items-center justify-between hover:underline group">
-                    <span class="inline-block truncate">Page: {{ customContentItem.container.title }}</span>
+                  <a :href="`${baseUrl}${ containerPage.id }`" target="_blank" class="flex items-center justify-between hover:underline group">
+                    <span class="inline-block truncate">Page: {{ containerPage.title }}</span>
                     <svg xmlns="http://www.w3.org/2000/svg" class="inline-block h-5 w-5 flex-shrink-0 invisible group-hover:visible" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                       <path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
                     </svg>
                   </a>
                 </div>
-              </a>
+
+                <a @click="picked = customContentItem" href="#" v-for="customContentItem in containerPage.customContents" :key="customContentItem.id"
+                 :class="{'bg-gray-100': customContentItem.id === (picked && picked.id)}"
+                 class="block px-6 py-3 bg-white border-t hover:bg-gray-50">
+                  <span class="text-sm font-semibold text-gray-900">{{ customContentItem.title }}</span>
+                  <div class="flex justify-between">
+                    <span class="text-sm font-semibold text-gray-500">{{ customContentItem.value.diagramType }}</span>
+                  </div>
+                </a>
+              </div>
             </div>
           </div>
           <div id="workspace-right" class="flex-grow h-full bg-white border-t">
@@ -65,6 +67,7 @@
   import {MacroIdProvider} from "@/model/ContentProvider/MacroIdProvider";
   import {CustomContentStorageProvider} from "@/model/ContentProvider/CustomContentStorageProvider";
   import ApWrapper2 from "@/model/ApWrapper2";
+  import _ from 'lodash';
 
   export default {
     name: 'DocumentList',
@@ -77,12 +80,18 @@
       };
     },
     computed: {
-
       filteredCustomContentList() {
         if (this.docTypeFilter === '') {
           return this.customContentList.filter(item => item?.id);
         }
         return this.customContentList.filter(customContentItem => customContentItem?.value?.diagramType?.toLowerCase() === this.docTypeFilter?.toLowerCase());
+      },
+      filteredPageList() {
+        const map = _.groupBy(this.filteredCustomContentList, c => c.container?.id || '0');
+        const emptyContainer = {id: '', title: ''};
+        const result = Object.keys(map).map(k => Object.assign({}, map[k][0].container || emptyContainer, {customContents: map[k]}));
+        console.debug(`filteredPageList:`, result);
+        return result;
       },
       previewSrc() {
         if (!this.picked) return;
@@ -115,8 +124,11 @@
       const idProvider = new MacroIdProvider(apWrapper);
       const customContentStorageProvider = new CustomContentStorageProvider(apWrapper);
       const customContentId = idProvider.getId();
+      console.debug(`picked custom content id: ${customContentId}`);
       this.customContentList = await customContentStorageProvider.getCustomContentList();
       this.picked = this.customContentList.filter(customContentItem => customContentItem?.id === customContentId)[0];
+      console.debug(`picked custom content: ${this.picked}`);
+      
       try {
         const atlasPage = new AtlasPage(AP);
         const pages = 'pages/';
