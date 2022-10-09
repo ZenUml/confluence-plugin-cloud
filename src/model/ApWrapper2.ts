@@ -237,14 +237,16 @@ export default class ApWrapper2 implements IApWrapper {
     const searchUrl = `/rest/api/content/search?cql=(space="${spaceKey}" and (${typesClause(CUSTOM_CONTENT_TYPES)}))&expand=body.raw,version.number,container,space`;
 
     const parseCustomContentBody = (customContent: ICustomContentResponseBody): ICustomContent => {
-      let diagram: any = {};
+      let diagram: any;
       const rawValue = customContent?.body?.raw?.value;
-      try {
-        diagram = JSON.parse(rawValue);
-        diagram.source = DataSource.CustomContent;
-      } catch(e) {
-        console.error(`parseCustomContentBody error: `, e, `raw value: ${rawValue}`);
-        trackEvent(JSON.stringify(e), 'parseCustomContentBody', 'error');
+      if(rawValue) {
+        try {
+          diagram = JSON.parse(rawValue);
+          diagram.source = DataSource.CustomContent;
+        } catch(e) {
+          console.error(`parseCustomContentBody error: `, e, `raw value: ${rawValue}`);
+          trackEvent(JSON.stringify(e), 'parseCustomContentBody', 'error');
+        }
       }
       const result = <unknown>Object.assign({}, customContent, {value: diagram});
       console.debug(`converted result: `, result);
@@ -273,7 +275,8 @@ export default class ApWrapper2 implements IApWrapper {
     };
 
     try {
-      return await searchAll();
+      const results = await searchAll();
+      return results.filter(c => c.value);
     } catch (e) {
       console.error('searchCustomContent', e);
       trackEvent(JSON.stringify(e), 'searchCustomContent', 'error');
