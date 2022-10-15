@@ -15,6 +15,23 @@ export enum DiagramType {
   Unknown = 'unknown'
 }
 
+export function getDiagramData(o: any): string{
+  let body;
+  switch (o.diagramType) {
+    case DiagramType.Sequence:
+    case DiagramType.OpenApi:
+      body = o.code || '';
+      break;
+    case DiagramType.Mermaid:
+      body = o.mermaidCode || '';
+      break;
+    case DiagramType.Graph:
+      body = o.graphXml || '';
+      break;
+  }
+  return body || '';
+}
+
 export class Diagram {
   // id is used only for debugging and for display only. It is NOT saved in custom content or content property.
   id?: string; // custom content id or content property id or uuid
@@ -28,21 +45,8 @@ export class Diagram {
   compressed?: boolean = false;
   source?: DataSource = DataSource.Unknown;
 
-
-  public getCoreData?(): string{
-    let body;
-    switch (this.diagramType) {
-      case DiagramType.Sequence:
-        body = this.code || '';
-        break;
-      case DiagramType.Mermaid:
-        body = this.mermaidCode || '';
-        break;
-      case DiagramType.Graph:
-        body = this.graphXml || '';
-        break;
-    }
-    return body || '';
+  public getCoreData?(): string {
+    return getDiagramData(this);
   }
 }
 

@@ -63,7 +63,7 @@
 
 <script>
   import SaveAndGoBackButton from "@/components/SaveAndGoBackButton";
-  import {DiagramType} from "@/model/Diagram/Diagram";
+  import {DiagramType, getDiagramData} from "@/model/Diagram/Diagram";
   import EventBus from "@/EventBus";
   import {AtlasPage} from "@/model/page/AtlasPage";
   import AP from "@/model/AP";
@@ -97,7 +97,7 @@
           if(!this.filterKeyword || this.filterKeyword && (
             item.container?.title && item.container?.title.toLowerCase().includes(this.filterKeyword.toLowerCase()) ||
             item.value?.title && item.value?.title.toLowerCase().includes(this.filterKeyword.toLowerCase()) ||
-            item.value?.getCoreData && item.value?.getCoreData().toLowerCase().includes(this.filterKeyword.toLowerCase())
+            item.value && getDiagramData(item.value).toLowerCase().includes(this.filterKeyword.toLowerCase())
             )) {
               return true;
           }
