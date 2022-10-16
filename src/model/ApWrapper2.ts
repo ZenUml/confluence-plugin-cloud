@@ -267,11 +267,15 @@ export default class ApWrapper2 implements IApWrapper {
       let results: Array<ICustomContent> = [];
       let url = searchUrl, data;
 
+      let startTime = performance.now();
       do {
         data = await searchOnce(url);
         results = results.concat(data?.results);
         url = data?._links?.next || '';
-      } while(url && results.length <= SEARCH_CUSTOM_CONTENT_LIMIT);
+      } while(url && results.length < SEARCH_CUSTOM_CONTENT_LIMIT);
+
+      let duration = performance.now() - startTime;
+      trackEvent(`found ${results.length} content, took ${duration} ms`, 'searchAll', 'info');
       return results;
     };
 
