@@ -28,7 +28,7 @@
               </button>
             </div>
             <div class="flex flex-shrink-0 items-center px-4 py-2 justify-between border-b">
-              <input v-model="filterKeyword" placeholder="filter" class="flex items-center text-xs font-semibold text-gray-600">
+              <input v-model="filterKeyword" placeholder="type here to filter" class="block p-2 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
             </div>
             <div class="flex-1 overflow-y-auto">
               <div v-for="containerPage in filteredPageList" :key="containerPage.id" class="block px-6 py-3 bg-white border-t hover:bg-gray-50">
