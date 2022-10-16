@@ -88,8 +88,6 @@
         console.debug(`current filterKeyword: ${this.filterKeyword}`);
 
         const results = this.customContentList.filter(item => {
-          console.log(item.value?.title && item.value?.title);
-          
           if(!item?.id) {
             return false;
           }
@@ -98,6 +96,7 @@
           }
           if(!this.filterKeyword || this.filterKeyword && (
             item.container?.title && item.container?.title.toLowerCase().includes(this.filterKeyword.toLowerCase()) ||
+            item.title && item.title.toLowerCase().includes(this.filterKeyword.toLowerCase()) ||
             item.value?.title && item.value?.title.toLowerCase().includes(this.filterKeyword.toLowerCase()) ||
             item.value && getDiagramData(item.value).toLowerCase().includes(this.filterKeyword.toLowerCase())
             )) {
