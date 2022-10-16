@@ -109,9 +109,10 @@
       filteredPageList() {
         const map = _.groupBy(this.filteredCustomContentList, c => c.container?.id || '0');
         const emptyContainer = {id: '', title: ''};
-        const result = Object.keys(map).map(k => Object.assign({}, map[k][0].container || emptyContainer, {customContents: map[k]}));
-        console.debug(`filteredPageList:`, result);
-        return result;
+        const pages = Object.keys(map).map(k => Object.assign({}, map[k][0].container || emptyContainer, {customContents: map[k]}));
+        const sorted = _.sortBy(pages, [p => p.title?.toLowerCase()]);
+        console.debug(`filteredPageList:`, sorted);
+        return sorted;
       },
       previewSrc() {
         if (!this.picked) return;

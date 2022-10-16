@@ -234,7 +234,7 @@ export default class ApWrapper2 implements IApWrapper {
     const customContentType = (t: string) => `${this.getCustomContentTypePrefix()}:${t}`;
     const typeClause = (t: string) => `type="${customContentType(t)}"`;
     const typesClause = (a: Array<string>) => a.map(typeClause).join(' or ');
-    const searchUrl = `/rest/api/content/search?cql=(space="${spaceKey}" and (${typesClause(CUSTOM_CONTENT_TYPES)}))&expand=body.raw,version.number,container,space`;
+    const searchUrl = `/rest/api/content/search?cql=space="${spaceKey}" and (${typesClause(CUSTOM_CONTENT_TYPES)}) order by lastmodified desc&expand=body.raw,version.number,container,space`;
 
     const parseCustomContentBody = (customContent: ICustomContentResponseBody): ICustomContent => {
       let diagram: any;
