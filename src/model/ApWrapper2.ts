@@ -12,6 +12,7 @@ import {AtlasPage} from "@/model/page/AtlasPage";
 import CheckPermission, {PermissionCheckRequestFunc} from "@/model/page/CheckPermission";
 
 const CUSTOM_CONTENT_TYPES = ['zenuml-content-sequence', 'zenuml-content-graph'];
+const SEARCH_CUSTOM_CONTENT_LIMIT = 1000;
 
 export default class ApWrapper2 implements IApWrapper {
   versionType: VersionType;
@@ -270,7 +271,7 @@ export default class ApWrapper2 implements IApWrapper {
         data = await searchOnce(url);
         results = results.concat(data?.results);
         url = data?._links?.next || '';
-      } while(url);
+      } while(url && results.length <= SEARCH_CUSTOM_CONTENT_LIMIT);
       return results;
     };
 
