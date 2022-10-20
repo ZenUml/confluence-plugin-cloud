@@ -1,12 +1,13 @@
-name: 'Build the application with functions and publish it to cloudflare'
+name: 'Build and publish using wrangler'
+description: 'Build the application with functions and publish it to cloudflare pages.'
 
 inputs:
   node-version:
     description: 'The node version'
     required: true
   cloudflare-api-token:
-    descriptio: 'Cloudflare API Token'
-    requierd: true
+    description: 'Cloudflare API Token'
+    required: true
   cloudflare-account-id:
     description: 'Cloudflare account ID'
     required: true
@@ -27,7 +28,7 @@ runs:
     - name: yarn install
       shell: bash
       run: yarn install
-    - name: yarn install
+    - name: yarn build
       shell: bash
       run: yarn build:${{ inputs.license }}
     - name: Publish
