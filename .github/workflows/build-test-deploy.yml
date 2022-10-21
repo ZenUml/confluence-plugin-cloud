@@ -15,7 +15,7 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: "16"
-          cache: yarn
+          cache: "yarn"
       - run: yarn install
       - run: yarn test:unit
 
@@ -30,7 +30,7 @@ jobs:
       - name: Build and publish
         uses: ./.github/actions/wrangler-publish
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: "16"
           cloudflare-api-token: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           cloudflare-account-id: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           license: lite
@@ -49,10 +49,10 @@ jobs:
           python-version: '3.10' 
       - run: pip3 install pluploader
       - run: pluploader --base-url https://zenuml-stg.atlassian.net/wiki --user ${{ secrets.ZENUML_STAGE_UPM_USER }} --password ${{ secrets.ZENUML_STAGE_UPM_PASSWORD }} install --cloud --plugin-uri https://conf-stg-lite.pages.dev/descriptor
-      - uses: actions/setup-node@v2
+      - uses: actions/setup-node@v3
         with:
-          node-version: ${{ matrix.node-version }}
-          cache: 'yarn'
+          node-version: "16"
+          cache: "yarn"
       - run: yarn install
       - run: yarn test:e2e
         env:
@@ -72,7 +72,7 @@ jobs:
       - name: Build and publish
         uses: ./.github/actions/wrangler-publish
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: "16"
           cloudflare-api-token: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           cloudflare-account-id: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           license: full
@@ -91,10 +91,10 @@ jobs:
           python-version: '3.10' 
       - run: pip3 install pluploader
       - run: pluploader --base-url https://zenuml-stg.atlassian.net/wiki --user ${{ secrets.ZENUML_STAGE_UPM_USER }} --password ${{ secrets.ZENUML_STAGE_UPM_PASSWORD }} install --cloud --plugin-uri https://conf-stg-full.pages.dev/descriptor
-      - uses: actions/setup-node@v2
+      - uses: actions/setup-node@v3
         with:
-          node-version: ${{ matrix.node-version }}
-          cache: 'yarn'
+          node-version: "16"
+          cache: "yarn"
       - run: yarn install
       - run: yarn test:e2e
         env:
@@ -113,7 +113,7 @@ jobs:
       - name: Build and publish
         uses: ./.github/actions/wrangler-publish
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: "16"
           cloudflare-api-token: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           cloudflare-account-id: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           license: lite
@@ -137,7 +137,7 @@ jobs:
       - name: Build and publish
         uses: ./.github/actions/wrangler-publish
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: "16"
           cloudflare-api-token: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           cloudflare-account-id: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           license: full
