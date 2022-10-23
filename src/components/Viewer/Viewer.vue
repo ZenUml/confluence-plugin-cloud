@@ -4,7 +4,11 @@
   <Debug />
   <error-boundary>
   <div v-html="styles"></div>
-  <mermaid v-show="diagramType === 'mermaid'"/>
+  <div v-show="diagramType === 'mermaid'">
+    <generic-viewer>
+      <mermaid/>
+    </generic-viewer>
+  </div>
   <div v-show="diagramType === 'sequence'" @click="deselectAll">
     <styling-panel/>
     <diagram-frame>
@@ -33,6 +37,7 @@
 import {mapState, mapGetters} from "vuex";
 import { VueSequence } from 'vue-sequence'
 import Mermaid from '../Mermaid'
+import GenericViewer from './GenericViewer.vue'
 import EventBus from '../../EventBus'
 import Debug from '@/components/Debug/Debug.vue'
 import StylingPanel from "@/components/StylingPanel";
@@ -59,7 +64,8 @@ export default {
     ErrorBoundary,
     Mermaid,
     StylingPanel,
-    DiagramFrame
+    DiagramFrame,
+    GenericViewer
   },
   computed: {
     // We use {} instead of [] to get type checking

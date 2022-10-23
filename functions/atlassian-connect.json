@@ -332,6 +332,38 @@
         "name": {
           "value": "ZenUML Graph Viewer"
         }
+      },
+      {
+        "key": "zenuml-content-graph-viewer-dialog",
+        "location": "none",
+        "url": "/drawio/viewer.html?version=__VERSION__&spaceKey={space.key}&addonKey=__ADDON_KEY__&contentKey=__CONTENT_KEY__",
+        "name": {
+          "value": "ZenUML Graph Viewer Dialog"
+        }
+      },
+      {
+        "key": "zenuml-content-graph-editor-dialog",
+        "location": "none",
+        "url": "/drawio/editor.html?version=__VERSION__&spaceKey={space.key}&addonKey=__ADDON_KEY__&contentKey=__CONTENT_KEY__",
+        "name": {
+          "value": "ZenUML Graph Editor Dialog"
+        }
+      },
+      {
+        "key": "zenuml-content-openapi-viewer-dialog",
+        "location": "none",
+        "url": "/swagger-ui.html?version=__VERSION__&spaceKey={space.key}&addonKey=__ADDON_KEY__&contentKey=__CONTENT_KEY__",
+        "name": {
+          "value": "ZenUML OpenAPI Viewer Dialog"
+        }
+      },
+      {
+        "key": "zenuml-content-openapi-editor-dialog",
+        "location": "none",
+        "url": "/swagger-editor.html?version=__VERSION__&spaceKey={space.key}&addonKey=__ADDON_KEY__&contentKey=__CONTENT_KEY__",
+        "name": {
+          "value": "ZenUML OpenAPI Editor Dialog"
+        }
       }
     ],
     "postInstallPage": {

@@ -27,7 +27,10 @@ async function saveOpenApiAndExit () {
     diagramType: DiagramType.OpenApi,
     source: DataSource.CustomContent
   };
-  await saveToPlatform(diagram);
+  // @ts-ignore
+  window.diagram = Object.assign(window.diagram || {}, diagram);
+  // @ts-ignore
+  await saveToPlatform(window.diagram);
 
   /* eslint-disable no-undef */
   AP.dialog.close();
@@ -47,6 +50,10 @@ async function initializeMacro() {
 
   const compositeContentProvider = defaultContentProvider(new ApWrapper2(AP));
   const {doc} = await compositeContentProvider.load();
+
+  // @ts-ignore
+  window.diagram = doc;
+
   console.log('-------------- loaded spec:', doc?.code)
     // eslint-disable-next-line
     // @ts-ignore
