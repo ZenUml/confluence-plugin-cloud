@@ -1,4 +1,5 @@
 import {getUrlParam, trackEvent} from '@/utils/window';
+import time from '@/utils/timer';
 import {IApWrapper, VersionType} from "@/model/IApWrapper";
 import {IMacroData} from "@/model/IMacroData";
 import {IContentProperty} from "@/model/IContentProperty";
@@ -259,29 +260,25 @@ export default class ApWrapper2 implements IApWrapper {
       const data = await this.request(url);
       console.debug(`${data?.size} results returned, has next? ${data?._links?.next != null}`);
 
-      data.results = data?.results.map(parseCustomContentBody);
+      data.results = data?.results.map(parseCustomContentBody).filter((c: ICustomContent) => c.value);
       return data;
     };
 
     const searchAll = async (): Promise<Array<ICustomContent>> => {
-      let results: Array<ICustomContent> = [];
       let url = searchUrl, data;
-
-      let startTime = performance.now();
+      let results: Array<ICustomContent> = [];
       do {
         data = await searchOnce(url);
         results = results.concat(data?.results);
         url = data?._links?.next || '';
       } while(url && results.length < SEARCH_CUSTOM_CONTENT_LIMIT);
-
-      let duration = performance.now() - startTime;
-      trackEvent(`found ${results.length} content, took ${duration} ms`, 'searchAll', 'info');
       return results;
     };
 
     try {
-      const results = await searchAll();
-      return results.filter(c => c.value);
+      return await time(searchAll, (duration, results) => {
+        trackEvent(`found ${results.length} content, took ${duration} ms`, 'searchAll', 'info');
+      });
     } catch (e) {
       console.error('searchCustomContent', e);
       trackEvent(JSON.stringify(e), 'searchCustomContent', 'error');
