@@ -1,0 +1,9 @@
+== Audience
+This document is written for the following developers that collaborate on the project.
+
+== Deployment
+
+This project is deployed on Cloudflare Pages (and Functions). It uses GitHub Actions
+cloudflare/wrangler-action@2.0.0. The command to deploy is
+`pages publish dist --branch production --project-name=${{ inputs.project }}`.
+
