@@ -13,7 +13,11 @@ jobs:
 #      name: staging
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      # Check out current repository
+      - name: Fetch Sources
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ github.event.release.tag_name }}
       # Set environment variables
       - name: Export Properties
         id: properties
