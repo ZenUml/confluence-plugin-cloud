@@ -152,8 +152,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           VERSION: $(echo $(date +'%Y.%m.%d%H%M'))
         with:
-          tag_name: v${{ steps.properties.outputs.version }}
-          release_name: v${{ steps.properties.outputs.version }}
+          tag_name: v${{ steps.properties.outputs.version }}-lite
+          release_name: v${{ steps.properties.outputs.version }}-lite
           body: 'This is a draft release for the Lite version of the plugin.'
           draft: true
 
