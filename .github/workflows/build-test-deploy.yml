@@ -156,7 +156,7 @@ jobs:
           draft: true
 
   draft-release-full:
-    name: Draft release for the Lite version
+    name: Draft release for the Full version
     # don't run on pull requests to avoid creating draft releases for pull requests
     # only run on the main branch, to avoid cutting releases from feature branches
     if: ${{ github.event_name != 'pull_request' && github.ref == 'refs/heads/refactor-github-actions' }}
