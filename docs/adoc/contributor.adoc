@@ -1,0 +1,38 @@
+== Audience
+This document is intended for contributors to the project.
+It is not intended for end users of the project.
+
+== Release Process
+[TOBE]
+
+All pushes to the master branch are automatically deployed to the staging environment,
+and tested with e2e automation test. If they pass, a draft release is created for the
+production environment for Lite and Full versions.
+
+....
+[Workflow: Build, Test and Draft Release]
+# only draft release if it is on master branch, or with tag draft-release
+build/test -> deploy to Staging Lite -> System test Staging Lite -> Draft Release Lite
+           -> deploy to Staging Full -> System test Staging Full -> Draft Release Full
+[Workflow: Release]
+publish
+....
+
+=== How do we know which version to release?
+When drafting a release, the following parameters are passed to the drafted release:
+`tag_name`, `release_name`, `body`.
+
+Based on the tag name, we can determine which version to release.
+....
+  # Create new release draft - which is not publicly visible and requires manual acceptance
+  - name: Create Release Draft
+    id: createDraft
+    uses: actions/create-release@v1
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    with:
+      tag_name: v${{ needs.build.outputs.version }}
+      release_name: v${{ needs.build.outputs.version }}
+      body: ${{ needs.build.outputs.changelog }}
+      draft: true
+....
