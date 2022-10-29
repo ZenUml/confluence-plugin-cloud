@@ -9,14 +9,109 @@ jobs:
   build:
     name: Build and Test
     runs-on: ubuntu-latest
-    outputs:
-      version: ${{ steps.properties.outputs.version }}
+
     strategy:
       matrix:
         node-version: [16.x]
 
     steps:
       - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'yarn'
+      - run: yarn install
+      - run: yarn test:unit
+      # Set environment variables
+      - name: Export Properties
+        id: properties
+        shell: bash
+        run: |
+          # set VERSION as YYYY.MM.DDHHmm
+          VERSION="(echo $(date +'%Y.%m.%d%H%M'))"
+          echo "::set-output name=version::$VERSION"
+  staging-lite:
+    needs: build
+    name: Deploy to staging lite
+    environment:
+      name: staging-lite
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Build and publish
+        uses: ./.github/actions/wrangler-publish
+        with:
+          node-version: ${{ matrix.node-version }}
+          cloudflare-api-token: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          cloudflare-account-id: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          license: lite
+          project: conf-stg-lite
+
+  staging-lite-test:
+    needs: staging-lite
+    name: Test staging lite
+    environment:
+      name: staging-lite
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+      - run: pip3 install pluploader
+      - run: pluploader --base-url https://zenuml-stg.atlassian.net/wiki --user ${{ secrets.ZENUML_STAGE_UPM_USER }} --password ${{ secrets.ZENUML_STAGE_UPM_PASSWORD }} install --cloud --plugin-uri https://conf-stg-lite.pages.dev/descriptor
+      - uses: actions/setup-node@v2
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'yarn'
+      - run: yarn install
+      - run: yarn test:e2e
+        env:
+          CI: true
+          IS_LITE: true
+          ZENUML_STAGE_USERNAME: ${{ secrets.ZENUML_STAGE_USERNAME }}
+          ZENUML_STAGE_PASSWORD: ${{ secrets.ZENUML_STAGE_PASSWORD }}
+
+  staging-full:
+    needs: build
+    name: Deploy to staging full
+    environment:
+      name: staging-full
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Build and publish
+        uses: ./.github/actions/wrangler-publish
+        with:
+          node-version: ${{ matrix.node-version }}
+          cloudflare-api-token: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          cloudflare-account-id: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          license: full
+          project: conf-stg-full
+
+  staging-full-test:
+    needs: staging-full
+    name: Test staging full
+    environment:
+      name: staging-full
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+      - run: pip3 install pluploader
+      - run: pluploader --base-url https://zenuml-stg.atlassian.net/wiki --user ${{ secrets.ZENUML_STAGE_UPM_USER }} --password ${{ secrets.ZENUML_STAGE_UPM_PASSWORD }} install --cloud --plugin-uri https://conf-stg-full.pages.dev/descriptor
+      - uses: actions/setup-node@v2
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'yarn'
+      - run: yarn install
+      - run: yarn test:e2e
+        env:
+          CI: true
+          ZENUML_STAGE_USERNAME: ${{ secrets.ZENUML_STAGE_USERNAME }}
+          ZENUML_STAGE_PASSWORD: ${{ secrets.ZENUML_STAGE_PASSWORD }}
 
   draft-release-lite:
     name: Draft release for the Lite version
@@ -62,3 +157,25 @@ jobs:
           body: 'This is a draft release for the Lite version of the plugin.'
           draft: true
 
+  prod-full:
+    needs: staging-full
+    name: Deploy to production full
+    environment:
+      name: prod-full
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Build and publish
+        uses: ./.github/actions/wrangler-publish
+        with:
+          node-version: ${{ matrix.node-version }}
+          cloudflare-api-token: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          cloudflare-account-id: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          license: full
+          project: conf-full
+      - name: Bump version and push tag1
+        id: tag_version
+        uses: mathieudutour/github-tag-action@v5.6
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          tag_prefix: v-full-
