@@ -3,7 +3,13 @@
 
 name: Build, Test and Deploy
 
-on: [push, pull_request]
+on:
+  push:
+    tags-ignore:
+      - '*' # do not run on tags
+  pull_request:
+    branches:
+      - '*'
 
 jobs:
   build:
