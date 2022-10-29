@@ -9,8 +9,8 @@ on:
 jobs:
   release:
     name: Deploy to staging
-    environment:
-      name: staging
+#    environment:  # It will wait for approval if we add an environment
+#      name: staging
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
