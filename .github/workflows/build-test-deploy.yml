@@ -6,12 +6,12 @@ name: Build, Test and Deploy
 on:
   push:
     tags-ignore:
-      - '*' # do not run on tags
+      - '**' # do not run on tags
     branches:
-      - '*'
+      - '**'
   pull_request:
     branches:
-      - '*'
+      - '**'
 
 jobs:
   build:
