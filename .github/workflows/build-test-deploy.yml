@@ -42,6 +42,13 @@ jobs:
             | xargs -I '{}' \
           curl -X DELETE -H "Authorization: Bearer $GITHUB_TOKEN" https://api.github.com/repos/$GITHUB_REPOSITORY/releases/{}
 
+      - name: Export Properties
+        id: properties
+        shell: bash
+        run: |
+          VERSION="$(echo $(date +'%Y.%m.%d%H%M'))"
+          echo "::set-output name=version::$VERSION"
+
       # Create new release draft - which is not publicly visible and requires manual acceptance
       - name: Create Release Draft
         id: createDraft
@@ -50,8 +57,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           VERSION: $(echo $(date +'%Y.%m.%d%H%M'))
         with:
-          tag_name: v${{ $VERSION }}
-          release_name: v${{ $VERSION }}
+          tag_name: v${{ steps.properties.outputs.version }}
+          release_name: v${{ steps.properties.outputs.version }}
           body: 'This is a draft release for the Lite version of the plugin.'
           draft: true
 
