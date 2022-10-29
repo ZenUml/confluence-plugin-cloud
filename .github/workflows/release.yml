@@ -1,0 +1,35 @@
+# GitHub Actions Workflow created for handling the release process based on the draft release prepared
+# with the Build workflow. Running the publishPlugin task requires the PUBLISH_TOKEN secret provided.
+
+name: Release
+on:
+  release:
+    types: [prereleased, released]
+
+jobs:
+  release:
+    needs: build
+    name: Deploy to staging full
+    environment:
+      name: staging-full
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      # Set environment variables
+      - name: Export Properties
+        id: properties
+        shell: bash
+        run: |
+          # extract License from github.event.release.tag_name
+          LICENSE=$(echo ${{ github.event.release.tag_name }} | cut -d'-' -f2)
+          echo "::set-output name=license::$LICENSE"
+
+      - name: Build and publish
+        uses: ./.github/actions/wrangler-publish
+        with:
+          node-version: ${{ matrix.node-version }}
+          cloudflare-api-token: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          cloudflare-account-id: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          license: ${{ steps.properties.outputs.license }}
+          project: conf-stg-${{ steps.properties.outputs.license }}
+
