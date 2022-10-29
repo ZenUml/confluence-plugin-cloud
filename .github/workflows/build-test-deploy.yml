@@ -126,7 +126,7 @@ jobs:
     # don't run on pull requests to avoid creating draft releases for pull requests
     # only run on the main branch, to avoid cutting releases from feature branches
     if: ${{ github.event_name != 'pull_request' && github.ref == 'refs/heads/refactor-github-actions' }}
-    needs: [build] # TODO: needs staging-lite-test
+    needs: [staging-lite-test]
     runs-on: ubuntu-latest
     steps:
       # Check out current repository
@@ -160,7 +160,7 @@ jobs:
     # don't run on pull requests to avoid creating draft releases for pull requests
     # only run on the main branch, to avoid cutting releases from feature branches
     if: ${{ github.event_name != 'pull_request' && github.ref == 'refs/heads/refactor-github-actions' }}
-    needs: [build] # TODO: needs staging-lite-test
+    needs: [staging-full-test] # TODO: needs staging-lite-test
     runs-on: ubuntu-latest
     steps:
       # Check out current repository
