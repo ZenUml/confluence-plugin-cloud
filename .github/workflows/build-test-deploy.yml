@@ -50,7 +50,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           VERSION: $(echo $(date +'%Y.%m.%d%H%M'))
         with:
-          tag_name: v${{ VERSION }}
+          tag_name: v${{ $VERSION }}
           release_name: v${{ $VERSION }}
           body: 'This is a draft release for the Lite version of the plugin.'
           draft: true
