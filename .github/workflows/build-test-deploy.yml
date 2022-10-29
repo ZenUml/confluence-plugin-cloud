@@ -18,26 +18,14 @@ jobs:
     name: Build and Test
     runs-on: ubuntu-latest
 
-    strategy:
-      matrix:
-        node-version: [16.x]
-
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v2
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: '16.x'
           cache: 'yarn'
       - run: yarn install
       - run: yarn test:unit
-      # Set environment variables
-      - name: Export Properties
-        id: properties
-        shell: bash
-        run: |
-          # set VERSION as YYYY.MM.DDHHmm
-          VERSION="(echo $(date +'%Y.%m.%d%H%M'))"
-          echo "::set-output name=version::$VERSION"
   staging-lite:
     needs: build
     name: Deploy to staging lite
@@ -49,7 +37,7 @@ jobs:
       - name: Build and publish
         uses: ./.github/actions/wrangler-publish
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: '16.x'
           cloudflare-api-token: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           cloudflare-account-id: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           license: lite
@@ -70,7 +58,7 @@ jobs:
       - run: pluploader --base-url https://zenuml-stg.atlassian.net/wiki --user ${{ secrets.ZENUML_STAGE_UPM_USER }} --password ${{ secrets.ZENUML_STAGE_UPM_PASSWORD }} install --cloud --plugin-uri https://conf-stg-lite.pages.dev/descriptor
       - uses: actions/setup-node@v2
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: '16.x'
           cache: 'yarn'
       - run: yarn install
       - run: yarn test:e2e
@@ -91,7 +79,7 @@ jobs:
       - name: Build and publish
         uses: ./.github/actions/wrangler-publish
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: '16.x'
           cloudflare-api-token: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           cloudflare-account-id: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           license: full
@@ -112,7 +100,7 @@ jobs:
       - run: pluploader --base-url https://zenuml-stg.atlassian.net/wiki --user ${{ secrets.ZENUML_STAGE_UPM_USER }} --password ${{ secrets.ZENUML_STAGE_UPM_PASSWORD }} install --cloud --plugin-uri https://conf-stg-full.pages.dev/descriptor
       - uses: actions/setup-node@v2
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: '16.x'
           cache: 'yarn'
       - run: yarn install
       - run: yarn test:e2e

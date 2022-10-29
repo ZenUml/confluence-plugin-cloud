@@ -28,7 +28,7 @@ jobs:
           echo "::set-output name=license::$LICENSE"
       - uses: actions/setup-node@v2
         with:
-          node-version: 16
+          node-version: '16.x'
           cache: 'yarn'
       - name: yarn install
         shell: bash
