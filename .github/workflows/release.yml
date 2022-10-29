@@ -8,9 +8,9 @@ on:
 
 jobs:
   release:
-    name: Deploy to staging full
+    name: Deploy to staging
     environment:
-      name: staging-full
+      name: staging
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -22,13 +22,21 @@ jobs:
           # extract License from github.event.release.tag_name
           LICENSE=$(echo ${{ github.event.release.tag_name }} | cut -d'-' -f2)
           echo "::set-output name=license::$LICENSE"
-
-      - name: Build and publish
-        uses: ./.github/actions/wrangler-publish
+      - uses: actions/setup-node@v2
         with:
-          node-version: ${{ matrix.node-version }}
-          cloudflare-api-token: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          cloudflare-account-id: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          license: ${{ steps.properties.outputs.license }}
-          project: conf-stg-${{ steps.properties.outputs.license }}
+          node-version: 16
+          cache: 'yarn'
+      - name: yarn install
+        shell: bash
+        run: yarn install
+      - name: yarn build
+        shell: bash
+        run: yarn build:${{ steps.properties.outputs.license }}
+      - name: Publish
+        uses: cloudflare/wrangler-action@2.0.0
+        with:
+          apiToken: ${{ inputs.cloudflare-api-token }}
+          accountId: ${{ inputs.cloudflare-account-id }}
+          command: pages publish dist --branch production --project-name=conf-stg-${{ steps.properties.outputs.license }}
+
 
