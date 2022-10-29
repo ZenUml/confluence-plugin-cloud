@@ -21,7 +21,7 @@ jobs:
         shell: bash
         run: |
           # set VERSION as YYYY.MM.DDHHmm
-          VERSION="(echo $(date +'%Y.%m.%d%H%M'))"
+          VERSION="$(echo $(date +'%Y.%m.%d%H%M'))"
           echo "::set-output name=version::$VERSION"
           echo $VERSION
 
