@@ -8,7 +8,7 @@ on:
 
 jobs:
   release:
-    name: Deploy ${{ github.event.release.tag_name }} to staging
+    name: ${{ github.event.release.tag_name }} to production
 #    environment:  # It will wait for approval if we add an environment
 #      name: staging
     runs-on: ubuntu-latest
@@ -41,6 +41,6 @@ jobs:
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: pages publish dist --branch production --project-name=conf-stg-${{ steps.properties.outputs.license }}
+          command: pages publish dist --branch production --project-name=conf-${{ steps.properties.outputs.license }}
 
 
