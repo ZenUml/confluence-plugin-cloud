@@ -147,25 +147,37 @@ jobs:
           body: 'This is a draft release for the Lite version of the plugin.'
           draft: true
 
-  prod-full:
-    needs: staging-full
-    name: Deploy to production full
-    environment:
-      name: prod-full
+  draft-release-full:
+    name: Draft release for the Lite version
+    # don't run on pull requests to avoid creating draft releases for pull requests
+    # only run on the main branch, to avoid cutting releases from feature branches
+    if: ${{ github.event_name != 'pull_request' && github.ref == 'refs/heads/refactor-github-actions' }}
+    needs: [build] # TODO: needs staging-lite-test
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - name: Build and publish
-        uses: ./.github/actions/wrangler-publish
+      # Check out current repository
+      - name: Fetch Sources
+        uses: actions/checkout@v3
         with:
-          node-version: ${{ matrix.node-version }}
-          cloudflare-api-token: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          cloudflare-account-id: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          license: full
-          project: conf-full
-      - name: Bump version and push tag1
-        id: tag_version
-        uses: mathieudutour/github-tag-action@v5.6
+          submodules: true   # not used yet, but soon
+
+      - name: Export Properties
+        id: properties
+        shell: bash
+        run: |
+          VERSION="$(echo $(date +'%Y.%m.%d%H%M'))"
+          echo "::set-output name=version::$VERSION"
+
+      # Create new release draft - which is not publicly visible and requires manual acceptance
+      - name: Create Release Draft
+        id: createDraft
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          VERSION: $(echo $(date +'%Y.%m.%d%H%M'))
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          tag_prefix: v-full-
+          tag_name: v${{ steps.properties.outputs.version }}-full
+          release_name: v${{ steps.properties.outputs.version }}-full
+          body: 'This is a draft release for the Full version of the plugin.'
+          draft: true
+
