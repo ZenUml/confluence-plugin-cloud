@@ -1,0 +1,46 @@
+# GitHub Actions Workflow created for handling the release process based on the draft release prepared
+# with the Build workflow. Running the publishPlugin task requires the PUBLISH_TOKEN secret provided.
+
+name: Release
+on:
+  release:
+    types: [prereleased, released]
+
+jobs:
+  release:
+    name: ${{ github.event.release.tag_name }} to production
+#    environment:  # It will wait for approval if we add an environment
+#      name: staging
+    runs-on: ubuntu-latest
+    steps:
+      # Check out current repository
+      - name: Fetch Sources
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ github.event.release.tag_name }}
+      # Set environment variables
+      - name: Export Properties
+        id: properties
+        shell: bash
+        run: |
+          # extract License from github.event.release.tag_name
+          LICENSE=$(echo ${{ github.event.release.tag_name }} | cut -d'-' -f2)
+          echo "::set-output name=license::$LICENSE"
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '16.x'
+          cache: 'yarn'
+      - name: yarn install
+        shell: bash
+        run: yarn install
+      - name: yarn build
+        shell: bash
+        run: yarn build:${{ steps.properties.outputs.license }}
+      - name: Publish
+        uses: cloudflare/wrangler-action@2.0.0
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: pages publish dist --branch production --project-name=conf-${{ steps.properties.outputs.license }}
+
+

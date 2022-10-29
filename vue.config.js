@@ -3,7 +3,10 @@ const { ESBuildMinifyPlugin } = require('esbuild-loader')
 const { execSync } = require('child_process');
 
 process.env.VUE_APP_GIT_HASH = execSync('git rev-parse --short HEAD').toString().trim()
-process.env.VUE_APP_GIT_BRANCH = execSync('git branch --show-current').toString().trim();
+process.env.VUE_APP_GIT_BRANCH = execSync('git branch --show-current').toString().trim()
+// https://stackoverflow.com/a/45993185/529187
+process.env.VUE_APP_GIT_TAG = execSync('git describe --tags --always --abbrev=0').toString().trim()
+console.log(`Building ${process.env.VUE_APP_GIT_TAG} (${process.env.VUE_APP_GIT_HASH}) on ${process.env.VUE_APP_GIT_BRANCH}`)
 
 module.exports = {
   pages: {

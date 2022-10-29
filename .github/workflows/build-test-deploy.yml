@@ -3,26 +3,29 @@
 
 name: Build, Test and Deploy
 
-on: [push, pull_request]
+on:
+  push:
+    tags-ignore:
+      - '**' # do not run on tags
+    branches:
+      - '**'
+  pull_request:
+    branches:
+      - '**'
 
 jobs:
   build:
     name: Build and Test
     runs-on: ubuntu-latest
 
-    strategy:
-      matrix:
-        node-version: [16.x]
-
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v2
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: '16.x'
           cache: 'yarn'
       - run: yarn install
       - run: yarn test:unit
-
   staging-lite:
     needs: build
     name: Deploy to staging lite
@@ -34,7 +37,7 @@ jobs:
       - name: Build and publish
         uses: ./.github/actions/wrangler-publish
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: '16.x'
           cloudflare-api-token: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           cloudflare-account-id: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           license: lite
@@ -50,12 +53,12 @@ jobs:
       - uses: actions/checkout@v3
       - uses: actions/setup-python@v4
         with:
-          python-version: '3.10' 
+          python-version: '3.10'
       - run: pip3 install pluploader
       - run: pluploader --base-url https://zenuml-stg.atlassian.net/wiki --user ${{ secrets.ZENUML_STAGE_UPM_USER }} --password ${{ secrets.ZENUML_STAGE_UPM_PASSWORD }} install --cloud --plugin-uri https://conf-stg-lite.pages.dev/descriptor
       - uses: actions/setup-node@v2
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: '16.x'
           cache: 'yarn'
       - run: yarn install
       - run: yarn test:e2e
@@ -64,7 +67,7 @@ jobs:
           IS_LITE: true
           ZENUML_STAGE_USERNAME: ${{ secrets.ZENUML_STAGE_USERNAME }}
           ZENUML_STAGE_PASSWORD: ${{ secrets.ZENUML_STAGE_PASSWORD }}
-  
+
   staging-full:
     needs: build
     name: Deploy to staging full
@@ -76,12 +79,12 @@ jobs:
       - name: Build and publish
         uses: ./.github/actions/wrangler-publish
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: '16.x'
           cloudflare-api-token: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           cloudflare-account-id: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           license: full
           project: conf-stg-full
-  
+
   staging-full-test:
     needs: staging-full
     name: Test staging full
@@ -92,12 +95,12 @@ jobs:
       - uses: actions/checkout@v3
       - uses: actions/setup-python@v4
         with:
-          python-version: '3.10' 
+          python-version: '3.10'
       - run: pip3 install pluploader
       - run: pluploader --base-url https://zenuml-stg.atlassian.net/wiki --user ${{ secrets.ZENUML_STAGE_UPM_USER }} --password ${{ secrets.ZENUML_STAGE_UPM_PASSWORD }} install --cloud --plugin-uri https://conf-stg-full.pages.dev/descriptor
       - uses: actions/setup-node@v2
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: '16.x'
           cache: 'yarn'
       - run: yarn install
       - run: yarn test:e2e
@@ -106,49 +109,71 @@ jobs:
           ZENUML_STAGE_USERNAME: ${{ secrets.ZENUML_STAGE_USERNAME }}
           ZENUML_STAGE_PASSWORD: ${{ secrets.ZENUML_STAGE_PASSWORD }}
 
-  prod-lite:
-    needs: staging-lite
-    name: Deploy to production lite
-    environment:
-      name: prod-lite
+  draft-release-lite:
+    name: Draft release for the Lite version
+    # don't run on pull requests to avoid creating draft releases for pull requests
+    # only run on the main branch, to avoid cutting releases from feature branches
+    if: ${{ github.event_name != 'pull_request' && github.ref == 'refs/heads/refactor-github-actions' }}
+    needs: [staging-lite-test]
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - name: Build and publish
-        uses: ./.github/actions/wrangler-publish
+      # Check out current repository
+      - name: Fetch Sources
+        uses: actions/checkout@v3
         with:
-          node-version: ${{ matrix.node-version }}
-          cloudflare-api-token: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          cloudflare-account-id: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          license: lite
-          project: conf-lite
+          submodules: true   # not used yet, but soon
 
-      - name: Bump version and push tag1
-        id: tag_version
-        uses: mathieudutour/github-tag-action@v5.6
+      - name: Export Properties
+        id: properties
+        shell: bash
+        run: |
+          VERSION="$(echo $(date +'%Y.%m.%d%H%M'))"
+          echo "::set-output name=version::$VERSION"
+
+      # Create new release draft - which is not publicly visible and requires manual acceptance
+      - name: Create Release Draft
+        id: createDraft
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          VERSION: $(echo $(date +'%Y.%m.%d%H%M'))
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          tag_prefix: v-lite-
+          tag_name: v${{ steps.properties.outputs.version }}-lite
+          release_name: v${{ steps.properties.outputs.version }}-lite
+          body: 'This is a draft release for the Lite version of the plugin.'
+          draft: true
 
-  prod-full:
-    needs: staging-full
-    name: Deploy to production full
-    environment:
-      name: prod-full
+  draft-release-full:
+    name: Draft release for the Full version
+    # don't run on pull requests to avoid creating draft releases for pull requests
+    # only run on the main branch, to avoid cutting releases from feature branches
+    if: ${{ github.event_name != 'pull_request' && github.ref == 'refs/heads/refactor-github-actions' }}
+    needs: [staging-full-test] # TODO: needs staging-lite-test
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - name: Build and publish
-        uses: ./.github/actions/wrangler-publish
+      # Check out current repository
+      - name: Fetch Sources
+        uses: actions/checkout@v3
         with:
-          node-version: ${{ matrix.node-version }}
-          cloudflare-api-token: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          cloudflare-account-id: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          license: full
-          project: conf-full
-      - name: Bump version and push tag1
-        id: tag_version
-        uses: mathieudutour/github-tag-action@v5.6
+          submodules: true   # not used yet, but soon
+
+      - name: Export Properties
+        id: properties
+        shell: bash
+        run: |
+          VERSION="$(echo $(date +'%Y.%m.%d%H%M'))"
+          echo "::set-output name=version::$VERSION"
+
+      # Create new release draft - which is not publicly visible and requires manual acceptance
+      - name: Create Release Draft
+        id: createDraft
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          VERSION: $(echo $(date +'%Y.%m.%d%H%M'))
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          tag_prefix: v-full-
+          tag_name: v${{ steps.properties.outputs.version }}-full
+          release_name: v${{ steps.properties.outputs.version }}-full
+          body: 'This is a draft release for the Full version of the plugin.'
+          draft: true
+
