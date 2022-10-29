@@ -27,7 +27,6 @@ jobs:
         id: properties
         shell: bash
         run: |
-          PROPERTIES="$(./gradlew properties --console=plain -q)"
           # set VERSION as YYYY.MM.DDHHmm
           VERSION="$(date +'%Y.%m.%d%H%M')"
           echo "::set-output name=version::$VERSION"
