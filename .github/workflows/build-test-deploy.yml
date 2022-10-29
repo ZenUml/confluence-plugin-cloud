@@ -24,6 +24,8 @@ jobs:
           VERSION="$(echo $(date +'%Y.%m.%d%H%M'))"
           echo "::set-output name=version::$VERSION"
           echo $VERSION
+      - name: echo version
+        run: echo ${{ steps.properties.outputs.version }}
 
   draft-release-lite:
     name: Draft release for the Lite version
