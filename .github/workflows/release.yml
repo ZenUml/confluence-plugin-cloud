@@ -1,7 +1,7 @@
 # GitHub Actions Workflow created for handling the release process based on the draft release prepared
 # with the Build workflow. Running the publishPlugin task requires the PUBLISH_TOKEN secret provided.
 
-name: Release
+name: Release ${{ github.event.release.tag_name }}
 on:
   release:
     types: [prereleased, released]
