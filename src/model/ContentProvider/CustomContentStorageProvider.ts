@@ -19,7 +19,7 @@ export class CustomContentStorageProvider implements StorageProvider {
   }
 
   async getCustomContentList() {
-    return await this.apWrapper.listCustomContentByType(['zenuml-content-sequence', 'zenuml-content-graph']);
+    return await this.apWrapper.searchCustomContent();
   }
 
   async save(diagram: Diagram): Promise<string> {

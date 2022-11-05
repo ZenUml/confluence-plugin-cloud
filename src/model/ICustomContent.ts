@@ -9,3 +9,9 @@ export interface ICustomContent {
   type?: string;
   value: Diagram;
 }
+
+export interface SearchResults {
+  size: number;
+  results: Array<ICustomContent>;
+  _links?: {context: string, next?: string}
+}
