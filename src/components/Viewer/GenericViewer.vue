@@ -1,6 +1,6 @@
 <template>
 <!-- screen-capture-content class is used in Attachment.js to select the node. -->
-<div class="viewer screen-capture-content mx-1 pr-2">
+<div class="viewer mx-1 pr-2">
   <Debug />
   <error-boundary>
   
@@ -28,7 +28,9 @@
           <slot name="title"></slot>
         </div>
       </div>
-      <div class="mx-auto" style="width: fit-content">
+      <div class="mx-auto screen-capture-content" style="width: fit-content">
+
+        
         <div class="mr-8">
           <slot></slot>
         </div>
