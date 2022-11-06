@@ -20,20 +20,29 @@ new Vue({
       saveAndExit: async () => {
         // @ts-ignore
         const graphXml = getGraphXml();
-        const diagram = {diagramType: DiagramType.Graph, graphXml: graphXml};
-        await saveToPlatform(diagram);
+
+        // @ts-ignore
+        window.diagram = Object.assign(window.diagram || {}, {diagramType: DiagramType.Graph, graphXml: graphXml});
+
+        // @ts-ignore
+        await saveToPlatform(window.diagram);
         /* eslint-disable no-undef */
         AP.dialog.close();
       }
     }
   })
 }).$mount('#save-and-go-back');
+
 async function initializeMacro() {
   const apWrapper = globals.apWrapper;
   await apWrapper.initializeContext();
 
   const {doc} = await compositeContentProvider.load();
   let graphXml = doc.graphXml;
+
+  // @ts-ignore
+  window.diagram = doc;
+
   if (doc?.compressed) {
     graphXml = decompress(doc.graphXml);
   }
@@ -52,7 +61,6 @@ async function initializeMacro() {
         setGraphXml(graphXml);
       }
     })();
-
   }
 }
 

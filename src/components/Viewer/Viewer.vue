@@ -4,7 +4,9 @@
   <Debug />
   <error-boundary>
   <div v-html="styles"></div>
-  <mermaid v-show="diagramType === 'mermaid'"/>
+  <div v-show="diagramType === 'mermaid'">
+    <mermaid-viewer/>
+  </div>
   <div v-show="diagramType === 'sequence'" @click="deselectAll">
     <styling-panel/>
     <diagram-frame>
@@ -32,7 +34,7 @@
 <script>
 import {mapState, mapGetters} from "vuex";
 import { VueSequence } from 'vue-sequence'
-import Mermaid from '../Mermaid'
+import MermaidViewer from './MermaidViewer.vue'
 import EventBus from '../../EventBus'
 import Debug from '@/components/Debug/Debug.vue'
 import StylingPanel from "@/components/StylingPanel";
@@ -57,7 +59,7 @@ export default {
   components: {
     Debug,
     ErrorBoundary,
-    Mermaid,
+    MermaidViewer,
     StylingPanel,
     DiagramFrame
   },

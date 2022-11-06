@@ -24,7 +24,7 @@ export class AtlasPage {
     const self = this;
     return new Promise((resolve) => {
       self._navigator.getLocation((data: any) => {
-        self._locationContext = Object.assign({}, data.context, {href: data.href}) as ILocationContext;
+        self._locationContext = Object.assign({}, data.context, {href: data.href}, {target: data.target}) as ILocationContext;
         resolve(self._locationContext);
       });
     });
@@ -44,6 +44,10 @@ export class AtlasPage {
 
   async getHref() {
     return (await this._getLocationContext()).href;
+  }
+
+  async getLocationTarget() {
+    return (await this._getLocationContext()).target;
   }
 
   // This API may return stale data. The most recent macro may not be returned.

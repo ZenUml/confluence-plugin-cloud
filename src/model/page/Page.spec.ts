@@ -1,5 +1,5 @@
 import {AtlasPage} from "@/model/page/AtlasPage";
-import {ILocationContext} from "@/model/ILocationContext";
+import {ILocationContext, LocationTarget} from "@/model/ILocationContext";
 
 describe('Page', () => {
   it('should know its page id', async () => {
@@ -9,7 +9,8 @@ describe('Page', () => {
         spaceKey: "space-001",
         contentType: "page",
         contentId: "page-001",
-        href: 'https://foo.atlassian.net/wiki/spaces/space-001/pages/1234/test1'
+        href: 'https://foo.atlassian.net/wiki/spaces/space-001/pages/1234/test1',
+        target: LocationTarget.ContentView
       }
     });
 

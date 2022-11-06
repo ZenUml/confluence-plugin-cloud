@@ -56,19 +56,11 @@
 	<script type="text/javascript" src="js/Shapes.js"></script>
 </head>
 <body class="geEditor" style="line-height: unset">
-	<!-- Input:
-	<br />
-	<textarea rows="24" cols="100" id="textarea" placeholder="mxGraphModel"></textarea>
-	<br />
-	<button onclick="show(document.getElementById('textarea').value);return false;">Show</button> -->
   <div id="debug"></div>
-  <div id="graph" class="screen-capture-content"></div>
-	<script type="text/javascript">
-		var graph = new Graph(document.getElementById('graph'));
-		graph.resizeContainer = true;
-		graph.setEnabled(false);
+  <div id="app"></div>
 
-		function setGraphStyle(styleUrl)
+	<script type="text/javascript">
+		function setGraphStyle(styleUrl, graph)
 		{
 			var req = mxUtils.load(styleUrl);
 			var root = req.getDocumentElement();
@@ -76,7 +68,7 @@
 			dec.decode(root, graph.stylesheet);
 		}
 
-		function setGraphXml(data)
+		function setGraphXml(data, graph)
 		{
 			var xmlDoc = mxUtils.parseXml(data);
 			var codec = new mxCodec(xmlDoc);

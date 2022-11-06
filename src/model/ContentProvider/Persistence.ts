@@ -9,11 +9,16 @@ export async function saveToPlatform(diagram: Diagram) {
   const apWrapper = new ApWrapper2(AP);
   const customContentStorageProvider = new CustomContentStorageProvider(apWrapper);
   const id = await customContentStorageProvider.save(diagram);
-  const macroData = await apWrapper.getMacroData();
-  const uuid = macroData?.uuid || uuidv4();
-  const body = diagram.getCoreData ? diagram.getCoreData() : '';
-  const params = { uuid, customContentId: id, updatedAt: new Date() };
-  apWrapper.saveMacro(params, body);
   trackEvent(diagram.diagramType, 'save_macro', 'custom_content');
+
+  if(await apWrapper.isInContentEdit()) {
+    const macroData = await apWrapper.getMacroData();
+    const uuid = macroData?.uuid || uuidv4();
+    const body = diagram.getCoreData ? diagram.getCoreData() : '';
+    const params = { uuid, customContentId: id, updatedAt: new Date() };
+    apWrapper.saveMacro(params, body);
+    trackEvent(diagram.diagramType, 'save_macro', 'macro_body');
+  }
+
   return id;
 }
