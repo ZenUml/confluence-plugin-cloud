@@ -4,9 +4,9 @@
   <Debug />
   <error-boundary>
   
-  <div>
-    <div class="frame relative pb-8 ml-1">
-      <div class="header flex">
+  <div class="mx-auto" style="width: fit-content">
+    <div class="frame relative pb-8 m-1" style="min-width: 300px">
+      <div class="header flex" :class="{flex: isDisplayMode, hidden: !isDisplayMode}">
         <div class="left">
           <div class="actions flex" :class="{flex: isDisplayMode, hidden: !isDisplayMode}">
             <div v-show="isLite">
@@ -28,8 +28,10 @@
           <slot name="title"></slot>
         </div>
       </div>
-      <div class="mr-8">
-        <slot></slot>
+      <div class="mx-auto" style="width: fit-content">
+        <div class="mr-8">
+          <slot></slot>
+        </div>
       </div>
     </div>
   </div>

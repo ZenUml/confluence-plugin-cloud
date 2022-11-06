@@ -8,7 +8,7 @@ import defaultContentProvider from "@/model/ContentProvider/CompositeContentProv
 import AP from "@/model/AP";
 import ApWrapper2 from "@/model/ApWrapper2";
 import {Diagram, DiagramType} from "@/model/Diagram/Diagram";
-import Mermaid from '@/components/Mermaid.vue';
+import MermaidViewer from '@/components/Viewer/MermaidViewer.vue';
 import ExtendedStore from './model/Store'
 
 Vue.use(Vuex)
@@ -24,7 +24,7 @@ console.debug('From sequence viewer dialog');
 
 function mountDiagramFrame(diagram: Diagram, store: any, id: string) {
   if (document.getElementById(id)) {
-    const component = diagram.diagramType === DiagramType.Sequence ? VueSequence.DiagramFrame : Mermaid;
+    const component = diagram.diagramType === DiagramType.Sequence ? VueSequence.DiagramFrame : MermaidViewer;
     const render = (h: Function) => h(component)
     new Vue({
       store,
