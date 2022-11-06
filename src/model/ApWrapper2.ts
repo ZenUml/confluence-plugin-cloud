@@ -11,6 +11,7 @@ import {DataSource, Diagram} from "@/model/Diagram/Diagram";
 import {ICustomContentResponseBody} from "@/model/ICustomContentResponseBody";
 import {AtlasPage} from "@/model/page/AtlasPage";
 import CheckPermission, {PermissionCheckRequestFunc} from "@/model/page/CheckPermission";
+import { LocationTarget } from './ILocationContext';
 
 const CUSTOM_CONTENT_TYPES = ['zenuml-content-sequence', 'zenuml-content-graph'];
 const SEARCH_CUSTOM_CONTENT_LIMIT = 1000;
@@ -28,6 +29,7 @@ export default class ApWrapper2 implements IApWrapper {
   currentUser: IUser | undefined;
   currentSpace: string | undefined;
   currentPageUrl: string | undefined;
+  locationTarget: LocationTarget | undefined;
 
   constructor(ap: IAp) {
     this.versionType = this.isLite() ? VersionType.Lite : VersionType.Full;
@@ -44,6 +46,7 @@ export default class ApWrapper2 implements IApWrapper {
       this.currentUser = await this._getCurrentUser();
       this.currentSpace = await this._getCurrentSpace();
       this.currentPageUrl = await this._getCurrentPageUrl();
+      this.locationTarget = await this._getLocationTarget();
     } catch (e: any) {
       console.error(e);
       try {
@@ -348,6 +351,14 @@ export default class ApWrapper2 implements IApWrapper {
 
   async _getCurrentPageUrl(): Promise<string> {
     return this.currentPageUrl || (this.currentPageUrl = await this._page.getHref());
+  }
+
+  async _getLocationTarget(): Promise<LocationTarget> {
+    return this.locationTarget || (this.locationTarget = await this._page.getLocationTarget());
+  }
+
+  async isInContentEdit(): Promise<boolean> {
+    return await this._getLocationTarget() === LocationTarget.ContentEdit;
   }
 
   async canUserEdit(): Promise<boolean> {
