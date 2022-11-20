@@ -1,6 +1,6 @@
 <template>
 <!-- screen-capture-content class is used in Attachment.js to select the node. -->
-<div class="viewer screen-capture-content mx-1 pr-2">
+<div class="viewer mx-1 pr-2" :class="{'screen-capture-content': diagramType === 'sequence'}">
   <Debug />
   <error-boundary>
   <div v-html="styles"></div>

@@ -28,9 +28,7 @@
           <slot name="title"></slot>
         </div>
       </div>
-      <div class="mx-auto screen-capture-content" style="width: fit-content">
-
-        
+      <div class="flex justify-center screen-capture-content">
         <div class="mr-8">
           <slot></slot>
         </div>
