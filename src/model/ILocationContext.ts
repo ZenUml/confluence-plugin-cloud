@@ -8,5 +8,6 @@ export interface ILocationContext {
 
 export enum LocationTarget {
   ContentView = 'contentview',
-  ContentEdit = 'contentedit'
+  ContentEdit = 'contentedit',
+  ContentCreate = 'contentcreate'
 }

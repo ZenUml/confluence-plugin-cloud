@@ -358,7 +358,8 @@ export default class ApWrapper2 implements IApWrapper {
   }
 
   async isInContentEdit(): Promise<boolean> {
-    return await this._getLocationTarget() === LocationTarget.ContentEdit;
+    const target = await this._getLocationTarget();
+    return target === LocationTarget.ContentEdit || target === LocationTarget.ContentCreate;
   }
 
   async canUserEdit(): Promise<boolean> {
