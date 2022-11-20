@@ -84,7 +84,7 @@
       if (doc === NULL_DIAGRAM) {
         this.doc ={
           diagramType: DiagramType.Sequence,
-          code: Example
+          code: Example.Sequence
         }
         this.$store.dispatch('updateCode', {code: Example.Sequence});
       }
