@@ -1,9 +1,9 @@
 <template>
 <!-- screen-capture-content class is used in Attachment.js to select the node. -->
-<div class="viewer mx-1 pr-2">
+<div class="generic viewer mx-1 pr-2">
   <Debug />
   <error-boundary>
-  
+
   <div class="mx-auto" style="width: fit-content">
     <div class="frame relative pb-8 m-1" style="min-width: 300px">
       <div class="header flex" :class="{flex: isDisplayMode, hidden: !isDisplayMode}">
@@ -93,7 +93,7 @@ export default {
     diagram(doc) {
       console.debug('Document changed', doc);
       this.$store.commit('updateDiagramType', ( !this.doc.diagramType || this.doc.diagramType === DiagramType.Unknown) ? DiagramType.Sequence : this.doc.diagramType);
-      
+
       this.$store.commit('code', doc.code || Example.Sequence);
       this.rawStyles = doc.styles || {};
       EventBus.$emit('diagramLoaded', doc.code, doc.diagramType);
