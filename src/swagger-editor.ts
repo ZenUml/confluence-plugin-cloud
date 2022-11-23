@@ -6,7 +6,6 @@ import SaveAndGoBackButton from "@/components/SaveAndGoBackButton.vue";
 // @ts-ignore
 import './assets/tailwind.css'
 
-import '@/components/Debug/DebugMounter.ts'
 import OpenApiExample from '@/model/OpenApi/OpenApiExample'
 import globals from '@/model/globals';
 import AP from "@/model/AP";

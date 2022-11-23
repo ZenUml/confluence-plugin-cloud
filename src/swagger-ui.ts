@@ -6,7 +6,6 @@ import SpecListener from './utils/spec-listener'
 import AP from "@/model/AP";
 import './assets/tailwind.css'
 
-import '@/components/Debug/DebugMounter.ts'
 import OpenApiExample from '@/model/OpenApi/OpenApiExample'
 import createAttachmentIfContentChanged from "@/model/Attachment";
 import {trackEvent} from "@/utils/window";

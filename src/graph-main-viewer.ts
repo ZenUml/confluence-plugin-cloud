@@ -4,7 +4,6 @@ import ExtendedStore from './model/Store'
 import AP from "@/model/AP";
 import createAttachmentIfContentChanged from "@/model/Attachment";
 import {trackEvent} from "@/utils/window";
-import '@/components/Debug/DebugMounter.ts'
 import './assets/tailwind.css'
 import globals from '@/model/globals';
 import {decompress} from '@/utils/compress';
