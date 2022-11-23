@@ -16,11 +16,13 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v2
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Setup Node
+        uses: actions/setup-node@v3
         with:
-          node-version: '16.x'
-          cache: 'yarn'
+          node-version: "16"
+          cache: yarn
       - run: yarn install
       - run: yarn test:unit
   staging-lite:
@@ -53,7 +55,7 @@ jobs:
           python-version: '3.10'
       - run: pip3 install pluploader
       - run: pluploader --base-url https://zenuml-stg.atlassian.net/wiki --user ${{ secrets.ZENUML_STAGE_UPM_USER }} --password ${{ secrets.ZENUML_STAGE_UPM_PASSWORD }} install --cloud --plugin-uri https://conf-stg-lite.pages.dev/descriptor
-      - uses: actions/setup-node@v2
+      - uses: actions/setup-node@v3
         with:
           node-version: '16.x'
           cache: 'yarn'
@@ -95,7 +97,7 @@ jobs:
           python-version: '3.10'
       - run: pip3 install pluploader
       - run: pluploader --base-url https://zenuml-stg.atlassian.net/wiki --user ${{ secrets.ZENUML_STAGE_UPM_USER }} --password ${{ secrets.ZENUML_STAGE_UPM_PASSWORD }} install --cloud --plugin-uri https://conf-stg-full.pages.dev/descriptor
-      - uses: actions/setup-node@v2
+      - uses: actions/setup-node@v3
         with:
           node-version: '16.x'
           cache: 'yarn'
