@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-114996686-1"></script>
+  <script type="text/javascript" src="js/google-analytics.js?version=2022.01"></script>
+  <title>Async API Viewer</title>
+
+  <meta charset="utf-8">
+  <script type="text/javascript" src="js/util.js"></script>
+  <script type="text/javascript" src="https://connect-cdn.atl-paas.net/all.js"></script>
+
+  <script id="connect-loader"></script>
+
+  <script type="text/javascript">
+    function iframeLoaded() {
+      const frame = document.getElementById('mainFrame');
+      if(frame) {
+        frame.height = frame.contentWindow.document.body.scrollHeight + "px";
+        console.log('frame.height', frame.height)
+        AP.resize();
+      }
+    }
+  </script>
+</head>
+<body>
+<div id="app">
+</div>
+<!-- built files will be auto injected -->
+</body>
+</html>

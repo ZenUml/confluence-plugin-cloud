@@ -230,6 +230,60 @@
             "defaultValue": "None"
           }
         ]
+      },
+      {
+        "key": "zenuml-asyncapi-macro",
+        "name": {
+          "value": "ZenUML Async API Spec"
+        },
+        "renderModes": {
+          "default": {
+            "url": "/attachment?version=__VERSION__&spaceKey={space.key}&pageId={page.id}&pageVersion={page.version}&macroId={macro.id}&uuid={uuid}&addonKey=__ADDON_KEY__"
+          }
+        },
+        "url": "/asyncapi-viewer.html?version=__VERSION__&spaceKey={space.key}&pageId={page.id}&pageVersion={page.version}&macroId={macro.id}&uuid={uuid}&outputType={output.type}&addonKey=__ADDON_KEY__",
+        "description": {
+          "value": "Async API"
+        },
+        "outputType": "block",
+        "bodyType": "none",
+        "editor": {
+          "url": "/asyncapi-editor.html?version=__VERSION__&addonKey=__ADDON_KEY__",
+          "editTitle": {
+            "value": "Async API"
+          },
+          "insertTitle": {
+            "value": "Async API"
+          },
+          "width": "100%",
+          "height": "100%",
+          "cacheable": true
+        },
+        "icon": {
+          "width": 16,
+          "height": 16,
+          "url": "image/zenuml_logo.png"
+        },
+        "documentation": {
+          "url": "https://zenuml.atlassian.net/wiki/spaces/Doc/overview"
+        },
+        "categories": [
+          "visuals"
+        ],
+        "featured": true,
+        "parameters": [
+          {
+            "identifier": "diagramName",
+            "name": {
+              "value": "Diagram name (do not change)",
+              "i18n": "diagramName"
+            },
+            "type": "string",
+            "required": true,
+            "multiple": false,
+            "defaultValue": "None"
+          }
+        ]
       }
     ],
     "customContent": [

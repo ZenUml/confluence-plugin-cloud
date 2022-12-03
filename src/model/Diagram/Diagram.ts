@@ -12,6 +12,7 @@ export enum DiagramType {
   Mermaid = 'mermaid',
   Graph = 'graph',
   OpenApi = 'OpenAPI',
+  AsyncApi = 'AsyncApi',
   Unknown = 'unknown'
 }
 
