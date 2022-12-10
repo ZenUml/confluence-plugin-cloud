@@ -6,6 +6,7 @@
   "main": "src/index.js",
   "dependencies": {
     "@asyncapi/react-component": "^0.17.5",
+    "html-to-image": "^1.11.1",
     "js-base64": "^3.7.3",
     "react": "^16.14.0",
     "react-dom": "^16.14.0",

@@ -2,6 +2,8 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import ExtendedStore from './model/Store'
 import { trackEvent } from "@/utils/window";
+import globals from '@/model/globals';
+import createAttachmentIfContentChanged from "@/model/Attachment";
 import AP from "@/model/AP";
 import defaultContentProvider from "@/model/ContentProvider/CompositeContentProvider";
 import ApWrapper2 from "@/model/ApWrapper2";
@@ -28,6 +30,17 @@ function loadMainFrame(data: string) {
   }
 }
 
+async function createAttachment(code?: string) {
+  try {
+    if (await globals.apWrapper.canUserEdit()) {
+      await createAttachmentIfContentChanged(code);
+    }
+  } catch (e) {
+    // Do not re-throw the error
+    console.error('Error when creating attachment', e);
+  }
+}
+
 async function initializeMacro() {
   try {
     const contentProvider = defaultContentProvider(new ApWrapper2(AP));
@@ -35,6 +48,10 @@ async function initializeMacro() {
 
     //@ts-ignore
     loadMainFrame(doc.code);
+
+    setTimeout(async () => {
+      await createAttachment(doc.code);
+    }, 1500);
 
   } catch (e) {
     console.error('Error on initializing macro:', e);
