@@ -4,6 +4,7 @@ import AsyncApiComponent from "@asyncapi/react-component";
 import { decode } from 'js-base64';
 import "@asyncapi/react-component/lib/styles/fiori.css";
 import * as htmlToImage from 'html-to-image';
+import "./styles.css";
 
 const urlParams = new URLSearchParams(window.location.search);
 const base64 = urlParams.get('base64');
