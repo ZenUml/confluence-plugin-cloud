@@ -418,6 +418,22 @@
         "name": {
           "value": "ZenUML OpenAPI Editor Dialog"
         }
+      },
+      {
+        "key": "zenuml-content-asyncapi-viewer-dialog",
+        "location": "none",
+        "url": "/asyncapi-viewer.html?version=__VERSION__&spaceKey={space.key}&addonKey=__ADDON_KEY__&contentKey=__CONTENT_KEY__",
+        "name": {
+          "value": "ZenUML AsyncAPI Viewer Dialog"
+        }
+      },
+      {
+        "key": "zenuml-content-asyncapi-editor-dialog",
+        "location": "none",
+        "url": "/asyncapi-editor.html?version=__VERSION__&spaceKey={space.key}&addonKey=__ADDON_KEY__&contentKey=__CONTENT_KEY__",
+        "name": {
+          "value": "ZenUML AsyncAPI Editor Dialog"
+        }
       }
     ],
     "postInstallPage": {

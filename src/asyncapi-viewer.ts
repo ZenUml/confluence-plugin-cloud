@@ -9,6 +9,7 @@ import defaultContentProvider from "@/model/ContentProvider/CompositeContentProv
 import ApWrapper2 from "@/model/ApWrapper2";
 import AsyncApiViewer from "@/components/Viewer/AsyncApiViewer.vue";
 import { encode } from 'js-base64';
+import EventBus from './EventBus'
 
 Vue.config.productionTip = false
 Vue.use(Vuex)
@@ -60,3 +61,25 @@ async function initializeMacro() {
 }
 
 initializeMacro();
+
+EventBus.$on('edit', () => {
+  // @ts-ignore
+  AP.dialog.create(
+    {
+      key: 'zenuml-content-asyncapi-editor-dialog',
+        chrome: false,
+        width: "100%",
+        height: "100%",
+    }).on('close', initializeMacro);
+});
+
+EventBus.$on('fullscreen', () => {
+  // @ts-ignore
+  AP.dialog.create(
+    {
+      key: 'zenuml-content-asyncapi-viewer-dialog',
+      chrome: true,
+      width: "100%",
+      height: "100%",
+    });
+});
