@@ -33,7 +33,7 @@
 
 <script>
 import {mapState, mapGetters} from "vuex";
-import { VueSequence } from 'vue-sequence'
+import { VueSequence } from '@zenuml/core'
 import MermaidViewer from './MermaidViewer.vue'
 import EventBus from '../../EventBus'
 import Debug from '@/components/Debug/Debug.vue'

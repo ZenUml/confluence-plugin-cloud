@@ -1,9 +1,7 @@
-import Vue from 'vue'
 import './assets/tailwind.css'
-import {VueSequence} from 'vue-sequence'
-import 'vue-sequence/dist/vue-sequence.css'
+import {VueSequence} from '@zenuml/core';
+import '@zenuml/core/dist/style.css'
 
-import Vuex from 'vuex'
 import defaultContentProvider from "@/model/ContentProvider/CompositeContentProvider";
 import AP from "@/model/AP";
 import ApWrapper2 from "@/model/ApWrapper2";
@@ -11,6 +9,8 @@ import {Diagram, DiagramType} from "@/model/Diagram/Diagram";
 import MermaidViewer from '@/components/Viewer/MermaidViewer.vue';
 import ExtendedStore from './model/Store'
 
+const Vue = VueSequence.Vue;
+const Vuex = VueSequence.Vuex;
 Vue.use(Vuex)
 
 async function getDiagram(): Promise<Diagram> {
@@ -19,8 +19,6 @@ async function getDiagram(): Promise<Diagram> {
   // Do not fall back to example. If it is empty show empty.
   return doc;
 }
-
-console.debug('From sequence viewer dialog');
 
 function mountDiagramFrame(diagram: Diagram, store: any, id: string) {
   if (document.getElementById(id)) {

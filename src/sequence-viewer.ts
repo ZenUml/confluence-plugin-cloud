@@ -1,6 +1,5 @@
-import Vue from 'vue'
-import Vuex from 'vuex'
-import 'vue-sequence/dist/vue-sequence.css'
+import { VueSequence } from '@zenuml/core';
+import '@zenuml/core/dist/style.css'
 import './assets/tailwind.css'
 
 import './model/MockApConfluence'
@@ -15,6 +14,9 @@ import defaultContentProvider from "@/model/ContentProvider/CompositeContentProv
 import ApWrapper2 from "@/model/ApWrapper2";
 import AP from "@/model/AP";
 
+const Vue = VueSequence.Vue;
+const Vuex = VueSequence.Vuex;
+
 Vue.config.productionTip = false
 Vue.use(Vuex)
 
@@ -23,7 +25,6 @@ const store = new Vuex.Store(ExtendedStore);
 let render = (h: Function) => h(Viewer);
 
 if(document.getElementById('app')) {
-    // @ts-ignore
   new Vue({
       store,
       render // with this method, we don't need to use full version of vue

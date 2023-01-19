@@ -1,12 +1,10 @@
-import Vue from 'vue'
-import Vuex from 'vuex'
-
+import { VueSequence } from '@zenuml/core';
 import Workspace from './components/Workspace.vue'
 import mermaid from 'mermaid'
 
 // ==== CSS ====
 import './assets/tailwind.css'
-import 'vue-sequence/dist/vue-sequence.css'
+import '@zenuml/core/dist/style.css'
 
 import ExtendedStore from './model/Store'
 import EventBus from './EventBus'
@@ -15,8 +13,9 @@ import {DataSource} from "@/model/Diagram/Diagram";
 import {saveToPlatform} from "@/model/ContentProvider/Persistence";
 
 import './utils/IgnoreEsc.ts'
+const Vue = VueSequence.Vue;
+const Vuex = VueSequence.Vuex;
 
-// eslint-disable-next-line
 // @ts-ignore
 window.mermaid = mermaid
 
@@ -32,7 +31,7 @@ const store = new Vuex.Store(ExtendedStore);
 if(document.getElementById('app')) {
     new Vue({
       store,
-      render: h => h(Workspace) // with this method, we don't need to use full version of vew
+      render: (h: any) => h(Workspace) // with this method, we don't need to use full version of vew
     }).$mount('#app')
 }
 // @ts-ignore
