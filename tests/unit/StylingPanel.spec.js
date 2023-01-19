@@ -1,8 +1,8 @@
 import { mount, createLocalVue } from "@vue/test-utils"
-import Vuex from 'vuex'
-import { VueSequence } from 'vue-sequence'
+import { VueSequence } from '@zenuml/core'
 import StylingPanel from '../../src/components/StylingPanel'
 const localVue = createLocalVue()
+const Vuex = VueSequence.Vuex;
 localVue.use(Vuex)
 
 describe('StylingPanel', () => {
