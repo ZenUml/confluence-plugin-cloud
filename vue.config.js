@@ -148,7 +148,7 @@ module.exports = {
       new SpeedMeasureWebpackPlugin(),
     ],
     resolve: {
-      fallback: {"stream": false},
+      fallback: {"stream": false, "fs": false},
       alias: {
         // 'vue$': 'vue/dist/vue.esm.js' // Full version with template compiler
       }

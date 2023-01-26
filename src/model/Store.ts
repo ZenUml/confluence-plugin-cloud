@@ -1,4 +1,4 @@
-import {VueSequence} from 'vue-sequence'
+import {VueSequence} from '@zenuml/core';
 import EventBus from '../EventBus'
 import {DiagramType, NULL_DIAGRAM} from "@/model/Diagram/Diagram";
 import globals from '@/model/globals';
