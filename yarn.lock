@@ -4070,10 +4070,10 @@
   resolved "https://registry.yarnpkg.com/@xtuc/long/-/long-4.2.2.tgz#d291c6a4e97989b5c61d9acf396ae4fe133a718d"
   integrity sha512-NuHqBY1PB/D8xU6s/thBgOAiAP7HOYDQ32+BFZILJ8ivkUkAHQnWfn6WhL79Owj1qmUnoN/YPhktdIoucipkAQ==
 
-"@zenuml/core@^2.0.28":
-  version "2.0.28"
-  resolved "https://registry.yarnpkg.com/@zenuml/core/-/core-2.0.28.tgz#770ea225a0af383d1c4636c5a699883ffe7ea74e"
-  integrity sha512-QDqLn+kaDQ5zKXU8peMFntRnIu4Q1HDFGhqPom9W23eZGLYsKgInm/0MRVjI+6BBhlcKgG/GiA77/SgRC+i5pA==
+"@zenuml/core@^2.0.30":
+  version "2.0.30"
+  resolved "https://registry.yarnpkg.com/@zenuml/core/-/core-2.0.30.tgz#e0e893ec99126c09c7055e2071336b7a6f6e07c5"
+  integrity sha512-/4EOqf82dVrw9sGnKrh0pccmLWCzeIDEpxFTYTMZUuVrHovFDWx+QlKYJUBwzPikG9R3LlyId/cDZYYJG/klBg==
   dependencies:
     "@types/assert" "^1.5.4"
     "@types/ramda" "^0.28.0"
