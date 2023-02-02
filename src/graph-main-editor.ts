@@ -45,7 +45,11 @@ async function initializeMacro() {
   window.diagram = doc;
 
   if (doc?.compressed) {
-    graphXml = decompress(doc.graphXml);
+    if (!graphXml?.startsWith('<mxGraphModel')) {
+      graphXml = decompress(doc.graphXml);
+    }
+    delete doc.compressed;
+    console.debug('delete doc.compressed');
   }
 
   if(graphXml) {

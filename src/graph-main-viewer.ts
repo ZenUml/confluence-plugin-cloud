@@ -66,10 +66,10 @@ async function loadDiagram() {
   const compositeContentProvider = defaultContentProvider(new ApWrapper2(AP));
   const {doc} = await compositeContentProvider.load();
   let graphXml = doc.graphXml;
-  if (doc?.compressed) {
+  if (doc?.compressed && (!graphXml?.startsWith('<mxGraphModel'))) {
     graphXml = decompress(doc.graphXml);
   }
-  console.debug('graphXml', graphXml);
+  console.debug('doc', doc);
   if(graphXml) {
     renderGraph(graphXml);
   }
