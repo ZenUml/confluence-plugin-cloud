@@ -25,7 +25,8 @@ new Vue({
         window.diagram = Object.assign(window.diagram || {}, {diagramType: DiagramType.Graph, graphXml: graphXml});
 
         // @ts-ignore
-        await saveToPlatform(window.diagram);
+        // await saveToPlatform(window.diagram);
+        console.log('Save and exit', window.diagram);
         /* eslint-disable no-undef */
         AP.dialog.close();
       }
