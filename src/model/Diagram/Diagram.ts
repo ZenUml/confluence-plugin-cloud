@@ -42,7 +42,11 @@ export class Diagram {
   styles?: object = {};
   mermaidCode?: string = '';
   graphXml?: string = '';
-  compressed?: boolean = false;
+  /**
+   * No diagrams need to be compressed anymore. This is kept for backward compatibility.
+   * @deprecated This will be removed soon.
+   */
+  compressed?: boolean = undefined;
   source?: DataSource = DataSource.Unknown;
 
   public getCoreData?(): string {
@@ -58,10 +62,8 @@ const NULL_DIAGRAM = {
   styles: {},
   mermaidCode: '',
   graphXml: '',
-  compressed: false,
   source: DataSource.Unknown,
   payload: undefined,
 } as Diagram;
-
 
 export {NULL_DIAGRAM};
