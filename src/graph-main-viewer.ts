@@ -11,7 +11,6 @@ import defaultContentProvider from "@/model/ContentProvider/CompositeContentProv
 import ApWrapper2 from "@/model/ApWrapper2";
 import GraphViewer from "@/components/Viewer/GraphViewer.vue";
 import EventBus from './EventBus'
-import { Diagram } from './model/Diagram/Diagram';
 
 Vue.config.productionTip = false
 Vue.use(Vuex)
@@ -67,9 +66,13 @@ async function loadDiagram() {
   const {doc} = await compositeContentProvider.load();
   let graphXml = doc.graphXml;
   if (doc?.compressed) {
-    graphXml = decompress(doc.graphXml);
+    trackEvent('compressed_field_viewer', 'load', 'warning');
+    if (!graphXml?.startsWith('<mxGraphModel')) {
+      graphXml = decompress(doc.graphXml);
+      trackEvent('compressed_content_viewer', 'load', 'warning');
+    }
   }
-  console.debug('graphXml', graphXml);
+  console.debug('doc', doc);
   if(graphXml) {
     renderGraph(graphXml);
   }

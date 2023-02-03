@@ -11,6 +11,7 @@ import {DiagramType} from "@/model/Diagram/Diagram";
 import {saveToPlatform} from "@/model/ContentProvider/Persistence";
 import ApWrapper2 from "@/model/ApWrapper2";
 import './utils/IgnoreEsc.ts'
+import {trackEvent} from '@/utils/window';
 
 const compositeContentProvider = defaultContentProvider(new ApWrapper2(AP));
 
@@ -26,6 +27,8 @@ new Vue({
 
         // @ts-ignore
         await saveToPlatform(window.diagram);
+        // @ts-ignore
+        console.log('Save and exit', window.diagram);
         /* eslint-disable no-undef */
         AP.dialog.close();
       }
@@ -44,7 +47,13 @@ async function initializeMacro() {
   window.diagram = doc;
 
   if (doc?.compressed) {
-    graphXml = decompress(doc.graphXml);
+    trackEvent('compressed_field_editor', 'load', 'warning');
+    if (!graphXml?.startsWith('<mxGraphModel')) {
+      graphXml = decompress(doc.graphXml);
+      trackEvent('compressed_content_editor', 'load', 'warning');
+    }
+    delete doc.compressed;
+    console.debug('delete doc.compressed');
   }
 
   if(graphXml) {
