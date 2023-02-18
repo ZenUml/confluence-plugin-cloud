@@ -292,30 +292,30 @@
 <fillstroke/>
 </foreground>
 </shape>
-<shape name="Extract or Measurement" h="61.03" w="95.34" aspect="variable" strokewidth="inherit">
-<connections>
-<constraint x="0.5" y="0" perimeter="0" name="N"/>
-<constraint x="0.5" y="1" perimeter="0" name="S"/>
-<constraint x="0.22" y="0.5" perimeter="0" name="W"/>
-<constraint x="0.78" y="0.5" perimeter="0" name="E"/>
-<constraint x="0.01" y="0.97" perimeter="0" name="SW"/>
-<constraint x="0.99" y="0.97" perimeter="0" name="SE"/>
-</connections>
-<background>
-<path>
-<move x="3.64" y="61.02"/>
-<line x="91.64" y="61.02"/>
-<arc rx="6" ry="4" x-axis-rotation="30" large-arc-flag="0" sweep-flag="0" x="94.64" y="56.02"/>
-<line x="49.64" y="1.02"/>
-<arc rx="3" ry="3" x-axis-rotation="0" large-arc-flag="0" sweep-flag="0" x="45.64" y="1.02"/>
-<line x="0.64" y="56.02"/>
-<arc rx="6" ry="4" x-axis-rotation="-35" large-arc-flag="0" sweep-flag="0" x="3.64" y="61.02"/>
-<close/>
-</path>
-</background>
-<foreground>
-<fillstroke/>
-</foreground>
+<shape aspect="variable" h="60.84" name="Extract or Measurement" strokewidth="inherit" w="95.01">
+    <connections>
+        <constraint name="N" perimeter="0" x="0.5" y="0"/>
+        <constraint name="S" perimeter="0" x="0.5" y="1"/>
+        <constraint name="W" perimeter="0" x="0.22" y="0.5"/>
+        <constraint name="E" perimeter="0" x="0.78" y="0.5"/>
+        <constraint name="SW" perimeter="0" x="0.01" y="0.97"/>
+        <constraint name="SE" perimeter="0" x="0.99" y="0.97"/>
+    </connections>
+    <background>
+        <path>
+            <move x="3.5" y="60.84"/>
+            <line x="91.5" y="60.84"/>
+            <arc large-arc-flag="0" rx="3.5" ry="3.5" sweep-flag="0" x="94.5" x-axis-rotation="0" y="55.84"/>
+            <line x="49.5" y="0.84"/>
+            <arc large-arc-flag="0" rx="3.5" ry="3.5" sweep-flag="0" x="45.5" x-axis-rotation="0" y="0.84"/>
+            <line x="0.5" y="55.84"/>
+            <arc large-arc-flag="0" rx="3.5" ry="3.5" sweep-flag="0" x="3.5" x-axis-rotation="0" y="60.84"/>
+            <close/>
+        </path>
+    </background>
+    <foreground>
+        <fillstroke/>
+    </foreground>
 </shape>
 <shape name="Internal Storage" h="70" w="70" aspect="variable" strokewidth="inherit">
 <connections>
@@ -329,7 +329,7 @@
 <constraint x="0.98" y="0.985" perimeter="0" name="SE"/>
 </connections>
 <background>
-<roundrect x="0" y="0" w="70" h="70" arcsize="7.142857142857142"/>
+<roundrect x="0" y="0" w="70" h="70" arcsize="7.143"/>
 </background>
 <foreground>
 <fillstroke/>
@@ -386,14 +386,15 @@
 </connections>
 <background>
 <path>
-<move x="0" y="25"/>
-<line x="93" y="0"/>
+<move x="0" y="28.73"/>
+<arc rx="5" ry="5" x-axis-rotation="0" large-arc-flag="0" sweep-flag="1" x="3.7" y="24"/>
+<line x="91.7" y="0.17"/>
 <arc rx="5" ry="5" x-axis-rotation="0" large-arc-flag="0" sweep-flag="1" x="98" y="5"/>
 <line x="98" y="55"/>
 <arc rx="5" ry="5" x-axis-rotation="0" large-arc-flag="0" sweep-flag="1" x="94" y="60"/>
 <line x="5" y="60"/>
 <arc rx="5" ry="5" x-axis-rotation="0" large-arc-flag="0" sweep-flag="1" x="0" y="55"/>
-<line x="0" y="25"/>
+<line x="0" y="28.73"/>
 <close/>
 </path>
 </background>
@@ -430,32 +431,32 @@
 <fillstroke/>
 </foreground>
 </shape>
-<shape name="Merge or Storage" h="61.03" w="95.34" aspect="variable" strokewidth="inherit">
-<connections>
-<constraint x="0.5" y="0" perimeter="0" name="N"/>
-<constraint x="0.5" y="1" perimeter="0" name="S"/>
-<constraint x="0" y="0.5" perimeter="0" name="W"/>
-<constraint x="1" y="0.5" perimeter="0" name="E"/>
-<constraint x="0" y="0" perimeter="0" name="NW"/>
-<constraint x="0" y="1" perimeter="0" name="SW"/>
-<constraint x="1" y="0" perimeter="0" name="NE"/>
-<constraint x="1" y="1" perimeter="0" name="SE"/>
-</connections>
-<background>
-<path>
-<move x="3.64" y="0.01"/>
-<line x="91.64" y="0.01"/>
-<arc rx="6" ry="4" x-axis-rotation="-30" large-arc-flag="0" sweep-flag="1" x="94.64" y="5.01"/>
-<line x="49.64" y="60.01"/>
-<arc rx="3" ry="3" x-axis-rotation="0" large-arc-flag="0" sweep-flag="1" x="45.64" y="60.01"/>
-<line x="0.64" y="5.01"/>
-<arc rx="6" ry="4" x-axis-rotation="35" large-arc-flag="0" sweep-flag="1" x="3.64" y="0.01"/>
-<close/>
-</path>
-</background>
-<foreground>
-<fillstroke/>
-</foreground>
+<shape aspect="variable" h="60.84" name="Merge or Storage" strokewidth="inherit" w="95.01">
+    <connections>
+        <constraint name="N" perimeter="0" x="0.5" y="0"/>
+        <constraint name="S" perimeter="0" x="0.5" y="1"/>
+        <constraint name="W" perimeter="0" x="0" y="0.5"/>
+        <constraint name="E" perimeter="0" x="1" y="0.5"/>
+        <constraint name="NW" perimeter="0" x="0" y="0"/>
+        <constraint name="SW" perimeter="0" x="0" y="1"/>
+        <constraint name="NE" perimeter="0" x="1" y="0"/>
+        <constraint name="SE" perimeter="0" x="1" y="1"/>
+    </connections>
+    <background>
+        <path>
+            <move x="3.5" y="0"/>
+            <line x="91.5" y="0"/>
+            <arc large-arc-flag="0" rx="3.5" ry="3.5" sweep-flag="1" x="94.5" x-axis-rotation="0" y="5"/>
+            <line x="49.5" y="60"/>
+            <arc large-arc-flag="0" rx="3.5" ry="3.5" sweep-flag="1" x="45.5" x-axis-rotation="0" y="60"/>
+            <line x="0.5" y="5"/>
+            <arc large-arc-flag="0" rx="3.5" ry="3.5" sweep-flag="1" x="3.5" x-axis-rotation="0" y="0"/>
+            <close/>
+        </path>
+    </background>
+    <foreground>
+        <fillstroke/>
+    </foreground>
 </shape>
 <shape name="Multi-Document" h="60.28" w="88" aspect="variable" strokewidth="inherit">
 <connections>
@@ -664,7 +665,7 @@
 <constraint x="0.98" y="0.985" perimeter="0" name="SE"/>
 </connections>
 <background>
-<roundrect x="0" y="0" w="98" h="60" arcsize="6.717687074829931"/>
+<roundrect x="0" y="0" w="98" h="60" arcsize="6.718"/>
 </background>
 <foreground>
 <fillstroke/>
