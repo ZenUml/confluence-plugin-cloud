@@ -5,7 +5,7 @@
 import MockAp from "@/model/MockAp";
 
 // @ts-ignore
-const isEmbedded = window.location.search.includes('embedded=true');
+export const isEmbedded = window.location.search.includes('embedded=true');
 
 // @ts-ignore
 const providedAp = isEmbedded ? window.parent.AP : window.AP;

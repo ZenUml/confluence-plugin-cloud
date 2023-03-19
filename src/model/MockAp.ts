@@ -66,6 +66,7 @@ export default class MockAp implements IAp {
   public navigator: any
   public dialog: any;
   public user: any;
+  public context: any;
 
   private readonly contentId: any
   private requestHandlers: Array<RequestHandler> = []

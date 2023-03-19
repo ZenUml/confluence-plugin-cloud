@@ -21,8 +21,10 @@ async function getDiagram(): Promise<Diagram> {
 }
 
 function mountDiagramFrame(diagram: Diagram, store: any, id: string) {
+  console.log('sequence-viewer-dialog.ts - using app', document.getElementById(id))
   if (document.getElementById(id)) {
     const component = diagram.diagramType === DiagramType.Sequence ? VueSequence.DiagramFrame : MermaidViewer;
+    console.log('sequence-viewer-dialog.ts - using component', component)
     const render = (h: Function) => h(component)
     new Vue({
       store,

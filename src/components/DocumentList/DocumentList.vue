@@ -42,8 +42,8 @@
                 </div>
 
                 <a @click="picked = customContentItem" href="#" v-for="customContentItem in containerPage.customContents" :key="customContentItem.id"
-                 :class="{'bg-gray-100': customContentItem.id === (picked && picked.id)}"
-                 class="block px-6 py-3 bg-white border-t hover:bg-gray-50">
+                 :class="{'bg-gray-100': customContentItem.id === (picked && picked.id), 'bg-white': customContentItem.id !== (picked && picked.id)}"
+                 class="block px-6 py-3 border-t hover:bg-gray-50">
                   <span class="text-sm font-semibold text-gray-900">{{ customContentItem.title }}</span>
                   <div class="flex justify-between">
                     <span class="text-sm font-semibold text-gray-500">{{ customContentItem.value.diagramType }}</span>
@@ -120,7 +120,7 @@
         function getViewerUrl(diagramType) {
           if(diagramType === DiagramType.Sequence || diagramType === DiagramType.Mermaid) {
             return '/sequence-viewer.html';
-          }
+        }
           if(diagramType === DiagramType.Graph) {
             return '/drawio/viewer.html';
           }
@@ -145,11 +145,11 @@
       const apWrapper = new ApWrapper2(AP);
       const idProvider = new MacroIdProvider(apWrapper);
       const customContentStorageProvider = new CustomContentStorageProvider(apWrapper);
-      const customContentId = idProvider.getId();
+      const customContentId = await idProvider.getId();
       console.debug(`picked custom content id: ${customContentId}`);
       this.customContentList = await customContentStorageProvider.getCustomContentList();
       this.picked = this.customContentList.filter(customContentItem => customContentItem?.id === customContentId)[0];
-      console.debug(`picked custom content: ${this.picked}`);
+      console.debug(`picked custom content:`, this.picked);
       
       try {
         const atlasPage = new AtlasPage(AP);
