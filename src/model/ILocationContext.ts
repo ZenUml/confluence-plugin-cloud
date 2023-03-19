@@ -20,8 +20,10 @@ export interface IConfluence {
   space: ISpace;
 }
 export interface IContent {
-  plugin: string; //e.g. ac:my-api:async-api-doc
-  type: string; //e.g. custom
+  plugin?: string; //e.g. ac:my-api:async-api-doc
+  type: string; //e.g. custom/page
+  version?: string; //e.g. 143
+  id?: string; //e.g. 32997
 }
 export interface ISpace {
   key: string; //e.g. WHIMET4

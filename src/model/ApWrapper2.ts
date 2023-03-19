@@ -3,7 +3,7 @@ import time from '@/utils/timer';
 import {IApWrapper, VersionType} from "@/model/IApWrapper";
 import {IMacroData} from "@/model/IMacroData";
 import {IContentProperty} from "@/model/IContentProperty";
-import {ICustomContent, SearchResults} from "@/model/ICustomContent";
+import {ICustomContent, ICustomContentV2, SearchResults} from "@/model/ICustomContent";
 import {IUser} from "@/model/IUser";
 import {IConfluence} from "@/model/IConfluence";
 import {IAp} from "@/model/IAp";
@@ -11,7 +11,7 @@ import {DataSource, Diagram} from "@/model/Diagram/Diagram";
 import {ICustomContentResponseBody, ICustomContentResponseBodyV2} from "@/model/ICustomContentResponseBody";
 import {AtlasPage} from "@/model/page/AtlasPage";
 import CheckPermission, {PermissionCheckRequestFunc} from "@/model/page/CheckPermission";
-import { LocationTarget } from './ILocationContext';
+import { ISpace, LocationTarget } from './ILocationContext';
 
 const CUSTOM_CONTENT_TYPES = ['zenuml-content-sequence', 'zenuml-content-graph'];
 const SEARCH_CUSTOM_CONTENT_LIMIT = 1000;
@@ -27,7 +27,8 @@ export default class ApWrapper2 implements IApWrapper {
   _user: any;
   _page: AtlasPage;
   currentUser: IUser | undefined;
-  currentSpace: string | undefined;
+  currentSpace: ISpace | undefined;
+  currentPageId: string | undefined;
   currentPageUrl: string | undefined;
   locationTarget: LocationTarget | undefined;
 
@@ -47,6 +48,7 @@ export default class ApWrapper2 implements IApWrapper {
       this.currentSpace = await this._getCurrentSpace();
       this.currentPageUrl = await this._getCurrentPageUrl();
       this.locationTarget = await this._getLocationTarget();
+      this.currentPageId = await this._page.getPageId();
     } catch (e: any) {
       console.error(e);
       try {
@@ -137,7 +139,7 @@ export default class ApWrapper2 implements IApWrapper {
       "type": type,
       "title": content.title || `Untitled ${new Date().toISOString()}`,
       "space": {
-        "key": this.currentSpace || await this._getCurrentSpace()
+        "key": (await this._getCurrentSpace()).key
       },
       "body": {
         "raw": {
@@ -158,6 +160,28 @@ export default class ApWrapper2 implements IApWrapper {
       data: JSON.stringify(bodyData)
     });
     return this.parseCustomContentResponse(response);
+  }
+
+  async createCustomContentV2(content: Diagram): Promise<ICustomContentResponseBodyV2> {
+    const type = this.getCustomContentType();
+    const data: any = {
+      "type": type,
+      "spaceId": (await this._getCurrentSpace()).id,
+      "pageId": await this._getCurrentPageId(),
+      "title": content.title || `Untitled ${new Date().toISOString()}`,
+      "body": {
+        "value": JSON.stringify(content),
+        "representation": "raw"
+      }
+    };
+
+    const response = await this._requestFn({
+      url: '/api/v2/custom-content',
+      type: 'POST',
+      contentType: 'application/json',
+      data: JSON.stringify(data)
+    });
+    return this.parseCustomContentResponseV2(response);
   }
 
   async updateCustomContent(contentObj: ICustomContent, newBody: Diagram) {
@@ -193,6 +217,37 @@ export default class ApWrapper2 implements IApWrapper {
     return this.parseCustomContentResponse(response);
   }
 
+  async updateCustomContentV2(content: ICustomContentV2, newBody: Diagram): Promise<ICustomContentResponseBodyV2> {
+    let newVersionNumber = 1;
+
+    if (content.version?.number) {
+      newVersionNumber += content.version?.number
+    }
+    const data = {
+      "id": content.id,
+      "type": content.type,
+      "status": content.status,
+      "spaceId": content.spaceId,
+      "pageId": content.pageId,
+      "title": newBody.title || content.title,
+      "body": {
+        "value": JSON.stringify(newBody),
+        "representation": "raw"
+      },
+      "version": {
+        "number": newVersionNumber
+      }
+    };
+
+    const response = await this._requestFn({
+      url: `/api/v2/custom-content/${content.id}`,
+      type: 'PUT',
+      contentType: 'application/json',
+      data: JSON.stringify(data)
+    });
+    return this.parseCustomContentResponseV2(response);
+  }
+
   async getCustomContentById(id: string): Promise<ICustomContent | undefined> {
     const customContent = await this.getCustomContentRaw(id);
     if (!customContent) {
@@ -225,7 +280,7 @@ export default class ApWrapper2 implements IApWrapper {
     return <ICustomContent>assign;
   }
 
-  async getCustomContentByIdV2(id: string): Promise<ICustomContent | undefined> {
+  async getCustomContentByIdV2(id: string): Promise<ICustomContentV2 | undefined> {
     const customContent = await this.getCustomContentRawV2(id);
     if (!customContent) {
       throw Error(`Failed to load custom content by id ${id}`);
@@ -254,7 +309,7 @@ export default class ApWrapper2 implements IApWrapper {
     }
     diagram.id = id;
     let assign = <unknown>Object.assign({}, customContent, {value: diagram});
-    return <ICustomContent>assign;
+    return <ICustomContentV2>assign;
   }
 
   private async getCustomContentRaw(id: string): Promise<ICustomContentResponseBody | undefined> {
@@ -366,6 +421,32 @@ export default class ApWrapper2 implements IApWrapper {
     return result
   }
 
+  async saveCustomContentV2(customContentId: string, value: Diagram): Promise<ICustomContentResponseBodyV2> {
+    let result;
+    // TODO: Do we really need to check whether it exists?
+    const existing = await this.getCustomContentByIdV2(customContentId);
+    const pageId = await this._getCurrentPageId();
+    const count = (await this._page.countMacros((m) => {
+      return m?.customContentId?.value === customContentId;
+    }));
+
+    // pageId is absent when editing in custom content list page;
+    // Make sure we don't update custom content on a different page
+    // and there is only one macro linked to the custom content on the current page.
+    if (existing && (!pageId || (String(pageId) === existing?.pageIdString && count === 1))) {
+      result = await this.updateCustomContentV2(existing, value);
+    } else {
+      if(count > 1) {
+        console.warn(`Detected copied macro on the same page ${pageId}.`);
+      }
+      if (String(pageId) !== existing?.pageIdString) {
+        console.warn(`Detected copied macro on page ${pageId} (current) and ${existing?.pageId}.`);
+      }
+      result = await this.createCustomContentV2(value);
+    }
+    return result
+  }
+
   getDialogCustomData() {
     const dialog = this._dialog;
     return new Promise((resolv: Function) => {
@@ -397,8 +478,12 @@ export default class ApWrapper2 implements IApWrapper {
     return new Promise(resolv => this._user.getCurrentUser((user: IUser) => resolv(user)));
   }
 
-  async _getCurrentSpace(): Promise<string> {
-    return this.currentSpace || (this.currentSpace = await this._page.getSpaceKey());
+  async _getCurrentSpace(): Promise<ISpace> {
+    return this.currentSpace || (this.currentSpace = await this._page.getSpace());
+  }
+
+  async _getCurrentPageId(): Promise<string> {
+    return this.currentPageId || (this.currentPageId = await this._page.getPageId());
   }
 
   async _getCurrentPageUrl(): Promise<string> {

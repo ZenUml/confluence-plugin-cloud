@@ -56,6 +56,10 @@ export class AtlasPage {
     return (await this._getLocationContext()).spaceKey || ((await this._getContext()).confluence.space.key);
   }
 
+  async getSpace() {
+    return (await this._getContext()).confluence.space;
+  }
+
   async getContentType() {
     return (await this._getLocationContext()).contentType;
   }
