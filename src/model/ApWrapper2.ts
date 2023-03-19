@@ -8,7 +8,7 @@ import {IUser} from "@/model/IUser";
 import {IConfluence} from "@/model/IConfluence";
 import {IAp} from "@/model/IAp";
 import {DataSource, Diagram} from "@/model/Diagram/Diagram";
-import {ICustomContentResponseBody} from "@/model/ICustomContentResponseBody";
+import {ICustomContentResponseBody, ICustomContentResponseBodyV2} from "@/model/ICustomContentResponseBody";
 import {AtlasPage} from "@/model/page/AtlasPage";
 import CheckPermission, {PermissionCheckRequestFunc} from "@/model/page/CheckPermission";
 import { LocationTarget } from './ILocationContext';
@@ -123,6 +123,10 @@ export default class ApWrapper2 implements IApWrapper {
     return response && response.body && JSON.parse(response.body);
   }
 
+  parseCustomContentResponseV2(response: { body: string; }): ICustomContentResponseBodyV2 {
+    return response && response.body && JSON.parse(response.body);
+  }
+
   parseCustomContentListResponse(response: { body: string; }): Array<ICustomContentResponseBody> {
     return response && response.body && JSON.parse(response.body)?.results;
   }
@@ -221,11 +225,57 @@ export default class ApWrapper2 implements IApWrapper {
     return <ICustomContent>assign;
   }
 
-  private async getCustomContentRaw(id: string) {
+  async getCustomContentByIdV2(id: string): Promise<ICustomContent | undefined> {
+    const customContent = await this.getCustomContentRawV2(id);
+    if (!customContent) {
+      throw Error(`Failed to load custom content by id ${id}`);
+    }
+    let diagram = JSON.parse(customContent.body.raw.value);
+    diagram.source = DataSource.CustomContent;
+    const count = (await this._page.countMacros((m) => {
+      //TODO: filter by macro type
+      return m?.customContentId?.value === id;
+    }));
+    console.debug(`Found ${count} macros on page`);
+
+    const pageId = await this._page.getPageId();
+    let isCrossPageCopy = pageId && pageId !== customContent?.pageIdString;
+    if (isCrossPageCopy || count > 1) {
+      diagram.isCopy = true;
+      console.warn('Detected copied macro');
+      if(isCrossPageCopy) {
+        trackEvent('cross_page', 'duplication_detect', 'warning');
+      }
+      if(count > 1) {
+        trackEvent('same_page', 'duplication_detect', 'warning');
+      }
+    } else {
+      diagram.isCopy = false;
+    }
+    diagram.id = id;
+    let assign = <unknown>Object.assign({}, customContent, {value: diagram});
+    return <ICustomContent>assign;
+  }
+
+  private async getCustomContentRaw(id: string): Promise<ICustomContentResponseBody | undefined> {
     const url = `/rest/api/content/${id}?expand=body.raw,version.number,container,space`;
     try {
       const response = await this._requestFn({type: 'GET', url});
       const customContent = this.parseCustomContentResponse(response);
+      console.debug(`Loaded custom content by id ${id}.`);
+      return customContent;
+    } catch (e) {
+      trackEvent(JSON.stringify(e), 'load_custom_content', 'error');
+      // TODO: return a NullCustomContentObject
+      return undefined;
+    }
+  }
+
+  private async getCustomContentRawV2(id: string): Promise<ICustomContentResponseBodyV2 | undefined> {
+    const url = `/api/v2/custom-content/${id}?body-format=raw`;
+    try {
+      const response = await this._requestFn({type: 'GET', url});
+      const customContent = this.parseCustomContentResponseV2(response);
       console.debug(`Loaded custom content by id ${id}.`);
       return customContent;
     } catch (e) {

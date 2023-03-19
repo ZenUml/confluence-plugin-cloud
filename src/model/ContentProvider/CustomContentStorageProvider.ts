@@ -13,7 +13,7 @@ export class CustomContentStorageProvider implements StorageProvider {
     if (!id) {
       return NULL_DIAGRAM;
     }
-    const customContent = await this.apWrapper.getCustomContentById(id);
+    const customContent = await this.apWrapper.getCustomContentByIdV2(id);
     // @ts-ignore
     return  customContent?.value;
   }
