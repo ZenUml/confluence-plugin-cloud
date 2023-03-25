@@ -2,6 +2,7 @@ import * as htmlToImage from 'html-to-image';
 import md5 from 'md5';
 import {getUrlParam, trackEvent} from '@/utils/window.ts';
 import AP from "@/model/AP";
+import global from '@/model/globals';
 
 function iframeToPng(iframe) {
   return new Promise((resolv) => {
@@ -55,13 +56,6 @@ export function parseAttachmentsFromResponse(response) {
   return JSON.parse(response.body).results;
 }
 
-async function getAttachments(pageId) {
-  trackEvent(pageId, 'get_attachments', 'before_request');
-  const response = await AP.request(buildGetRequestForAttachments(pageId));
-  trackEvent(response?.xhr?.status, 'get_attachments', 'after_request');
-  return parseAttachmentsFromResponse(response);
-}
-
 function buildPostRequestToUploadAttachment(uri, hash, file) {
   return {
     url: uri,
@@ -95,10 +89,10 @@ function buildPutRequestToUpdateAttachmentProperties(pageId, attachmentId, versi
 
 async function tryGetAttachment() {
   const pageId = getUrlParam("pageId");
-  const attachments = await getAttachments(pageId);
-
   const attachmentName = 'zenuml-' + getUrlParam("uuid") + '.png';
-  return attachments.find(a => a.title === attachmentName);
+  const attachments = await global.apWrapper.getAttachmentsV2(pageId, {filename: attachmentName});
+  console.debug('Attachment.js - attachments:', attachments);
+  return attachments[0];
 }
 
 async function uploadAttachment2(hash, fnGetUri) {
@@ -141,7 +135,8 @@ async function createAttachmentIfContentChanged(content) {
   console.debug('Attachment.js - Checking attachment for code:', content);
   const attachment = await tryGetAttachment();
   const hash = md5(content);
-  if (!attachment || hash !== attachment.metadata.comment) {
+  if (!attachment || hash !== attachment.comment) {
+    console.debug(`Attachment.js - ${attachment ? `Updating(old hash: ${attachment.comment}, new: ${hash})` : 'Creating'} attachment:\n`, content);
     let attachmentMeta = await (attachment ? uploadNewVersionOfAttachment(hash) : uploadNewAttachment(hash))();
     await updateAttachmentProperties(attachmentMeta);
   }

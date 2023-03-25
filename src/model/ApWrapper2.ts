@@ -12,6 +12,7 @@ import {ICustomContentResponseBody, ICustomContentResponseBodyV2} from "@/model/
 import {AtlasPage} from "@/model/page/AtlasPage";
 import CheckPermission, {PermissionCheckRequestFunc} from "@/model/page/CheckPermission";
 import { ISpace, LocationTarget } from './ILocationContext';
+import { Attachment } from './ConfluenceTypes';
 
 const CUSTOM_CONTENT_TYPES = ['zenuml-content-sequence', 'zenuml-content-graph'];
 const SEARCH_CUSTOM_CONTENT_LIMIT = 1000;
@@ -474,6 +475,16 @@ export default class ApWrapper2 implements IApWrapper {
     return undefined;
   }
 
+  async getAttachmentsV2(pageId?: string, queryParameters?: any): Promise<Array<Attachment>> {
+    pageId = pageId || await this._getCurrentPageId();
+    queryParameters = queryParameters || {};
+    const param = Object.keys(queryParameters).reduce((acc, i) => `${acc}${acc ? '&' : ''}${i}=${queryParameters[i]}`, '');
+    trackEvent(pageId, 'get_attachments', 'before_request');
+    const response = await this.request(`/api/v2/pages/${pageId}/attachments${param ? `?${param}` : ''}`);
+    trackEvent(response?.xhr?.status, 'get_attachments', 'after_request');
+    return response?.results || [];
+  }
+
   _getCurrentUser(): Promise<IUser> {
     return new Promise(resolv => this._user.getCurrentUser((user: IUser) => resolv(user)));
   }
@@ -511,6 +522,6 @@ export default class ApWrapper2 implements IApWrapper {
 
   async request(url: string, method: string = 'GET'): Promise<any> {
     const response = await this._requestFn({type: method, url});
-    return response && response.body && JSON.parse(response.body);
+    return Object.assign({}, response && response.body && JSON.parse(response.body), {xhr: response.xhr});
   }
 }
