@@ -2,6 +2,7 @@ import MockAp from '@/model/MockAp'
 import defaultContentProvider from "@/model/ContentProvider/CompositeContentProvider";
 import ApWrapper2 from "@/model/ApWrapper2";
 import TestHelper from '../../../tests/unit/TestHelper';
+import globals from '@/model/globals';
 
 describe('CompositeContentProvider', () => {
   test('should fallback to content property when no custom content id is provided', async () => {
@@ -30,16 +31,30 @@ describe('CompositeContentProvider', () => {
   })
 
   // This is used in embedding documents
-  test('should use url id if rendered.for==custom-content-native', async () => {
-    TestHelper.setUpUrlParam('rendered.for=custom-content-native&content.id=fake-content-id')
-    const mockAp = new MockAp('contentId');
-    // body will not be used
-    mockAp.confluence.saveMacro({}, 'body')
+  describe('embeded', () => {
+    beforeEach(() => {
+      globals.isEmbedded = true;
+    });
 
-    const contentProvider = defaultContentProvider(new ApWrapper2(mockAp));
-    const {doc} = (await contentProvider.load());
-    // `A.method` comes from MockAp.ts
-    expect(doc.code).toBe('A.method');
-  })
+    test('should use url based content id if rendered.for==custom-content-native', async () => {
+      TestHelper.setUpUrlParam('rendered.for=custom-content-native&content.id=123');
+      const mockAp = new MockAp('contentId');
+      // body will not be used
+      mockAp.confluence.saveMacro({}, 'body');
+      mockAp.setCustomContent(123, {
+        source: 'custom-content',
+        code: 'A.method',
+        styles:{"#A":{"backgroundColor":"#57d9a3"}}
+      });
+
+      const contentProvider = defaultContentProvider(new ApWrapper2(mockAp));
+      const {doc} = (await contentProvider.load());
+      expect(doc.code).toBe('A.method');
+    })
+    
+    afterEach(() => {
+      globals.isEmbedded = false;
+    });
+  });
 
 })

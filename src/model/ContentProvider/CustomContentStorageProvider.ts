@@ -15,7 +15,7 @@ export class CustomContentStorageProvider implements StorageProvider {
     }
     const customContent = await this.apWrapper.getCustomContentByIdV2(id);
     // @ts-ignore
-    return  customContent?.value;
+    return customContent?.value;
   }
 
   async getCustomContentList() {

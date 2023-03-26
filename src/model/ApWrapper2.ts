@@ -445,7 +445,7 @@ export default class ApWrapper2 implements IApWrapper {
       }
       result = await this.createCustomContentV2(value);
     }
-    return result
+    return result;
   }
 
   getDialogCustomData() {

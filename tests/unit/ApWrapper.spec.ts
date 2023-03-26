@@ -78,7 +78,7 @@ describe('ApWrapper', () => {
     let apWrapper2 = new ApWrapper2(mockAp);
     await apWrapper2.initializeContext();
     expect(await apWrapper2.currentUser).toStrictEqual({"atlassianAccountId": "fake:user-account-id"});
-    expect(await apWrapper2.currentSpace).toBe('fake-space');
+    expect(await apWrapper2.currentSpace).toBe(mockAp.CURRENT_SPACE);
   })
 
   it('must NOT throw exception when initializeContext', async () => {
@@ -86,7 +86,7 @@ describe('ApWrapper', () => {
     let mockAp = new MockAp();
     let apWrapper2 = new ApWrapper2(mockAp);
     const _getCurrentUser = jest.fn().mockImplementation(async () => {
-      throw new Error("mock error");
+      throw new Error("IGNORE ME");
     });
     apWrapper2._getCurrentUser = _getCurrentUser.bind(apWrapper2);
     await apWrapper2.initializeContext();
@@ -99,7 +99,7 @@ describe('ApWrapper', () => {
     let mockAp = new MockAp();
     let apWrapper2 = new ApWrapper2(mockAp);
     const _getCurrentSpace = jest.fn().mockImplementation(async () => {
-      throw new Error("mock error");
+      throw new Error("IGNORE ME");
     });
     apWrapper2._getCurrentSpace = _getCurrentSpace.bind(apWrapper2);
     await apWrapper2.initializeContext();

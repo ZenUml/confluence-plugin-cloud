@@ -2,14 +2,21 @@ import MockApConfluence from "@/model/MockApConfluence";
 import {IAp} from "@/model/IAp";
 import customContentListSeq from "@/model/Ap/MockedResponse/custom-content-list-sequence.json";
 import customContentListGraph from "@/model/Ap/MockedResponse/custom-content-list-graph.json";
+
 const CONTRACT: any = {
   customContent: {method: 'get', URL: /\/rest\/api\/content\/(\d+)/},
+  customContentV2: {method: 'get', URL: /\/api\/v2\/custom-content\/(\d+)/},
+  createCustomContentV2: { method: 'post', URL: /\/api\/v2\/custom-content/},
+  updateCustomContentV2: { method: 'put', URL: /\/api\/v2\/custom-content\/(\d+)/},
   createCustomContent: { method: 'post', URL: /\/rest\/api\/content/}
 };
 
-const matchContract = (request: any, api: string): any => {
-  const contract = CONTRACT[api];
-  return contract && request.type.toLowerCase() === contract.method && request.url.match(contract.URL);
+const matchContract = (request: any, ...apis: Array<string>): any => {
+  //find the first matched contract
+  return apis.map(api => {
+    const contract = CONTRACT[api];
+    return contract && request.type.toLowerCase() === contract.method && request.url.match(contract.URL);
+    }).find(r => r);
 };
 
 interface RequestHandler {
@@ -71,6 +78,8 @@ export default class MockAp implements IAp {
   private readonly contentId: any
   private requestHandlers: Array<RequestHandler> = []
 
+  public CURRENT_SPACE = {id: 123, key: 'fake-space'};
+
   constructor(pageId: any = null) {
     this.user = {
       getCurrentUser: function (cb: any) {
@@ -91,6 +100,12 @@ export default class MockAp implements IAp {
         }
       )
     };
+    this.context = {
+      getContext: (cb: any) => cb({
+          confluence: { content: {id: this.contentId, type: 'page'}, space: this.CURRENT_SPACE }
+        }
+      )
+    };
     // @ts-ignore
     this.requestHandlers.push({match: r => {
         const result = matchContract(r, 'createCustomContent');
@@ -100,11 +115,28 @@ export default class MockAp implements IAp {
 
   setCustomContent(customContentId: any, content: any) {
     this.requestHandlers.push({match: r => {
-      const result = matchContract(r, 'customContent');
+      const result = matchContract(r, 'customContent', 'customContentV2');
       if(result && result.length > 1) {
         return result[1] == String(customContentId);
       }
     }, handle: r => ({body: JSON.stringify({body: {raw: {value: JSON.stringify(content)}}})})} as RequestHandler);
+  }
+
+  setupCreateCustomContent(content: any) {
+    this.requestHandlers.push({
+      match: r => matchContract(r, 'customContent', 'createCustomContentV2'), 
+      handle: r => ({body: JSON.stringify({id: content.id, idString: String(content.id), body: {raw: {value: JSON.stringify(content)}}})})} as RequestHandler);
+  }
+
+  setupUpdateCustomContent(customContentId: string, content: any) {
+    this.requestHandlers.push({
+      match: r => {
+        const result = matchContract(r, 'updateCustomContentV2');
+        if(result && result.length > 1) {
+          return result[1] == String(customContentId);
+        }
+      },
+      handle: r => ({body: JSON.stringify({id: content.id, idString: String(content.id), body: {raw: {value: JSON.stringify(content)}}})})} as RequestHandler);
   }
 
 }

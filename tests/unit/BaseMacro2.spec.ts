@@ -6,6 +6,7 @@ import helper from './TestHelper';
 import MockApConfluence from "@/model/MockApConfluence";
 import {saveToPlatform} from "@/model/ContentProvider/Persistence";
 import defaultContentProvider from "@/model/ContentProvider/CompositeContentProvider";
+import AP from "@/model/AP";
 
 let mockAp: MockAp;
 let mockApConfluence: MockApConfluence;
@@ -19,29 +20,32 @@ describe('Content loading', () => {
   function setUp(param: string) {
     helper.setUpUrlParam(param);
 
-    mockAp = new MockAp();
+    mockAp = AP;
     mockApConfluence = mockAp.confluence;
   }
 
   it('creates custom content if _customContentId is null', async () => {
     setUp('contentKey=sequence');
+    mockAp.setupCreateCustomContent({id: 1234});
 
     const customContentId = await saveToPlatform({
       diagramType: DiagramType.Sequence,
       code: 'A.m',
       source: DataSource.CustomContent
     });
-    expect(customContentId).toBe(1234);
+    expect(customContentId).toBe('1234');
   })
 
   it('update custom content if _customContentId is not null', async () => {
     setUp('contentKey=sequence');
+    mockAp.setupUpdateCustomContent('1234', {id: 1234});
+    
     const customContentId = await saveToPlatform({
       diagramType: DiagramType.Sequence,
       code: 'A.m',
       source: DataSource.CustomContent
     });
-    expect(customContentId).toBe(1234);
+    expect(customContentId).toBe('1234');
   })
 
   it('Remove the custom content id from macro if it is a clone', async () => {
