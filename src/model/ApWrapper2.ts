@@ -342,7 +342,7 @@ export default class ApWrapper2 implements IApWrapper {
   }
 
   async searchCustomContent(): Promise<Array<ICustomContent>> {
-    const spaceKey = await this._getCurrentSpace();
+    const spaceKey = (await this._getCurrentSpace()).key;
     const customContentType = (t: string) => `${this.getCustomContentTypePrefix()}:${t}`;
     const typeClause = (t: string) => `type="${customContentType(t)}"`;
     const typesClause = (a: Array<string>) => a.map(typeClause).join(' or ');
@@ -490,7 +490,9 @@ export default class ApWrapper2 implements IApWrapper {
   }
 
   async _getCurrentSpace(): Promise<ISpace> {
-    return this.currentSpace || (this.currentSpace = await this._page.getSpace());
+    return this.currentSpace 
+      || (this.currentSpace = await this._page.getSpace()) 
+      || (this.currentSpace = {key: await this._page.getSpaceKey()});
   }
 
   async _getCurrentPageId(): Promise<string> {

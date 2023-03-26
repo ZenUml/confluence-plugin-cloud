@@ -27,5 +27,5 @@ export interface IContent {
 }
 export interface ISpace {
   key: string; //e.g. WHIMET4
-  id: string; //e.g. 163841
+  id?: string; //e.g. 163841
 }
