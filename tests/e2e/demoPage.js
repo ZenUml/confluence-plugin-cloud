@@ -93,7 +93,7 @@ const existingPageId = process.env.PAGE_ID;
 
     const createResult = await page.evaluate(inBrowserFunction, {action: 'createPage', spaceKey, isLite, options});
     if(!createResult?.id) {
-      console.log(createResult);
+      console.log('Page id not found in create result:', createResult);
       return;
     }
 
@@ -107,20 +107,15 @@ const existingPageId = process.env.PAGE_ID;
 
       return await callback(createResult);
     } finally {
-      //TODO: delete page using Confluence API directly, as page.evaluate fails if there's existing unhandled error in page
-      const deleteResult = await page.evaluate(inBrowserFunction, {action: 'deletePage', pageId: createResult.id, options});
-
-      if(deleteResult?.status === 'trashed') {
-        console.log(`Deleted page with id: ${deleteResult.id}`);
-      } else {
-        console.log('deletePage result:\n', deleteResult);
-      }
+      await page.evaluate(inBrowserFunction, {action: 'deletePage', pageId: createResult.id, options});
+      console.log(`Deleted page with id: ${createResult.id}`);
     }
   }
 
   async function inBrowserFunction({action, spaceKey, isLite, pageId, options}) {
     const NULL_PROMISE = Promise.resolve(null);
-    const baseUrl = '/wiki/rest/api/content';
+    const customContentUrl = '/wiki/api/v2/custom-content';
+    const pagesUrl = '/wiki/api/v2/pages';
     const contentType = 'application/json';
     const addonKey = 'com.zenuml.confluence-addon';
     const customContentType = `ac:${addonKey}:zenuml-content-graph`;
@@ -128,7 +123,10 @@ const existingPageId = process.env.PAGE_ID;
     console.log('inBrowserFunction with arguments', arguments);
 
     async function createPage(title) {
-      const page = await createDraft(title);
+      const space = await getSpace(spaceKey);
+      console.log(`Current space:`, space);
+
+      const page = await createDraft(space?.id, title);
       console.log(`Created draft`, page);
 
       try {
@@ -151,47 +149,50 @@ const existingPageId = process.env.PAGE_ID;
           ;
         console.log('Creating page with body', body);
 
-        const data = { type: 'page', title, status: 'current', space: { key: spaceKey }, version: { number: page.version.number }, body: { atlas_doc_format: { value: body, representation: 'atlas_doc_format' } } };
-        return await updateContent(page.id, data);
+        const data = {id: page.id, status: 'current', title, spaceId: space?.id, body: {value: body, representation: 'atlas_doc_format'}, version: {number: page.version.number}};
+        return await updatePage(page.id, data);
       }
       catch (e) {
         console.log('createPage error', e);
-        await updateContent(page.id, Object.assign({}, page, { status: 'trashed' }));
+        await deletePage(page.id);
+        console.log('Deleted page with id ', page.id);
         return `createPage error: ${JSON.stringify(e)}`;
       }
     }
 
-    async function createDraft(title) {
-      const data = { type: 'page', title, status: 'draft', space: { key: spaceKey }, body: { raw: { value: '', representation: 'raw' } } };
-      return await createContent(data);
+    async function createDraft(spaceId, title) {
+      const data = {spaceId, status: 'draft', title, body: {value: '', representation: 'storage'}};
+      return await post(pagesUrl, data);
     }
 
     async function createCustomContent(title, body, containerId) {
-      const data = { type: customContentType, title, container: { id: containerId, type: 'page' }, space: { key: spaceKey }, body: { raw: { value: JSON.stringify(body), representation: 'raw' } } };
-
-      const result = await request({ type: 'POST', contentType, data: JSON.stringify(data), url: baseUrl });
+      const data = { type: customContentType, title, pageId: containerId, body: { value: JSON.stringify(body), representation: 'raw' } };
+      const result = await post(customContentUrl, data);
       console.log('Created custom content', result);
       return result;
     }
-    
-    async function getContent(id) {
-      const url = `${baseUrl}/${id}`;
-      return await request({ type: 'GET', contentType, url });
+
+    async function updatePage(id, data) {
+      const url = `${pagesUrl}/${id}`;
+      return await put(url, data);
     }
 
-    async function createContent(data) {
-      return await request({ type: 'POST', contentType, data: JSON.stringify(data), url: baseUrl });
+    async function deletePage(id) {
+      const url = `${pagesUrl}/${id}`;
+      return await request({ type: 'DELETE', url });
     }
 
-    async function updateContent(id, data) {
-      const url = `${baseUrl}/${id}`;
+    async function getSpace(spaceKey) {
+      const results = (await request({ type: 'GET', url: `/wiki/api/v2/spaces?keys=${spaceKey}`})).results;
+      return results && results[0];
+    }
+
+    async function put(url, data) {
       return await request({ type: 'PUT', contentType, data: JSON.stringify(data), url });
     }
 
-    async function deletePage(pageId) {
-      const data = await getContent(pageId);
-      //We can't use "Delete content" API as it requires Connect app scope: DELETE
-      return await updateContent(pageId, Object.assign({}, data, { status: 'trashed', version: {number: data.version.number + 1} }));
+    async function post(url, data) {
+      return await request({ type: 'POST', contentType, data: JSON.stringify(data), url });
     }
 
     async function request(options) {
