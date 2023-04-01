@@ -167,7 +167,6 @@ export default class ApWrapper2 implements IApWrapper {
     const type = this.getCustomContentType();
     const data: any = {
       "type": type,
-      "spaceId": (await this._getCurrentSpace()).id,
       "pageId": await this._getCurrentPageId(),
       "title": content.title || `Untitled ${new Date().toISOString()}`,
       "body": {
