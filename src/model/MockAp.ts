@@ -125,7 +125,7 @@ export default class MockAp implements IAp {
   setupCreateCustomContent(content: any) {
     this.requestHandlers.push({
       match: r => matchContract(r, 'customContent', 'createCustomContentV2'), 
-      handle: r => ({body: JSON.stringify({id: content.id, idString: String(content.id), body: {raw: {value: JSON.stringify(content)}}})})} as RequestHandler);
+      handle: r => ({body: JSON.stringify({id: content.id, body: {raw: {value: JSON.stringify(content)}}})})} as RequestHandler);
   }
 
   setupUpdateCustomContent(customContentId: string, content: any) {
@@ -136,7 +136,7 @@ export default class MockAp implements IAp {
           return result[1] == String(customContentId);
         }
       },
-      handle: r => ({body: JSON.stringify({id: content.id, idString: String(content.id), body: {raw: {value: JSON.stringify(content)}}})})} as RequestHandler);
+      handle: r => ({body: JSON.stringify({id: content.id, body: {raw: {value: JSON.stringify(content)}}})})} as RequestHandler);
   }
 
 }

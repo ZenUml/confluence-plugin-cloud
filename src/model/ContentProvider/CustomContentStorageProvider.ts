@@ -29,6 +29,6 @@ export class CustomContentStorageProvider implements StorageProvider {
     } else {
       customContent = await this.apWrapper.createCustomContentV2(diagram);
     }
-    return customContent.idString;
+    return String(customContent.id);
   }
 }

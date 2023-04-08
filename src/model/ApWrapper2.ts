@@ -294,7 +294,7 @@ export default class ApWrapper2 implements IApWrapper {
     console.debug(`Found ${count} macros on page`);
 
     const pageId = await this._page.getPageId();
-    let isCrossPageCopy = pageId && pageId !== customContent?.pageIdString;
+    let isCrossPageCopy = pageId && pageId !== String(customContent?.pageId);
     if (isCrossPageCopy || count > 1) {
       diagram.isCopy = true;
       console.warn('Detected copied macro');
@@ -433,13 +433,13 @@ export default class ApWrapper2 implements IApWrapper {
     // pageId is absent when editing in custom content list page;
     // Make sure we don't update custom content on a different page
     // and there is only one macro linked to the custom content on the current page.
-    if (existing && (!pageId || (String(pageId) === existing?.pageIdString && count === 1))) {
+    if (existing && (!pageId || (String(pageId) === String(existing?.pageId) && count === 1))) {
       result = await this.updateCustomContentV2(existing, value);
     } else {
       if(count > 1) {
         console.warn(`Detected copied macro on the same page ${pageId}.`);
       }
-      if (String(pageId) !== existing?.pageIdString) {
+      if (String(pageId) !== String(existing?.pageId)) {
         console.warn(`Detected copied macro on page ${pageId} (current) and ${existing?.pageId}.`);
       }
       result = await this.createCustomContentV2(value);

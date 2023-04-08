@@ -9,8 +9,7 @@ export interface ICustomContentResponseBody {
 }
 
 export interface ICustomContentResponseBodyV2 {
-  id: number;
-  idString: string;
+  id: number | string;
   title: string;
   status: string;
   type: string;
@@ -19,10 +18,8 @@ export interface ICustomContentResponseBodyV2 {
       value: string;
     }
   },
-  pageId: number;
-  pageIdString: string;
-  spaceId: number;
-  spaceIdString: string;
+  pageId: number | string;
+  spaceId: number | string;
   authorId: string;
   createdAt: string;
   version: {number: number, createdAt: string, authorId: string};
