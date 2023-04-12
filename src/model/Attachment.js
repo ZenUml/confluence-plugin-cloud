@@ -90,9 +90,10 @@ function buildPutRequestToUpdateAttachmentProperties(pageId, attachmentId, versi
 async function tryGetAttachment() {
   const pageId = getUrlParam("pageId");
   const attachmentName = 'zenuml-' + getUrlParam("uuid") + '.png';
-  const attachments = await global.apWrapper.getAttachmentsV2(pageId, {filename: attachmentName});
+  const attachments = await global.apWrapper.getAttachments(pageId, {filename: attachmentName});
   console.debug('Attachment.js - attachments:', attachments);
-  return attachments[0];
+  const descending = attachments.sort((a, b) => b.version?.number - a.version?.number);
+  return descending.length && descending[0];
 }
 
 async function uploadAttachment2(hash, fnGetUri) {
