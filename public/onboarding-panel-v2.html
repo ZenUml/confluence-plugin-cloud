@@ -20,7 +20,7 @@
 
   const url = () => `/rest/atlassian-connect/1/addons/${addonKey()}/properties/${STORAGE_KEY}`;
 
-  var flag, userId = '', clientDomain = '', currentSpace = '';
+  var flag, userId = '', clientDomain = '', currentSpace = {};
 
   const popup = () => {
     flag = AP.flag.create({
@@ -55,7 +55,7 @@
       try {
         currentSpace = await getCurrentSpace();
       } catch (e) {
-        currentSpace = 'unknow_space';
+        currentSpace = {key: 'unknow_space'};
         console.log('Error getting current space', e);
         trackEvent('error', 'getCurrentSpace', e.message);
       }
@@ -225,7 +225,7 @@
         'event_label' : label,
         'client_domain': getClientDomain(),
         'user_account_id': userId,
-        'confluence_space': currentSpace
+        'confluence_space': currentSpace?.key
       };
       window.gtag && window.gtag('event', action, eventDetails);
     } catch (e) {
@@ -269,7 +269,7 @@
 
   function getCurrentSpace() {
     return new Promise(resolv =>
-      AP.navigator.getLocation(l => resolv(l?.context?.spaceKey)));
+      AP.context.getContext(c => resolv(c.confluence?.space)));
   }
 
   function reportError(error, context, skipEvent) {
@@ -311,32 +311,34 @@
   }
 
   async function checkDemoPageExists() {
-    const url = `/rest/api/content/search?cql=(title="${demoPageTitle}" and space="${currentSpace}")`;
+    const url = `/rest/api/content/search?cql=(title="${demoPageTitle}" and space="${currentSpace?.key}")`;
     const response = await AP.request({type: 'GET', contentType: 'application/json', url});
     return JSON.parse(response.body)?.size > 0;
   }
 
   async function createCustomContent(title, body, containerPageId) {
-    const url = `/rest/api/content`;
+    const url = `/api/v2/custom-content`;
     const type = `ac:${addonKey()}:zenuml-content-graph`;
-    const data = {type, title, container: {id: containerPageId, type: 'page'}, space: {key: currentSpace}, body: {raw: {value: JSON.stringify(body), representation: 'raw'}}};
+    const data = {type, pageId: containerPageId, title, body: {value: JSON.stringify(body), representation: 'raw'}};
 
     const response = await AP.request({type: 'POST', contentType: 'application/json', data: JSON.stringify(data), url});
     return response.body && JSON.parse(response.body);
   }
 
   async function createDemoPageDraft() {
-    const data = {type: 'page', title: demoPageTitle, status: 'draft', space: {key: currentSpace}, body: {raw: {value: '', representation: 'raw'}}};
-    const demoPageDraft = await createContent(data);
+    const data = {spaceId: currentSpace?.id, status: 'draft', title: demoPageTitle, body: {value: '', representation: 'storage'}};
+    const demoPageDraft = await createPage(data);
     trackEvent(userId, 'created_demo_page_draft', 'demoPage');
     return demoPageDraft;
   }
 
   async function deleteDemoPageDraft(page) {
     //We can't use "Delete content" API as it requires Connect app scope: DELETE
-    await updateContent(page.id, Object.assign({}, page, {status: 'trashed'}));
+    const result = await updatePage(page.id, Object.assign({}, page, {status: 'deleted'}));
+    if(result?.status === 'draft') {//if not deleted, fallback to old API
+      await updateContent(page.id, Object.assign({}, page, {status: 'trashed', type: 'page'}));
+    }
     trackEvent(userId, 'deleted_demo_page_draft', 'demoPage');
-    return demoPageDraft;
   }
 
   async function createDemoPage() {
@@ -356,8 +358,8 @@
         .replaceAll('$$_MERMAID_CONTENT_ID', mermaid.id)
         .replaceAll('$$_GRAPH_CONTENT_ID', graph.id);
 
-      const data = {type: 'page', title: demoPageTitle, status: 'current', space: {key: currentSpace}, version: {number: page.version.number}, body: {atlas_doc_format: {value: body, representation: 'atlas_doc_format'}}};
-      const response = await updateContent(page.id, data);
+      const data = {id: page.id, status: 'current', title: demoPageTitle, spaceId: currentSpace?.id, body: {value: body, representation: 'atlas_doc_format'}, version: {number: page.version.number}};
+      const response = await updatePage(page.id, data);
 
       trackEvent(userId, 'published_demo_page', 'demoPage');
       return response;
@@ -368,14 +370,20 @@
     }
   }
 
-  async function createContent(data) {
-    const url = `/rest/api/content`;
+  async function createPage(data) {
+    const url = `/api/v2/pages`;
     const response = await AP.request({type: 'POST', contentType: 'application/json', data: JSON.stringify(data), url});
     return response.body && JSON.parse(response.body);
   }
 
   async function updateContent(id, data) {
     const url = `/rest/api/content/${id}`;
+    const response = await AP.request({type: 'PUT', contentType: 'application/json', data: JSON.stringify(data), url});
+    return response.body && JSON.parse(response.body);
+  }
+
+  async function updatePage(id, data) {
+    const url = `/api/v2/pages/${id}`;
     const response = await AP.request({type: 'PUT', contentType: 'application/json', data: JSON.stringify(data), url});
     return response.body && JSON.parse(response.body);
   }

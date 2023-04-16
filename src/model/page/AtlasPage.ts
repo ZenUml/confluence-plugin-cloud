@@ -1,18 +1,21 @@
 import {IAp} from "@/model/IAp";
-import {ILocationContext} from "@/model/ILocationContext";
+import {ILocationContext, IContext} from "@/model/ILocationContext";
 import {AtlasDocFormat, AtlasDocElement, MacroParams} from "@/model/page/AtlasDocFormat";
 import {trackEvent} from "@/utils/window";
 
 export class AtlasPage {
   _requestFn?: (req: IApRequest) => any;
   private _locationContext?: ILocationContext;
+  private _apContext?: IContext;
   private readonly _navigator: any;
+  private readonly _context: any;
   constructor(ap?: IAp) {
     // TODO: why? Assigning _ap causes DOMException:
     // Blocked a frame with origin "xxx" from accessing a cross-origin frame.
     // this._ap = ap;
     this._requestFn = ap?.request;
     this._navigator = ap?.navigator;
+    this._context = ap?.context;
   }
 
   // This method cannot be private or protected because it needs to be overwritten in test.
@@ -29,13 +32,33 @@ export class AtlasPage {
       });
     });
   }
+  
+  async _getContext(): Promise<IContext> {
+    if(this._apContext) {
+      return this._apContext;
+    }
+
+    const self = this;
+    return new Promise((resolve) => {
+      self._context.getContext((data: any) => {
+        self._apContext = data as IContext;
+        resolve(self._apContext);
+      });
+    });
+  }
 
   async getPageId() {
     return (await this._getLocationContext()).contentId;
   }
 
   async getSpaceKey() {
-    return (await this._getLocationContext()).spaceKey;
+    //there is no location context in custom content list page, but context.
+    return (await this._getLocationContext()).spaceKey || ((await this._getContext()).confluence.space.key);
+  }
+
+  async getSpace() {
+    //Caution: there is no context in macro editor
+    return (await this._getContext()).confluence?.space;
   }
 
   async getContentType() {
@@ -62,6 +85,10 @@ export class AtlasPage {
     let responseBody = '';
     try {
       const pageId = await this.getPageId();
+      if(!pageId) {
+        return [];
+      }
+
       const response = await this._requestFn({
         url: `/rest/api/content/${pageId}?expand=body.atlas_doc_format&status=draft`,
         type: 'GET',

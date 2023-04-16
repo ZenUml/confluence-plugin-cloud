@@ -6,7 +6,9 @@ import {MacroBodyStorageProvider} from "@/model/ContentProvider/MacroBodyStorage
 import {Diagram, NULL_DIAGRAM} from "@/model/Diagram/Diagram";
 import {getUrlParam, trackEvent} from "@/utils/window";
 import {UrlIdProvider} from "@/model/ContentProvider/UrlIdProvider";
+import {DialogCustomDataProvider} from "@/model/ContentProvider/DialogCustomDataProvider";
 import ApWrapper2 from "@/model/ApWrapper2";
+import globals from '@/model/globals';
 
 export class CompositeContentProvider implements IContentProvider{
   private readonly _contentProviders: Array<ContentProvider>;
@@ -34,11 +36,13 @@ export class CompositeContentProvider implements IContentProvider{
 const defaultContentProvider = function getCompositeContentProvider(apWrapper2: ApWrapper2): IContentProvider {
   const renderedFor = getUrlParam('rendered.for');
   const apWrapper = apWrapper2;
+
   if (renderedFor === 'custom-content-native') {
-    const idProvider = new UrlIdProvider();
+    const idProvider = globals.isEmbedded ? new UrlIdProvider() : new DialogCustomDataProvider(apWrapper);
     const customContentStorageProvider = new CustomContentStorageProvider(apWrapper);
     return new ContentProvider(idProvider, customContentStorageProvider);
   }
+  
   const macroIdProvider = new MacroIdProvider(apWrapper);
   const customContentStorageProvider = new CustomContentStorageProvider(apWrapper);
   const ccContentProvider = new ContentProvider(macroIdProvider, customContentStorageProvider);

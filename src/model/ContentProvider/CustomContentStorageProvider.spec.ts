@@ -13,11 +13,16 @@ describe('CustomContentStorageProvider', () => {
 
   test('custom content', async () => {
     const mockAp = new MockAp('abcd');
+    mockAp.setCustomContent(123, {
+      source: 'custom-content',
+      code: 'A.method',
+      styles:{"#A":{"backgroundColor":"#57d9a3"}}
+    });
 
     const storageProvider = new CustomContentStorageProvider(new ApWrapper2(mockAp));
-    const diagram = await storageProvider.getDiagram('fake-content-id')
+    const diagram = await storageProvider.getDiagram('123')
     expect(diagram).toStrictEqual({
-      "id": "fake-content-id",
+      "id": "123",
       "isCopy": true,
       "code": "A.method",
       "source": "custom-content",

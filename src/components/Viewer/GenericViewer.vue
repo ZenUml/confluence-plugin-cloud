@@ -4,8 +4,8 @@
   <Debug />
   <error-boundary>
 
-  <div class="mx-auto" style="width: fit-content">
-    <div class="frame relative pb-8 m-1" style="min-width: 300px">
+  <div class="mx-auto" style="width: fit-content;">
+    <div class="frame relative pb-8 m-1" :class="{'w-full': wide, 'min-w-[300px]': !width}">
       <div class="header flex" :class="{flex: isDisplayMode, hidden: !isDisplayMode}">
         <div class="left">
           <div class="actions flex" :class="{flex: isDisplayMode, hidden: !isDisplayMode}">
@@ -29,7 +29,7 @@
         </div>
       </div>
       <div class="flex justify-center screen-capture-content">
-        <div class="mr-8">
+        <div class="mr-8" :class="{'w-full': wide}">
           <slot></slot>
         </div>
       </div>
@@ -53,6 +53,7 @@ import ApWrapper2 from "@/model/ApWrapper2";
 
 export default {
   name: "GenericViewer",
+  props: ['wide'],
   data: () => {
     return {
       doc: NULL_DIAGRAM,

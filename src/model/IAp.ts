@@ -8,4 +8,5 @@ export interface IAp {
   navigator: any;
   dialog: any;
   user: any;
+  context: any;
 }

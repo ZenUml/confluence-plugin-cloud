@@ -15,7 +15,7 @@ export class CustomContentStorageProvider implements StorageProvider {
     }
     const customContent = await this.apWrapper.getCustomContentById(id);
     // @ts-ignore
-    return  customContent?.value;
+    return customContent?.value;
   }
 
   async getCustomContentList() {
@@ -29,6 +29,6 @@ export class CustomContentStorageProvider implements StorageProvider {
     } else {
       customContent = await this.apWrapper.createCustomContent(diagram);
     }
-    return customContent.id;
+    return String(customContent.id);
   }
 }
