@@ -62,7 +62,8 @@ export class AtlasPage {
   }
 
   async getContentType() {
-    return (await this._getLocationContext()).contentType;
+    // WARN: locationContext.contentType is undefined when creating a new page, but context.confluence?.content?.type is "page"
+    return (await this._getLocationContext()).contentType || (await this._getContext()).confluence?.content?.type;
   }
 
   async getHref() {
