@@ -1,8 +1,9 @@
 import SwaggerEditorBundle from 'swagger-editor'
 import SpecListener from './utils/spec-listener'
 
-import Vue from 'vue'
-import SaveAndGoBackButton from "@/components/SaveAndGoBackButton.vue";
+import React from 'react';
+import ReactDOM from 'react-dom';
+import { SaveAndGoBackButton } from "@/components/react/SaveAndGoBackButton";
 // @ts-ignore
 import './assets/tailwind.css'
 
@@ -35,13 +36,10 @@ async function saveOpenApiAndExit () {
   AP.dialog.close();
 }
 
-new Vue({
-  render: h => h(SaveAndGoBackButton, {
-    props: {
-      saveAndExit: saveOpenApiAndExit
-    },
-  })
-}).$mount('#save-and-go-back');
+ReactDOM.render(
+  React.createElement(SaveAndGoBackButton as any, { saveAndExit: saveOpenApiAndExit }),
+  document.getElementById('save-and-go-back')
+);
 
 async function initializeMacro() {
   const apWrapper = globals.apWrapper;
