@@ -4,7 +4,7 @@
   "description": "ZenUML Sequence Diagram add-on",
   "baseUrl": "{{localBaseUrl}}",
   "authentication": {
-    "type": "none"
+    "type": "jwt"
   },
   "lifecycle": {
     "installed": "/installed?version=__VERSION__",
