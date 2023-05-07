@@ -1,7 +1,7 @@
 const descriptor = require('./atlassian-connect.json');
 const liteKeySuffix = '-lite';
 const liteNameSuffix = ' Lite';
-const VERSION = '2022.07';
+const VERSION = '2023.05';
 
 export const onRequestGet = async (params) => {
   const req = params.request;
