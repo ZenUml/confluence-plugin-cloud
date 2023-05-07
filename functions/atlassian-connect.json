@@ -375,7 +375,7 @@
     },
     "webPanels": [
       {
-        "url": "/onboarding-panel.html?version=__VERSION__&addonKey=__ADDON_KEY__&postInstallPageKey=__POST_INSTALL_KEY__",
+        "url": "/onboarding-panel.html?auth=true&version=__VERSION__&addonKey=__ADDON_KEY__&postInstallPageKey=__POST_INSTALL_KEY__",
         "location": "atl.footer",
         "layout": {
           "width": "0px",
