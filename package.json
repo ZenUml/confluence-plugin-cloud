@@ -12,7 +12,7 @@
     "build:full": "PRODUCT_TYPE=full vue-cli-service build --mode production",
     "build:full:watch": "PRODUCT_TYPE=full vue-cli-service build --watch",
     "build:lite": "PRODUCT_TYPE=lite vue-cli-service build",
-    "wrangler:serve": "wrangler pages dev dist",
+    "wrangler:serve": "wrangler pages dev dist --experimental-local --compatibility-date 2023-05-11",
     "lint:vue": "vue-cli-service lint",
     "git:branch:clean:gone": "git fetch -p && git branch -vv | awk '/: gone]/{print $1}' | xargs git branch -d",
     "git:branch:clean:merged": "git branch --merged|egrep -v \"(\\*|master|main|dev|skip_branch_name)\" | xargs git branch -d",
