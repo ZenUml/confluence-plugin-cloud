@@ -12,7 +12,7 @@
     "build:full": "PRODUCT_TYPE=full vue-cli-service build --mode production",
     "build:full:watch": "PRODUCT_TYPE=full vue-cli-service build --watch",
     "build:lite": "PRODUCT_TYPE=lite vue-cli-service build",
-    "wrangler:serve": "wrangler pages dev dist --experimental-local --compatibility-date 2023-05-11",
+    "wrangler:serve": "wrangler pages dev dist --compatibility-date 2023-05-15",
     "lint:vue": "vue-cli-service lint",
     "git:branch:clean:gone": "git fetch -p && git branch -vv | awk '/: gone]/{print $1}' | xargs git branch -d",
     "git:branch:clean:merged": "git branch --merged|egrep -v \"(\\*|master|main|dev|skip_branch_name)\" | xargs git branch -d",
@@ -78,7 +78,7 @@
     "vue-cli-plugin-tailwind": "~3.0.0",
     "vue-jest": "^3.0.5",
     "vue-template-compiler": "^2.7.14",
-    "wrangler": "^2.1.13"
+    "wrangler": "^2.20.0"
   },
   "eslintConfig": {
     "root": true,
