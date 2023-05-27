@@ -24,7 +24,9 @@ export const onRequest: PagesFunction = async ({ request, env }) => {
     const key = `${domain}/lifecycle/${isoDate}.json`;
     console.log(`Writing to ${key}`);
     // @ts-ignore
-    await env.EVENT_BUCKET.put(key, request.body);
+    console.log(`env.EVENT_BUCKET`, env.EVENT_BUCKET);
+    // @ts-ignore
+    await env.EVENT_BUCKET.put(key, JSON.stringify(body));
   } catch (e: any) {
     captureError(e)
   }
