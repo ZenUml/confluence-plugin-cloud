@@ -1,6 +1,7 @@
 import SwaggerEditorBundle from 'swagger-editor'
 import SpecListener from './utils/spec-listener'
-import { SaveButtonComponentPlugin } from './utils/save-button';
+import { ToolbarComponentPlugin } from './swagger-editor/toolbar';
+import { SaveButtonComponentPlugin } from './swagger-editor/save-button';
 
 // @ts-ignore
 import './assets/tailwind.css'
@@ -42,7 +43,7 @@ window.onload = function () {
     presets: [
       // SwaggerEditorStandalonePreset
     ],
-    plugins: [SpecListener, SaveButtonComponentPlugin ],
+    plugins: [ SpecListener, ToolbarComponentPlugin, SaveButtonComponentPlugin],
     // url: 'https://raw.githubusercontent.com/OAI/OpenAPI-Specification/main/examples/v3.0/uspto.json'
   })
 

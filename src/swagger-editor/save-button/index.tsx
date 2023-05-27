@@ -28,12 +28,14 @@ async function saveOpenApiAndExit () {
 export const SaveButtonComponentPlugin = function() {
   return {
     wrapComponents: {
-      BaseLayout: (Original: any) => (props: any) => {
+      Toolbar: (Original: any) => (props: any) => {
+        let children = props.children || [];
+        children = [
+          ...children,
+          <SaveAndGoBackButton key="save-button" saveAndExit={saveOpenApiAndExit} />
+        ]
         return (
-          <div>
-            <SaveAndGoBackButton saveAndExit={saveOpenApiAndExit} />
-            <Original {...props} />
-          </div>
+            <Original {...props} children={children} />
         );
       }
     }
