@@ -19,9 +19,10 @@ export const onRequest: PagesFunction = async ({ request, env }) => {
     // }
 
     // extract domain from baseUrl above
-    const domain = body.baseUrl.replace(/https?:\/\//, '').replace(/\/.*/, '');
+    const domain = new URL(body.baseUrl).hostname;
     const isoDate = new Date().toISOString();
     const key = `${domain}/lifecycle/${isoDate}.json`;
+    console.log(`Writing to ${key}`);
     // @ts-ignore
     await env.EVENT_BUCKET.put(key, request.body);
   } catch (e: any) {
