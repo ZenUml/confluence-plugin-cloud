@@ -1,10 +1,11 @@
 import {captureError, captureInstalledMessage} from "./ConfigToucan";
 import {OkResponse} from "./OkResponse";
 import {postData} from "./utils/zaraz";
+import {RequestBody} from "./RequestBody";
 
 export const onRequest: PagesFunction = async ({ request, env }) => {
   try {
-    const body = await request.json() as any;
+    const body = await request.json() as RequestBody;
     captureInstalledMessage(body.key, body.clientKey, body.baseUrl);
     // {
     //   key: 'gptdock-confluence',
