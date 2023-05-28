@@ -1,29 +1,32 @@
 import fetch from 'node-fetch';
 
-async function postData(clientSite: string) {
-  const response = await fetch(
-    'https://zenuml.com/zaraz/api',
-    {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: `{
-                "events": [
-                    {
-                        "client": {
-                            "__zarazTrack": "installed",
-                            "client-site": "${clientSite}",
-                            "value": "200"
-                        }
+const HTTP_API_ENDPOINT = 'https://zenuml.com/zaraz/api';
+
+async function postData(eventType: string, appKey: string, clientKey: string, clientSite: string) {
+  const body = `{
+            "events": [
+                {
+                    "client": {
+                        "__zarazTrack": "${eventType}",
+                        "appKey": "${appKey}",
+                        "clientKey": "${clientKey}",
+                        "clientSite": "${clientSite}",
+                        "value": "200"
                     }
-                ]
-            }`,
-    }
-  );
+                }
+            ]
+        }`;
+  const request = {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: body,
+  };
+  const response = await fetch(HTTP_API_ENDPOINT, request);
 
   const data = await response.text(); // assuming server responds with json
   console.log(data);
 }
 
-export { postData }
+export {postData}

@@ -21,7 +21,7 @@ export const onRequest: PagesFunction = async ({ request, env }) => {
 
     // extract domain from baseUrl above
     const domain = new URL(body.baseUrl).hostname;
-    postData(domain).catch(console.error);
+    postData(body.eventType, body.key, body.clientKey, domain).catch(console.error);
     const isoDate = new Date().toISOString();
     const key = `${domain}/lifecycle/${isoDate}.json`;
     console.log(`Writing to ${key}`);
