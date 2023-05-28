@@ -1,5 +1,6 @@
 import {captureError, captureInstalledMessage} from "./ConfigToucan";
 import {OkResponse} from "./OkResponse";
+import {postData} from "./utils/zaraz";
 
 export const onRequest: PagesFunction = async ({ request, env }) => {
   try {
@@ -20,6 +21,7 @@ export const onRequest: PagesFunction = async ({ request, env }) => {
 
     // extract domain from baseUrl above
     const domain = new URL(body.baseUrl).hostname;
+    postData(domain).catch(console.error);
     const isoDate = new Date().toISOString();
     const key = `${domain}/lifecycle/${isoDate}.json`;
     console.log(`Writing to ${key}`);
