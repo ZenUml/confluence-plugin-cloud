@@ -2,6 +2,7 @@ import {captureError, captureInstalledMessage} from "./ConfigToucan";
 import {OkResponse} from "./OkResponse";
 import {postData} from "./utils/zaraz";
 import {RequestBody} from "./RequestBody";
+import {saveToBucket} from "./utils/R2Bucket";
 
 export const onRequest: PagesFunction = async ({ request, env }) => {
   try {
@@ -22,14 +23,11 @@ export const onRequest: PagesFunction = async ({ request, env }) => {
 
     // extract domain from baseUrl above
     const domain = new URL(body.baseUrl).hostname;
+    // no await on purpose
     postData(body.eventType, body.key, body.clientKey, domain).catch(console.error);
-    const isoDate = new Date().toISOString();
-    const key = `${domain}/lifecycle/${isoDate}.json`;
-    console.log(`Writing to ${key}`);
+    // no await on purpose
     // @ts-ignore
-    console.log(`env.EVENT_BUCKET`, env.EVENT_BUCKET);
-    // @ts-ignore
-    await env.EVENT_BUCKET.put(key, JSON.stringify(body));
+    saveToBucket(env.EVENT_BUCKET, domain, body).catch(console.error);
   } catch (e: any) {
     captureError(e)
   }
