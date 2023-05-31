@@ -6,9 +6,8 @@ async function saveToBucket(bucket: any, domain: string, body: RequestBody) {
   const isoDate = new Date().toISOString();
   const key = `${domain}/lifecycle/${isoDate}.json`;
   console.log(`Writing to ${key}`);
-  // @ts-ignore
   console.log(`env.EVENT_BUCKET:`, bucket);
-  // @ts-ignore
+
   return await bucket.put(key, JSON.stringify(body));
 }
 
