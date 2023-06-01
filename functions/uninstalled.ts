@@ -4,7 +4,7 @@ import {RequestBody} from "./RequestBody";
 import {postData} from "./utils/zaraz";
 import {saveToBucket} from "./utils/R2Bucket";
 
-export const onRequest: PagesFunction = async ({ request }) => {
+export const onRequest: PagesFunction = async ({ request, env }) => {
   try {
     const body = await request.json() as RequestBody;
     captureUninstalledMessage(body.key, body.clientKey, body.baseUrl);
