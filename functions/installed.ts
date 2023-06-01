@@ -23,12 +23,11 @@ export const onRequest: PagesFunction = async ({ request, env }) => {
 
     // extract domain from baseUrl above
     const domain = new URL(body.baseUrl).hostname;
-    // no await on purpose
-    postData(body.eventType, body.key, body.clientKey, domain).catch(console.error);
-    // no await on purpose
+    await postData(body.eventType, body.key, body.clientKey, domain);
     // @ts-ignore
-    saveToBucket(env.EVENT_BUCKET, domain, body).catch(console.error);
+    await saveToBucket(env.EVENT_BUCKET, domain, body);
   } catch (e: any) {
+    console.log(`Error: ${e}`);
     captureError(e)
   }
   return OkResponse();
