@@ -311,9 +311,13 @@
   }
 
   async function checkDemoPageExists() {
-    const url = `/rest/api/content/search?cql=(title="${demoPageTitle}" and space="${currentSpace}")`;
-    const response = await AP.request({type: 'GET', contentType: 'application/json', url});
-    return JSON.parse(response.body)?.size > 0;
+    try {
+      const url = `/rest/api/content/search?cql=(title="${demoPageTitle}" and space="${currentSpace}")`;
+      const response = await AP.request({type: 'GET', contentType: 'application/json', url});
+      return JSON.parse(response.body)?.size > 0;
+    } catch(e) {
+      reportDemoPageError(e, 'checkDemoPageExists');
+    }
   }
 
   async function createCustomContent(title, body, containerPageId) {
