@@ -184,16 +184,30 @@
       const localState = window.localStorage.getItem(getLocalStorageKey(key));
       return localState && JSON.parse(localState) || DEFAULT_STATE;
     } catch(e) {
+      reportError(e, 'getLocalState');
       return DEFAULT_STATE;
     }
   }
 
   function setLocalState(key, state) {
-    window.localStorage.setItem(getLocalStorageKey(key), JSON.stringify(state));
+    try {
+      const itemKey = getLocalStorageKey(key);
+      window.localStorage.setItem(itemKey, JSON.stringify(state));
+
+      if(!window.localStorage.getItem(itemKey)) {
+        throw `Failed to write ${itemKey} into localStorage`;
+      }
+    } catch(e) {
+      reportError(e, 'setLocalState');
+    }
   }
 
   function getLocalStorageKey(key) {
     return `${key || STORAGE_KEY}-${getClientDomain()}`;
+  }
+
+  function is404Error(e) {
+    return e && e.xhr && e.xhr.status === 404;
   }
 
   async function getAppProperty() {
@@ -201,7 +215,7 @@
       const data = JSON.parse((await AP.request({url: url(), type: 'GET'})).body);
       return data && data.value;
     } catch(e) {
-      if(!(e && e.xhr && e.xhr.status === 404)) { //not initial state that app property doesn't exist
+      if(!is404Error(e)) { //app property doesn't exist initially
         reportError(e, 'getAppProperty');
       }
       return DEFAULT_STATE;
@@ -316,7 +330,9 @@
       const response = await AP.request({type: 'GET', contentType: 'application/json', url});
       return JSON.parse(response.body)?.size > 0;
     } catch(e) {
-      reportDemoPageError(e, 'checkDemoPageExists');
+      if(!is404Error(e)) {
+        reportDemoPageError(e, 'checkDemoPageExists');
+      }
     }
   }
 
