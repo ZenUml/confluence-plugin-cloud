@@ -63,7 +63,8 @@
       const localState = getLocalState(STORAGE_KEY);
       const remoteState = await getAppProperty(STORAGE_KEY);
 
-      const demoPagePopupState = getLocalState(STORAGE_KEY_DEMO_PAGE);
+      const demoPagePopupLocalState = getLocalState(STORAGE_KEY_DEMO_PAGE);
+      const demoPagePopupRemoteState = await getAppProperty(STORAGE_KEY_DEMO_PAGE);
       const demoPageExists = await checkDemoPageExists();
 
       const isOnboarded = (u, state) => {
@@ -95,9 +96,14 @@
           trackEvent(userId, 'copy_remote_onboarded_state_to_local', 'onboarding');
         }
 
-        if(!demoPageExists && !demoPagePopupState?.displayed) {
+        if(!demoPageExists && !demoPagePopupLocalState?.displayed && !demoPagePopupRemoteState?.displayed) {
           demoPagePopup();
-          setLocalState(STORAGE_KEY_DEMO_PAGE, {displayed: true, created: new Date()});
+
+          const demoPageState = {displayed: true, created: new Date()};
+          const success = setLocalState(STORAGE_KEY_DEMO_PAGE, demoPageState);
+          if(!success) {
+            setAppProperty(STORAGE_KEY_DEMO_PAGE, demoPageState);
+          }
         }
       }
 
@@ -197,6 +203,8 @@
       if(!window.localStorage.getItem(itemKey)) {
         throw `Failed to write ${itemKey} into localStorage`;
       }
+
+      return true;
     } catch(e) {
       reportError(e, 'setLocalState');
     }
