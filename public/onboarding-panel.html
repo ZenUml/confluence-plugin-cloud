@@ -18,7 +18,7 @@
   const version = () => getUrlParam('version');
   const postInstallPageKey = () => getUrlParam('postInstallPageKey');
 
-  const url = () => `/rest/atlassian-connect/1/addons/${addonKey()}/properties/${STORAGE_KEY}`;
+  const propertyUrl = (key) => `/rest/atlassian-connect/1/addons/${addonKey()}/properties/${key}`;
 
   var flag, userId = '', clientDomain = '', currentSpace = '';
 
@@ -61,7 +61,7 @@
       }
 
       const localState = getLocalState(STORAGE_KEY);
-      const remoteState = await getAppProperty();
+      const remoteState = await getAppProperty(STORAGE_KEY);
 
       const demoPagePopupState = getLocalState(STORAGE_KEY_DEMO_PAGE);
       const demoPageExists = await checkDemoPageExists();
@@ -164,7 +164,7 @@
   };
 
   function setOnboardedRemoteState(user, expires) {
-    return getAppProperty().then(s => setAppProperty(getOnboardedState(s, user, expires)));
+    return getAppProperty(STORAGE_KEY).then(s => setAppProperty(STORAGE_KEY, getOnboardedState(s, user, expires)));
   };
 
   function getOnboardedState(state, user, expires) {
@@ -210,9 +210,9 @@
     return e && e.xhr && e.xhr.status === 404;
   }
 
-  async function getAppProperty() {
+  async function getAppProperty(key) {
     try {
-      const data = JSON.parse((await AP.request({url: url(), type: 'GET'})).body);
+      const data = JSON.parse((await AP.request({url: propertyUrl(key), type: 'GET'})).body);
       return data && data.value;
     } catch(e) {
       if(!is404Error(e)) { //app property doesn't exist initially
@@ -222,9 +222,9 @@
     }
   }
 
-  async function setAppProperty(data) {
+  async function setAppProperty(key, data) {
     try {
-      await AP.request({url: url(), type: 'PUT', contentType: 'application/json', data: JSON.stringify(data)});
+      await AP.request({url: propertyUrl(key), type: 'PUT', contentType: 'application/json', data: JSON.stringify(data)});
     } catch(e) {
       const label = e?.xhr?.responseText || '';
       trackEvent(label, 'set_app_property_error', 'onboarding');
