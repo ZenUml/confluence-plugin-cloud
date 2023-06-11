@@ -45,5 +45,5 @@ export function trackEvent(label: DiagramType | string, action: string, category
 
 function getCurrentUserAccountId(): string {
   // @ts-ignore
-  return window.macro?._apWrapper?.currentUser?.atlassianAccountId || 'unknown_user_account_id';
+  return window.globals?._apWrapper?.currentUser?.atlassianAccountId || 'unknown_user_account_id';
 }
