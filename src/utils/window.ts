@@ -36,6 +36,8 @@ export function trackEvent(label: DiagramType | string, action: string, category
     }
     // @ts-ignore
     window.gtag && window.gtag('event', action, eventDetails);
+    // @ts-ignore
+    window.dataLayer && window.dataLayer.push({'event': action, ...eventDetails});
   } catch (e) {
     console.error('Error in trackingEvent. Please report to our helpdesk: https://zenuml.atlassian.net/servicedesk/customer/portals')
   }
