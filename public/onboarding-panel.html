@@ -228,6 +228,7 @@
         'confluence_space': currentSpace
       };
       window.gtag && window.gtag('event', action, eventDetails);
+      window.dataLayer && window.dataLayer.push({'event': action, ...eventDetails});
     } catch (e) {
       reportError(e, 'trackEvent', true);
     }
