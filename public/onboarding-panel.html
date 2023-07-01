@@ -228,6 +228,7 @@
         'confluence_space': currentSpace
       };
       window.gtag && window.gtag('event', action, eventDetails);
+      zaraz?.track(action, eventDetails);
     } catch (e) {
       reportError(e, 'trackEvent', true);
     }
