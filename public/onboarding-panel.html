@@ -20,31 +20,7 @@
 
   const url = () => `/rest/atlassian-connect/1/addons/${addonKey()}/properties/${STORAGE_KEY}`;
 
-  var flag, userId = '', clientDomain = '', currentSpace = '';
-
-  const popup = () => {
-    flag = AP.flag.create({
-      title: 'New version of ZenUML add-on installed',
-      body: 'You can embed existing diagrams and Open API specifications now. Use `/embed` to insert the macro.',
-      type: 'info',
-      actions: {
-        'seeHowItWorks': 'See how it works',
-        'noThanks': 'No thanks'
-      }
-    });
-  };
-
-  const demoPagePopup = () => {
-    flag = AP.flag.create({
-      title: 'ZenUML Demo Page',
-      body: 'We have prepared a demo page. Would you like to check it out?',
-      type: 'info',
-      actions: {
-        'demoPage.yes': 'Yes please',
-        'demoPage.no': 'No thanks'
-      }
-    });
-  };
+  let userId = '', clientDomain = '', currentSpace = '';
 
   async function init() {
     if(!isGoogleChrome()) {
@@ -55,7 +31,7 @@
       try {
         currentSpace = await getCurrentSpace();
       } catch (e) {
-        currentSpace = 'unknow_space';
+        currentSpace = 'unknown_space';
         console.log('Error getting current space', e);
         trackEvent('error', 'getCurrentSpace', e.message);
       }
@@ -83,21 +59,19 @@
         const remoteOnboarded = isOnboarded(u, remoteState);
 
         if(!localOnboarded && !remoteOnboarded) {
-          popup();
-
+          // popup();
           setOnboardedForOneYear();
-
           trackEvent(userId, 'display', 'onboarding');
         }
         else if(!localOnboarded) {
           setOnboardedLocalState(u, expiresOf(u, remoteState));
-
           trackEvent(userId, 'copy_remote_onboarded_state_to_local', 'onboarding');
         }
 
         if(!demoPageExists && !demoPagePopupState?.displayed) {
-          demoPagePopup();
+          // demoPagePopup();
           setLocalState(STORAGE_KEY_DEMO_PAGE, {displayed: true, created: new Date()});
+          trackEvent(userId, 'display', 'demo');
         }
       }
 
@@ -107,42 +81,6 @@
     }
   }
 
-  AP.events.on('flag.action', async function(e) {
-    try {
-      flag && flag.close();
-
-      if(e.actionIdentifier === 'seeHowItWorks') {
-        trackEvent(userId, 'see_how_it_works', 'onboarding');
-
-        AP.user.getCurrentUser(u => {
-          setOnboarded(u).then(gotoOnboardingPage);
-        });
-
-      }
-      else if(e.actionIdentifier === 'noThanks') {
-        trackEvent(userId, 'no_thanks', 'onboarding');
-
-        setOnboardedForOneYear();
-      }
-
-      else if(e.actionIdentifier === 'demoPage.yes') {
-        trackEvent(userId, 'yes', 'demoPage');
-
-        try {
-          const page = await createDemoPage();
-          AP.navigator.go('contentview', {contentId: page.id});
-        } catch(e) {
-          reportDemoPageError(e, 'createDemoPage');
-        }
-      }
-      else if(e.actionIdentifier === 'demoPage.no') {
-        trackEvent(userId, 'no', 'demoPage');
-      }
-
-    } catch(e) {
-      reportError(e, 'onFlagAction');
-    }
-  });
 
   function setOnboardedForOneYear() {
     AP.user.getCurrentUser(u => setOnboarded(u, getOneYearLater()));
