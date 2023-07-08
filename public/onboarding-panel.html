@@ -8,6 +8,7 @@
   <script type="text/javascript" src="js/google-analytics.js?version=2022.01"></script>
 
   <script type="text/javascript" src="js/demo/resources.js?version=2022.08"></script>
+  <script type="text/javascript" src="js/upgrade.js?version=2023.07"></script>
   <title>Onboarding</title>
   <script>
   const STORAGE_KEY = 'onboardingState';
@@ -23,6 +24,9 @@
   let userId = '', clientDomain = '', currentSpace = '';
 
   async function init() {
+
+    await upgrade();
+    
     if(!isGoogleChrome()) {
       return;
     }
@@ -316,6 +320,13 @@
   async function updateContent(id, data) {
     const url = `/rest/api/content/${id}`;
     const response = await AP.request({type: 'PUT', contentType: 'application/json', data: JSON.stringify(data), url});
+    return response.body && JSON.parse(response.body);
+  }
+
+  async function getContent(id, queryParams) {
+    const params = queryParams ? '?' + queryParams : '';
+    const url = `/rest/api/content/${id}${params}`;
+    const response = await AP.request({type: 'GET', url});
     return response.body && JSON.parse(response.body);
   }
   </script>
