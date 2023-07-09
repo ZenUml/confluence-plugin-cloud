@@ -45,10 +45,9 @@ import EventBus from '../../EventBus'
 import Debug from '@/components/Debug/Debug.vue'
 import ErrorBoundary from "@/components/ErrorBoundary";
 import globals from '@/model/globals';
-import {DataSource, DiagramType, NULL_DIAGRAM} from "@/model/Diagram/Diagram";
+import {DataSource, NULL_DIAGRAM} from "@/model/Diagram/Diagram";
 import defaultContentProvider from "@/model/ContentProvider/CompositeContentProvider";
 import AP from "@/model/AP";
-import Example from "@/utils/sequence/Example";
 import ApWrapper2 from "@/model/ApWrapper2";
 
 export default {
@@ -89,16 +88,6 @@ export default {
     const storedWithCustomContent = this.doc?.source === DataSource.CustomContent;
     const notCopy = !this.doc?.isCopy;
     this.canUserEdit = canUserEditPage && storedWithCustomContent && notCopy;
-  },
-  watch: {
-    diagram(doc) {
-      console.debug('Document changed', doc);
-      this.$store.commit('updateDiagramType', ( !this.doc.diagramType || this.doc.diagramType === DiagramType.Unknown) ? DiagramType.Sequence : this.doc.diagramType);
-
-      this.$store.commit('code', doc.code || Example.Sequence);
-      this.rawStyles = doc.styles || {};
-      EventBus.$emit('diagramLoaded', doc.code, doc.diagramType);
-    }
   },
   methods: {
     edit() {

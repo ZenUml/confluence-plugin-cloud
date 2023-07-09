@@ -89,8 +89,9 @@ export default {
     this.canUserEdit = canUserEditPage && storedWithCustomContent && notCopy;
   },
   watch: {
-    diagram(doc) {
-      console.debug('Document changed', doc);
+    diagram(doc, oldDoc) {
+      console.debug('Viewer - Document changed - new: ', doc, ', old: ', oldDoc);
+
       this.$store.commit('updateDiagramType', ( !this.doc.diagramType || this.doc.diagramType === DiagramType.Unknown) ? DiagramType.Sequence : this.doc.diagramType);
       if (doc.diagramType === 'mermaid') {
         this.$store.dispatch('updateMermaidCode', doc.mermaidCode || Example.Mermaid);
