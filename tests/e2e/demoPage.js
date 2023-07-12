@@ -70,9 +70,17 @@ const existingPageId = process.env.PAGE_ID;
         e.click();
       });
 
-      return await assertFrame({frameSelector: '//iframe[contains(@src, "sequence-editor.html")]'});
-      //TODO: Save and Go back to Confluence
+      const editMacroFrame = '//iframe[contains(@src, "sequence-editor.html")]';
+      const saveMacroButton = await waitForSelectorInFrame(editMacroFrame, 'div.save-and-exit button');
+      await saveMacroButton.click();
+      await waitForSelector(page, editMacroFrame, {hidden: true})
 
+      //wait for macro viewer is loaded
+      await assertFrame({frameSelector: `//iframe[contains(@id, "zenuml-sequence-macro${getModuleKeySuffix()}")]`,
+        contentXpath: '//*[contains(text(), "Order Service (Demonstration only)")]'});
+
+      await page.$eval('#publish-button', e => e.click());
+      await page.waitForNavigation();
     }, {sequence: true});
 
     console.log('Case - view macro body only sequence');
@@ -484,19 +492,17 @@ const existingPageId = process.env.PAGE_ID;
     }
   }
 
-  async function assertFrame({frameSelector, frameContentReadySelector, contentSelector, expectedContentText, contentXpath}) {
+  async function assertFrame({frameSelector, contentSelector, expectedContentText, contentXpath}) {
     let result;
     const iframe = await waitForSelector(page, frameSelector);
-    console.log(`Found ${frameSelector}`);
+    console.log(`Found "${frameSelector}"`);
 
     const frame = await iframe.contentFrame();
     result = frame;
-    if(frameContentReadySelector) {
-      result = await waitForSelector(frame, frameContentReadySelector, {timeout: 30 * 1000});
-    }
 
     if(contentSelector) {
       result = await waitForSelector(frame, contentSelector);
+      console.log(`Found ${contentSelector}`);
 
       if(expectedContentText) {
         result = await frame.$eval(contentSelector, e => e.innerText);
@@ -514,17 +520,36 @@ const existingPageId = process.env.PAGE_ID;
     return result;
   }
 
+  async function waitForSelectorInFrame(frameSelector, elementInFrameSelector, options) {
+    const iframe = await waitForSelector(page, frameSelector, options);
+    console.log(`Found frame "${frameSelector}"`);
+
+    const frame = await iframe.contentFrame();
+    await frame.waitForNavigation();
+    const e = await waitForSelector(frame, elementInFrameSelector, options);
+    console.log(`Found "${elementInFrameSelector}" in frame`);
+    return e;
+  }
+
   async function waitForSelector(page, selector, options) {
     try {
       const isXpath = selector.indexOf('/') === 0;
       return await (isXpath ? page.waitForXPath(selector, options) : page.waitForSelector(selector, options));
     } catch(e) {
-      try {
-        const html = await page.$eval('html', e => e.innerHTML);
-        const url = await page.$eval('html', e => window.location.href);
-        console.log(`Selector "${selector}" not found in ${url}:\n`, html);
-      } catch(e2) {}
+      if(!options || !options.hidden) {
+        await printDebugInfo(page, selector);
+      }
       throw e;
+    }
+  }
+
+  async function printDebugInfo(page, selector) {
+    try {
+      const html = await page.$eval('html', e => e.innerHTML);
+      const url = await page.$eval('html', e => window.location.href);
+      console.log(`Selector "${selector}" not found in ${url}:\n`, html);
+    } catch(e) {
+      console.log(`Failed to collect page info`, e);
     }
   }
 
