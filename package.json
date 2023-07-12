@@ -7,7 +7,7 @@
     "test:unit": "vue-cli-service test:unit",
     "test:e2e": "ZENUML_STAGE_USERNAME=robot1.yanhui@gmail.com node tests/e2e/demoPage.js",
     "test:e2e:yanhui": "ZENUML_STAGE_USERNAME=robot1.yanhui@gmail.com ZENUML_DOMAIN=whimet4.atlassian.net ZENUML_SPACE=WHIMET4 node tests/e2e/demoPage.js",
-    "test:e2e:yanhui:existing": "ZENUML_STAGE_USERNAME=robot1.yanhui@gmail.com ZENUML_DOMAIN=whimet4.atlassian.net PAGE_ID=437289021 ZENUML_SPACE=WHIMET4 node tests/e2e/demoPage.js",
+    "test:e2e:yanhui:existing": "ZENUML_STAGE_USERNAME=robot1.yanhui@gmail.com ZENUML_DOMAIN=whimet4.atlassian.net PAGE_ID=458653717 ZENUML_SPACE=WHIMET4 node tests/e2e/demoPage.js",
     "test:unit:watch": "vue-cli-service test:unit --watch",
     "build:full": "PRODUCT_TYPE=full vue-cli-service build --mode production",
     "build:full:watch": "PRODUCT_TYPE=full vue-cli-service build --watch",
