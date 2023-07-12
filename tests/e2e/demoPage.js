@@ -8,7 +8,7 @@ const isLite = process.env.IS_LITE === 'true';
 const existingPageId = process.env.PAGE_ID;
 
 (async () => {
-  const browser = await puppeteer.launch({headless: process.env.CI === "true", 
+  const browser = await puppeteer.launch({headless: process.env.CI === "true",
     args: ['--disable-web-security', '--disable-features=IsolateOrigins,site-per-process']});
   const page = await browser.newPage();
   await page.goto(existingPageId ? pageUrl(existingPageId) : `${baseUrl}/overview`);
@@ -16,7 +16,7 @@ const existingPageId = process.env.PAGE_ID;
   const username = process.env.ZENUML_STAGE_USERNAME;
   await page.$eval('input[name=username]', (el, value) => el.value = value, username);
   await page.click("#login-submit");
-  
+
   const password = process.env.ZENUML_STAGE_PASSWORD;
   if(!password) {
     throw 'Error: Missing password';
@@ -131,7 +131,7 @@ const existingPageId = process.env.PAGE_ID;
 
       try {
         const [sequence, graph, openapi, mermaid] = await Promise.all([
-          options.sequence && createCustomContent(`Sequence custom content of page ${title}`, demoSequenceContent, page.id) 
+          options.sequence && createCustomContent(`Sequence custom content of page ${title}`, demoSequenceContent, page.id)
             || NULL_PROMISE,
           options.graph && createCustomContent(`Graph custom content of page ${title}`, demoGraphContent, page.id)
             || NULL_PROMISE,
@@ -490,6 +490,11 @@ const existingPageId = process.env.PAGE_ID;
     console.log(`Found ${frameSelector}`);
 
     const frame = await iframe.contentFrame();
+
+    // Disable onbeforeunload handler (e.g. Leave Site) to avoid blocking the test
+    await frame.evaluate(() => {
+      window.onbeforeunload = null;
+    });
     result = frame;
     if(frameContentReadySelector) {
       result = await waitForSelector(frame, frameContentReadySelector, {timeout: 30 * 1000});
