@@ -100,7 +100,7 @@ const existingPageId = process.env.PAGE_ID;
     console.log(`Created page with id: ${createResult.id}, title: ${createResult.title}`);
     await page.evaluate(() => {
       window.onbeforeunload = null;
-      console.debug(`Disable "Leave Site" popup before navigating to: ${createResult.id}, title: ${createResult.title}`);
+      console.debug(`Disable "Leave Site" popup before navigating away`);
     });
     console.debug(`Disabled "Leave Site" popup before navigating to: ${createResult.id}, title: ${createResult.title}`);
     try {
