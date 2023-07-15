@@ -5,11 +5,9 @@ async function cloneAsFull(customContentId) {
   return await createContent(data2);
 }
 
-async function upgrade() {
-  const context = await AP.context.getContext();
-  if(context?.confluence?.content?.type !== 'page') return;
+async function upgradePage(pageId) {
+  console.log(`Upgrade - processing page ${pageId}`)
 
-  const pageId = context.confluence.content.id;
   const page = await getContent(pageId, 'expand=body.atlas_doc_format,version.number,container,space');
   const content = JSON.parse(page.body.atlas_doc_format.value).content;
   const check = (c) => c.type === 'extension' && c.attrs.extensionType === 'com.atlassian.confluence.macro.core' && /zenuml-(sequence|graph|openapi|embed)-macro-lite/.test(c.attrs.extensionKey);
@@ -33,8 +31,23 @@ async function upgrade() {
     
     await updateContent(pageId, data);
     
-    AP.flag.create({title: `${contentIds.length} Lite macros migrated to Full`});
+    AP.flag.create({title: `${contentIds.length} Lite macros migrated to Full on page ${pageId}`});
   } else {
-    console.log('Upgrade - lite macro not found')
+    console.log(`Upgrade - lite macro not found on page ${pageId}`)
   }
+}
+
+async function upgrade() {
+  if(localStorage.zenumlUpgradeDisabed) {
+    return;
+  }
+
+  const context = await AP.context.getContext();
+  if(context?.confluence?.content?.type !== 'page') return;
+
+  const pageId = context.confluence.content.id;
+  await upgradePage(pageId)
+
+  const pages = await searchPagesContainingCustomContent();
+  pages.filter(p => p != pageId).forEach(async (p) => await upgradePage(p));
 }

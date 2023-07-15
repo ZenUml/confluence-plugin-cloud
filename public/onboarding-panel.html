@@ -25,7 +25,11 @@
 
   async function init() {
 
-    await upgrade();
+    if(!addonKey().includes('-lite')) {
+      console.log('Upgrade - full plugin detected, kicking off..')
+      await upgrade();
+    }
+    
     
     if(!isGoogleChrome()) {
       return;
@@ -328,6 +332,62 @@
     const url = `/rest/api/content/${id}${params}`;
     const response = await AP.request({type: 'GET', url});
     return response.body && JSON.parse(response.body);
+  }
+
+
+  const CUSTOM_CONTENT_TYPES = ['zenuml-content-sequence', 'zenuml-content-graph'];
+
+  const getCustomContentTypePrefix = () => `ac:${addonKey()}-lite`;
+
+  async function searchPagesContainingCustomContent() {
+    const spaceKey = (await getCurrentSpace());
+    const customContentType = t => `${getCustomContentTypePrefix()}:${t}`;
+    const typeClause = t => `type="${customContentType(t)}"`;
+    const typesClause = a => a.map(typeClause).join(' or ');
+    const searchUrl = `/rest/api/content/search?cql=space="${spaceKey}" and (${typesClause(CUSTOM_CONTENT_TYPES)}) order by lastmodified desc&expand=container,space`;
+
+    //search custom content whose container is page and return the page id
+    const searchOnce = async (url) => {
+      console.debug(`Searching content with ${url}`);
+      const data = JSON.parse((await AP.request({type: 'GET', url})).body);
+      console.debug(`${data?.size} results returned, has next? ${data?._links?.next != null}`);
+
+      data.results = data?.results.filter((c) => c.container?.type === 'page').map(c => c.container.id);
+      return data;
+    };
+
+    const searchAll = async () => {
+      let url = searchUrl, data;
+      let results = [];
+      do {
+        data = await searchOnce(url);
+        results = results.concat(data?.results);
+        url = data?._links?.next || '';
+      } while(url);
+      return results;
+    };
+
+    try {
+      return await time(searchAll, (duration, results) => {
+        trackEvent(`onboarding-panel - found ${results?.length} content, took ${duration} ms`, 'searchAll', 'info');
+      });
+    } catch (e) {
+      console.error('searchCustomContent', e);
+      trackEvent(JSON.stringify(e), 'searchCustomContent', 'error');
+      return [];
+    }
+  }
+
+  async function time(action, callback) {
+    let actionResult;
+    const startTime = performance.now();
+    try {
+      actionResult = await action();
+      return actionResult;
+    } finally {
+      const duration = Math.round(performance.now() - startTime);
+      callback(duration, actionResult);
+    }
   }
   </script>
 
