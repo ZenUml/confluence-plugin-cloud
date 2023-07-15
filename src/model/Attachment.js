@@ -133,13 +133,25 @@ async function updateAttachmentProperties(attachmentMeta) {
 
 // Add new version, response does have `results` property.
 async function createAttachmentIfContentChanged(content) {
-  console.debug('Attachment.js - Checking attachment for code:', content);
-  const attachment = await tryGetAttachment();
-  const hash = md5(content);
-  if (!attachment || hash !== attachment.comment) {
-    console.debug(`Attachment.js - ${attachment ? `Updating(old hash: ${attachment.comment}, new: ${hash})` : 'Creating'} attachment:\n`, content);
-    let attachmentMeta = await (attachment ? uploadNewVersionOfAttachment(hash) : uploadNewAttachment(hash))();
-    await updateAttachmentProperties(attachmentMeta);
+  //Ensure this method will NOT be called multiple times at the same time.
+  //There's an issue when diagram is edited through page edit, multiple 'diagramLoaded' events are fired afterwards, thus multiple calls to this method at (almost) same time, caused 409 or 503 error.
+  if(window.createAttachmentInProgress) {
+    return;
+  }
+
+  window.createAttachmentInProgress = true;
+
+  try {
+    console.debug('Attachment.js - Checking attachment for code:', content);
+    const attachment = await tryGetAttachment();
+    const hash = md5(content);
+    if (!attachment || hash !== attachment.comment) {
+      console.debug(`Attachment.js - ${attachment ? `Updating(old hash: ${attachment.comment}, new: ${hash})` : 'Creating'} attachment:\n`, content);
+      let attachmentMeta = await (attachment ? uploadNewVersionOfAttachment(hash) : uploadNewAttachment(hash))();
+      await updateAttachmentProperties(attachmentMeta);
+    }
+  } finally {
+    window.createAttachmentInProgress = false;
   }
 }
 
