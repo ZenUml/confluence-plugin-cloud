@@ -53,7 +53,11 @@ jobs:
       - uses: actions/setup-python@v4
         with:
           python-version: '3.10'
-      - run: pip3 install pluploader
+      - name: Install PyYAML
+        run: pip3 install PyYAML==5.3.1
+      - name: Install pluploader
+        run: pip3 install pluploader
+
       - run: pluploader --base-url https://zenuml-stg.atlassian.net/wiki --user ${{ secrets.ZENUML_STAGE_UPM_USER }} --password ${{ secrets.ZENUML_STAGE_UPM_PASSWORD }} install --cloud --plugin-uri https://conf-stg-lite.zenuml.com/descriptor
       - uses: actions/setup-node@v3
         with:
@@ -95,7 +99,11 @@ jobs:
       - uses: actions/setup-python@v4
         with:
           python-version: '3.10'
-      - run: pip3 install pluploader
+      - name: Install PyYAML
+        run: pip3 install PyYAML==5.3.1
+      - name: Install pluploader
+        run: pip3 install pluploader
+
       - run: pluploader --base-url https://zenuml-stg.atlassian.net/wiki --user ${{ secrets.ZENUML_STAGE_UPM_USER }} --password ${{ secrets.ZENUML_STAGE_UPM_PASSWORD }} install --cloud --plugin-uri https://conf-stg-full.zenuml.com/descriptor
       - uses: actions/setup-node@v3
         with:
