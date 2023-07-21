@@ -37,6 +37,10 @@ async function upgradePage(pageId) {
   }
 }
 
+function unique(array) {
+  return Array.from(new Set(array));
+}
+
 async function upgrade() {
   if(localStorage.zenumlUpgradeDisabed) {
     return;
@@ -49,5 +53,5 @@ async function upgrade() {
   await upgradePage(pageId)
 
   const pages = await searchPagesContainingCustomContent();
-  pages.filter(p => p != pageId).forEach(async (p) => await upgradePage(p));
+  unique(pages.filter(p => p != pageId)).forEach(async (p) => await upgradePage(p));
 }
