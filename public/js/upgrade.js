@@ -5,8 +5,14 @@ async function cloneAsFull(customContentId) {
   return await createContent(data2);
 }
 
-async function upgradePage(pageId) {
+async function upgradePage(pageId, userId) {
   console.log(`Upgrade - processing page ${pageId}`)
+
+  const b = await canEdit(pageId, userId);
+  if(!b) {
+    console.log(`Upgrade - no edit permission, skip page ${pageId}`);
+    return;
+  }
 
   const page = await getContent(pageId, 'expand=body.atlas_doc_format,version.number,container,space');
   const content = JSON.parse(page.body.atlas_doc_format.value).content;
@@ -41,7 +47,7 @@ function unique(array) {
   return Array.from(new Set(array));
 }
 
-async function upgrade() {
+async function upgrade(userId) {
   if(localStorage.zenumlUpgradeDisabed) {
     return;
   }
@@ -50,8 +56,8 @@ async function upgrade() {
   if(context?.confluence?.content?.type !== 'page') return;
 
   const pageId = context.confluence.content.id;
-  await upgradePage(pageId)
+  await upgradePage(pageId, userId)
 
   const pages = await searchPagesContainingCustomContent();
-  unique(pages.filter(p => p != pageId)).forEach(async (p) => await upgradePage(p));
+  unique(pages.filter(p => p != pageId)).forEach(async (p) => await upgradePage(p, userId));
 }

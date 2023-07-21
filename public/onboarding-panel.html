@@ -27,7 +27,7 @@
 
     if(!addonKey().includes('-lite')) {
       console.log('Upgrade - full plugin detected, kicking off..')
-      await upgrade();
+      AP.user.getCurrentUser(async (u) => await upgrade(u.atlassianAccountId));
     }
     
     
@@ -336,6 +336,11 @@
     return response.body && JSON.parse(response.body);
   }
 
+  async function canEdit(pageId, userId) {
+    const url = `/rest/api/content/${pageId}/permission/check`;
+    const response = await AP.request({type: 'POST', contentType: 'application/json', data: JSON.stringify({subject: {type: 'user', identifier: userId}, operation: 'update'}), url});
+    return response.body && JSON.parse(response.body).hasPermission;
+  }
 
   const CUSTOM_CONTENT_TYPES = ['zenuml-content-sequence', 'zenuml-content-graph'];
 
