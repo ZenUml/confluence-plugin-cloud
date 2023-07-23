@@ -66,13 +66,13 @@ function mxODPicker(container, previewFn, getODFilesList, getODFileInfo, getRece
 				'<div class="searchBar" style="display:none"><input type="search" id="odSearchBox" placeholder="' + mxUtils.htmlEntities(mxResources.get('search')) + '"></div>' +
 				'<div class="odFilesBreadcrumb"></div>' +
 				'<div id="refreshOD" class="odRefreshButton">' +
-					'<img src="/images/update32.png" width="16" height="16" title="' + mxUtils.htmlEntities(mxResources.get('refresh')) + 'Refresh" border="0"/>' +
+					'<img class="geAdaptiveAsset" src="/images/update32.png" width="16" height="16" title="' + mxUtils.htmlEntities(mxResources.get('refresh')) + 'Refresh" border="0"/>' +
 				'</div>' +
 				'<div class="odFilesList"></div>' +
 			'</div>' +
 			previewHtml +
 			(backFn? '<div id="odBackBtn" class="odLinkBtn">&lt; ' + mxUtils.htmlEntities(mxResources.get('back')) + '</div>' : '') +
-			(withSubmitBtn? '<button id="odSubmitBtn" class="odSubmitBtn">' + mxUtils.htmlEntities(mxResources.get(foldersOnly? 'save' : 'open')) + '</button>' : '');
+			(withSubmitBtn? '<button id="odSubmitBtn" class="odSubmitBtn">' + mxUtils.htmlEntities(mxResources.get(foldersOnly? 'select' : 'open')) + '</button>' : '');
 	
 	var isDarkMode = window.Editor != null && Editor.isDarkMode != null && Editor.isDarkMode();
 	
@@ -140,6 +140,10 @@ function mxODPicker(container, previewFn, getODFilesList, getODFileInfo, getRece
 		'	background-color:#ddd;' + 
 		'	border-radius:50%;' + 
 		'}' + 
+		// '.odRefreshButton:hover {' + 
+		// '	background-color:#ddd;' + 
+		// '	border-radius:50%;' + 
+		// '}' + 
 		'.odRefreshButton:active {' + 
 		'	opacity:0.7;' + 
 		'}' + 
@@ -470,7 +474,8 @@ function mxODPicker(container, previewFn, getODFilesList, getODFileInfo, getRece
 		{
 			var curr = document.createElement('span');
 			curr.innerHTML = mxUtils.htmlEntities((breadcrumb.length == 1) ?
-					mxResources.get('officeSelDiag') : (breadcrumb[breadcrumb.length - 1].name || mxResources.get('home')));
+					mxResources.get(foldersOnly ? 'selectFolder' : 'officeSelDiag') :
+						(breadcrumb[breadcrumb.length - 1].name || mxResources.get('home')));
 			bcDiv.appendChild(curr);
 		}
 	};
