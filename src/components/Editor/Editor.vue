@@ -1,5 +1,9 @@
 <template>
-  <code-mirror v-model="value" ref="myCm" @change="onEditorCodeChange" />
+  <code-mirror v-model="value" ref="myCm"
+               basic
+               :dark="dark"
+               :lang="cmOptions.language"
+               @change="onEditorCodeChange" />
 </template>
 
 <script>
@@ -8,7 +12,8 @@ import {mapState} from 'vuex';
 import _ from 'lodash'
 
 import CodeMirror from 'vue-codemirror6';
-
+import { javascript } from '@codemirror/lang-javascript';
+// import type { LanguageSupport } from '@codemirror/language';
 
 import EventBus from '@/EventBus'
 import defaultContentProvider from "@/model/ContentProvider/CompositeContentProvider";
@@ -17,14 +22,16 @@ import globals from "@/model/globals";
 import {DiagramType, NULL_DIAGRAM} from "@/model/Diagram/Diagram";
 import Example from "@/utils/sequence/Example";
 import ApWrapper2 from "@/model/ApWrapper2";
-
+const lang = javascript();
 export default {
   name: 'editor',
   data() {
     return {
+      dark: false,
       value: '',
       doc: NULL_DIAGRAM,
       cmOptions: {
+        language: lang,
         tabSize: 4,
         mode: 'text/javascript',
         theme: 'monokai',
