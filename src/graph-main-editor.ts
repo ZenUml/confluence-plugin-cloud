@@ -1,4 +1,4 @@
-import Vue from 'vue'
+import { createApp, h } from 'vue'
 import SaveAndGoBackButton from "@/components/SaveAndGoBackButton.vue";
 // @ts-ignore
 import './assets/tailwind.css'
@@ -15,8 +15,8 @@ import {trackEvent} from '@/utils/window';
 
 const compositeContentProvider = defaultContentProvider(new ApWrapper2(AP));
 
-new Vue({
-  render: h => h(SaveAndGoBackButton, {
+createApp({
+  render: () => h(SaveAndGoBackButton, {
     props: {
       saveAndExit: async () => {
         // @ts-ignore
@@ -34,7 +34,7 @@ new Vue({
       }
     }
   })
-}).$mount('#save-and-go-back');
+}).mount('#save-and-go-back');
 
 async function initializeMacro() {
   const apWrapper = globals.apWrapper;

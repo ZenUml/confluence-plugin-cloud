@@ -150,6 +150,7 @@ module.exports = {
     resolve: {
       fallback: {"stream": false, "fs": false},
       alias: {
+        vue: '@vue/compat',
         // 'vue$': 'vue/dist/vue.esm.js' // Full version with template compiler
       }
     }
@@ -161,6 +162,10 @@ module.exports = {
     port: 8080,
     client: {
       webSocketURL: 'auto://0.0.0.0:0/ws',
+      overlay: {
+        errors: false,
+        warnings: false,
+      },
     },
     proxy: {
       '/descriptor': {

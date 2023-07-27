@@ -5,7 +5,7 @@ import Store from "@/model/Store";
 import {DiagramType} from "@/model/Diagram/Diagram";
 import Example from "@/utils/sequence/Example";
 const localVue = createLocalVue()
-localVue.use(Vuex)
+// localVue.use(Vuex)
 
 // The following code solves "TypeError: range(...).getBoundingClientRect is not a function"
 document.createRange = () => {

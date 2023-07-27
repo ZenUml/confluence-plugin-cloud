@@ -1,5 +1,4 @@
 import { VueSequence } from '@zenuml/core';
-import '@zenuml/core/dist/style.css'
 import './assets/tailwind.css'
 
 import './model/MockApConfluence'

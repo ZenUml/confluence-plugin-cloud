@@ -4,7 +4,6 @@ import mermaid from 'mermaid'
 
 // ==== CSS ====
 import './assets/tailwind.css'
-import '@zenuml/core/dist/style.css'
 
 import ExtendedStore from './model/Store'
 import EventBus from './EventBus'

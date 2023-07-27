@@ -1,15 +1,9 @@
-import { VueSequence } from '@zenuml/core';
-
+import { createApp } from 'vue'
+import { createStore } from 'vuex'
 import Workspace from './components/Workspace.vue'
 import mermaid from 'mermaid'
-
 import './assets/tailwind.css'
-import '@zenuml/core/dist/style.css'
-
 import ExtendedStore from './model/Store'
-
-const Vue = VueSequence.Vue;
-const Vuex = VueSequence.Vuex;
 
 // @ts-ignore
 window.mermaid = mermaid;
@@ -18,14 +12,13 @@ mermaid.mermaidAPI.initialize({
   startOnLoad:true
 })
 
-Vue.config.productionTip = false
-
-Vue.use(Vuex)
-
-const store = new Vuex.Store(ExtendedStore);
+const store = createStore(ExtendedStore);
 if(document.getElementById('app')) {
-  new Vue({
-      store,
-      render: (h: any) => h(Workspace) // with this method, we don't need to use full version of vew
-    }).$mount('#app')
+  const app = createApp(Workspace);
+  store.dispatch('updateCode', { code: 'this._code' });
+  // As VueSequence is being used, it might be necessary to apply additional properties or settings to the app.
+  // For example, if VueSequence provides any plugins or global components, they should be applied here.
+  // The specifics depend on how VueSequence is meant to be used with Vue 3.
+  app.use(store)
+  app.mount('#app');
 }

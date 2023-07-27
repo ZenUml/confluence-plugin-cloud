@@ -9,6 +9,9 @@ export default {
   ...storeConfig,
   mutations: {
     ...storeConfig.mutations,
+    updateCode2(state: any, payload: any) {
+      state.code2 = payload
+    },
     updateMermaidCode(state: any, payload: any) {
       state.mermaidCode = payload
     },
@@ -18,6 +21,9 @@ export default {
   },
   actions: {
     ...storeConfig.actions,
+    updateCode2({commit}: any, payload: any) {
+      commit('updateCode2', payload)
+    },
     updateMermaidCode({commit}: any, payload: any) {
       commit('updateMermaidCode', payload)
     },
@@ -39,6 +45,7 @@ export default {
   },
   state: {
     ...storeConfig.state,
+    code2: '',
     mermaidCode: Example.Mermaid,
     diagramType: DiagramType.Sequence,
     mermaidSvg: '',

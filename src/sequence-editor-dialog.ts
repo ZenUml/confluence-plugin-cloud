@@ -6,7 +6,6 @@ import mermaid from 'mermaid'
 // @ts-ignore
 import './assets/tailwind.css'
 
-import '@zenuml/core/dist/style.css'
 import ExtendedStore from './model/Store'
 import EventBus from './EventBus'
 import {CustomContentStorageProvider} from "@/model/ContentProvider/CustomContentStorageProvider";

@@ -1,4 +1,4 @@
-import Vue from 'vue'
+import { createApp } from 'vue'
 import DocumentList from './components/DocumentList/DocumentList.vue'
 
 import EventBus from './EventBus'
@@ -8,12 +8,8 @@ import './utils/IgnoreEsc.ts'
 import ApWrapper2 from "@/model/ApWrapper2";
 import uuidv4 from "@/utils/uuid";
 
-Vue.config.productionTip = false
-
 if(document.getElementById('app')) {
-    new Vue({
-      render: h => h(DocumentList)
-    }).$mount('#app')
+  createApp(DocumentList).mount('#app')
 }
 EventBus.$on('save', async () => {
   const apWrapper = new ApWrapper2(AP);

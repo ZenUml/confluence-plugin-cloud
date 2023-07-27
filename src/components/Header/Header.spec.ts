@@ -4,7 +4,7 @@ import Header from '@/components/Header/Header.vue'
 import {DiagramType} from "@/model/Diagram/Diagram";
 import Store from "@/model/Store";
 const localVue = createLocalVue()
-localVue.use(Vuex)
+// localVue.use(Vuex)
 
 describe('Header', () => {
   it('should render correctly', (done) => {

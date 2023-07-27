@@ -1,5 +1,5 @@
-import Vue from 'vue'
-import Vuex from 'vuex'
+import { createApp, h } from 'vue'
+import { createStore } from 'vuex'
 import ExtendedStore from './model/Store'
 import AP from "@/model/AP";
 import createAttachmentIfContentChanged from "@/model/Attachment";
@@ -13,18 +13,14 @@ import GraphViewer from "@/components/Viewer/GraphViewer.vue";
 import EventBus from './EventBus'
 import {DiagramType} from "@/model/Diagram/Diagram";
 
-Vue.config.productionTip = false
-Vue.use(Vuex)
-
-const store = new Vuex.Store(ExtendedStore);
-let render = (h: Function) => h(GraphViewer);
+const store = createStore(ExtendedStore);
+let render = () => h(GraphViewer);
 
 if(document.getElementById('app')) {
-  // @ts-ignore
-  new Vue({
+  createApp({
     store,
     render // with this method, we don't need to use full version of vue
-  }).$mount('#app')
+  }).mount('#app')
 }
 
 EventBus.$on('diagramLoaded', () => {
@@ -96,9 +92,9 @@ EventBus.$on('edit', () => {
   AP.dialog.create(
     {
       key: 'zenuml-content-graph-editor-dialog',
-        chrome: false,
-        width: "100%",
-        height: "100%",
+      chrome: false,
+      width: "100%",
+      height: "100%",
     }).on('close', loadDiagram);
 });
 

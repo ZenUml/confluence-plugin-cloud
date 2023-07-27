@@ -81,7 +81,7 @@ export default {
   async created() {
     const compositeContentProvider = defaultContentProvider(new ApWrapper2(AP));
     const {doc} = await compositeContentProvider.load();
-    this.$store.state.diagram = doc;
+    // this.$store.state.diagram = doc;
     this.doc = doc;
     await globals.apWrapper.initializeContext();
     const canUserEditPage = await globals.apWrapper.canUserEdit();

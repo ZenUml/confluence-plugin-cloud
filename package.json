@@ -23,7 +23,10 @@
     "install:stg:lite": "pluploader --base-url https://zenuml-stg.atlassian.net/wiki install --cloud --plugin-uri https://air.zenuml.com/descriptor?lite"
   },
   "dependencies": {
-    "@zenuml/core": "^2.0.30",
+    "@codemirror/commands": "^6.2.4",
+    "@vue/compat": "^3.2.45",
+    "@zenuml/core": "3.0.3",
+    "codemirror": "^6.x",
     "html-to-image": "^1.9.0",
     "jest-puppeteer": "^6.1.1",
     "lodash": "^4.17.21",
@@ -36,8 +39,11 @@
     "split.js": "^1.6.5",
     "swagger-editor": "^4.4.0",
     "tailwindcss": "^3.2.4",
-    "vue-codemirror": "^4.0.6",
-    "vue-gtag": "^1.16.1"
+    "vue": "^3.2.45",
+    "vue-codemirror": "^6.1.1",
+    "vue-codemirror6": "^1.1.22",
+    "vue-gtag": "^1.16.1",
+    "vuex": "^4.1.0"
   },
   "devDependencies": {
     "@babel/core": "^7.20.12",
