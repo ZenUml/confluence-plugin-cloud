@@ -14,55 +14,75 @@
 	<script type="text/javascript" src="../js/google-analytics.js?version=2022.01"></script>
 	<script type="text/javascript" src="https://connect-cdn.atl-paas.net/all.js"></script>
 
+	<script>
+		const DEFAULT_GRAPH = `<mxfile>
+					<diagram name="Page-1">
+						<mxGraphModel dx="1434" dy="540" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+							<root>
+								<mxCell id="0" />
+								<mxCell id="1" parent="0" />
+							</root>
+						</mxGraphModel>
+					</diagram>
+				</mxfile>
+				`;
 
-	<script type="text/javascript">
-		mxBasePath = 'src';
-		// Parses URL parameters. Supported parameters are:
-		// - lang=xy: Specifies the language of the user interface.
-		// - touch=1: Enables a touch-style user interface.
-		// - storage=local: Enables HTML5 local storage.
-		// - chrome=0: Chromeless mode.
-		var urlParams = (function (url) {
-			var result = new Object();
-			var idx = url.lastIndexOf('?');
+		const send = d => document.getElementById('embed').contentWindow.postMessage(JSON.stringify(d));
+		const loadGraph = () => send({action: 'load', xml: window.graphXml});
 
-			if (idx > 0) {
-				var params = url.substring(idx + 1).split('&');
+		window.setGraphXml = (xml) => {
+			window.graphXml = xml;
+			loadGraph();
+		};
 
-				for (var i = 0; i < params.length; i++) {
-					idx = params[i].indexOf('=');
-
-					if (idx > 0) {
-						result[params[i].substring(0, idx)] = params[i].substring(idx + 1);
-					}
-				}
+		function toGraphModel(xmlString) {
+			var parser = new DOMParser();
+			var xmlDoc = parser.parseFromString(xmlString, 'text/xml');
+			var rootElement = xmlDoc.documentElement;
+			var modelElement = rootElement.querySelector('mxGraphModel');
+			if(!modelElement) {
+				throw `<mxGraphModel> not found in ${xmlString}`;
 			}
 
-			return result;
-		})(window.location.href);
+			var serializer = new XMLSerializer();
+			return serializer.serializeToString(modelElement);
+		}
 
-		// Default resources are included in grapheditor resources
-		mxLoadResources = false;
+		addEventListener('message', async ({data}) => {
+			console.log('received:', data);
+
+			const d = (typeof data === 'string') && JSON.parse(data);
+
+			if(d.event === 'init') {
+				window.graphXml = window.graphXml || DEFAULT_GRAPH;
+				loadGraph();
+			}
+			else if(d.event === 'save') {
+				window.graphXml = toGraphModel(d.xml);
+				console.log('window.graphXml:', window.graphXml);
+				await window.saveAndExit(window.graphXml);
+				
+				if(window.getGraphXmlInProgress) {
+					window.getGraphXmlInProgress.resolv(window.graphXml);
+				}
+			}
+		})
 	</script>
-	<script type="text/javascript" src="js/diagramly/Init.js"></script>
-	<script type="text/javascript" src="js/grapheditor/Init.js"></script>
-	<script type="text/javascript" src="js/deflate/pako.min.js"></script>
-	<script type="text/javascript" src="js/deflate/base64.js"></script>
-	<script type="text/javascript" src="js/jscolor/jscolor.js"></script>
-	<script type="text/javascript" src="js/sanitizer/purify.min.js"></script>
-	<script type="text/javascript" src="mxgraph/mxClient.js"></script>
-	<script type="text/javascript" src="js/grapheditor/Editor.js"></script>
-	<script type="text/javascript" src="js/grapheditor/EditorUi.js"></script>
-	<script type="text/javascript" src="js/grapheditor/Editor.js"></script>
-	<script type="text/javascript" src="js/grapheditor/Sidebar.js"></script>
-	<script type="text/javascript" src="js/grapheditor/Graph.js"></script>
-	<script type="text/javascript" src="js/grapheditor/Format.js"></script>
-	<script type="text/javascript" src="js/grapheditor/Shapes.js"></script>
-	<script type="text/javascript" src="js/grapheditor/Actions.js"></script>
-	<script type="text/javascript" src="js/grapheditor/Menus.js"></script>
-	<script type="text/javascript" src="js/grapheditor/Toolbar.js"></script>
-	<script type="text/javascript" src="js/grapheditor/Dialogs.js"></script>
 	<style>
+		body {
+			margin: 0;
+		}
+		iframe {
+			border:0;
+			position:fixed;
+			top:0;
+			left:0;
+			right:0;
+			bottom:0;
+			width:100%;
+			height:100%
+		}
+		
 		.save-and-exit {
 			position: fixed;
 			z-index: 1000;
@@ -83,62 +103,11 @@
 </head>
 
 <body class="geEditor" style="line-height: unset">
-	<div style="position: fixed; top: 1px; z-index: 1000">
+	<!-- <div style="position: fixed; top: 1px; z-index: 1000">
 		<div id="save-and-go-back">Save and Go back</div>
-	</div>
-	<script type="text/javascript">
-		// Extends EditorUi to update I/O action states based on availability of backend
-		(function () {
-			var editorUiInit = EditorUi.prototype.init;
-
-			EditorUi.prototype.init = function () {
-				editorUiInit.apply(this, arguments);
-				this.actions.get('export').setEnabled(false);
-				const editor = this.editor;
-
-				this.actions.get('new').setEnabled(false);
-				this.actions.get('open').setEnabled(false);
-				this.actions.get('import').setEnabled(false);
-				this.actions.get('save').setEnabled(false);
-				this.actions.get('saveAs').setEnabled(false);
-				this.actions.get('export').setEnabled(false);
-				this.actions.get('help').setEnabled(false);
-
-				window.getGraphXml = () => {
-					if (editor.graph.isEditing()) {
-						editor.graph.stopEditing();
-					}
-					return mxUtils.getXml(editor.getGraphXml());
-				};
-				window.setGraphXml = (xml) => {
-					var doc = mxUtils.parseXml(xml);
-					editor.setGraphXml(doc.documentElement);
-				};
-			};
-
-			// Adds required resources (disables loading of fallback properties, this can only
-			// be used if we know that all keys are defined in the language specific file)
-			mxResources.loadDefaultBundle = false;
-			var bundle = mxResources.getDefaultBundle(RESOURCE_BASE, mxLanguage) ||
-				mxResources.getSpecialBundle(RESOURCE_BASE, mxLanguage);
-
-			// Fixes possible asynchronous requests
-			mxUtils.getAll([bundle, STYLE_PATH + '/default.xml'], function (xhr) {
-				// Adds bundle text to resources
-				mxResources.parse(xhr[0].getText());
-
-				// Configures the default graph theme
-				var themes = new Object();
-				themes[Graph.prototype.defaultThemeName] = xhr[1].getDocumentElement();
-
-				// Main
-				new EditorUi(new Editor(urlParams['chrome'] == '0', themes));
-			}, function () {
-				document.body.innerHTML = '<center style="margin-top:10%;">Error loading resource files. Please check browser console.</center>';
-			});
-		})();
-	</script>
-
+	</div> -->
+	
+	<iframe id="embed" src="index.html?embed=1&spin=1&proto=json&noSaveBtn=1&noExitBtn=1&saveAndExit=1"></iframe>
 </body>
 
 </html>

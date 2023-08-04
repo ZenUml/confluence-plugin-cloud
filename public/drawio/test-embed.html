@@ -16,14 +16,7 @@
     }
     </style>
     <script>
-      const send = d => document.getElementById('embed').contentWindow.postMessage(JSON.stringify(d))
-
-      addEventListener('message', ({data}) => {
-        console.log('received:', data)
-        const d = JSON.parse(data)
-
-        if(d.event === 'init') {
-          send({action: 'load', xml: `<mxfile>
+      const DEFAULT_GRAPH = `<mxfile>
             <diagram name="Page-1">
               <mxGraphModel dx="1434" dy="540" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
                 <root>
@@ -33,15 +26,25 @@
               </mxGraphModel>
             </diagram>
           </mxfile>
-          `})
+          `;
+
+      const send = d => document.getElementById('embed').contentWindow.postMessage(JSON.stringify(d))
+
+      addEventListener('message', ({data}) => {
+        console.log('received:', data)
+        const d = JSON.parse(data)
+
+        if(d.event === 'init') {
+          window.graphXml = window.graphXml || DEFAULT_GRAPH;
+          send({action: 'load', xml: window.graphXml})
         }
-        else if(d.event === 'save') {
-          
+        else if(d.event === 'export') {
+          window.graphXml = d.xml;
         }
       })
     </script>
   </head>
   <body>
-    <iframe id="embed" src="index.html?embed=1&spin=1&proto=json"></iframe>
+    <iframe id="embed" src="index.html?embed=1&spin=1&proto=json&noSaveBtn=1&noExitBtn=1"></iframe>
   </body>
 </html>
