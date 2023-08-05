@@ -1,6 +1,3 @@
-// @ts-ignore
-import './assets/tailwind.css'
-
 import globals from '@/model/globals';
 import AP from "@/model/AP";
 import defaultContentProvider from "@/model/ContentProvider/CompositeContentProvider";

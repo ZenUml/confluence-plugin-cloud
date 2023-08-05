@@ -7,15 +7,13 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
-	<link rel="stylesheet" type="text/css" href="styles/grapheditor.css">
-
 	<!-- Global site tag (gtag.js) - Google Analytics -->
 	<script async src="https://www.googletagmanager.com/gtag/js?id=UA-114996686-1"></script>
 	<script type="text/javascript" src="../js/google-analytics.js?version=2022.01"></script>
 	<script type="text/javascript" src="https://connect-cdn.atl-paas.net/all.js"></script>
 
 	<script>
-		const DEFAULT_GRAPH = `<mxfile>
+		const EMPTY_GRAPH = `<mxfile>
 					<diagram name="Page-1">
 						<mxGraphModel dx="1434" dy="540" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
 							<root>
@@ -27,44 +25,38 @@
 				</mxfile>
 				`;
 
-		const send = d => document.getElementById('embed').contentWindow.postMessage(JSON.stringify(d));
-		const loadGraph = () => send({action: 'load', xml: window.graphXml});
+		const send = (data) => document.getElementById('drawioFrame').contentWindow.postMessage(JSON.stringify(data));
+		const loadGraph = (xml) => send({action: 'load', xml});
 
 		window.setGraphXml = (xml) => {
 			window.graphXml = xml;
-			loadGraph();
+			loadGraph(xml);
 		};
 
 		function toGraphModel(xmlString) {
-			var parser = new DOMParser();
-			var xmlDoc = parser.parseFromString(xmlString, 'text/xml');
-			var rootElement = xmlDoc.documentElement;
-			var modelElement = rootElement.querySelector('mxGraphModel');
+			const parser = new DOMParser();
+			const xmlDoc = parser.parseFromString(xmlString, 'text/xml');
+			const rootElement = xmlDoc.documentElement;
+			const modelElement = rootElement.querySelector('mxGraphModel');
 			if(!modelElement) {
 				throw `<mxGraphModel> not found in ${xmlString}`;
 			}
 
-			var serializer = new XMLSerializer();
+			const serializer = new XMLSerializer();
 			return serializer.serializeToString(modelElement);
 		}
 
+		//interaction protocol with embeded Drawio frame
 		addEventListener('message', async ({data}) => {
-			console.log('received:', data);
+			const payload = (typeof data === 'string') && JSON.parse(data);
 
-			const d = (typeof data === 'string') && JSON.parse(data);
-
-			if(d.event === 'init') {
-				window.graphXml = window.graphXml || DEFAULT_GRAPH;
-				loadGraph();
+			if(payload.event === 'init') {
+				window.graphXml = window.graphXml || EMPTY_GRAPH;
+				loadGraph(window.graphXml);
 			}
-			else if(d.event === 'save') {
-				window.graphXml = toGraphModel(d.xml);
-				console.log('window.graphXml:', window.graphXml);
+			else if(payload.event === 'save') {
+				window.graphXml = toGraphModel(payload.xml);
 				await window.saveAndExit(window.graphXml);
-				
-				if(window.getGraphXmlInProgress) {
-					window.getGraphXmlInProgress.resolv(window.graphXml);
-				}
 			}
 		})
 	</script>
@@ -82,32 +74,11 @@
 			width:100%;
 			height:100%
 		}
-		
-		.save-and-exit {
-			position: fixed;
-			z-index: 1000;
-			right: 0;
-		}
-
-		/* The following two rules are a hack. The issue is introduced by
-     * tailwindcss. We should remove tailwind from graph macro.
-     */
-		.geEditor * {
-			box-sizing: content-box;
-		}
-
-		.geEditor img {
-			display: unset;
-		}
 	</style>
 </head>
 
-<body class="geEditor" style="line-height: unset">
-	<!-- <div style="position: fixed; top: 1px; z-index: 1000">
-		<div id="save-and-go-back">Save and Go back</div>
-	</div> -->
-	
-	<iframe id="embed" src="index.html?embed=1&spin=1&proto=json&noSaveBtn=1&noExitBtn=1&saveAndExit=1"></iframe>
+<body>
+	<iframe id="drawioFrame" src="index.html?embed=1&spin=1&proto=json&noSaveBtn=1&noExitBtn=1&saveAndExit=1"></iframe>
 </body>
 
 </html>
