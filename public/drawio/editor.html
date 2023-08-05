@@ -58,6 +58,11 @@
 				window.graphXml = toGraphModel(payload.xml);
 				await window.saveAndExit(window.graphXml);
 			}
+			else if(payload.event === 'exit') {
+				if(!payload.modified || !confirm('Diagram modified, close without save?')) {
+					AP.dialog.close();
+				}
+			}
 		})
 	</script>
 	<style>
@@ -78,7 +83,7 @@
 </head>
 
 <body>
-	<iframe id="drawioFrame" src="index.html?embed=1&spin=1&proto=json&noSaveBtn=1&noExitBtn=1&saveAndExit=1"></iframe>
+	<iframe id="drawioFrame" src="index.html?embed=1&spin=1&proto=json&noSaveBtn=1&publishClose=1&libraries=1"></iframe>
 </body>
 
 </html>
