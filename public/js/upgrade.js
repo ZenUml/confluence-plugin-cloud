@@ -36,8 +36,8 @@ async function upgradePage(pageId, userId) {
     const data = {type: 'page', title: page.title, status: page.status, space: {key: page.space.key}, version: {number: ++page.version.number, message: 'ZenUML lite macros are upgraded'}, body: {atlas_doc_format: {value: JSON.stringify({type: 'doc', content}), representation: 'atlas_doc_format'}}};
     
     await updateContent(pageId, data);
+    return contentIds.length;
     
-    AP.flag.create({title: `${contentIds.length} Lite macros migrated to Full on page ${pageId}`});
   } else {
     console.log(`Upgrade - lite macro not found on page ${pageId}`)
   }
@@ -56,8 +56,31 @@ async function upgrade(userId) {
   if(context?.confluence?.content?.type !== 'page') return;
 
   const pageId = context.confluence.content.id;
-  await upgradePage(pageId, userId)
+  const macroCount = await upgradePage(pageId, userId)
+  if(macroCount) {
+    showPopup(pageId, macroCount);
+  }
 
   const pages = await searchPagesContainingCustomContent();
   unique(pages.filter(p => p != pageId)).forEach(async (p) => await upgradePage(p, userId));
+}
+
+function showPopup(pageId, macroCount) {
+  const flag = AP.flag.create({
+    title: `${macroCount} Lite macros migrated to Full on page ${pageId}`,
+    actions: {
+      'reload': 'Reload Page'
+    }
+  });
+
+  AP.events.on('flag.action', function(e) {
+    flag && flag.close();
+
+    if(e.actionIdentifier === 'reload') {
+      trackEvent(userId, 'reload', 'lite-to-full-upgrade');
+
+      AP.navigator.go('contentview', {contentId: pageId});
+
+    }
+  });
 }

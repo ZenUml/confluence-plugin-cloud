@@ -23,9 +23,11 @@
 
   let userId = '', clientDomain = '', currentSpace = '';
 
+  const UPGRADE_EXCLUDE_DOMAINS = ['zemuml-stg'];
+
   async function init() {
 
-    if(!addonKey().includes('-lite')) {
+    if(!addonKey().includes('-lite') && !UPGRADE_EXCLUDE_DOMAINS.includes(getClientDomain())) {
       console.log('Upgrade - full plugin detected, kicking off..')
       AP.user.getCurrentUser(async (u) => await upgrade(u.atlassianAccountId));
     }
