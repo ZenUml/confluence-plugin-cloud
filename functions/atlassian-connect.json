@@ -373,7 +373,23 @@
       },
       "url": "/get-started.html?version=__VERSION__"
     },
-    "webPanels": []
+    "webPanels": [],
+    "configurePage": {
+      "url": "/config-page.html?addonKey=__ADDON_KEY__",
+      "name": {
+        "value": "ZenUML Configuration"
+      },
+      "key": "zenuml-config-page"
+    },
+    "adminPages": [
+      {
+        "url": "/config-page.html?addonKey=__ADDON_KEY__",
+        "name": {
+          "value": "ZenUML Configuration"
+        },
+        "key": "zenuml-admin-page"
+      }
+    ]
   },
   "apiMigrations": {
     "gdpr": true

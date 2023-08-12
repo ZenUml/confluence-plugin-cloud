@@ -43,6 +43,14 @@ export const onRequestGet = async (params) => {
         m.url = replaceFunction(m.url, m);
       });
     }
+    if(modules.adminPages) {
+      modules.adminPages.forEach(m => {
+        m.url = replaceFunction(m.url, m);
+      });
+    }
+    if(modules.configurePage) {
+      modules.configurePage.url = replaceFunction(modules.configurePage.url)
+    }
   }
 
   const getCustomContentKeyForModule = (module, modules) => {
