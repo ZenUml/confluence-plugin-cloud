@@ -20,26 +20,24 @@ function mountDiagramFrame(diagram: Diagram, store: any, id: string) {
   console.log('sequence-viewer-dialog.ts - using app', document.getElementById(id))
   if (document.getElementById(id)) {
     console.log('sequence-viewer-dialog.ts - using component', Viewer)
-    createApp({
-      store,
-      render: () => h(Viewer) // with this method, we don't need to use full version of vew
-    }).mount(`#${id}`)
+    const app = createApp(Viewer);
+    app.use(store);
+    app.mount('#app');
   }
 }
 
 async function main() {
   const diagram = await getDiagram();
   const store = createStore(ExtendedStore);
-  console.log('store', store);
-  console.log('diagram', diagram.diagramType);
-  mountDiagramFrame(diagram, store, 'app');
 
   if(diagram.diagramType === DiagramType.Sequence) {
-    store.commit('code2', diagram.code);
+    store.commit('updateCode2', 'diagram.code');
   } else if (diagram.diagramType === DiagramType.Mermaid) {
     store.commit('updateDiagramType', diagram.diagramType);
     store.dispatch('updateMermaidCode', diagram.mermaidCode);
   }
+
+  mountDiagramFrame(diagram, store, 'app');
 }
 
 // We do not have to export main(), but otherwise IDE shows a warning

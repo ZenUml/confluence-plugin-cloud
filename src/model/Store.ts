@@ -4,11 +4,8 @@ import {DiagramType, NULL_DIAGRAM} from "@/model/Diagram/Diagram";
 import globals from '@/model/globals';
 import Example from "@/utils/sequence/Example";
 
-const storeConfig = VueSequence.Store()
 export default {
-  ...storeConfig,
   mutations: {
-    ...storeConfig.mutations,
     updateCode2(state: any, payload: any) {
       state.code2 = payload
     },
@@ -20,7 +17,6 @@ export default {
     },
   },
   actions: {
-    ...storeConfig.actions,
     updateCode2({commit}: any, payload: any) {
       commit('updateCode2', payload)
     },
@@ -32,19 +28,17 @@ export default {
     },
     reloadZenUML({commit, state}: any) {
       const code = state.code
-      commit('code', '')
-      commit('code', code)
+      commit('code2', '')
+      commit('code2', code)
     }
   },
   getters: {
-    ...storeConfig.getters,
     svg: (state: any) => {
       return state.mermaidSvg
     },
     isDisplayMode: () => globals.apWrapper.isDisplayMode(),
   },
   state: {
-    ...storeConfig.state,
     code2: '',
     mermaidCode: Example.Mermaid,
     diagramType: DiagramType.Sequence,
