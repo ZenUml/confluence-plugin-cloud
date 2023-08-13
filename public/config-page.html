@@ -7,7 +7,7 @@
   <!-- Global site tag (gtag.js) - Google Analytics -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=UA-114996686-1"></script>
   <script type="text/javascript" src="js/google-analytics.js?version=2022.01"></script>
-  <script type="text/javascript" src="js/demo/resources.js?version=2022.08"></script>
+  <script type="text/javascript" src="js/demo/common.js?version=2023.08"></script>
 
   <title>Configuration</title>
   <script>
@@ -41,8 +41,13 @@
 
 <body>
   <H1>Configuration</H1>
+  <!-- Todo: Downgrade button, remove consent, list to-be-upgraded pages -->
   <label for="upgrade-consent">I consent to upgrade all ZenUML Lite macros to Full</label><br>
   <input type="checkbox" id="upgrade-consent" name="Upgrade" onclick="saveConsent()">
+  
+  <div>
+    <button>Downgrade</button>
+  </div>
 </body>
 
 </html>

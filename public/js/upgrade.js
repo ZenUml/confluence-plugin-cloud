@@ -33,7 +33,8 @@ async function upgradePage(pageId, userId) {
       }
     });
     
-    const data = {type: 'page', title: page.title, status: page.status, space: {key: page.space.key}, version: {number: ++page.version.number, message: 'ZenUML lite macros are upgraded'}, body: {atlas_doc_format: {value: JSON.stringify({type: 'doc', content}), representation: 'atlas_doc_format'}}};
+    // const name = await getUserDisplayName(userId);
+    const data = {type: 'page', title: page.title, status: page.status, space: {key: page.space.key}, version: {number: ++page.version.number, message: `ZenUML lite macro(s) on this page are upgraded by XXX on behalf of ZenUML App`}, body: {atlas_doc_format: {value: JSON.stringify({type: 'doc', content}), representation: 'atlas_doc_format'}}};
     
     await updateContent(pageId, data);
     return contentIds.length;
