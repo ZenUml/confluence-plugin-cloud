@@ -36,7 +36,7 @@ EventBus.$on('save', async () => {
   const idProvider = new MacroIdProvider(apWrapper);
   // @ts-ignore
 
-  const value = {id: await idProvider.getId(),code: store.state.code, styles: store.state.styles, mermaidCode: store.state.mermaidCode, diagramType: store.state.diagramType, title: store.getters.title, source: DataSource.CustomContent} as Diagram;
+  const value = {id: await idProvider.getId(),code: store.state.code2, styles: store.state.styles, mermaidCode: store.state.mermaidCode, diagramType: store.state.diagramType, title: store.getters.title, source: DataSource.CustomContent} as Diagram;
   const customContentStorageProvider = new CustomContentStorageProvider(apWrapper);
   await customContentStorageProvider.save(value);
   // @ts-ignore

@@ -1,0 +1,129 @@
+{
+  "id": "1719500823",
+  "type": "ac:com.zenuml.confluence-addon-lite:zenuml-content-sequence",
+  "status": "current",
+  "title": "Order Service (Demonstration only)",
+  "space": {
+    "id": 32987,
+    "key": "ZEN",
+    "name": "P&D Vision Products",
+    "type": "global",
+    "status": "current",
+    "_expandable": {
+      "settings": "/rest/api/space/ZEN/settings",
+      "metadata": "",
+      "operations": "",
+      "lookAndFeel": "/rest/api/settings/lookandfeel?spaceKey=ZEN",
+      "identifiers": "",
+      "permissions": "",
+      "icon": "",
+      "description": "",
+      "theme": "/rest/api/space/ZEN/theme",
+      "history": "",
+      "homepage": "/rest/api/content/252411915"
+    },
+    "_links": {
+      "webui": "/spaces/ZEN",
+      "self": "https://zenuml.atlassian.net/wiki/rest/api/space/ZEN"
+    }
+  },
+  "version": {
+    "by": {
+      "type": "known",
+      "accountId": "557058:0a2e245b-f5cd-42f7-bf07-a53b8d17e94f",
+      "accountType": "atlassian",
+      "email": "",
+      "publicName": "Peng Xiao",
+      "profilePicture": {
+        "path": "/wiki/aa-avatar/557058:0a2e245b-f5cd-42f7-bf07-a53b8d17e94f",
+        "width": 48,
+        "height": 48,
+        "isDefault": false
+      },
+      "displayName": "Peng Xiao",
+      "isExternalCollaborator": false,
+      "_expandable": {
+        "operations": "",
+        "personalSpace": ""
+      },
+      "_links": {
+        "self": "https://zenuml.atlassian.net/wiki/rest/api/user?accountId=557058:0a2e245b-f5cd-42f7-bf07-a53b8d17e94f"
+      }
+    },
+    "when": "2022-04-09T10:06:39.743Z",
+    "friendlyWhen": "Apr 09, 2022",
+    "message": "",
+    "number": 1,
+    "minorEdit": false,
+    "contentTypeModified": false,
+    "_expandable": {
+      "collaborators": "",
+      "content": "/rest/api/content/1719500823"
+    },
+    "_links": {
+      "self": "https://zenuml.atlassian.net/wiki/rest/api/content/1719500823/version/1"
+    }
+  },
+  "container": {
+    "id": "1719533586",
+    "type": "page",
+    "status": "current",
+    "title": "ZEN300 Lite",
+    "macroRenderedOutput": {},
+    "extensions": {
+      "position": 147822450
+    },
+    "_expandable": {
+      "container": "/rest/api/space/ZEN",
+      "metadata": "",
+      "restrictions": "/rest/api/content/1719533586/restriction/byOperation",
+      "history": "/rest/api/content/1719533586/history",
+      "body": "",
+      "version": "",
+      "descendants": "/rest/api/content/1719533586/descendant",
+      "space": "/rest/api/space/ZEN",
+      "childTypes": "",
+      "schedulePublishInfo": "",
+      "operations": "",
+      "schedulePublishDate": "",
+      "children": "/rest/api/content/1719533586/child",
+      "ancestors": ""
+    },
+    "_links": {
+      "self": "https://zenuml.atlassian.net/wiki/rest/api/content/1719533586",
+      "tinyui": "/x/EgB_Zg",
+      "editui": "/pages/resumedraft.action?draftId=1719533586",
+      "webui": "/spaces/ZEN/pages/1719533586/ZEN300+Lite"
+    }
+  },
+  "macroRenderedOutput": {},
+  "body": {
+    "raw": {
+      "value": "{\"title\":\"Order Service (Demonstration only)\",\"code\":\"title Order Service (Demonstration only)\\n@Actor Client\\n@Boundary OrderController\\n@EC2 <<BFF>> OrderService\\ngroup BusinessService {\\n  @Lambda PurchaseService\\n  @AzureFunction InvoiceService\\n}\\n\\n@Starter(Client)\\n//`POST /orders`\\nOrderController.post(payload) {\\n  OrderService.create(payload) {\\n    order = new Order(payload)\\n    if(order != null) {\\n      par {\\n        PurchaseService.createPO(order)\\n        InvoiceService.createInvoice(order)      \\n      }      \\n    }\\n  }\\n}\",\"mermaidCode\":\"graph TD; A-->BX;\",\"diagramType\":\"sequence\",\"source\":\"custom-content\"}",
+      "representation": "raw",
+      "embeddedContent": [],
+      "_expandable": {
+        "content": "/rest/api/content/1719500823"
+      }
+    }
+  },
+  "_expandable": {
+    "childTypes": "",
+    "schedulePublishInfo": "",
+    "metadata": "",
+    "operations": "",
+    "schedulePublishDate": "",
+    "children": "/rest/api/content/1719500823/child",
+    "restrictions": "/rest/api/content/1719500823/restriction/byOperation",
+    "history": "/rest/api/content/1719500823/history",
+    "ancestors": "",
+    "descendants": "/rest/api/content/1719500823/descendant"
+  },
+  "_links": {
+    "context": "/wiki",
+    "self": "https://zenuml.atlassian.net/wiki/rest/api/content/1719500823",
+    "collection": "/rest/api/content",
+    "webui": "/plugins/servlet/ac/com.zenuml.confluence-addon-lite/zenuml-content-sequence-viewer?content.plugin=ac%3Acom.zenuml.confluence-addon-lite%3Azenuml-content-sequence&space.key=ZEN&content.id=1719500823&content.version=1&space.id=32987&content.type=custom&user.isExternalCollaborator=false",
+    "base": "https://zenuml.atlassian.net/wiki"
+  }
+}

@@ -72,15 +72,21 @@ export default {
   async created() {
     const compositeContentProvider = defaultContentProvider(new ApWrapper2(AP));
     const {doc} = await compositeContentProvider.load();
+    console.debug('Editor - Document loaded:', doc);
+
     this.doc = doc;
     if (doc === NULL_DIAGRAM) {
+      console.debug('Editor - Use default doc');
+
       this.doc ={
         diagramType: DiagramType.Sequence,
         code: Example.Sequence
       }
-      this.$store.dispatch('updateCode', {code: Example.Sequence});
+      this.$store.dispatch('updateCode2', {code: Example.Sequence});
     }
     await globals.apWrapper.initializeContext();
+    this.value = this.doc.code;
+    console.debug('Editor - set Editor value: ', this.value);
     this.canUserEdit = await globals.apWrapper.canUserEdit();
   },
   mounted() {

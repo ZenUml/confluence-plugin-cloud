@@ -68,6 +68,7 @@ export default {
   async created() {
     const compositeContentProvider = defaultContentProvider(new ApWrapper2(AP));
     const {doc} = await compositeContentProvider.load();
+    console.debug('Viewer - Document loaded: ', doc);
     this.$store.state.diagram = doc;
     this.doc = doc;
     await globals.apWrapper.initializeContext();
@@ -86,7 +87,7 @@ export default {
         EventBus.$emit('diagramLoaded', doc.mermaidCode, doc.diagramType);
       } else {
         zenuml.render(doc.code || Example.Sequence, 'theme-default')
-        this.$store.commit('code', doc.code || Example.Sequence);
+        this.$store.commit('updateCode2', doc.code || Example.Sequence);
         this.rawStyles = doc.styles || {};
         EventBus.$emit('diagramLoaded', doc.code, doc.diagramType);
       }

@@ -33,7 +33,7 @@ window.store = store
 
 EventBus.$on('save', async () => {
   // @ts-ignore
-  const diagram = { title: store.getters.title, code: store.state.code, styles: store.state.styles, mermaidCode: store.state.mermaidCode, diagramType: store.state.diagramType, source: DataSource.CustomContent };
+  const diagram = { title: store.getters.title, code: store.state.code2, styles: store.state.styles, mermaidCode: store.state.mermaidCode, diagramType: store.state.diagramType, source: DataSource.CustomContent };
   await saveToPlatform(diagram);
   // @ts-ignore
   AP.dialog.close();
