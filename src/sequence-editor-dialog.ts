@@ -1,4 +1,5 @@
-import { VueSequence } from '@zenuml/core'
+import {createApp} from 'vue'
+import {createStore} from 'vuex'
 import Workspace from './components/Workspace.vue'
 
 import mermaid from 'mermaid'
@@ -15,9 +16,6 @@ import {DataSource} from "@/model/Diagram/Diagram";
 import {MacroIdProvider} from "@/model/ContentProvider/MacroIdProvider";
 import './utils/IgnoreEsc.ts'
 
-const Vue = VueSequence.Vue;
-const Vuex = VueSequence.Vuex;
-
 // eslint-disable-next-line
 // @ts-ignore
 window.mermaid = mermaid
@@ -26,16 +24,11 @@ mermaid.mermaidAPI.initialize({
   startOnLoad:true
 })
 
-Vue.config.productionTip = false
-
-Vue.use(Vuex)
-
-const store = new Vuex.Store(ExtendedStore);
+const store = createStore(ExtendedStore);
 if(document.getElementById('app')) {
-    new Vue({
-      store,
-      render: (h: any) => h(Workspace) // with this method, we don't need to use full version of vew
-    }).$mount('#app')
+  const app = createApp(Workspace);
+  app.use(store);
+  app.mount('#app');
 }
 
 EventBus.$on('save', async () => {

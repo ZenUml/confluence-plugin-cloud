@@ -1,4 +1,4 @@
-import {createApp, h} from 'vue'
+import {createApp} from 'vue'
 import {createStore} from 'vuex'
 import './assets/tailwind.css'
 
