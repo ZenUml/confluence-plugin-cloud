@@ -13,7 +13,7 @@ import _ from 'lodash'
 
 import CodeMirror from 'vue-codemirror6';
 import { javascript } from '@codemirror/lang-javascript';
-// import type { LanguageSupport } from '@codemirror/language';
+import '@codemirror/autocomplete';
 
 import EventBus from '@/EventBus'
 import defaultContentProvider from "@/model/ContentProvider/CompositeContentProvider";

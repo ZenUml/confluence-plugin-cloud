@@ -1,18 +1,15 @@
 <template>
 <!-- screen-capture-content class is used in Attachment.js to select the node. -->
 <div class="viewer mx-1 pr-2" :class="{'screen-capture-content': diagramType === 'sequence'}">
-  <Debug v-if="diagramType === 'sequence'"/>
-  <error-boundary>
-  <div v-html="styles"></div>
   <div v-show="diagramType === 'mermaid'">
     <mermaid-viewer/>
   </div>
   <div v-show="diagramType === 'sequence'" @click="deselectAll">
     <styling-panel/>
-    {{diagramType}}
-    <div ref="zenuml"></div>
+    <generic-viewer>
+      <div ref="zenuml"></div>
+    </generic-viewer>
   </div>
-  </error-boundary>
 </div>
 </template>
 
@@ -21,15 +18,14 @@ import {mapState, mapGetters} from "vuex";
 import ZenUml from '@zenuml/core'
 import MermaidViewer from './MermaidViewer.vue'
 import EventBus from '../../EventBus'
-import Debug from '@/components/Debug/Debug.vue'
 import StylingPanel from "@/components/StylingPanel";
-import ErrorBoundary from "@/components/ErrorBoundary";
 import globals from '@/model/globals';
 import {DataSource, DiagramType, NULL_DIAGRAM} from "@/model/Diagram/Diagram";
 import defaultContentProvider from "@/model/ContentProvider/CompositeContentProvider";
 import AP from "@/model/AP";
 import Example from "@/utils/sequence/Example";
 import ApWrapper2 from "@/model/ApWrapper2";
+import GenericViewer from "@/components/Viewer/GenericViewer.vue";
 // const DiagramFrame = VueSequence.DiagramFrame;
 let zenuml;
 export default {
@@ -42,8 +38,7 @@ export default {
     }
   },
   components: {
-    Debug,
-    ErrorBoundary,
+    GenericViewer,
     MermaidViewer,
     StylingPanel,
   },
@@ -99,7 +94,6 @@ export default {
     async code2(code, oldCode) {
       console.debug('Viewer - Code changed - new: ', code, ', old: ', oldCode);
       await zenuml.render(code, 'theme-mermaid');
-
     },
   },
   methods: {

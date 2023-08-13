@@ -27,7 +27,7 @@
     "@codemirror/lang-javascript": "^6.1.9",
     "@codemirror/language": "^6.8.0",
     "@vue/compat": "^3.2.45",
-    "@zenuml/core": "3.0.3",
+    "@zenuml/core": "^3.0.5",
     "codemirror": "^6.x",
     "html-to-image": "^1.9.0",
     "jest-puppeteer": "^6.1.1",
@@ -43,7 +43,7 @@
     "tailwindcss": "^3.2.4",
     "vue": "^3.2.45",
     "vue-codemirror": "^6.1.1",
-    "vue-codemirror6": "^1.1.22",
+    "vue-codemirror6": "^1.1.24",
     "vue-gtag": "^1.16.1",
     "vuex": "^4.1.0"
   },

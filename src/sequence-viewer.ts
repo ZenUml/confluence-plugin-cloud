@@ -1,4 +1,5 @@
-import { VueSequence } from '@zenuml/core';
+import { createApp } from 'vue'
+import { createStore } from 'vuex'
 import './assets/tailwind.css'
 
 import './model/MockApConfluence'
@@ -13,21 +14,14 @@ import defaultContentProvider from "@/model/ContentProvider/CompositeContentProv
 import ApWrapper2 from "@/model/ApWrapper2";
 import AP from "@/model/AP";
 
-const Vue = VueSequence.Vue;
-const Vuex = VueSequence.Vuex;
 
-Vue.config.productionTip = false
-Vue.use(Vuex)
-
-const store = new Vuex.Store(ExtendedStore);
-
-let render = (h: Function) => h(Viewer);
+const store = createStore(ExtendedStore);
 
 if(document.getElementById('app')) {
-  new Vue({
-      store,
-      render // with this method, we don't need to use full version of vue
-    }).$mount('#app')
+  const app = createApp(Viewer);
+  app.use(store);
+
+  app.mount('#app');
 }
 // @ts-ignore
 window.store = store

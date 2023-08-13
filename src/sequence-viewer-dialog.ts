@@ -1,14 +1,13 @@
-import { createApp, h } from 'vue'
-import { createStore } from 'vuex'
+import {createApp, h} from 'vue'
+import {createStore} from 'vuex'
 import './assets/tailwind.css'
-import {VueSequence} from '@zenuml/core';
 
 import defaultContentProvider from "@/model/ContentProvider/CompositeContentProvider";
 import AP from "@/model/AP";
 import ApWrapper2 from "@/model/ApWrapper2";
 import {Diagram, DiagramType} from "@/model/Diagram/Diagram";
-import MermaidViewer from '@/components/Viewer/MermaidViewer.vue';
 import ExtendedStore from './model/Store'
+import Viewer from "@/components/Viewer/Viewer.vue";
 
 async function getDiagram(): Promise<Diagram> {
   const contentProvider = defaultContentProvider(new ApWrapper2(AP));
@@ -20,12 +19,10 @@ async function getDiagram(): Promise<Diagram> {
 function mountDiagramFrame(diagram: Diagram, store: any, id: string) {
   console.log('sequence-viewer-dialog.ts - using app', document.getElementById(id))
   if (document.getElementById(id)) {
-    const component = diagram.diagramType === DiagramType.Sequence ? VueSequence.DiagramFrame : MermaidViewer;
-    console.log('sequence-viewer-dialog.ts - using component', component)
-    const render = () => h(component)
+    console.log('sequence-viewer-dialog.ts - using component', Viewer)
     createApp({
       store,
-      render // with this method, we don't need to use full version of vew
+      render: () => h(Viewer) // with this method, we don't need to use full version of vew
     }).mount(`#${id}`)
   }
 }
@@ -33,12 +30,13 @@ function mountDiagramFrame(diagram: Diagram, store: any, id: string) {
 async function main() {
   const diagram = await getDiagram();
   const store = createStore(ExtendedStore);
+  console.log('store', store);
+  console.log('diagram', diagram.diagramType);
   mountDiagramFrame(diagram, store, 'app');
 
   if(diagram.diagramType === DiagramType.Sequence) {
-    store.commit('code', diagram.code);
-  }
-  else if (diagram.diagramType === DiagramType.Mermaid) {
+    store.commit('code2', diagram.code);
+  } else if (diagram.diagramType === DiagramType.Mermaid) {
     store.commit('updateDiagramType', diagram.diagramType);
     store.dispatch('updateMermaidCode', diagram.mermaidCode);
   }

@@ -2,10 +2,10 @@
   <div class="content h-screen flex flex-col">
     <Header class="flex-shrink-0"/>
     <div class="workspace flex-grow split">
-      <div id="workspace-left" class="editor overflow-auto">
+      <div id="workspace-left" class="editor">
         <editor/>
       </div>
-      <div id="workspace-right" class="diagram overflow-auto">
+      <div id="workspace-right" class="diagram">
         <Viewer />
       </div>
     </div>

@@ -2146,7 +2146,7 @@
     "@lezer/common" "^1.0.0"
     "@lezer/javascript" "^1.0.0"
 
-"@codemirror/language@6.x", "@codemirror/language@^6.0.0", "@codemirror/language@^6.6.0":
+"@codemirror/language@6.x", "@codemirror/language@^6.0.0", "@codemirror/language@^6.6.0", "@codemirror/language@^6.8.0":
   version "6.8.0"
   resolved "https://registry.yarnpkg.com/@codemirror/language/-/language-6.8.0.tgz#f2d7eea6b338c25593d800f2293b062d9f9856db"
   integrity sha512-r1paAyWOZkfY0RaYEZj3Kul+MiQTEbDvYqf8gPGaRvNneHXCmfSaAVFjwRUPlgxS8yflMxw2CTu6uCMp8R8A2g==
@@ -4294,15 +4294,15 @@
   resolved "https://registry.yarnpkg.com/@xtuc/long/-/long-4.2.2.tgz#d291c6a4e97989b5c61d9acf396ae4fe133a718d"
   integrity sha512-NuHqBY1PB/D8xU6s/thBgOAiAP7HOYDQ32+BFZILJ8ivkUkAHQnWfn6WhL79Owj1qmUnoN/YPhktdIoucipkAQ==
 
-"@zenuml/core@3.0.3":
-  version "3.0.3"
-  resolved "https://registry.yarnpkg.com/@zenuml/core/-/core-3.0.3.tgz#b9877fa22919e0d3046f6da2180f361943beb987"
-  integrity sha512-Wp6yF5iERvGXrR3z/mNhQYP2uI54Bd7RQ2ZwA26Lca+tufj4X8pfqGVSORLqbUl4wjjdcwHc2RNT8AU+cz2NCg==
+"@zenuml/core@^3.0.5":
+  version "3.0.5"
+  resolved "https://registry.yarnpkg.com/@zenuml/core/-/core-3.0.5.tgz#d7187fe3e1738ee2e488b772ed0ff205311860a9"
+  integrity sha512-2kJ8QDBK2L9z3rQX2mGNl5Kc058K8FXufxUsJi8b27aJmoR1OfnUU2M3LXaA3dENx6PVL1uqFKbwRhxcsyZCGg==
   dependencies:
     "@types/assert" "^1.5.4"
     "@types/ramda" "^0.28.0"
     "@vue/compat" "^3.2.45"
-    antlr4 "^4.11.0"
+    antlr4 "~4.11.0"
     color-string "^1.5.5"
     dom-to-image-more "^2.9.5"
     file-saver "^2.0.5"
@@ -4554,7 +4554,7 @@ ansi-styles@^5.0.0:
   resolved "https://registry.yarnpkg.com/ansi-styles/-/ansi-styles-5.2.0.tgz#07449690ad45777d1924ac2abb2fc8895dba836b"
   integrity sha512-Cxwpt2SfTzTtXcfOlzGEee8O+c+MmUgGrNiBcXnuWxuFJHe6a5Hz7qwhwe5OgaSYI0IJvkLqWX1ASG+cJOkEiA==
 
-antlr4@^4.11.0:
+antlr4@~4.11.0:
   version "4.11.0"
   resolved "https://registry.yarnpkg.com/antlr4/-/antlr4-4.11.0.tgz#d7466f5044fa6e333c0ec821b30c6157f6b004ae"
   integrity sha512-GUGlpE2JUjAN+G8G5vY+nOoeyNhHsXoIJwP1XF1oRw89vifA1K46T6SEkwLwr7drihN7I/lf0DIjKc4OZvBX8w==
@@ -15076,10 +15076,10 @@ vue-cli-plugin-tailwind@~3.0.0:
   resolved "https://registry.yarnpkg.com/vue-cli-plugin-tailwind/-/vue-cli-plugin-tailwind-3.0.0.tgz#2436e781e919acab9539934549999baf33e0a099"
   integrity sha512-bUWjfwGtJCeBU7pL4lD86RC+HsJAmAlYqr8e65NGC3q/ZBzC9KQs1Iy/vTyfDTnB7ZJm3huB+1a/m+17fdMZ8A==
 
-vue-codemirror6@^1.1.22:
-  version "1.1.22"
-  resolved "https://registry.yarnpkg.com/vue-codemirror6/-/vue-codemirror6-1.1.22.tgz#e34b7441aab44439aa1d4865c2980378f5757c64"
-  integrity sha512-QmNlMKiLKCqCCFOlaYC/llWMgn8K+tvn3yBGnBnSGE0phWHw437JFvAxkDuO/jOjpTO2aLxUdWH2cqquE2h7zQ==
+vue-codemirror6@^1.1.24:
+  version "1.1.24"
+  resolved "https://registry.yarnpkg.com/vue-codemirror6/-/vue-codemirror6-1.1.24.tgz#6e427f5659c5e41955e8eead81abb4dc9cf2f466"
+  integrity sha512-oGVG4AGCHOODtB6onfr7Heqq6Q0syncoqHIZ5yZFZDfpfpopHa1LZrgicCHt/ZoF/uPP5/ek8Q309igWt33oVw==
   dependencies:
     codemirror "^6.0.1"
     vue-demi latest
