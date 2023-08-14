@@ -1,21 +1,23 @@
 <template>
-  <code-mirror v-model="value" ref="myCm"
+  <div class="viewer mx-1 pr-2">
+  <code-mirror v-show="diagramType === 'mermaid'" v-model="valueMermaid" ref="myCmMermaid"
+               @change="onEditorCodeChangeMermaid"
                basic
                :dark="dark"
-               :lang="cmOptions.language"
-               @change="onEditorCodeChange" />
+               :lang="cmOptions.language"/>
+  <code-mirror v-show="diagramType === 'sequence'" v-model="valueSequence" ref="myCmSequence"
+               @change="onEditorCodeChangeSequence"
+               basic
+               :dark="dark"
+               :lang="cmOptions.language"/>
+  </div>
 </template>
 
 <script>
 import {mapState} from 'vuex';
-
-import _ from 'lodash'
-
 import CodeMirror from 'vue-codemirror6';
 import { javascript } from '@codemirror/lang-javascript';
 import '@codemirror/autocomplete';
-
-import EventBus from '@/EventBus'
 import defaultContentProvider from "@/model/ContentProvider/CompositeContentProvider";
 import AP from "@/model/AP";
 import globals from "@/model/globals";
@@ -28,7 +30,8 @@ export default {
   data() {
     return {
       dark: false,
-      value: '',
+      valueSequence: '',
+      valueMermaid: '',
       doc: NULL_DIAGRAM,
       cmOptions: {
         language: lang,
@@ -48,26 +51,48 @@ export default {
       }
     }
   },
+  watch: {
+    diagramType:function (newCode) {
+      console.debug('Editor - value', newCode);
+      const isMermaid = this.diagramType === DiagramType.Mermaid;
+      const result = isMermaid? this.diagram.mermaidCode || Example.Mermaid : this.diagram.code || Example.Sequence;
+      console.debug('Editor - code', isMermaid, result);
+      this.valueMermaid = this.diagram.mermaidCode || Example.Mermaid;
+      this.valueSequence = this.diagram.code || Example.Sequence;
+    }
+  },
   methods: {
-    onEditorCodeChange: function (newCode) {
+    onEditorCodeChangeMermaid: function (newCode) {
       console.debug('onEditorCodeChange', newCode.doc.toString());
-      const isMermaid = this.diagramType === 'mermaid';
-      this.$store.commit('updateCode2', newCode.doc.toString());
-      if (isMermaid) {
-        this.$store.dispatch('updateMermaidCode', newCode.doc.toString());
-      } else {
-        this.$store.dispatch('updateCode', {code: newCode.doc.toString()});
-      }
+      this.$store.dispatch('updateMermaidCode', newCode.doc.toString());
     },
+    onEditorCodeChangeSequence: function (newCode) {
+      console.debug('onEditorCodeChange', newCode.doc.toString());
+      this.$store.dispatch('updateCode2', newCode.doc.toString());
+    }
   },
   computed: {
-    ...mapState(['diagramType']),
-    code() {
-      return this.diagramType === DiagramType.Mermaid? this.doc.mermaidCode || Example.Mermaid : this.doc.code || Example.Sequence;
-    },
-    codemirror() {
-      return this.$refs.myCm.codemirror
-    },
+    ...mapState({
+      diagramType: state => state.diagramType,
+      diagram: state => state.diagram,
+    }),
+    // code: {
+    //   get(){
+    //     const isMermaid = this.diagramType === DiagramType.Mermaid;
+    //     const result = isMermaid? this.doc.mermaidCode || Example.Mermaid : this.doc.code || Example.Sequence;
+    //     console.debug('Editor - code', isMermaid, result);
+    //     return result;
+    //   }, set() {
+    //     // const isMermaid = this.diagramType === DiagramType.Mermaid;
+    //     // console.debug('Editor - set code', isMermaid, newCode);
+    //     // if (isMermaid) {
+    //     //   this.$store.dispatch('updateMermaidCode', newCode);
+    //     // } else {
+    //     //   this.$store.dispatch('updateCode2', newCode);
+    //     // }
+    //   }
+    // },
+
   },
   async created() {
     const compositeContentProvider = defaultContentProvider(new ApWrapper2(AP));
@@ -85,36 +110,9 @@ export default {
       this.$store.dispatch('updateCode2', {code: Example.Sequence});
     }
     await globals.apWrapper.initializeContext();
-    this.value = this.doc.code;
+    this.valueSequence = this.doc.code;
     console.debug('Editor - set Editor value: ', this.value);
     this.canUserEdit = await globals.apWrapper.canUserEdit();
-  },
-  mounted() {
-    const that = this
-    EventBus.$on('highlight', (codeRange) => {
-      if(that.mark) {
-        that.mark.clear()
-      }
-      that.mark = that.codemirror.markText({
-        line: codeRange.start.line-1, ch: codeRange.start.col
-      }, {
-        line: codeRange.stop.line-1, ch: codeRange.stop.col
-      }, {css: 'background: gray'})
-    })
-    this.codemirror?.on('cursorActivity',_.debounce(() => {
-      if (this.mark) {
-        this.mark.clear()
-      }
-      const cursor = that.codemirror.getCursor();
-      const line = cursor.line;
-      let pos = cursor.ch;
-
-      for (let i = 0; i < line; i++) {
-        pos += that.codemirror.getLine(i).length + 1
-      }
-      that.$store.state.cursor = pos
-    }, 500))
-
   },
   components: {CodeMirror}
 }

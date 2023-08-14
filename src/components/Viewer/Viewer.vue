@@ -45,7 +45,7 @@ export default {
   computed: {
     // We use {} instead of [] to get type checking
     ...mapState({
-      diagramType: state => state.diagramType,
+      diagramType: state => state.diagram.diagramType,
       diagram: state => state.diagram,
       code2: state => state.code2,
     }),
@@ -86,7 +86,7 @@ export default {
         this.$store.dispatch('updateMermaidCode', doc.mermaidCode || Example.Mermaid);
         EventBus.$emit('diagramLoaded', doc.mermaidCode, doc.diagramType);
       } else {
-        zenuml.render(doc.code || Example.Sequence, 'theme-default')
+        zenuml?.render(doc.code || Example.Sequence, 'theme-default')
         this.$store.commit('updateCode2', doc.code || Example.Sequence);
         this.rawStyles = doc.styles || {};
         EventBus.$emit('diagramLoaded', doc.code, doc.diagramType);
@@ -94,7 +94,7 @@ export default {
     },
     async code2(code, oldCode) {
       console.debug('Viewer - Code changed - new: ', code, ', old: ', oldCode);
-      await zenuml.render(code, 'theme-mermaid');
+      await zenuml?.render(code, 'theme-mermaid');
     },
   },
   methods: {

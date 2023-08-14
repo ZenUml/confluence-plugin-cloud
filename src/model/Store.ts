@@ -1,4 +1,3 @@
-import {VueSequence} from '@zenuml/core';
 import EventBus from '../EventBus'
 import {DiagramType, NULL_DIAGRAM} from "@/model/Diagram/Diagram";
 import globals from '@/model/globals';
@@ -8,12 +7,15 @@ export default {
   mutations: {
     updateCode2(state: any, payload: any) {
       state.code2 = payload
+      state.diagram.code = payload
     },
     updateMermaidCode(state: any, payload: any) {
       state.mermaidCode = payload
+      state.diagram.mermaidCode = payload
     },
     updateDiagramType(state: any, payload: any) {
       state.diagramType = payload
+      state.diagram.diagramType = payload
     },
   },
   actions: {
@@ -21,16 +23,12 @@ export default {
       commit('updateCode2', payload)
     },
     updateMermaidCode({commit}: any, payload: any) {
+      console.debug('updateMermaidCode', payload)
       commit('updateMermaidCode', payload)
     },
     updateDiagramType({commit}: any, payload: DiagramType) {
       commit('updateDiagramType', payload)
     },
-    reloadZenUML({commit, state}: any) {
-      const code = state.code
-      commit('code2', '')
-      commit('code2', code)
-    }
   },
   getters: {
     svg: (state: any) => {
@@ -39,7 +37,8 @@ export default {
     isDisplayMode: () => globals.apWrapper.isDisplayMode(),
   },
   state: {
-    code2: '',
+    styles: {},
+    code2: Example.Sequence,
     mermaidCode: Example.Mermaid,
     diagramType: DiagramType.Sequence,
     mermaidSvg: '',

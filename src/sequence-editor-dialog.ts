@@ -12,7 +12,7 @@ import EventBus from './EventBus'
 import {CustomContentStorageProvider} from "@/model/ContentProvider/CustomContentStorageProvider";
 import ApWrapper2 from "@/model/ApWrapper2";
 import AP from "@/model/AP";
-import {DataSource} from "@/model/Diagram/Diagram";
+import {DataSource, Diagram} from "@/model/Diagram/Diagram";
 import {MacroIdProvider} from "@/model/ContentProvider/MacroIdProvider";
 import './utils/IgnoreEsc.ts'
 
@@ -35,8 +35,8 @@ EventBus.$on('save', async () => {
   const apWrapper = new ApWrapper2(AP);
   const idProvider = new MacroIdProvider(apWrapper);
   // @ts-ignore
-
-  const value = {id: await idProvider.getId(),code: store.state.code2, styles: store.state.styles, mermaidCode: store.state.mermaidCode, diagramType: store.state.diagramType, title: store.getters.title, source: DataSource.CustomContent} as Diagram;
+  console.log('Save document', store.state.diagram);
+  const value = {id: await idProvider.getId(),code: store.state.diagram.code, styles: store.state.styles, mermaidCode: store.state.diagram.mermaidCode, diagramType: store.state.diagram.diagramType, title: store.getters.title, source: DataSource.CustomContent} as Diagram;
   const customContentStorageProvider = new CustomContentStorageProvider(apWrapper);
   await customContentStorageProvider.save(value);
   // @ts-ignore
