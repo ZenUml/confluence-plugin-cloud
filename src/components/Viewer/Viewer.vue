@@ -20,7 +20,7 @@ import MermaidViewer from './MermaidViewer.vue'
 import EventBus from '../../EventBus'
 import StylingPanel from "@/components/StylingPanel";
 import globals from '@/model/globals';
-import {DataSource, DiagramType, NULL_DIAGRAM} from "@/model/Diagram/Diagram";
+import {DataSource, NULL_DIAGRAM} from "@/model/Diagram/Diagram";
 import defaultContentProvider from "@/model/ContentProvider/CompositeContentProvider";
 import AP from "@/model/AP";
 import Example from "@/utils/sequence/Example";
@@ -47,7 +47,7 @@ export default {
     ...mapState({
       diagramType: state => state.diagram.diagramType,
       diagram: state => state.diagram,
-      code2: state => state.code2,
+      code2: state => state.diagram.code,
     }),
     ...mapGetters({isDisplayMode: 'isDisplayMode'}),
     isLite() {
@@ -81,7 +81,6 @@ export default {
     diagram(doc, oldDoc) {
       console.debug('Viewer - Document changed - new: ', doc, ', old: ', oldDoc);
 
-      this.$store.commit('updateDiagramType', ( !this.doc.diagramType || this.doc.diagramType === DiagramType.Unknown) ? DiagramType.Sequence : this.doc.diagramType);
       if (doc.diagramType === 'mermaid') {
         this.$store.dispatch('updateMermaidCode', doc.mermaidCode || Example.Mermaid);
         EventBus.$emit('diagramLoaded', doc.mermaidCode, doc.diagramType);

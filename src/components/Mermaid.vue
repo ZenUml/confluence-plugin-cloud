@@ -22,7 +22,7 @@ export default {
     code() {
       // if we do not use `diagramType === 'mermaid' &&` this value will not change when we switch the tabs
       // we cannot use mounted to initialise svg either (see comments in `mounted`).
-      return this.$store.state.diagramType === 'mermaid' && this.$store.state.mermaidCode;
+      return this.$store.state.diagram.diagramType === 'mermaid' && this.$store.state.diagram.mermaidCode;
     }
   },
   async mounted() {

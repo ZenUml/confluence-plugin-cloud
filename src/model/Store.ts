@@ -14,7 +14,7 @@ export default {
       state.diagram.mermaidCode = payload
     },
     updateDiagramType(state: any, payload: any) {
-      state.diagramType = payload
+      console.log('updateDiagramType', payload, location.href)
       state.diagram.diagramType = payload
     },
   },
@@ -40,7 +40,6 @@ export default {
     styles: {},
     code2: Example.Sequence,
     mermaidCode: Example.Mermaid,
-    diagramType: DiagramType.Sequence,
     mermaidSvg: '',
     diagram: NULL_DIAGRAM,
     error: null,

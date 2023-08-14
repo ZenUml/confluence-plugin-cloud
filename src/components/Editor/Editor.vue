@@ -73,7 +73,7 @@ export default {
   },
   computed: {
     ...mapState({
-      diagramType: state => state.diagramType,
+      diagramType: state => state.diagram.diagramType,
       diagram: state => state.diagram,
     }),
     // code: {

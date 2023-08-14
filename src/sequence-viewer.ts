@@ -62,9 +62,15 @@ EventBus.$on('edit', () => {
         width: "100%",
         height: "100%",
     }).on('close', async () => {
+    // @ts-ignore
+    // location.reload();
+
     const compositeContentProvider = defaultContentProvider(new ApWrapper2(AP));
     const {doc} = await compositeContentProvider.load();
-    console.log('Re-loaded document after editing', doc);
+    const diagramType = doc.diagramType;
+    console.log('Re-loaded document after editing', doc, diagramType);
+    // @ts-ignore
+    window.doc = doc;
     // @ts-ignore
     store.state.diagram = doc;
   });
