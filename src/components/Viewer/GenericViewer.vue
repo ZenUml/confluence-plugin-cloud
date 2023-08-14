@@ -15,12 +15,19 @@
                style="border-right: 1px solid rgb(208, 208, 208); padding: 3px 6px; display: inline-block; cursor: pointer; background-color: rgb(221, 221, 221);">
             <img border="0"
                  src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABUAAAAVBAMAAABbObilAAAAD1BMVEUAAAAAAAAQEBBycnIgICBqwj3hAAAAAXRSTlMAQObYZgAAADlJREFUCNdjoBwoChrAmCyGggJwYWVBBSiTSVDICKFa0AEuLCiEJKyAX5gBSZgBSZgBKGwMBKQ7HAAWzQSfKKAyBgAAAABJRU5ErkJggg=="
-                 class="geAdaptiveAsset" style="width: 18px; opacity: 0.6;"></div>
+                 class="geAdaptiveAsset" style="width: 18px; opacity: 0.6;">
+          </div>
           <div title="Fullscreen" @click="fullscreen"
                style="border-right: 1px solid rgb(208, 208, 208); padding: 3px 6px; display: inline-block; cursor: pointer; background-color: rgb(238, 238, 238);">
             <img border="0"
                  src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0Ij48cGF0aCBkPSJNMyA1djRoMlY1aDRWM0g1Yy0xLjEgMC0yIC45LTIgMnptMiAxMEgzdjRjMCAxLjEuOSAyIDIgMmg0di0ySDV2LTR6bTE0IDRoLTR2Mmg0YzEuMSAwIDItLjkgMi0ydi00aC0ydjR6bTAtMTZoLTR2Mmg0djRoMlY1YzAtMS4xLS45LTItMi0yeiIvPjwvc3ZnPg=="
-                 class="geAdaptiveAsset" style="width: 18px; opacity: 0.6;"></div>
+                 class="geAdaptiveAsset" style="width: 18px; opacity: 0.6;">
+          </div>
+          <div title="Fullscreen" @click="reload"
+               style="border-right: 1px solid rgb(208, 208, 208); padding: 3px 6px; display: inline-block; cursor: pointer; background-color: rgb(238, 238, 238);">
+            <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAACXBIWXMAAAsTAAALEwEAmpwYAAABdklEQVR4nO2Wy0oDUQyGP9dutSrUQkV9m6KCVaogLhUvDH0Fn0LEy0a8oKKgvou3vRfUjRvrZSQQ4TC2nvFMWlz0h8Awyck/ySQngTb+IQpABJwBN8CLyiVwDiwC/daEW0ANiD0iNmsWHzAOPDtOt4EKMAB0qgzqux3n4+RMKZS0D/hQR4cauQ9F4EDPfAJzIcQdwAowE3A2UuJ3YDSEPAuqGvkj0N1q8hMl3/AZllWsUNCCe/0talHcq1im5rvYokYG+04/yrMVKk5n/MBEncvAKuVD6u8qqegC7uoQPwA9GQjdDMYJ2fMZHGcgloBuGwSUSxpfq1LSY4GRtL/wSJWT2CFV0VabUNWp2jTnNHzekLycpks2NWpJe0uRA558t02zMKYjTUbbcsD5WR2pMlr/jHkljvW+lSHvQ1F7P9YlopdAlJy013S9mQKGE6vPNLALvDkzWNamTMgDqymXPemGdeOOQJwt6Hp7kVhvT4Ela8I2sMAXUBKRy27a3h0AAAAASUVORK5CYII="
+                 class="geAdaptiveAsset" style="width: 18px; opacity: 0.6;">
+          </div>
 
           <div class="right">
             <slot name="title"></slot>
@@ -95,6 +102,10 @@ export default {
     fullscreen() {
       console.debug('fullscreen');
       EventBus.$emit('fullscreen');
+    },
+    reload() {
+      console.debug('reload');
+      EventBus.$emit('reload');
     },
   },
 }

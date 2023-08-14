@@ -64,6 +64,7 @@ EventBus.$on('edit', () => {
     }).on('close', async () => {
     const compositeContentProvider = defaultContentProvider(new ApWrapper2(AP));
     const {doc} = await compositeContentProvider.load();
+    console.log('Re-loaded document after editing', doc);
     // @ts-ignore
     store.state.diagram = doc;
   });
@@ -78,4 +79,8 @@ EventBus.$on('fullscreen', () => {
       width: "100%",
       height: "100%",
     });
+});
+EventBus.$on('reload', () => {
+  // @ts-ignore
+  location.reload();
 });
