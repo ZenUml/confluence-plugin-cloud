@@ -82,11 +82,9 @@ export default {
       console.debug('Viewer - Document changed - new: ', doc, ', old: ', oldDoc);
 
       if (doc.diagramType === 'mermaid') {
-        this.$store.dispatch('updateMermaidCode', doc.mermaidCode || Example.Mermaid);
         EventBus.$emit('diagramLoaded', doc.mermaidCode, doc.diagramType);
       } else {
         zenuml?.render(doc.code || Example.Sequence, 'theme-default')
-        this.$store.commit('updateCode2', doc.code || Example.Sequence);
         this.rawStyles = doc.styles || {};
         EventBus.$emit('diagramLoaded', doc.code, doc.diagramType);
       }
