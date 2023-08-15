@@ -1,16 +1,13 @@
 import EventBus from '../EventBus'
 import {DiagramType, NULL_DIAGRAM} from "@/model/Diagram/Diagram";
 import globals from '@/model/globals';
-import Example from "@/utils/sequence/Example";
 
 export default {
   mutations: {
     updateCode2(state: any, payload: any) {
-      state.code2 = payload
       state.diagram.code = payload
     },
     updateMermaidCode(state: any, payload: any) {
-      state.mermaidCode = payload
       state.diagram.mermaidCode = payload
     },
     updateDiagramType(state: any, payload: any) {
@@ -38,8 +35,6 @@ export default {
   },
   state: {
     styles: {},
-    code2: Example.Sequence,
-    mermaidCode: Example.Mermaid,
     mermaidSvg: '',
     diagram: NULL_DIAGRAM,
     error: null,

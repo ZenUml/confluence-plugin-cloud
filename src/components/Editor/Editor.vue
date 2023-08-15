@@ -76,23 +76,6 @@ export default {
       diagramType: state => state.diagram.diagramType,
       diagram: state => state.diagram,
     }),
-    // code: {
-    //   get(){
-    //     const isMermaid = this.diagramType === DiagramType.Mermaid;
-    //     const result = isMermaid? this.doc.mermaidCode || Example.Mermaid : this.doc.code || Example.Sequence;
-    //     console.debug('Editor - code', isMermaid, result);
-    //     return result;
-    //   }, set() {
-    //     // const isMermaid = this.diagramType === DiagramType.Mermaid;
-    //     // console.debug('Editor - set code', isMermaid, newCode);
-    //     // if (isMermaid) {
-    //     //   this.$store.dispatch('updateMermaidCode', newCode);
-    //     // } else {
-    //     //   this.$store.dispatch('updateCode2', newCode);
-    //     // }
-    //   }
-    // },
-
   },
   async created() {
     const compositeContentProvider = defaultContentProvider(new ApWrapper2(AP));
