@@ -26,7 +26,6 @@ import AP from "@/model/AP";
 import Example from "@/utils/sequence/Example";
 import ApWrapper2 from "@/model/ApWrapper2";
 import GenericViewer from "@/components/Viewer/GenericViewer.vue";
-// const DiagramFrame = VueSequence.DiagramFrame;
 let zenuml;
 export default {
   name: "Viewer",
@@ -91,7 +90,7 @@ export default {
     },
     async code2(code, oldCode) {
       console.debug('Viewer - Code changed - new: ', code, ', old: ', oldCode);
-      await zenuml?.render(code, 'theme-mermaid');
+      await zenuml?.render(code, 'theme-default');
     },
   },
   methods: {

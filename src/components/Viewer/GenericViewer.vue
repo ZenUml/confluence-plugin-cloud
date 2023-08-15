@@ -4,10 +4,10 @@
     <Debug/>
 
     <error-boundary>
-    <div class="mx-auto" style="width: fit-content;">
+    <div style="width: fit-content;">
       <div class="relative pt-6 pb-8 m-1" :class="{'w-full': wide, 'min-w-[300px]': !wide}">
-        <div v-show="isDisplayMode"
-            style="position: absolute; overflow: hidden; box-sizing: border-box; white-space: nowrap; text-align: left; z-index: 999; background-color: rgb(238, 238, 238); height: 26px; left: 0; width: 573px; top: 26.9983px; border: 1px solid rgb(208, 208, 208); margin-top: -26px;">
+        <div v-show="isDisplayMode" class="w-full"
+            style="position: absolute; overflow: hidden; box-sizing: border-box; white-space: nowrap; text-align: left; z-index: 999; background-color: rgb(238, 238, 238); height: 26px; left: 0; border: 1px solid rgb(208, 208, 208); margin-top: -26px;">
           <div v-show="isLite" style="display: inline-block; position: relative; padding: 3px 6px 0; vertical-align: top; font-family: Helvetica, Arial; font-size: 12px; top: 4px; cursor: default; color: rgb(0, 0, 0); opacity: 0.7;">
             Lite
           </div>
