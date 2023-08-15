@@ -20,7 +20,7 @@ import MermaidViewer from './MermaidViewer.vue'
 import EventBus from '../../EventBus'
 import StylingPanel from "@/components/StylingPanel";
 import globals from '@/model/globals';
-import {DataSource, NULL_DIAGRAM} from "@/model/Diagram/Diagram";
+import {DataSource, DiagramType, NULL_DIAGRAM} from "@/model/Diagram/Diagram";
 import defaultContentProvider from "@/model/ContentProvider/CompositeContentProvider";
 import AP from "@/model/AP";
 import Example from "@/utils/sequence/Example";
@@ -62,32 +62,11 @@ export default {
   async mounted() {
     console.log('Viewer - mounted', );
     zenuml = new ZenUml(this.$refs['zenuml']);
-    await zenuml.render('A.method1', 'theme-mermaid');
+    await zenuml.render(this.code2, 'theme-mermaid');
   },
   async created() {
-    const compositeContentProvider = defaultContentProvider(new ApWrapper2(AP));
-    const {doc} = await compositeContentProvider.load();
-    console.debug('Viewer - Document loaded: ', doc);
-    this.$store.state.diagram = doc;
-    this.doc = doc;
-    await globals.apWrapper.initializeContext();
-    const canUserEditPage = await globals.apWrapper.canUserEdit();
-    const storedWithCustomContent = this.doc?.source === DataSource.CustomContent;
-    const notCopy = !this.doc?.isCopy;
-    this.canUserEdit = canUserEditPage && storedWithCustomContent && notCopy;
   },
   watch: {
-    diagram(doc, oldDoc) {
-      console.debug('Viewer - Document changed - new: ', doc, ', old: ', oldDoc);
-
-      if (doc.diagramType === 'mermaid') {
-        EventBus.$emit('diagramLoaded', doc.mermaidCode, doc.diagramType);
-      } else {
-        zenuml?.render(doc.code || Example.Sequence, 'theme-default')
-        this.rawStyles = doc.styles || {};
-        EventBus.$emit('diagramLoaded', doc.code, doc.diagramType);
-      }
-    },
     async code2(code, oldCode) {
       console.debug('Viewer - Code changed - new: ', code, ', old: ', oldCode);
       await zenuml?.render(code, 'theme-default');

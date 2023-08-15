@@ -5,9 +5,11 @@ import './assets/tailwind.css'
 import defaultContentProvider from "@/model/ContentProvider/CompositeContentProvider";
 import AP from "@/model/AP";
 import ApWrapper2 from "@/model/ApWrapper2";
-import {Diagram, DiagramType} from "@/model/Diagram/Diagram";
+import {Diagram, DiagramType, NULL_DIAGRAM} from "@/model/Diagram/Diagram";
 import ExtendedStore from './model/Store'
 import Viewer from "@/components/Viewer/Viewer.vue";
+import Example from "@/utils/sequence/Example";
+import globals from "@/model/globals";
 
 async function getDiagram(): Promise<Diagram> {
   const contentProvider = defaultContentProvider(new ApWrapper2(AP));
@@ -16,7 +18,7 @@ async function getDiagram(): Promise<Diagram> {
   return doc;
 }
 
-function mountDiagramFrame(diagram: Diagram, store: any, id: string) {
+function mountDiagramFrame(store: any, id: string) {
   console.log('sequence-viewer-dialog.ts - using app', document.getElementById(id))
   if (document.getElementById(id)) {
     console.log('sequence-viewer-dialog.ts - using component', Viewer)
@@ -27,17 +29,31 @@ function mountDiagramFrame(diagram: Diagram, store: any, id: string) {
 }
 
 async function main() {
-  const diagram = await getDiagram();
-  const store = createStore(ExtendedStore);
+  const compositeContentProvider = defaultContentProvider(new ApWrapper2(AP));
+  let {doc} = await compositeContentProvider.load();
+  console.debug('Editor - Document loaded:', doc);
+  console.debug('Editor - Document is NULL_DIAGRAM?', doc === NULL_DIAGRAM);
 
-  if(diagram.diagramType === DiagramType.Sequence) {
-    store.commit('updateCode2', 'diagram.code');
-  } else if (diagram.diagramType === DiagramType.Mermaid) {
-    store.commit('updateDiagramType', diagram.diagramType);
-    store.dispatch('updateMermaidCode', diagram.mermaidCode);
+  if (doc === NULL_DIAGRAM) {
+    console.debug('Editor - Use default doc');
+
+    doc = {
+      diagramType: DiagramType.Sequence,
+      code: Example.Sequence
+    }
   }
+  const store = createStore(ExtendedStore);
+  store.state.diagram = doc;
+  await globals.apWrapper.initializeContext();
 
-  mountDiagramFrame(diagram, store, 'app');
+  // if(diagram.diagramType === DiagramType.Sequence) {
+  //   store.commit('updateCode2', 'diagram.code');
+  // } else if (diagram.diagramType === DiagramType.Mermaid) {
+  //   store.commit('updateDiagramType', diagram.diagramType);
+  //   store.dispatch('updateMermaidCode', diagram.mermaidCode);
+  // }
+
+  mountDiagramFrame(store, 'app');
 }
 
 // We do not have to export main(), but otherwise IDE shows a warning

@@ -53,10 +53,10 @@ export default {
   },
   watch: {
     diagramType:function (newCode) {
-      console.debug('Editor - value', newCode);
-      const isMermaid = this.diagramType === DiagramType.Mermaid;
-      const result = isMermaid? this.diagram.mermaidCode || Example.Mermaid : this.diagram.code || Example.Sequence;
-      console.debug('Editor - code', isMermaid, result);
+      if(newCode === 'unknown') {
+        console.warn('diagramType is unknown');
+        return;
+      }
       this.valueMermaid = this.diagram.mermaidCode || Example.Mermaid;
       this.valueSequence = this.diagram.code || Example.Sequence;
     }
@@ -78,23 +78,8 @@ export default {
     }),
   },
   async created() {
-    const compositeContentProvider = defaultContentProvider(new ApWrapper2(AP));
-    const {doc} = await compositeContentProvider.load();
-    console.debug('Editor - Document loaded:', doc);
-
-    this.doc = doc;
-    if (doc === NULL_DIAGRAM) {
-      console.debug('Editor - Use default doc');
-
-      this.doc ={
-        diagramType: DiagramType.Sequence,
-        code: Example.Sequence
-      }
-      this.$store.dispatch('updateCode2', {code: Example.Sequence});
-    }
-    await globals.apWrapper.initializeContext();
-    this.valueSequence = this.doc.code;
-    console.debug('Editor - set Editor value: ', this.value);
+    this.valueSequence = this.diagram.code;
+    this.valueMermaid = this.diagram.mermaidCode;
     this.canUserEdit = await globals.apWrapper.canUserEdit();
   },
   components: {CodeMirror}

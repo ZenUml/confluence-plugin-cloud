@@ -28,7 +28,6 @@ interface RequestHandler {
 export default class MockAp implements IAp {
   public confluence: any
   public request: any = async (req: any) => {
-    console.log('req', req);
     if (!req) {
       return 'OK. (req is empty)'
     }
@@ -40,15 +39,12 @@ export default class MockAp implements IAp {
 
     // if request.url start with '/rest/api/content?', return {}
     if (req.url.startsWith('/rest/api/content?')) {
-      console.log('req.url.startsWith(\'/rest/api/content?\')');
       // if request.url contains 'zenuml-content-graph', return {}
       if (req.url.includes('zenuml-content-graph')) {
-        console.log('req.url.includes(\'zenuml-content-graph\')');
         return {body: JSON.stringify(customContentListGraph)};
       }
 
       if (req.url.includes('zenuml-content-sequence')) {
-        console.log('req.url.includes(\'zenuml-content-sequence\')', customContentListSeq);
         return {body: JSON.stringify(customContentListSeq)};
       }
 
