@@ -31,4 +31,7 @@ export interface IApWrapper {
   canUserEdit(): Promise<boolean>;
 
   isDisplayMode(): any;
+  getDialogCustomData(): Promise<any>;
+
+  getContentProperty(key: string): Promise<any>;
 }

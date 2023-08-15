@@ -3,13 +3,12 @@ import {MacroIdProvider} from "@/model/ContentProvider/MacroIdProvider";
 import {CustomContentStorageProvider} from "@/model/ContentProvider/CustomContentStorageProvider";
 import {ContentPropertyStorageProvider} from "@/model/ContentProvider/ContentPropertyStorageProvider";
 import {MacroBodyStorageProvider} from "@/model/ContentProvider/MacroBodyStorageProvider";
-import {Diagram, DiagramType, NULL_DIAGRAM} from "@/model/Diagram/Diagram";
+import {Diagram, NULL_DIAGRAM} from "@/model/Diagram/Diagram";
 import {getUrlParam, trackEvent} from "@/utils/window";
 import {UrlIdProvider} from "@/model/ContentProvider/UrlIdProvider";
 import {DialogCustomDataProvider} from "@/model/ContentProvider/DialogCustomDataProvider";
-import ApWrapper2 from "@/model/ApWrapper2";
 import globals from '@/model/globals';
-import Example from "@/utils/sequence/Example";
+import {IApWrapper} from "@/model/IApWrapper";
 
 export class CompositeContentProvider implements IContentProvider{
   private readonly _contentProviders: Array<ContentProvider>;
@@ -23,7 +22,6 @@ export class CompositeContentProvider implements IContentProvider{
       try {
         const { id, doc } = await contentProvider.load();
         if (doc !== NULL_DIAGRAM) {
-          this.validateAndSetDefault(doc);
           return {id, doc};
         }
       } catch (e: any) {
@@ -33,18 +31,9 @@ export class CompositeContentProvider implements IContentProvider{
     }
     return {id: undefined, doc: NULL_DIAGRAM};
   }
-
-  private validateAndSetDefault(doc: Diagram) {
-    if (!doc.diagramType) {
-      doc.diagramType = DiagramType.Sequence;
-    }
-    if(doc.diagramType === DiagramType.Sequence && !doc.code) {
-      doc.code = Example.Sequence;
-    }
-  }
 }
 
-const defaultContentProvider = function getCompositeContentProvider(apWrapper2: ApWrapper2): IContentProvider {
+const defaultContentProvider = function getCompositeContentProvider(apWrapper2: IApWrapper): IContentProvider {
   const renderedFor = getUrlParam('rendered.for');
   const apWrapper = apWrapper2;
 

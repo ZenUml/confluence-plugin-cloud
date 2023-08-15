@@ -1,46 +1,21 @@
-import { createApp } from 'vue'
-import { createStore } from 'vuex'
-import Workspace from './components/Workspace.vue'
-import mermaid from 'mermaid'
 import './assets/tailwind.css'
-import ExtendedStore from './model/Store'
+import Workspace from './components/Workspace.vue'
 import defaultContentProvider from "@/model/ContentProvider/CompositeContentProvider";
-import ApWrapper2 from "@/model/ApWrapper2";
-import AP from "@/model/AP";
-import {DiagramType, NULL_DIAGRAM} from "@/model/Diagram/Diagram";
-import Example from "@/utils/sequence/Example";
+import {NULL_DIAGRAM} from "@/model/Diagram/Diagram";
 import globals from "@/model/globals";
-
-// @ts-ignore
-window.mermaid = mermaid;
-
-mermaid.mermaidAPI.initialize({
-  startOnLoad:true
-})
-
-function mountDiagramFrame(store: any, id: string) {
-  if (document.getElementById(id)) {
-    const app = createApp(Workspace);
-    app.use(store);
-    app.mount('#app');
-  }
-}
+import defaultSequenceDiagram from "@/default-sequence-diagram";
+import {mountApp} from "@/mount-app";
 
 async function main() {
-  const compositeContentProvider = defaultContentProvider(new ApWrapper2(AP));
+  const compositeContentProvider = defaultContentProvider(globals.apWrapper);
   let {doc} = await compositeContentProvider.load();
 
   if (doc === NULL_DIAGRAM) {
-    doc = {
-      diagramType: DiagramType.Sequence,
-      code: Example.Sequence
-    }
+    doc = defaultSequenceDiagram;
   }
-  const store = createStore(ExtendedStore);
-  store.state.diagram = doc;
   await globals.apWrapper.initializeContext();
 
-  mountDiagramFrame(store, 'app');
+  mountApp(Workspace, doc);
 }
 
 // We do not have to export main(), but otherwise IDE shows a warning

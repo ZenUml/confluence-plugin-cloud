@@ -18,12 +18,10 @@ import {mapState} from 'vuex';
 import CodeMirror from 'vue-codemirror6';
 import { javascript } from '@codemirror/lang-javascript';
 import '@codemirror/autocomplete';
-import defaultContentProvider from "@/model/ContentProvider/CompositeContentProvider";
-import AP from "@/model/AP";
 import globals from "@/model/globals";
-import {DiagramType, NULL_DIAGRAM} from "@/model/Diagram/Diagram";
+import {NULL_DIAGRAM} from "@/model/Diagram/Diagram";
 import Example from "@/utils/sequence/Example";
-import ApWrapper2 from "@/model/ApWrapper2";
+
 const lang = javascript();
 export default {
   name: 'editor',

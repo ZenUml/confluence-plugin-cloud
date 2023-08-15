@@ -1,43 +1,25 @@
-import { createApp } from 'vue'
-import { createStore } from 'vuex'
 import './assets/tailwind.css'
-
-import './model/MockApConfluence'
-import ExtendedStore from './model/Store'
-import EventBus from './EventBus'
 import Viewer from "@/components/Viewer/Viewer.vue";
+import defaultContentProvider from "@/model/ContentProvider/CompositeContentProvider";
+import AP from "@/model/AP";
+import {DiagramType, NULL_DIAGRAM} from "@/model/Diagram/Diagram";
+import globals from '@/model/globals';
+import defaultSequenceDiagram from "@/default-sequence-diagram";
+import {mountApp} from "@/mount-app";
+import EventBus from './EventBus'
 import {trackEvent} from "@/utils/window";
 import createAttachmentIfContentChanged from "@/model/Attachment";
-import globals from '@/model/globals';
-import {DiagramType, NULL_DIAGRAM} from "@/model/Diagram/Diagram";
-import defaultContentProvider from "@/model/ContentProvider/CompositeContentProvider";
-import ApWrapper2 from "@/model/ApWrapper2";
-import AP from "@/model/AP";
-import Example from "@/utils/sequence/Example";
-
-function mountDiagramFrame(store: any, id: string) {
-  if (document.getElementById(id)) {
-    const app = createApp(Viewer);
-    app.use(store);
-    app.mount('#app');
-  }
-}
 
 async function main() {
-  const compositeContentProvider = defaultContentProvider(new ApWrapper2(AP));
+  const compositeContentProvider = defaultContentProvider(globals.apWrapper);
   let {doc} = await compositeContentProvider.load();
 
   if (doc === NULL_DIAGRAM) {
-    doc = {
-      diagramType: DiagramType.Sequence,
-      code: Example.Sequence
-    }
+    doc = defaultSequenceDiagram
   }
-  const store = createStore(ExtendedStore);
-  store.state.diagram = doc;
   await globals.apWrapper.initializeContext();
 
-  mountDiagramFrame(store, 'app');
+  mountApp(Viewer, doc);
 }
 
 export default main();
@@ -81,7 +63,7 @@ EventBus.$on('edit', () => {
     // @ts-ignore
     // location.reload();
 
-    const compositeContentProvider = defaultContentProvider(new ApWrapper2(AP));
+    const compositeContentProvider = defaultContentProvider(globals.apWrapper);
     const {doc} = await compositeContentProvider.load();
     const diagramType = doc.diagramType;
     console.log('Re-loaded document after editing', doc, diagramType);

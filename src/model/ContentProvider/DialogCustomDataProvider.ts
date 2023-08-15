@@ -1,10 +1,11 @@
 import ApWrapper2 from "@/model/ApWrapper2";
 import {IdProvider} from "@/model/ContentProvider/IdProvider";
+import {IApWrapper} from "@/model/IApWrapper";
 
 export class DialogCustomDataProvider implements IdProvider {
-  private apWrapper: ApWrapper2;
+  private apWrapper: IApWrapper;
 
-  constructor(apWrapper: ApWrapper2) {
+  constructor(apWrapper: IApWrapper) {
     this.apWrapper = apWrapper;
   }
 

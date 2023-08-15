@@ -4,6 +4,7 @@ import {DataSource, Diagram, DiagramType, NULL_DIAGRAM} from "@/model/Diagram/Di
 import {getUrlParam, trackEvent} from "@/utils/window";
 import {IContentProperty, IContentPropertyNormalised} from "@/model/IContentProperty";
 import {MacroIdentifier} from "@/model/MacroIdentifier";
+import {IApWrapper} from "@/model/IApWrapper";
 
 // deprecated: We should rely on diagram.diagramType. For old diagrams we do not have that saved.
 function getDiagramType(diagram: Diagram | undefined): string {
@@ -24,10 +25,10 @@ function trackDiagramEvent(diagram: Diagram | undefined, event: string, category
 }
 
 export class ContentPropertyStorageProvider implements StorageProvider {
-  private apWrapper: ApWrapper2;
+  private apWrapper: IApWrapper;
   private readonly _macroIdentifier: MacroIdentifier;
 
-  constructor(apWrapper: ApWrapper2) {
+  constructor(apWrapper: IApWrapper) {
     this.apWrapper = apWrapper;
     let macroIdentifier: MacroIdentifier;
     let contentKey = getUrlParam('contentKey');
