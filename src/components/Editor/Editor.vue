@@ -20,7 +20,7 @@ import { javascript } from '@codemirror/lang-javascript';
 import '@codemirror/autocomplete';
 import globals from "@/model/globals";
 import {NULL_DIAGRAM} from "@/model/Diagram/Diagram";
-import Example from "@/utils/sequence/Example";
+import defaultDiagram from "@/default-diagram";
 
 const lang = javascript();
 export default {
@@ -49,15 +49,13 @@ export default {
       }
     }
   },
-  watch: {
-    diagramType:function (newCode) {
-      if(newCode === 'unknown') {
-        console.warn('diagramType is unknown');
-        return;
-      }
-      this.valueMermaid = this.diagram.mermaidCode || Example.Mermaid;
-      this.valueSequence = this.diagram.code || Example.Sequence;
+  mounted() {
+    if(this.diagram === NULL_DIAGRAM) {
+      console.warn('diagram is null');
+      this.diagram = defaultDiagram
     }
+    this.valueMermaid = this.diagram.mermaidCode;
+    this.valueSequence = this.diagram.code;
   },
   methods: {
     onEditorCodeChangeMermaid: function (newCode) {

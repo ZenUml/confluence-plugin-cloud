@@ -1,20 +1,13 @@
 import './assets/tailwind.css'
 import Workspace from './components/Workspace.vue'
 import defaultContentProvider from "@/model/ContentProvider/CompositeContentProvider";
-import {NULL_DIAGRAM} from "@/model/Diagram/Diagram";
 import globals from "@/model/globals";
-import defaultSequenceDiagram from "@/default-sequence-diagram";
 import {mountApp} from "@/mount-app";
 
 async function main() {
   const compositeContentProvider = defaultContentProvider(globals.apWrapper);
   let {doc} = await compositeContentProvider.load();
-
-  if (doc === NULL_DIAGRAM) {
-    doc = defaultSequenceDiagram;
-  }
   await globals.apWrapper.initializeContext();
-
   mountApp(Workspace, doc);
 }
 

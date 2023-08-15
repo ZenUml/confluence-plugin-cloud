@@ -2,9 +2,8 @@ import './assets/tailwind.css'
 import Viewer from "@/components/Viewer/Viewer.vue";
 import defaultContentProvider from "@/model/ContentProvider/CompositeContentProvider";
 import AP from "@/model/AP";
-import {DiagramType, NULL_DIAGRAM} from "@/model/Diagram/Diagram";
+import {DiagramType} from "@/model/Diagram/Diagram";
 import globals from '@/model/globals';
-import defaultSequenceDiagram from "@/default-sequence-diagram";
 import {mountApp} from "@/mount-app";
 import EventBus from './EventBus'
 import {trackEvent} from "@/utils/window";
@@ -13,12 +12,7 @@ import createAttachmentIfContentChanged from "@/model/Attachment";
 async function main() {
   const compositeContentProvider = defaultContentProvider(globals.apWrapper);
   let {doc} = await compositeContentProvider.load();
-
-  if (doc === NULL_DIAGRAM) {
-    doc = defaultSequenceDiagram
-  }
   await globals.apWrapper.initializeContext();
-
   mountApp(Viewer, doc);
 }
 
