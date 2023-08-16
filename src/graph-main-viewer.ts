@@ -6,6 +6,9 @@ import './assets/tailwind.css'
 
 import AP from "@/model/AP";
 import EventBus from './EventBus'
+// import {DiagramType} from "@/model/Diagram/Diagram";
+// import {trackEvent} from "@/utils/window";
+// import createAttachmentIfContentChanged from "@/model/Attachment";
 
 async function main() {
   const compositeContentProvider = defaultContentProvider(globals.apWrapper);
@@ -19,10 +22,24 @@ async function main() {
 export default main();
 
 EventBus.$on('diagramLoaded', () => {
-  console.debug('Resize macro');
-  // @ts-ignore
-  setTimeout(window.AP?.resize, 1500)
+  setTimeout(async () => {
+    AP.resize();
+    // try {
+    //   if (globals.apWrapper.isDisplayMode() && await globals.apWrapper.canUserEdit()) {
+    //     trackEvent(DiagramType.Graph, 'before_create_attachment', 'info');
+    //     await createAttachmentIfContentChanged(graphXml);
+    //   } else {
+    //     trackEvent(DiagramType.Graph, 'skip_create_attachment', 'warning');
+    //   }
+    // } catch (e) {
+    //   // Do not re-throw the error
+    //   console.error('Error when creating attachment', e);
+    //   trackEvent(JSON.stringify(e), 'create_attachment', 'error');
+    // }
+  }, 1500);
+
 });
+
 
 EventBus.$on('edit', () => {
   // @ts-ignore
