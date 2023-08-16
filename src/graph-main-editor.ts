@@ -1,11 +1,11 @@
-import { createApp, h } from 'vue'
 import SaveAndGoBackButton from "@/components/SaveAndGoBackButton.vue";
-// @ts-ignore
-import './assets/tailwind.css'
-
-import globals from '@/model/globals';
-import AP from "@/model/AP";
 import defaultContentProvider from "@/model/ContentProvider/CompositeContentProvider";
+import globals from '@/model/globals';
+import { createApp, h } from 'vue'
+// @ts-ignore
+
+import './assets/tailwind.css'
+import AP from "@/model/AP";
 import {decompress} from "@/utils/compress";
 import {DiagramType} from "@/model/Diagram/Diagram";
 import {saveToPlatform} from "@/model/ContentProvider/Persistence";
@@ -15,26 +15,23 @@ import {trackEvent} from '@/utils/window';
 
 const compositeContentProvider = defaultContentProvider(new ApWrapper2(AP));
 
-createApp({
-  render: () => h(SaveAndGoBackButton, {
-    props: {
-      saveAndExit: async () => {
-        // @ts-ignore
-        const graphXml = getGraphXml();
+createApp(SaveAndGoBackButton, {
+  saveAndExit: async () => {
+    // @ts-ignore
+    const graphXml = getGraphXml();
 
-        // @ts-ignore
-        window.diagram = Object.assign(window.diagram || {}, {diagramType: DiagramType.Graph, graphXml: graphXml});
+    // @ts-ignore
+    window.diagram = Object.assign(window.diagram || {}, {diagramType: DiagramType.Graph, graphXml: graphXml});
 
-        // @ts-ignore
-        await saveToPlatform(window.diagram);
-        // @ts-ignore
-        console.log('Save and exit', window.diagram);
-        /* eslint-disable no-undef */
-        AP.dialog.close();
-      }
-    }
-  })
-}).mount('#save-and-go-back');
+    // @ts-ignore
+    await saveToPlatform(window.diagram);
+    // @ts-ignore
+    console.log('Save and exit', window.diagram);
+    /* eslint-disable no-undef */
+    AP.dialog.close();
+  }
+}).mount('#save-and-go-back')
+
 
 async function initializeMacro() {
   const apWrapper = globals.apWrapper;
