@@ -27,7 +27,7 @@
     "@codemirror/lang-javascript": "^6.1.9",
     "@codemirror/language": "^6.8.0",
     "@vue/compat": "^3.2.45",
-    "@zenuml/core": "^3.0.5",
+    "@zenuml/core": "^3.0.7",
     "codemirror": "^6.x",
     "html-to-image": "^1.9.0",
     "jest-puppeteer": "^6.1.1",
