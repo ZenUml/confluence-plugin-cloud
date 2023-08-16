@@ -1,44 +1,23 @@
-import {createApp} from 'vue'
-import {createStore} from 'vuex'
 import Workspace from './components/Workspace.vue'
-
-import mermaid from 'mermaid'
-// ==== CSS ====
-// @ts-ignore
+import defaultContentProvider from "@/model/ContentProvider/CompositeContentProvider";
+import globals from "@/model/globals";
+import {mountApp} from "@/mount-app";
 import './assets/tailwind.css'
 
-import ExtendedStore from './model/Store'
 import EventBus from './EventBus'
-import {CustomContentStorageProvider} from "@/model/ContentProvider/CustomContentStorageProvider";
-import ApWrapper2 from "@/model/ApWrapper2";
 import AP from "@/model/AP";
-import {DataSource, Diagram} from "@/model/Diagram/Diagram";
-import {MacroIdProvider} from "@/model/ContentProvider/MacroIdProvider";
 import './utils/IgnoreEsc.ts'
 
-// eslint-disable-next-line
-// @ts-ignore
-window.mermaid = mermaid
-
-mermaid.mermaidAPI.initialize({
-  startOnLoad:true
-})
-
-const store = createStore(ExtendedStore);
-if(document.getElementById('app')) {
-  const app = createApp(Workspace);
-  app.use(store);
-  app.mount('#app');
+async function main() {
+  const compositeContentProvider = defaultContentProvider(globals.apWrapper);
+  let {doc} = await compositeContentProvider.load();
+  await globals.apWrapper.initializeContext();
+  mountApp(Workspace, doc);
 }
 
+export default main();
+
 EventBus.$on('save', async () => {
-  const apWrapper = new ApWrapper2(AP);
-  const idProvider = new MacroIdProvider(apWrapper);
-  // @ts-ignore
-  console.log('Save document', store.state.diagram);
-  const value = {id: await idProvider.getId(),code: store.state.diagram.code, styles: store.state.styles, mermaidCode: store.state.diagram.mermaidCode, diagramType: store.state.diagram.diagramType, title: store.getters.title, source: DataSource.CustomContent} as Diagram;
-  const customContentStorageProvider = new CustomContentStorageProvider(apWrapper);
-  await customContentStorageProvider.save(value);
   // @ts-ignore
   AP.dialog.close();
 });

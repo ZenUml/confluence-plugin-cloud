@@ -48,6 +48,7 @@ import SaveAndGoBackButton from "@/components/SaveAndGoBackButton";
 import {DiagramType} from "@/model/Diagram/Diagram";
 import SendFeedback from "@/components/SendFeedback";
 import EventBus from "@/EventBus";
+import {saveToPlatform} from "@/model/ContentProvider/Persistence";
 export default {
   name: "Header",
   components: {
@@ -66,7 +67,9 @@ export default {
       mermaidCode: state=>state.diagram.mermaidCode,
       diagramType: state => state.diagram.diagramType }),
     saveAndExit: function () {
-      return function () {
+      const store = this.$store;
+      return async function () {
+        await saveToPlatform(store.state.diagram);
         EventBus.$emit('save')
       }
     }

@@ -14,6 +14,8 @@ async function main() {
   let {doc} = await compositeContentProvider.load();
   await globals.apWrapper.initializeContext();
   mountApp(Viewer, doc);
+  // @ts-ignore
+  setTimeout(window.AP?.resize, 1500)
 }
 
 export default main();
@@ -50,21 +52,13 @@ EventBus.$on('edit', () => {
   AP.dialog.create(
     {
       key: 'zenuml-content-sequence-editor-dialog',
-        chrome: false,
-        width: "100%",
-        height: "100%",
+      chrome: false,
+      width: "100%",
+      height: "100%",
     }).on('close', async () => {
+    // TODO: This hurts the performance. It needs to be optimized.
     // @ts-ignore
-    // location.reload();
-
-    const compositeContentProvider = defaultContentProvider(globals.apWrapper);
-    const {doc} = await compositeContentProvider.load();
-    const diagramType = doc.diagramType;
-    console.log('Re-loaded document after editing', doc, diagramType);
-    // @ts-ignore
-    window.doc = doc;
-    // @ts-ignore
-    store.state.diagram = doc;
+    location.reload();
   });
 });
 

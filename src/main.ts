@@ -21,5 +21,5 @@ async function main() {
   mountApp(Workspace, doc);
 }
 
-// We do not have to export main(), but otherwise IDE shows a warning
+// use export default to disable IDE warning
 export default main();

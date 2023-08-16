@@ -19,7 +19,7 @@ import CodeMirror from 'vue-codemirror6';
 import { javascript } from '@codemirror/lang-javascript';
 import '@codemirror/autocomplete';
 import globals from "@/model/globals";
-import {NULL_DIAGRAM} from "@/model/Diagram/Diagram";
+import {DiagramType, NULL_DIAGRAM} from "@/model/Diagram/Diagram";
 import defaultDiagram from "@/default-diagram";
 
 const lang = javascript();
@@ -50,12 +50,12 @@ export default {
     }
   },
   mounted() {
-    if(this.diagram === NULL_DIAGRAM) {
+    if(this.$store.state.diagram === NULL_DIAGRAM || this.$store.state.diagram.diagramType === DiagramType.Unknown) {
       console.warn('diagram is null');
-      this.diagram = defaultDiagram
+      this.$store.state.diagram = defaultDiagram
     }
-    this.valueMermaid = this.diagram.mermaidCode;
-    this.valueSequence = this.diagram.code;
+    this.valueMermaid = this.$store.state.diagram.mermaidCode;
+    this.valueSequence = this.$store.state.diagram.code;
   },
   methods: {
     onEditorCodeChangeMermaid: function (newCode) {
@@ -65,17 +65,16 @@ export default {
     onEditorCodeChangeSequence: function (newCode) {
       console.debug('onEditorCodeChange', newCode.doc.toString());
       this.$store.dispatch('updateCode2', newCode.doc.toString());
-    }
+    },
   },
   computed: {
     ...mapState({
       diagramType: state => state.diagram.diagramType,
-      diagram: state => state.diagram,
     }),
   },
   async created() {
-    this.valueSequence = this.diagram.code;
-    this.valueMermaid = this.diagram.mermaidCode;
+    this.valueSequence = this.$store.state.diagram.code;
+    this.valueMermaid = this.$store.state.diagram.mermaidCode;
     this.canUserEdit = await globals.apWrapper.canUserEdit();
   },
   components: {CodeMirror}
