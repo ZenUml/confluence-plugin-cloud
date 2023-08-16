@@ -1,13 +1,14 @@
 import Viewer from "@/components/Viewer/Viewer.vue";
 import defaultContentProvider from "@/model/ContentProvider/CompositeContentProvider";
-import AP from "@/model/AP";
-import {DiagramType} from "@/model/Diagram/Diagram";
 import globals from '@/model/globals';
 import {mountApp} from "@/mount-app";
+import './assets/tailwind.css'
+
+import AP from "@/model/AP";
+import {DiagramType} from "@/model/Diagram/Diagram";
 import EventBus from './EventBus'
 import {trackEvent} from "@/utils/window";
 import createAttachmentIfContentChanged from "@/model/Attachment";
-import './assets/tailwind.css'
 
 async function main() {
   const compositeContentProvider = defaultContentProvider(globals.apWrapper);
