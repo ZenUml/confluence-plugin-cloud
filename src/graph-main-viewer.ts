@@ -5,12 +5,7 @@ import {mountApp} from "@/mount-app";
 import './assets/tailwind.css'
 
 import AP from "@/model/AP";
-import {DiagramType} from "@/model/Diagram/Diagram";
 import EventBus from './EventBus'
-import {trackEvent} from "@/utils/window";
-import createAttachmentIfContentChanged from "@/model/Attachment";
-import {decompress} from '@/utils/compress';
-import ApWrapper2 from "@/model/ApWrapper2";
 
 async function main() {
   const compositeContentProvider = defaultContentProvider(globals.apWrapper);
@@ -29,64 +24,6 @@ EventBus.$on('diagramLoaded', () => {
   setTimeout(window.AP?.resize, 1500)
 });
 
-function renderGraph(graphXml: string) {
-  const element = document.getElementById('graph');
-  if(element && element.innerHTML.trim()) {
-    element.innerHTML = '';
-  }
-
-  //@ts-ignore
-  const graph = new Graph(element);
-  graph.resizeContainer = true;
-  graph.setEnabled(false);
-
-  // setGraphStyle is only available on viewer and maybe should only be used on viewer.
-  // @ts-ignore
-  setGraphStyle && setGraphStyle('styles/default.xml', graph);
-  // @ts-ignore
-  setGraphXml(graphXml, graph);
-
-  setTimeout(async function () {
-    AP.resize();
-    try {
-      if (globals.apWrapper.isDisplayMode() && await globals.apWrapper.canUserEdit()) {
-        trackEvent(DiagramType.Graph, 'before_create_attachment', 'info');
-        await createAttachmentIfContentChanged(graphXml);
-      } else {
-        trackEvent(DiagramType.Graph, 'skip_create_attachment', 'warning');
-      }
-    } catch (e) {
-      // Do not re-throw the error
-      console.error('Error when creating attachment', e);
-      trackEvent(JSON.stringify(e), 'create_attachment', 'error');
-    }
-  }, 1500);
-}
-
-async function loadDiagram() {
-  const compositeContentProvider = defaultContentProvider(new ApWrapper2(AP));
-  const {doc} = await compositeContentProvider.load();
-  let graphXml = doc.graphXml;
-  if (doc?.compressed) {
-    trackEvent('compressed_field_viewer', 'load', 'warning');
-    if (!graphXml?.startsWith('<mxGraphModel')) {
-      graphXml = decompress(doc.graphXml);
-      trackEvent('compressed_content_viewer', 'load', 'warning');
-    }
-  }
-  console.debug('doc', doc);
-  if(graphXml) {
-    renderGraph(graphXml);
-  }
-}
-
-(async function initializeMacro() {
-  const apWrapper = globals.apWrapper;
-  await apWrapper.initializeContext();
-
-  await loadDiagram();
-})()
-
 EventBus.$on('edit', () => {
   // @ts-ignore
   AP.dialog.create(
@@ -95,7 +32,10 @@ EventBus.$on('edit', () => {
       chrome: false,
       width: "100%",
       height: "100%",
-    }).on('close', loadDiagram);
+    }).on('close', () => {
+    // @ts-ignore
+    location.reload();
+  });
 });
 
 EventBus.$on('fullscreen', () => {
