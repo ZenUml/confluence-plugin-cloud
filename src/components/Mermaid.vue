@@ -26,11 +26,12 @@ export default {
     }
   },
   async mounted() {
-    // When it is firstly mounted, if diagramType !== 'mermaid', v-html will not inject the svg even if svg has value.
-    // This is because its parent has 'display:none'. So we cannot use mounted to inject svg node.
+    if (!this.code) return;
+    this.svg = await this.render(this.code);
   },
   updated() {
-    // `updated` is also not triggered when diagramType changes, even after we mapped state `diagramType` to computed properties.
+    // This is triggered when set this.svg, so it reenters the render loop. Not easy to get it right to move
+    // watcher `code` to here.
   },
   watch: {
     // watch in general is not a good idea, but it seems that this is the only native way to trigger reactivity.
