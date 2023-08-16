@@ -5,7 +5,6 @@ import './assets/tailwind.css'
 import './model/MockApConfluence'
 import ExtendedStore from './model/Store'
 import EventBus from './EventBus'
-import Viewer from "@/components/Viewer/Viewer.vue";
 import {trackEvent} from "@/utils/window";
 import createAttachmentIfContentChanged from "@/model/Attachment";
 import globals from '@/model/globals';
@@ -13,6 +12,7 @@ import {DiagramType} from "@/model/Diagram/Diagram";
 import defaultContentProvider from "@/model/ContentProvider/CompositeContentProvider";
 import ApWrapper2 from "@/model/ApWrapper2";
 import AP from "@/model/AP";
+import DiagramPortal from "@/components/DiagramPortal.vue";
 
 const Vue = VueSequence.Vue;
 const Vuex = VueSequence.Vuex;
@@ -22,16 +22,27 @@ Vue.use(Vuex)
 
 const store = new Vuex.Store(ExtendedStore);
 
-let render = (h: Function) => h(Viewer);
+let render = (h: Function) => h(DiagramPortal);
 
-if(document.getElementById('app')) {
-  new Vue({
+// @ts-ignore
+window.store = store
+
+async function main() {
+  await globals.apWrapper.initializeContext();
+  const compositeContentProvider = defaultContentProvider(globals.apWrapper as ApWrapper2);
+  let {doc} = await compositeContentProvider.load();
+  store.state.diagram = doc;
+  if(document.getElementById('app')) {
+    new Vue({
       store,
       render // with this method, we don't need to use full version of vue
     }).$mount('#app')
+  }
+
 }
-// @ts-ignore
-window.store = store
+
+export default main()
+
 
 EventBus.$on('diagramLoaded', () => {
   console.debug('Resize macro');
