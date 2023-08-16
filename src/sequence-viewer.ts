@@ -1,4 +1,5 @@
-import { VueSequence } from '@zenuml/core';
+import Vue from 'vue';
+import Vuex from 'vuex';
 import '@zenuml/core/dist/style.css'
 import './assets/tailwind.css'
 
@@ -14,9 +15,6 @@ import ApWrapper2 from "@/model/ApWrapper2";
 import AP from "@/model/AP";
 import DiagramPortal from "@/components/DiagramPortal.vue";
 
-const Vue = VueSequence.Vue;
-const Vuex = VueSequence.Vuex;
-
 Vue.config.productionTip = false
 Vue.use(Vuex)
 
@@ -31,6 +29,7 @@ async function main() {
   await globals.apWrapper.initializeContext();
   const compositeContentProvider = defaultContentProvider(globals.apWrapper as ApWrapper2);
   let {doc} = await compositeContentProvider.load();
+  // @ts-ignore
   store.state.diagram = doc;
   if(document.getElementById('app')) {
     new Vue({
