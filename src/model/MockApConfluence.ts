@@ -11,10 +11,9 @@ export default class MockApConfluence {
 
   getMacroData(cb: (arg0: any) => void) {
     if (!this.macroParams) {
-      console.log('No macro data found.');
       this.macroParams = {
         uuid: 'fake-macro-uuid',
-        customContentId: 'fake-content-id',
+        customContentId: 'fake-content-id-diagram-sequence',
         updatedAt: new Date()
       }
     }
