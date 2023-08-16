@@ -1,27 +1,27 @@
-import { createApp, h } from 'vue'
-import { createStore } from 'vuex'
-import ExtendedStore from './model/Store'
-import AP from "@/model/AP";
-import createAttachmentIfContentChanged from "@/model/Attachment";
-import {trackEvent} from "@/utils/window";
-import './assets/tailwind.css'
-import globals from '@/model/globals';
-import {decompress} from '@/utils/compress';
-import defaultContentProvider from "@/model/ContentProvider/CompositeContentProvider";
-import ApWrapper2 from "@/model/ApWrapper2";
 import GraphViewer from "@/components/Viewer/GraphViewer.vue";
-import EventBus from './EventBus'
+import defaultContentProvider from "@/model/ContentProvider/CompositeContentProvider";
+import globals from '@/model/globals';
+import {mountApp} from "@/mount-app";
+import './assets/tailwind.css'
+
+import AP from "@/model/AP";
 import {DiagramType} from "@/model/Diagram/Diagram";
+import EventBus from './EventBus'
+import {trackEvent} from "@/utils/window";
+import createAttachmentIfContentChanged from "@/model/Attachment";
+import {decompress} from '@/utils/compress';
+import ApWrapper2 from "@/model/ApWrapper2";
 
-const store = createStore(ExtendedStore);
-let render = () => h(GraphViewer);
-
-if(document.getElementById('app')) {
-  createApp({
-    store,
-    render // with this method, we don't need to use full version of vue
-  }).mount('#app')
+async function main() {
+  const compositeContentProvider = defaultContentProvider(globals.apWrapper);
+  let {doc} = await compositeContentProvider.load();
+  await globals.apWrapper.initializeContext();
+  mountApp(GraphViewer, doc);
+  // @ts-ignore
+  setTimeout(window.AP?.resize, 1500)
 }
+
+export default main();
 
 EventBus.$on('diagramLoaded', () => {
   console.debug('Resize macro');

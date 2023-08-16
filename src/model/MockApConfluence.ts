@@ -10,11 +10,18 @@ export default class MockApConfluence {
   }
 
   getMacroData(cb: (arg0: any) => void) {
+    let customContentId;
     if (!this.macroParams) {
       console.log('No macro data found.');
+      // if url contains '/drawio/view.html', set customContentId to 'fake-content-id-graph'
+      if (window.location.href.includes('/drawio/viewer.html')) {
+        customContentId = 'fake-content-id-graph'
+      } else {
+        customContentId = 'fake-content-id'
+      }
       this.macroParams = {
         uuid: 'fake-macro-uuid',
-        customContentId: 'fake-content-id',
+        customContentId: customContentId,
         updatedAt: new Date()
       }
     }
