@@ -42,7 +42,7 @@ export default {
     ...mapState({
       diagramType: state => state.diagram.diagramType,
       diagram: state => state.diagram,
-      code2: state => state.diagram.code,
+      code: state => state.diagram.code,
     }),
     ...mapGetters({isDisplayMode: 'isDisplayMode'}),
     isLite() {
@@ -58,12 +58,10 @@ export default {
   async mounted() {
     console.log('Viewer - mounted', );
     zenuml = new ZenUml(this.$refs['zenuml']);
-    await zenuml.render(this.code2, 'theme-mermaid');
-  },
-  async created() {
+    await zenuml.render(this.code, 'theme-default');
   },
   watch: {
-    async code2(code, oldCode) {
+    async code(code, oldCode) {
       console.debug('Viewer - Code changed - new: ', code, ', old: ', oldCode);
       await zenuml?.render(code, 'theme-default');
     },
