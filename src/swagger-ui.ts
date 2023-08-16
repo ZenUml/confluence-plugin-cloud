@@ -17,14 +17,11 @@ import OpenApiViewer from "@/components/Viewer/OpenApiViewer.vue";
 import EventBus from './EventBus'
 
 const store = createStore(ExtendedStore);
-let render = () => OpenApiViewer;
 
 if(document.getElementById('app')) {
-  createApp({
-    store,
-    render
-  }).mount('#app')
+  createApp(OpenApiViewer).use(store).mount('#app')
 }
+
 
 // @ts-ignore
 window.SwaggerUIBundle = SwaggerUIBundle;

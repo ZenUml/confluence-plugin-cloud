@@ -4,6 +4,7 @@ import customContentListSeq from "@/model/Ap/MockedResponse/custom-content-list-
 import customContentListGraph from "@/model/Ap/MockedResponse/custom-content-list-graph.json";
 import customContentByIdV1 from "@/model/Ap/MockedResponse/custom-content-by-id-v1.json";
 import customContentByIdV1Graph from "@/model/Ap/MockedResponse/custom-content-by-id-v1-graph.json";
+import customContentByIdV1OpenAi from "@/model/Ap/MockedResponse/custom-content-by-id-v1-openai.json";
 
 const CONTRACT: any = {
   customContent: {method: 'get', URL: /\/rest\/api\/content\/(\d+)/},
@@ -33,6 +34,9 @@ export default class MockAp implements IAp {
       return 'OK. (req is empty)'
     }
 
+    if (req.url.startsWith('/rest/api/content/fake-content-id-openai')) {
+      return {body: JSON.stringify(customContentByIdV1OpenAi)};
+    }
     if (req.url.startsWith('/rest/api/content/fake-content-id-graph')) {
       return {body: JSON.stringify(customContentByIdV1Graph)};
     }

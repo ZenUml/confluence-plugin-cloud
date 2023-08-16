@@ -1,0 +1,129 @@
+{
+  "id": "1771143170",
+  "type": "ac:com.zenuml.confluence-addon:zenuml-content-sequence",
+  "status": "current",
+  "title": "Untitled 2023-08-16T08:14:52.293Z",
+  "space": {
+    "id": 32987,
+    "key": "ZEN",
+    "name": "P&D Vision Products",
+    "type": "global",
+    "status": "current",
+    "_expandable": {
+      "settings": "/rest/api/space/ZEN/settings",
+      "metadata": "",
+      "operations": "",
+      "lookAndFeel": "/rest/api/settings/lookandfeel?spaceKey=ZEN",
+      "identifiers": "",
+      "permissions": "",
+      "icon": "",
+      "description": "",
+      "theme": "/rest/api/space/ZEN/theme",
+      "history": "",
+      "homepage": "/rest/api/content/252411915"
+    },
+    "_links": {
+      "webui": "/spaces/ZEN",
+      "self": "https://zenuml.atlassian.net/wiki/rest/api/space/ZEN"
+    }
+  },
+  "version": {
+    "by": {
+      "type": "known",
+      "accountId": "557058:0a2e245b-f5cd-42f7-bf07-a53b8d17e94f",
+      "accountType": "atlassian",
+      "email": "",
+      "publicName": "Peng Xiao",
+      "profilePicture": {
+        "path": "/wiki/aa-avatar/557058:0a2e245b-f5cd-42f7-bf07-a53b8d17e94f",
+        "width": 48,
+        "height": 48,
+        "isDefault": false
+      },
+      "displayName": "Peng Xiao",
+      "isExternalCollaborator": false,
+      "_expandable": {
+        "operations": "",
+        "personalSpace": ""
+      },
+      "_links": {
+        "self": "https://zenuml.atlassian.net/wiki/rest/api/user?accountId=557058:0a2e245b-f5cd-42f7-bf07-a53b8d17e94f"
+      }
+    },
+    "when": "2023-08-16T08:14:52.572Z",
+    "friendlyWhen": "less than a minute ago",
+    "message": "",
+    "number": 1,
+    "minorEdit": false,
+    "contentTypeModified": false,
+    "_expandable": {
+      "collaborators": "",
+      "content": "/rest/api/content/1771143170"
+    },
+    "_links": {
+      "self": "https://zenuml.atlassian.net/wiki/rest/api/content/1771143170/version/1"
+    }
+  },
+  "container": {
+    "id": "586088449",
+    "type": "page",
+    "status": "draft",
+    "title": "New version",
+    "macroRenderedOutput": {},
+    "extensions": {
+      "position": 706414046
+    },
+    "_expandable": {
+      "container": "/rest/api/space/ZEN",
+      "metadata": "",
+      "restrictions": "/rest/api/content/586088449/restriction/byOperation",
+      "history": "/rest/api/content/586088449/history",
+      "body": "",
+      "version": "",
+      "descendants": "/rest/api/content/586088449/descendant",
+      "space": "/rest/api/space/ZEN",
+      "childTypes": "",
+      "schedulePublishInfo": "",
+      "operations": "",
+      "schedulePublishDate": "",
+      "children": "/rest/api/content/586088449/child",
+      "ancestors": ""
+    },
+    "_links": {
+      "self": "https://zenuml.atlassian.net/wiki/rest/api/content/586088449?status=draft",
+      "tinyui": "/x/AQDvIg",
+      "editui": "/pages/resumedraft.action?draftId=586088449&draftShareId=47329c1c-1207-4636-a660-cb2ed5dd1413",
+      "webui": "/pages/resumedraft.action?draftId=586088449&draftShareId=47329c1c-1207-4636-a660-cb2ed5dd1413"
+    }
+  },
+  "macroRenderedOutput": {},
+  "body": {
+    "raw": {
+      "value": "{\"id\":\"\",\"diagramType\":\"OpenAPI\",\"code\":\"openapi: 3.0.0\\ninfo:\\n  title: Sample API\\n  description: Optional multiline or single-line description in [CommonMark](http://commonmark.org/help/) or HTML.\\n  version: 0.1.9\\nservers:\\n  - url: http://api.example.com/v1\\n    description: Optional server description, e.g. Main (production) server\\n  - url: http://staging-api.example.com\\n    description: Optional server description, e.g. Internal staging server for testing\\npaths:\\n  /users:\\n    get:\\n      summary: Returns a list of users.\\n      description: Optional extended description in CommonMark or HTML.\\n      responses:\\n        '200':    # status code\\n          description: A JSON array of user names\\n          content:\\n            application/json:\\n              schema:\\n                type: array\\n                items:\\n                  type: string\",\"title\":\"\",\"styles\":{},\"mermaidCode\":\"\",\"graphXml\":\"\",\"source\":\"custom-content\"}",
+      "representation": "raw",
+      "embeddedContent": [],
+      "_expandable": {
+        "content": "/rest/api/content/1771143170"
+      }
+    }
+  },
+  "_expandable": {
+    "childTypes": "",
+    "schedulePublishInfo": "",
+    "metadata": "",
+    "operations": "",
+    "schedulePublishDate": "",
+    "children": "/rest/api/content/1771143170/child",
+    "restrictions": "/rest/api/content/1771143170/restriction/byOperation",
+    "history": "/rest/api/content/1771143170/history",
+    "ancestors": "",
+    "descendants": "/rest/api/content/1771143170/descendant"
+  },
+  "_links": {
+    "context": "/wiki",
+    "self": "https://zenuml.atlassian.net/wiki/rest/api/content/1771143170",
+    "collection": "/rest/api/content",
+    "webui": "/plugins/servlet/ac/com.zenuml.confluence-addon/zenuml-content-sequence-viewer?content.plugin=ac%3Acom.zenuml.confluence-addon%3Azenuml-content-sequence&space.key=ZEN&content.id=1771143170&content.version=1&space.id=32987&content.type=custom&user.isExternalCollaborator=false",
+    "base": "https://zenuml.atlassian.net/wiki"
+  }
+}

@@ -16,6 +16,8 @@ export default class MockApConfluence {
       // if url contains '/drawio/view.html', set customContentId to 'fake-content-id-graph'
       if (window.location.href.includes('/drawio/viewer.html')) {
         customContentId = 'fake-content-id-graph'
+      } else if (window.location.href.includes('/swagger-ui.html')) {
+        customContentId = 'fake-content-id-openai'
       } else {
         customContentId = 'fake-content-id'
       }
