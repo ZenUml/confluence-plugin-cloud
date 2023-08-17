@@ -6,6 +6,7 @@
 
 <script>
 import mermaid from 'mermaid'
+import EventBus from "@/EventBus";
 
 mermaid.mermaidAPI.initialize({
   startOnLoad:true
@@ -30,6 +31,7 @@ export default {
     // This is because its parent has 'display:none'. So we cannot use mounted to inject svg node.
     if (!this.code) return;
     this.svg = await this.render(this.code);
+    EventBus.$emit('diagramLoaded', this.$store.state.diagram.code, this.$store.state.diagram.diagramType);
   },
   updated() {
     // `updated` is also not triggered when diagramType changes, even after we mapped state `diagramType` to computed properties.
