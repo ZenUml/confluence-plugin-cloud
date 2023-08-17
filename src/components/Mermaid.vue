@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="mermaid" v-html="svg"></div>
+    <div v-html="svg"></div>
   </div>
 </template>
 
@@ -28,6 +28,8 @@ export default {
   async mounted() {
     // When it is firstly mounted, if diagramType !== 'mermaid', v-html will not inject the svg even if svg has value.
     // This is because its parent has 'display:none'. So we cannot use mounted to inject svg node.
+    if (!this.code) return;
+    this.svg = await this.render(this.code);
   },
   updated() {
     // `updated` is also not triggered when diagramType changes, even after we mapped state `diagramType` to computed properties.

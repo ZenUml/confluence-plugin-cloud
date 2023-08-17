@@ -31,6 +31,12 @@ async function main() {
   let {doc} = await compositeContentProvider.load();
   // @ts-ignore
   store.state.diagram = doc;
+  // @ts-ignore
+  store.state.code = doc.code;
+  // @ts-ignore
+  store.state.diagramType = doc.diagramType;
+  // @ts-ignore
+  store.state.mermaidCode = doc.mermaidCode;
   if(document.getElementById('app')) {
     new Vue({
       store,
