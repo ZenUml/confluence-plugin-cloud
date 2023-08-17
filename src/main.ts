@@ -1,4 +1,5 @@
-import { VueSequence } from '@zenuml/core';
+import Vue from 'vue';
+import Vuex from 'vuex';
 
 import Workspace from './components/Workspace.vue'
 import mermaid from 'mermaid'
@@ -7,9 +8,6 @@ import './assets/tailwind.css'
 import '@zenuml/core/dist/style.css'
 
 import ExtendedStore from './model/store2/ExtendedStore'
-
-const Vue = VueSequence.Vue;
-const Vuex = VueSequence.Vuex;
 
 // @ts-ignore
 window.mermaid = mermaid;
