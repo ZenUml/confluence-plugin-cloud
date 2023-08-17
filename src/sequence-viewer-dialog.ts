@@ -1,3 +1,5 @@
+import Vue from 'vue';
+import Vuex from 'vuex';
 import './assets/tailwind.css'
 import {VueSequence} from '@zenuml/core';
 import '@zenuml/core/dist/style.css'
@@ -8,9 +10,8 @@ import ApWrapper2 from "@/model/ApWrapper2";
 import {Diagram, DiagramType} from "@/model/Diagram/Diagram";
 import MermaidViewer from '@/components/Viewer/MermaidViewer.vue';
 import ExtendedStore from './model/Store'
+import DiagramPortal from "@/components/DiagramPortal.vue";
 
-const Vue = VueSequence.Vue;
-const Vuex = VueSequence.Vuex;
 Vue.use(Vuex)
 
 async function getDiagram(): Promise<Diagram> {
@@ -23,9 +24,7 @@ async function getDiagram(): Promise<Diagram> {
 function mountDiagramFrame(diagram: Diagram, store: any, id: string) {
   console.log('sequence-viewer-dialog.ts - using app', document.getElementById(id))
   if (document.getElementById(id)) {
-    const component = diagram.diagramType === DiagramType.Sequence ? VueSequence.DiagramFrame : MermaidViewer;
-    console.log('sequence-viewer-dialog.ts - using component', component)
-    const render = (h: Function) => h(component)
+    const render = (h: Function) => h(DiagramPortal)
     new Vue({
       store,
       render // with this method, we don't need to use full version of vew

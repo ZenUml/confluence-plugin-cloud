@@ -12,8 +12,9 @@ export default class MockApConfluence {
   getMacroData(cb: (arg0: any) => void) {
     if (!this.macroParams) {
       let customContentId;
-      if (location.href.includes('sequence-viewer.html')) {
-        if(location.href.includes('diagram-type=mermaid')) {
+      const href = location.href;
+      if (href.includes('sequence-viewer.html') || href.includes('sequence-viewer-dialog.html')) {
+        if(href.includes('diagram-type=mermaid')) {
           customContentId = 'fake-content-id-diagram-mermaid';
         } else {
           customContentId = 'fake-content-id-diagram-sequence';
