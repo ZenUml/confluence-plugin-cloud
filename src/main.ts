@@ -6,7 +6,7 @@ import mermaid from 'mermaid'
 import './assets/tailwind.css'
 import '@zenuml/core/dist/style.css'
 
-import ExtendedStore from './model/Store'
+import ExtendedStore from './model/store2/ExtendedStore'
 
 const Vue = VueSequence.Vue;
 const Vuex = VueSequence.Vuex;
