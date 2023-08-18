@@ -2,7 +2,7 @@ import { createLocalVue, mount } from '@vue/test-utils'
 import Vuex from 'vuex'
 import Header from '@/components/Header/Header.vue'
 import {DiagramType} from "@/model/Diagram/Diagram";
-import Store from "@/model/Store";
+import Store from "@/model/store2/ExtendedStore";
 const localVue = createLocalVue()
 localVue.use(Vuex)
 

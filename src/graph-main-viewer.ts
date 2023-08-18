@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import ExtendedStore from './model/Store'
+import ExtendedStore from './model/store2/ExtendedStore'
 import AP from "@/model/AP";
 import createAttachmentIfContentChanged from "@/model/Attachment";
 import {trackEvent} from "@/utils/window";

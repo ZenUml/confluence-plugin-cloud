@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import ExtendedStore from './model/Store'
+import ExtendedStore from './model/store2/ExtendedStore'
 import SwaggerUIBundle from 'swagger-ui'
 import SpecListener from './utils/spec-listener'
 import AP from "@/model/AP";

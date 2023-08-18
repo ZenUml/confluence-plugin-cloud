@@ -1,7 +1,7 @@
 import { createLocalVue, mount } from '@vue/test-utils'
 import Vuex from 'vuex'
 import Editor from '@/components/Editor/Editor.vue'
-import Store from "@/model/Store";
+import Store from "@/model/store2/ExtendedStore";
 import {DiagramType} from "@/model/Diagram/Diagram";
 import Example from "@/utils/sequence/Example";
 const localVue = createLocalVue()
