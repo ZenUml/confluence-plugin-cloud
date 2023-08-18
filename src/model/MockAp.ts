@@ -29,7 +29,7 @@ interface RequestHandler {
 export default class MockAp implements IAp {
   public confluence: any
   public request: any = async (req: any) => {
-    console.log('req', req);
+    console.debug('req', req);
     if (!req) {
       return 'OK. (req is empty)'
     }

@@ -1,6 +1,8 @@
+import {Diagram, DiagramType} from "@/model/Diagram/Diagram";
+
 export interface RootState {
-  mermaidCode: string,
-  diagram: {
-    mermaidCode: string
-  }
+  diagram: Diagram
+  mermaidCode: string | undefined,
+  code: string | undefined,
+  diagramType: DiagramType
 }
