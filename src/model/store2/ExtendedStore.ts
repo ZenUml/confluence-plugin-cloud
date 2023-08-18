@@ -12,7 +12,6 @@ const ExtendedStore: StoreOptions<RootState> = {
       state.diagram.code = payload
     },
     updateMermaidCode(state: any, payload: any) {
-      state.mermaidCode = payload
       state.diagram.mermaidCode = payload
     },
     updateDiagramType(state: any, payload: any) {
@@ -41,7 +40,6 @@ const ExtendedStore: StoreOptions<RootState> = {
   },
   state: {
     code: Example.Sequence,
-    mermaidCode: Example.Mermaid,
     diagramType: DiagramType.Sequence,
     diagram: NULL_DIAGRAM,
     error: null,

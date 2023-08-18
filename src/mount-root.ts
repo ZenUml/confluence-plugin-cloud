@@ -6,7 +6,6 @@ export function mountRoot(doc: Diagram, component: Component) {
   store.state.diagram = doc;
   store.state.code = doc.code;
   store.state.diagramType = doc.diagramType;
-  store.state.mermaidCode = doc.mermaidCode;
   if (document.getElementById('app')) {
     new Vue({
       store,

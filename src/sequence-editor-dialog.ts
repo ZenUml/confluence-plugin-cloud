@@ -7,14 +7,12 @@ import {mountRoot} from "@/mount-root";
 
 import store from './model/store2'
 import EventBus from './EventBus'
-import {CustomContentStorageProvider} from "@/model/ContentProvider/CustomContentStorageProvider";
 import AP from "@/model/AP";
-import {DataSource} from "@/model/Diagram/Diagram";
-import {MacroIdProvider} from "@/model/ContentProvider/MacroIdProvider";
 import './utils/IgnoreEsc.ts'
 
 import '@zenuml/core/dist/style.css'
 import './assets/tailwind.css'
+import {saveToPlatform} from "@/model/ContentProvider/Persistence";
 
 async function main() {
   await globals.apWrapper.initializeContext();
@@ -27,13 +25,7 @@ async function main() {
 export default main();
 
 EventBus.$on('save', async () => {
-  const apWrapper = new ApWrapper2(AP);
-  const idProvider = new MacroIdProvider(apWrapper);
-  // @ts-ignore
-
-  const value = {id: await idProvider.getId(),code: store.state.code, styles: store.state.styles, mermaidCode: store.state.mermaidCode, diagramType: store.state.diagramType, title: store.getters.title, source: DataSource.CustomContent} as Diagram;
-  const customContentStorageProvider = new CustomContentStorageProvider(apWrapper);
-  await customContentStorageProvider.save(value);
+  await saveToPlatform(store.state.diagram);
   // @ts-ignore
   AP.dialog.close();
 });

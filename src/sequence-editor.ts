@@ -8,7 +8,6 @@ import {mountRoot} from "@/mount-root";
 import store from './model/store2'
 import EventBus from './EventBus'
 import AP from "@/model/AP";
-import {DataSource} from "@/model/Diagram/Diagram";
 
 import {saveToPlatform} from "@/model/ContentProvider/Persistence";
 import './utils/IgnoreEsc.ts'
@@ -27,9 +26,7 @@ async function main() {
 export default main();
 
 EventBus.$on('save', async () => {
-  // @ts-ignore
-  const diagram = { title: store.getters.title, code: store.state.code, styles: store.state.styles, mermaidCode: store.state.mermaidCode, diagramType: store.state.diagramType, source: DataSource.CustomContent };
-  await saveToPlatform(diagram);
+  await saveToPlatform(store.state.diagram);
   // @ts-ignore
   AP.dialog.close();
 });
