@@ -13,7 +13,8 @@ export default class MockApConfluence {
     if (!this.macroParams) {
       let customContentId;
       const href = location.href;
-      if (href.includes('sequence-viewer.html') || href.includes('sequence-viewer-dialog.html')) {
+      if (href.includes('sequence-viewer.html') || href.includes('sequence-viewer-dialog.html')
+        || href.includes('sequence-editor.html') || href.includes('sequence-editor-dialog.html')) {
         if(href.includes('diagram-type=mermaid')) {
           customContentId = 'fake-content-id-diagram-mermaid';
         } else {

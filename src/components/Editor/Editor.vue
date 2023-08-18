@@ -64,7 +64,7 @@
         if (isMermaid) {
           this.$store.dispatch('updateMermaidCode', newCode);
         } else {
-          this.$store.dispatch('updateCode', {code: newCode});
+          this.$store.dispatch('updateCode2', newCode);
         }
       },
     },

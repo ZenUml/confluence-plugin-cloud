@@ -11,15 +11,24 @@ const ExtendedStore: StoreOptions<RootState> = {
   ...storeConfig,
   mutations: {
     ...storeConfig.mutations,
+    updateCode2(state: any, payload: any) {
+      state.code = payload
+      state.diagram.code = payload
+    },
     updateMermaidCode(state: any, payload: any) {
       state.mermaidCode = payload
+      state.diagram.mermaidCode = payload
     },
     updateDiagramType(state: any, payload: any) {
       state.diagramType = payload
+      state.diagram.diagramType = payload
     },
   },
   actions: {
     ...storeConfig.actions,
+    updateCode2({commit}: any, payload: any) {
+      commit('updateCode2', payload)
+    },
     updateMermaidCode({commit}: any, payload: any) {
       commit('updateMermaidCode', payload)
     },

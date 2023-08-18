@@ -1,41 +1,30 @@
-import { VueSequence } from '@zenuml/core';
+import ApWrapper2 from "@/model/ApWrapper2";
+import defaultContentProvider from "@/model/ContentProvider/CompositeContentProvider";
+import globals from "@/model/globals";
+
 import Workspace from './components/Workspace.vue'
-import mermaid from 'mermaid'
+import {mountRoot} from "@/mount-root";
 
-// ==== CSS ====
-import './assets/tailwind.css'
-import '@zenuml/core/dist/style.css'
-
-import ExtendedStore from './model/Store'
+import store from './model/store2'
 import EventBus from './EventBus'
 import AP from "@/model/AP";
 import {DataSource} from "@/model/Diagram/Diagram";
+
 import {saveToPlatform} from "@/model/ContentProvider/Persistence";
-
 import './utils/IgnoreEsc.ts'
-const Vue = VueSequence.Vue;
-const Vuex = VueSequence.Vuex;
 
-// @ts-ignore
-window.mermaid = mermaid
+import '@zenuml/core/dist/style.css'
+import './assets/tailwind.css'
 
-mermaid.mermaidAPI.initialize({
-  startOnLoad:true
-})
-
-Vue.config.productionTip = false
-
-Vue.use(Vuex)
-
-const store = new Vuex.Store(ExtendedStore);
-if(document.getElementById('app')) {
-    new Vue({
-      store,
-      render: (h: any) => h(Workspace) // with this method, we don't need to use full version of vew
-    }).$mount('#app')
+async function main() {
+  await globals.apWrapper.initializeContext();
+  const compositeContentProvider = defaultContentProvider(globals.apWrapper as ApWrapper2);
+  let {doc} = await compositeContentProvider.load();
+  mountRoot(doc, Workspace);
 }
-// @ts-ignore
-window.store = store
+
+// We do not have to export main(), but otherwise IDE shows a warning
+export default main();
 
 EventBus.$on('save', async () => {
   // @ts-ignore
