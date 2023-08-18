@@ -19,9 +19,9 @@ describe('Header', () => {
     expect(mermaidButton.classes('bg-white')).toBeFalsy();
 
     // click to switch to mermaid
-    expect(headerWrapper.vm.$store.state.diagramType).toBe(DiagramType.Sequence);
+    expect(headerWrapper.vm.$store.state.diagram.diagramType).toBe(DiagramType.Sequence);
     mermaidButton.trigger('click');
-    expect(headerWrapper.vm.$store.state.diagramType).toBe(DiagramType.Mermaid);
+    expect(headerWrapper.vm.$store.state.diagram.diagramType).toBe(DiagramType.Mermaid);
     headerWrapper.vm.$nextTick(() => {
       expect(mermaidButton.classes('bg-white')).toBeTruthy();
       done();

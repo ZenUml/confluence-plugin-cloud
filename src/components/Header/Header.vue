@@ -60,7 +60,9 @@ export default {
     }
   },
   computed: {
-    ...mapState(['code', 'styles', 'mermaidCode', 'diagramType']),
+    ...mapState({
+      diagramType: state => state.diagram.diagramType,
+    }),
     saveAndExit: function () {
       return function () {
         EventBus.$emit('save')

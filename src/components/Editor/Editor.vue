@@ -65,7 +65,9 @@
       },
     },
     computed: {
-      ...mapState(['diagramType']),
+      ...mapState({
+        diagramType: state => state.diagram.diagramType,
+      }),
       code() {
         return this.diagramType === DiagramType.Mermaid? this.$store.state.diagram.mermaidCode : this.$store.state.diagram.code;
       },

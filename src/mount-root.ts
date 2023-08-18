@@ -4,7 +4,6 @@ import store from "@/model/store2";
 
 export function mountRoot(doc: Diagram, component: Component) {
   store.state.diagram = doc;
-  store.state.diagramType = doc.diagramType;
   if (document.getElementById('app')) {
     new Vue({
       store,

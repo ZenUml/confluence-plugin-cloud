@@ -13,7 +13,6 @@ const ExtendedStore: StoreOptions<RootState> = {
       state.diagram.mermaidCode = payload
     },
     updateDiagramType(state: any, payload: any) {
-      state.diagramType = payload
       state.diagram.diagramType = payload
     },
   },

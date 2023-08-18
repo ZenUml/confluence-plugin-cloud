@@ -29,7 +29,7 @@ describe('Editor', () => {
     const vm = editorWrapper.vm as any;
     expect(vm.code).toBe(Example.Sequence);
     store.commit('updateDiagramType', DiagramType.Mermaid);
-    expect(store.state.diagramType).toBe(DiagramType.Mermaid);
+    expect(store.state.diagram.diagramType).toBe(DiagramType.Mermaid);
     expect(vm.code).toBe(Example.Mermaid);
   })
 })
