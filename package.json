@@ -6,6 +6,7 @@
     "engine": "use yarn to install",
     "test:unit": "vue-cli-service test:unit",
     "test:e2e": "ZENUML_STAGE_USERNAME=robot1.yanhui@gmail.com node tests/e2e/demoPage.js",
+    "test:e2e:peng": "ZENUML_STAGE_USERNAME=eagle.xiao@gmail.com node tests/e2e/demoPage.js",
     "test:e2e:yanhui": "ZENUML_STAGE_USERNAME=robot1.yanhui@gmail.com ZENUML_DOMAIN=whimet4.atlassian.net ZENUML_SPACE=WHIMET4 node tests/e2e/demoPage.js",
     "test:e2e:yanhui:existing": "ZENUML_STAGE_USERNAME=robot1.yanhui@gmail.com ZENUML_DOMAIN=whimet4.atlassian.net PAGE_ID=458653717 ZENUML_SPACE=WHIMET4 node tests/e2e/demoPage.js",
     "test:unit:watch": "vue-cli-service test:unit --watch",
