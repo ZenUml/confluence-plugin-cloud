@@ -12,7 +12,6 @@ import AP from "@/model/AP";
 import {saveToPlatform} from "@/model/ContentProvider/Persistence";
 import './utils/IgnoreEsc.ts'
 
-import '@zenuml/core/dist/style.css'
 import './assets/tailwind.css'
 import {DiagramType, NULL_DIAGRAM} from "@/model/Diagram/Diagram";
 import Example from "@/utils/sequence/Example";

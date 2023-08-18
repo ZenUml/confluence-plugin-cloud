@@ -10,7 +10,6 @@ import EventBus from './EventBus'
 import AP from "@/model/AP";
 import './utils/IgnoreEsc.ts'
 
-import '@zenuml/core/dist/style.css'
 import './assets/tailwind.css'
 import {saveToPlatform} from "@/model/ContentProvider/Persistence";
 

@@ -11,7 +11,6 @@ import {trackEvent} from "@/utils/window";
 import createAttachmentIfContentChanged from "@/model/Attachment";
 import {DiagramType} from "@/model/Diagram/Diagram";
 
-import '@zenuml/core/dist/style.css'
 import './assets/tailwind.css'
 
 async function main() {

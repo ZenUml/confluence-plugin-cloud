@@ -6,7 +6,6 @@ import DiagramPortal from "@/components/DiagramPortal.vue";
 import {mountRoot} from "@/mount-root";
 
 import './assets/tailwind.css'
-import '@zenuml/core/dist/style.css'
 
 async function main() {
   await globals.apWrapper.initializeContext();
