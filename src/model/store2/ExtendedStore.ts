@@ -37,16 +37,12 @@ const ExtendedStore: StoreOptions<RootState> = {
     }
   },
   getters: {
-    svg: (state: any) => {
-      return state.mermaidSvg
-    },
     isDisplayMode: () => globals.apWrapper.isDisplayMode(),
   },
   state: {
     code: Example.Sequence,
     mermaidCode: Example.Mermaid,
     diagramType: DiagramType.Sequence,
-    mermaidSvg: '',
     diagram: NULL_DIAGRAM,
     error: null,
     onElementClick: (codeRange: any) => {
