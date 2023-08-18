@@ -2,13 +2,11 @@ import { StoreOptions } from 'vuex';
 import { RootState} from "@/model/store2/types";
 import {DiagramType, NULL_DIAGRAM} from "@/model/Diagram/Diagram";
 import globals from "@/model/globals";
-import Example from "@/utils/sequence/Example";
 import EventBus from "@/EventBus";
 
 const ExtendedStore: StoreOptions<RootState> = {
   mutations: {
     updateCode2(state: any, payload: any) {
-      state.code = payload
       state.diagram.code = payload
     },
     updateMermaidCode(state: any, payload: any) {
@@ -28,18 +26,12 @@ const ExtendedStore: StoreOptions<RootState> = {
     },
     updateDiagramType({commit}: any, payload: DiagramType) {
       commit('updateDiagramType', payload)
-    },
-    reloadZenUML({commit, state}: any) {
-      const code = state.code
-      commit('code', '')
-      commit('code', code)
     }
   },
   getters: {
     isDisplayMode: () => globals.apWrapper.isDisplayMode(),
   },
   state: {
-    code: Example.Sequence,
     diagramType: DiagramType.Sequence,
     diagram: NULL_DIAGRAM,
     error: null,
