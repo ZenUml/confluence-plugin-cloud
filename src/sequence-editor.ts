@@ -14,11 +14,21 @@ import './utils/IgnoreEsc.ts'
 
 import '@zenuml/core/dist/style.css'
 import './assets/tailwind.css'
+import {DiagramType, NULL_DIAGRAM} from "@/model/Diagram/Diagram";
+import Example from "@/utils/sequence/Example";
 
 async function main() {
   await globals.apWrapper.initializeContext();
   const compositeContentProvider = defaultContentProvider(globals.apWrapper as ApWrapper2);
   let {doc} = await compositeContentProvider.load();
+  if(doc === NULL_DIAGRAM) {
+    doc = {
+      diagramType: DiagramType.Sequence,
+      code: Example.Sequence,
+      mermaidCode: Example.Mermaid
+    }
+  }
+
   mountRoot(doc, Workspace);
 }
 

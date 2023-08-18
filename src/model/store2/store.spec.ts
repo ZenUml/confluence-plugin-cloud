@@ -2,7 +2,7 @@ import store from './index';
 
 describe('Store', function () {
   it('should have default values', function () {
-    expect(store.state.diagram.mermaidCode).toBe('graph TD; A-->B;');
+    expect(store.state.diagram.mermaidCode).toBe('');
   });
 
   it('can update mermaid code', () => {

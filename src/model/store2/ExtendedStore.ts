@@ -31,7 +31,6 @@ const ExtendedStore: StoreOptions<RootState> = {
     isDisplayMode: () => globals.apWrapper.isDisplayMode(),
   },
   state: {
-    diagramType: DiagramType.Sequence,
     diagram: NULL_DIAGRAM,
     error: null,
     onElementClick: (codeRange: any) => {
