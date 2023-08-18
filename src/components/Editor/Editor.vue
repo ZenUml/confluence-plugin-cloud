@@ -28,12 +28,8 @@
   import 'codemirror/theme/base16-dark.css'
 
   import EventBus from '@/EventBus'
-  import defaultContentProvider from "@/model/ContentProvider/CompositeContentProvider";
-  import AP from "@/model/AP";
   import globals from "@/model/globals";
   import {DiagramType, NULL_DIAGRAM} from "@/model/Diagram/Diagram";
-  import Example from "@/utils/sequence/Example";
-  import ApWrapper2 from "@/model/ApWrapper2";
 
   export default {
     name: 'editor',
@@ -71,24 +67,13 @@
     computed: {
       ...mapState(['diagramType']),
       code() {
-        return this.diagramType === DiagramType.Mermaid? this.doc.mermaidCode || Example.Mermaid : this.doc.code || Example.Sequence;
+        return this.diagramType === DiagramType.Mermaid? this.$store.state.diagram.mermaidCode : this.$store.state.diagram.code;
       },
       codemirror() {
         return this.$refs.myCm.codemirror
       },
     },
     async created() {
-      const compositeContentProvider = defaultContentProvider(new ApWrapper2(AP));
-      const {doc} = await compositeContentProvider.load();
-      this.doc = doc;
-      if (doc === NULL_DIAGRAM) {
-        this.doc ={
-          diagramType: DiagramType.Sequence,
-          code: Example.Sequence
-        }
-        this.$store.dispatch('updateCode', {code: Example.Sequence});
-      }
-      await globals.apWrapper.initializeContext();
       this.canUserEdit = await globals.apWrapper.canUserEdit();
     },
     mounted() {
