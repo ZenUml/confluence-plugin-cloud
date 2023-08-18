@@ -20,6 +20,9 @@ export default class MockApConfluence {
         } else {
           customContentId = 'fake-content-id-diagram-sequence';
         }
+      } else {
+        // home page
+        customContentId = 'fake-content-id-diagram-sequence';
       }
       this.macroParams = {
         uuid: 'fake-macro-uuid',
