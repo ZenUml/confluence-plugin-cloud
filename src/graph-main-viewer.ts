@@ -1,6 +1,3 @@
-import Vue from 'vue'
-import Vuex from 'vuex'
-import ExtendedStore from './model/store2/ExtendedStore'
 import AP from "@/model/AP";
 import createAttachmentIfContentChanged from "@/model/Attachment";
 import {trackEvent} from "@/utils/window";
@@ -12,20 +9,7 @@ import ApWrapper2 from "@/model/ApWrapper2";
 import GraphViewer from "@/components/Viewer/GraphViewer.vue";
 import EventBus from './EventBus'
 import {DiagramType} from "@/model/Diagram/Diagram";
-
-Vue.config.productionTip = false
-Vue.use(Vuex)
-
-const store = new Vuex.Store(ExtendedStore);
-let render = (h: Function) => h(GraphViewer);
-
-if(document.getElementById('app')) {
-  // @ts-ignore
-  new Vue({
-    store,
-    render // with this method, we don't need to use full version of vue
-  }).$mount('#app')
-}
+import {mountRoot} from "@/mount-root";
 
 EventBus.$on('diagramLoaded', () => {
   console.debug('Resize macro');
@@ -70,6 +54,7 @@ function renderGraph(graphXml: string) {
 async function loadDiagram() {
   const compositeContentProvider = defaultContentProvider(new ApWrapper2(AP));
   const {doc} = await compositeContentProvider.load();
+  mountRoot(doc, GraphViewer);
   let graphXml = doc.graphXml;
   if (doc?.compressed) {
     trackEvent('compressed_field_viewer', 'load', 'warning');
@@ -85,6 +70,7 @@ async function loadDiagram() {
 }
 
 (async function initializeMacro() {
+  console.log('Initializing macro');
   const apWrapper = globals.apWrapper;
   await apWrapper.initializeContext();
 

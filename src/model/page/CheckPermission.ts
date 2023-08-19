@@ -6,6 +6,10 @@ export interface PermissionCheckRequestFunc {
 }
 
 export default async function CheckPermission(pageId: string, userId: string, requestFn: PermissionCheckRequestFunc): Promise<boolean> {
+  if(!pageId || !userId) {
+    console.error('pageId or userId is not provided.', pageId, userId);
+    return false;
+  }
   try {
     const resp = await requestFn({
       type: 'POST',
