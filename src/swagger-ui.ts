@@ -1,5 +1,3 @@
-import Vue from 'vue'
-import store from './model/store2/'
 import SwaggerUIBundle from 'swagger-ui'
 import SpecListener from './utils/spec-listener'
 import AP from "@/model/AP";
@@ -14,8 +12,7 @@ import defaultContentProvider from "@/model/ContentProvider/CompositeContentProv
 import ApWrapper2 from "@/model/ApWrapper2";
 import OpenApiViewer from "@/components/Viewer/OpenApiViewer.vue";
 import EventBus from './EventBus'
-
-let render = (h: Function) => h(OpenApiViewer);
+import {mountRoot} from "@/mount-root";
 
 // @ts-ignore
 window.SwaggerUIBundle = SwaggerUIBundle;
@@ -77,15 +74,7 @@ async function initializeMacro() {
   await globals.apWrapper.initializeContext();
   const compositeContentProvider = defaultContentProvider(new ApWrapper2(AP));
   const {doc} = await compositeContentProvider.load();
-  store.state.diagram = doc;
-  if(document.getElementById('app')) {
-    // @ts-ignore
-    new Vue({
-      store,
-      render // with this method, we don't need to use full version of vue
-    }).$mount('#app')
-  }
-
+  mountRoot(doc, OpenApiViewer);
   initSwaggerUi();
 
   await loadDiagram();
