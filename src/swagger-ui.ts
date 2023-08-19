@@ -80,7 +80,7 @@ async function initializeMacro() {
   await loadDiagram();
 }
 
-initializeMacro();
+export default initializeMacro();
 
 EventBus.$on('edit', () => {
   // @ts-ignore
