@@ -1,7 +1,8 @@
 
 async function cloneAsFull(customContentId) {
   const data = await getContent(customContentId, 'expand=body.raw,version.number,container,space');
-  const data2 = {type: 'ac:com.zenuml.confluence-addon:zenuml-content-sequence', title: data.title, space: {key: data.space.key}, body: data.body, container: {type: 'page', id: data.container?.id}}
+  data.body.raw.value = JSON.stringify(Object.assign(JSON.parse(data.body.raw.value), {migrated: true, sourceCustomContentId: customContentId}));
+  const data2 = {type: 'ac:com.zenuml.confluence-addon:zenuml-content-sequence', title: data.title, space: {key: data.space.key}, body: data.body,    container: {type: 'page', id: data.container?.id}}
   return await createContent(data2);
 }
 
@@ -33,8 +34,7 @@ async function upgradePage(pageId, userId) {
       }
     });
     
-    // const name = await getUserDisplayName(userId);
-    const data = {type: 'page', title: page.title, status: page.status, space: {key: page.space.key}, version: {number: ++page.version.number, message: `ZenUML lite macro(s) on this page are upgraded by XXX on behalf of ZenUML App`}, body: {atlas_doc_format: {value: JSON.stringify({type: 'doc', content}), representation: 'atlas_doc_format'}}};
+    const data = {type: 'page', title: page.title, status: page.status, space: {key: page.space.key}, version: {number: ++page.version.number, message: `ZenUML lite macro(s) on this page are upgraded by ZenUML App`}, body: {atlas_doc_format: {value: JSON.stringify({type: 'doc', content}), representation: 'atlas_doc_format'}}};
     
     await updateContent(pageId, data);
     return contentIds.length;

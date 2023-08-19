@@ -110,9 +110,3 @@ async function time(action, callback) {
     callback(duration, actionResult);
   }
 }
-
-async function getUserDisplayName(accountId) {
-  const url = `/rest/api/api/user?accountId=${accountId}`;
-  const response = await AP.request({type: 'GET', url});
-  return response.body && JSON.parse(response.body).displayName;
-}

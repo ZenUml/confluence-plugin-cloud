@@ -362,7 +362,8 @@
       const data = JSON.parse((await AP.request({type: 'GET', url})).body);
       console.debug(`${data?.size} results returned, has next? ${data?._links?.next != null}`);
 
-      data.results = data?.results.filter((c) => c.container?.type === 'page').map(c => c.container.id);
+      const shouldUpgrade = (customContent) => customContent.container?.type === 'page';
+      data.results = data?.results.filter(shouldUpgrade).map(c => c.container.id);
       return data;
     };
 
@@ -398,12 +399,6 @@
       const duration = Math.round(performance.now() - startTime);
       callback(duration, actionResult);
     }
-  }
-
-  async function getUserDisplayName(accountId) {
-    const url = `/rest/api/api/user?accountId=${accountId}`;
-    const response = await AP.request({type: 'GET', url});
-    return response.body && JSON.parse(response.body).displayName;
   }
   </script>
 
