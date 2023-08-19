@@ -1,17 +1,17 @@
 <template>
   <generic-viewer>
     <mermaid v-if="diagramType==='mermaid'">mermaid viewer</mermaid>
-    <sequence-canvas v-if="diagramType==='sequence'"></sequence-canvas>
+    <sequence v-if="diagramType==='sequence'"></sequence>
   </generic-viewer>
 </template>
 <script>
 import GenericViewer from "@/components/Viewer/GenericViewer.vue";
-import SequenceCanvas from "@/components/SequenceCanvas.vue";
+import Sequence from "@/components/Sequence.vue";
 import Mermaid from "@/components/Mermaid.vue";
 
 export default {
   name: "DiagramPortal",
-  components: {Mermaid, SequenceCanvas, GenericViewer},
+  components: {Mermaid, Sequence, GenericViewer},
   computed: {
     diagramType() {
       return this.$store.state.diagram.diagramType;

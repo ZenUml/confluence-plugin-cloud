@@ -10,7 +10,7 @@ import EventBus from "@/EventBus";
 import {DiagramType} from "@/model/Diagram/Diagram";
 let zenuml;
 export default {
-  name: "SequenceCanvas",
+  name: "Sequence",
   computed: {
     code() {
       return this.$store.state.diagram.diagramType === DiagramType.Sequence
