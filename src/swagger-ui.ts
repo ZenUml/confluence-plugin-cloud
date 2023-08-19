@@ -1,6 +1,5 @@
 import Vue from 'vue'
-import Vuex from 'vuex'
-import ExtendedStore from './model/store2/ExtendedStore'
+import store from './model/store2/'
 import SwaggerUIBundle from 'swagger-ui'
 import SpecListener from './utils/spec-listener'
 import AP from "@/model/AP";
@@ -16,10 +15,6 @@ import ApWrapper2 from "@/model/ApWrapper2";
 import OpenApiViewer from "@/components/Viewer/OpenApiViewer.vue";
 import EventBus from './EventBus'
 
-Vue.config.productionTip = false
-Vue.use(Vuex)
-
-const store = new Vuex.Store(ExtendedStore);
 let render = (h: Function) => h(OpenApiViewer);
 
 // @ts-ignore
