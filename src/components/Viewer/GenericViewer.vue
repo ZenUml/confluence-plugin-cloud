@@ -53,7 +53,6 @@ export default {
   data: () => {
     return {
       canUserEdit: true,
-      rawStyles: {},
     }
   },
   components: {
@@ -66,12 +65,6 @@ export default {
     ...mapGetters({isDisplayMode: 'isDisplayMode'}),
     isLite() {
       return globals.apWrapper.isLite();
-    },
-    styles() {
-      const statements = Object.keys(this.rawStyles)
-          .map(k => `${k} .participant { background: ${(this.rawStyles)[k].backgroundColor}; }`)
-          .join('\n');
-      return `<style> ${statements}</style>`;
     },
   },
   async created() {
