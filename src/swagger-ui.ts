@@ -22,14 +22,6 @@ Vue.use(Vuex)
 const store = new Vuex.Store(ExtendedStore);
 let render = (h: Function) => h(OpenApiViewer);
 
-if(document.getElementById('app')) {
-  // @ts-ignore
-  new Vue({
-    store,
-    render // with this method, we don't need to use full version of vue
-  }).$mount('#app')
-}
-
 // @ts-ignore
 window.SwaggerUIBundle = SwaggerUIBundle;
 
@@ -88,6 +80,16 @@ async function loadDiagram() {
 
 async function initializeMacro() {
   await globals.apWrapper.initializeContext();
+  const compositeContentProvider = defaultContentProvider(new ApWrapper2(AP));
+  const {doc} = await compositeContentProvider.load();
+  store.state.diagram = doc;
+  if(document.getElementById('app')) {
+    // @ts-ignore
+    new Vue({
+      store,
+      render // with this method, we don't need to use full version of vue
+    }).$mount('#app')
+  }
 
   initSwaggerUi();
 
