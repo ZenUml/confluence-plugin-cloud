@@ -20,14 +20,15 @@ async function main() {
   await globals.apWrapper.initializeContext();
   const compositeContentProvider = defaultContentProvider(globals.apWrapper as ApWrapper2);
   let {doc} = await compositeContentProvider.load();
+  console.log('loaded document', doc);
   if(doc === NULL_DIAGRAM) {
+    console.log('document is null, loading example');
     doc = {
       diagramType: DiagramType.Sequence,
       code: Example.Sequence,
       mermaidCode: Example.Mermaid
     }
   }
-
   mountRoot(doc, Workspace);
 }
 

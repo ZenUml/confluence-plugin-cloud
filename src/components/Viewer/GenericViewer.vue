@@ -45,17 +45,13 @@ import EventBus from '../../EventBus'
 import Debug from '@/components/Debug/Debug.vue'
 import ErrorBoundary from "@/components/ErrorBoundary";
 import globals from '@/model/globals';
-import {DataSource, NULL_DIAGRAM} from "@/model/Diagram/Diagram";
-import defaultContentProvider from "@/model/ContentProvider/CompositeContentProvider";
-import AP from "@/model/AP";
-import ApWrapper2 from "@/model/ApWrapper2";
+import {DataSource} from "@/model/Diagram/Diagram";
 
 export default {
   name: "GenericViewer",
   props: ['wide'],
   data: () => {
     return {
-      doc: NULL_DIAGRAM,
       canUserEdit: true,
       rawStyles: {},
     }
@@ -66,7 +62,7 @@ export default {
   },
   computed: {
     // We use {} instead of [] to get type checking
-    ...mapState({diagramType: 'diagramType', diagram: 'diagram' }),
+    ...mapState({diagramType: state => state.diagram.diagramType, diagram: state => state.diagram }),
     ...mapGetters({isDisplayMode: 'isDisplayMode'}),
     isLite() {
       return globals.apWrapper.isLite();
@@ -79,14 +75,9 @@ export default {
     },
   },
   async created() {
-    const compositeContentProvider = defaultContentProvider(new ApWrapper2(AP));
-    const {doc} = await compositeContentProvider.load();
-    this.$store.state.diagram = doc;
-    this.doc = doc;
-    await globals.apWrapper.initializeContext();
     const canUserEditPage = await globals.apWrapper.canUserEdit();
-    const storedWithCustomContent = this.doc?.source === DataSource.CustomContent;
-    const notCopy = !this.doc?.isCopy;
+    const storedWithCustomContent = this.diagram.source === DataSource.CustomContent;
+    const notCopy = !this.diagram.isCopy;
     this.canUserEdit = canUserEditPage && storedWithCustomContent && notCopy;
   },
   methods: {

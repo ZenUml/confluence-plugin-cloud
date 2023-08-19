@@ -29,13 +29,12 @@
 
   import EventBus from '@/EventBus'
   import globals from "@/model/globals";
-  import {DiagramType, NULL_DIAGRAM} from "@/model/Diagram/Diagram";
+  import {DiagramType} from "@/model/Diagram/Diagram";
 
   export default {
     name: 'editor',
     data() {
       return {
-        doc: NULL_DIAGRAM,
         cmOptions: {
           tabSize: 4,
           mode: 'text/javascript',
