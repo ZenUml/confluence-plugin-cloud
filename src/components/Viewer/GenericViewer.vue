@@ -71,7 +71,7 @@ export default {
       return globals.apWrapper.isLite();
     },
     isEmbedded() {
-      return getUrlParam('xdm_c').includes('channel-com.zenuml.confluence-addon__zenuml-embed');
+      return getUrlParam('xdm_c')?.includes('channel-com.zenuml.confluence-addon__zenuml-embed');
     },
     showEdit() {
       let isCustomContent = this.diagram.source === DataSource.CustomContent;
