@@ -1,6 +1,6 @@
 <template>
   <generic-viewer>
-    <mermaid v-if="diagramType==='mermaid'">mermaid viewer</mermaid>
+    <mermaid v-if="diagramType==='mermaid'"></mermaid>
     <sequence v-if="diagramType==='sequence'"></sequence>
   </generic-viewer>
 </template>
