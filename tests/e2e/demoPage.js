@@ -22,9 +22,8 @@ const existingPageId = process.env.PAGE_ID;
   if(!password) {
     throw 'Error: Missing password';
   }
-  await page.waitForSelector('input[name=password]');
   await page.click('input[name=password]');
-  await page.waitForTimeout(1000);  // Waits for 1000 milliseconds, which is 1 second
+  await page.waitForTimeout(500);  // Waits for 500 milliseconds, otherwise we are not able to type in.
   await page.keyboard.type(password);
 
   await page.waitForXPath('//span[text() = "Log in"]');
