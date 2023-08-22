@@ -7,6 +7,7 @@
 <script>
 import mermaid from 'mermaid'
 import EventBus from "@/EventBus";
+import {DiagramType} from "@/model/Diagram/Diagram";
 
 mermaid.mermaidAPI.initialize({
   startOnLoad:true
@@ -20,22 +21,25 @@ export default {
     }
   },
   computed: {
-    code() {
-      return this.$store.state.diagram.diagramType === 'mermaid' && this.$store.state.diagram.mermaidCode;
+    mermaidCode() {
+      return this.$store.state.diagram.diagramType === DiagramType.Mermaid && this.$store.state.diagram.mermaidCode;
     }
   },
   async mounted() {
-    if (!this.code) return;
-    this.svg = await this.render(this.code);
-    EventBus.$emit('diagramLoaded', this.$store.state.diagram.code, this.$store.state.diagram.diagramType);
+    if (!this.mermaidCode) return;
+    this.svg = await this.render(this.mermaidCode);
+    EventBus.$emit('diagramLoaded', this.mermaidCode, this.$store.state.diagram.diagramType);
   },
   updated() {
     // Don't use updated() to render, because it will cause infinite loop.
   },
   watch: {
-    async code() {
-      if (!this.code) return;
-      this.svg = await this.render(this.code);
+    async mermaidCode(newVal) {
+      if (!newVal) {
+        this.svg = 'Empty';
+      } else {
+        this.svg = await this.render(this.mermaidCode);
+      }
     }
   },
   methods: {
