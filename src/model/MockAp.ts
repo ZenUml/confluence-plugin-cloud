@@ -3,6 +3,7 @@ import {IAp} from "@/model/IAp";
 import customContentListSeq from "@/model/Ap/MockedResponse/custom-content-list-sequence.json";
 import customContentListGraph from "@/model/Ap/MockedResponse/custom-content-list-graph.json";
 import customContentByIdV1DiagramSequence from "@/model/Ap/MockedResponse/custom-content-by-id-v1-diagram-sequence.json";
+import customContentByIdV1DiagramMermaid from "@/model/Ap/MockedResponse/custom-content-by-id-v1-diagram-mermaid.json";
 
 const CONTRACT: any = {
   customContent: {method: 'get', URL: /\/rest\/api\/content\/(\d+)/},
@@ -28,7 +29,7 @@ interface RequestHandler {
 export default class MockAp implements IAp {
   public confluence: any
   public request: any = async (req: any) => {
-    console.log('req', req);
+    console.debug('req', req);
     if (!req) {
       return 'OK. (req is empty)'
     }
@@ -36,6 +37,9 @@ export default class MockAp implements IAp {
     // if request.url start with '/rest/api/content/fake-content-id', return mocked response
     if (req.url.startsWith('/rest/api/content/fake-content-id-diagram-sequence')) {
       return {body: JSON.stringify(customContentByIdV1DiagramSequence)};
+    }
+    if (req.url.startsWith('/rest/api/content/fake-content-id-diagram-mermaid')) {
+      return {body: JSON.stringify(customContentByIdV1DiagramMermaid)};
     }
 
     // if request.url start with '/rest/api/content?', return {}

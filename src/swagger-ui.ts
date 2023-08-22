@@ -1,6 +1,3 @@
-import Vue from 'vue'
-import Vuex from 'vuex'
-import ExtendedStore from './model/Store'
 import SwaggerUIBundle from 'swagger-ui'
 import SpecListener from './utils/spec-listener'
 import AP from "@/model/AP";
@@ -15,20 +12,7 @@ import defaultContentProvider from "@/model/ContentProvider/CompositeContentProv
 import ApWrapper2 from "@/model/ApWrapper2";
 import OpenApiViewer from "@/components/Viewer/OpenApiViewer.vue";
 import EventBus from './EventBus'
-
-Vue.config.productionTip = false
-Vue.use(Vuex)
-
-const store = new Vuex.Store(ExtendedStore);
-let render = (h: Function) => h(OpenApiViewer);
-
-if(document.getElementById('app')) {
-  // @ts-ignore
-  new Vue({
-    store,
-    render // with this method, we don't need to use full version of vue
-  }).$mount('#app')
-}
+import {mountRoot} from "@/mount-root";
 
 // @ts-ignore
 window.SwaggerUIBundle = SwaggerUIBundle;
@@ -88,13 +72,15 @@ async function loadDiagram() {
 
 async function initializeMacro() {
   await globals.apWrapper.initializeContext();
-
+  const compositeContentProvider = defaultContentProvider(new ApWrapper2(AP));
+  const {doc} = await compositeContentProvider.load();
+  mountRoot(doc, OpenApiViewer);
   initSwaggerUi();
 
   await loadDiagram();
 }
 
-initializeMacro();
+export default initializeMacro();
 
 EventBus.$on('edit', () => {
   // @ts-ignore

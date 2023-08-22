@@ -44,12 +44,14 @@ export default class ApWrapper2 implements IApWrapper {
   }
 
   async initializeContext(): Promise<void> {
+    console.log('initializeContext starts');
     try {
       this.currentUser = await this._getCurrentUser();
       this.currentSpace = await this._getCurrentSpace();
       this.currentPageUrl = await this._getCurrentPageUrl();
       this.locationTarget = await this._getLocationTarget();
       this.currentPageId = await this._page.getPageId();
+      console.log('initializeContext', this.currentUser, this.currentSpace, this.currentPageUrl, this.locationTarget, this.currentPageId);
     } catch (e: any) {
       console.error(e);
       try {
@@ -500,8 +502,8 @@ export default class ApWrapper2 implements IApWrapper {
   }
 
   async _getCurrentSpace(): Promise<ISpace> {
-    return this.currentSpace 
-      || (this.currentSpace = await this._page.getSpace()) 
+    return this.currentSpace
+      || (this.currentSpace = await this._page.getSpace())
       || (this.currentSpace = {key: await this._page.getSpaceKey()});
   }
 

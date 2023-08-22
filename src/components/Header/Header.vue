@@ -60,7 +60,9 @@ export default {
     }
   },
   computed: {
-    ...mapState(['code', 'styles', 'mermaidCode', 'diagramType']),
+    ...mapState({
+      diagramType: state => state.diagram.diagramType,
+    }),
     saveAndExit: function () {
       return function () {
         EventBus.$emit('save')
@@ -72,9 +74,6 @@ export default {
     setActiveTab(tab) {
       let type = tab === 'sequence' ? DiagramType.Sequence : DiagramType.Mermaid;
       this.updateDiagramType(type);
-      if (type === DiagramType.Sequence) {
-        this.$store.dispatch('reloadZenUML')
-      }
     },
   }
 }
