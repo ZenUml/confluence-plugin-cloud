@@ -14,14 +14,19 @@ const existingPageId = process.env.PAGE_ID;
   await page.goto(existingPageId ? pageUrl(existingPageId) : `${baseUrl}/overview`);
 
   const username = process.env.ZENUML_STAGE_USERNAME;
-  await page.$eval('input[name=username]', (el, value) => el.value = value, username);
+  await page.click('input[name=username]');
+  await page.keyboard.type(username);
   await page.click("#login-submit");
 
   const password = process.env.ZENUML_STAGE_PASSWORD;
   if(!password) {
     throw 'Error: Missing password';
   }
-  await page.$eval('input[name=password]', (el, value) => el.value = value, password);
+  await page.waitForSelector('input[name=password]');
+  await page.click('input[name=password]');
+  await page.waitForTimeout(1000);  // Waits for 1000 milliseconds, which is 1 second
+  await page.keyboard.type(password);
+
   await page.waitForXPath('//span[text() = "Log in"]');
   await page.click("#login-submit");
   await page.waitForSelector('#title-text');
