@@ -91,7 +91,6 @@ async function tryGetAttachment() {
   const pageId = getUrlParam("pageId");
   const attachmentName = 'zenuml-' + getUrlParam("uuid") + '.png';
   const attachments = await global.apWrapper.getAttachments(pageId, {filename: attachmentName});
-  console.debug('Attachment.js - attachments:', attachments);
   const descending = attachments.sort((a, b) => b.version?.number - a.version?.number);
   return descending.length && descending[0];
 }
@@ -142,11 +141,9 @@ async function createAttachmentIfContentChanged(content) {
   window.createAttachmentInProgress = true;
 
   try {
-    console.debug('Attachment.js - Checking attachment for code:', content);
     const attachment = await tryGetAttachment();
     const hash = md5(content);
     if (!attachment || hash !== attachment.comment) {
-      console.debug(`Attachment.js - ${attachment ? `Updating(old hash: ${attachment.comment}, new: ${hash})` : 'Creating'} attachment:\n`, content);
       let attachmentMeta = await (attachment ? uploadNewVersionOfAttachment(hash) : uploadNewAttachment(hash))();
       await updateAttachmentProperties(attachmentMeta);
     }

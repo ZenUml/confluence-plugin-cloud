@@ -14,6 +14,7 @@ export class MacroBodyStorageProvider implements StorageProvider {
     if(!macroBody) {
       return NULL_DIAGRAM;
     }
+    console.debug('Loaded diagram from MacroBodyStorageProvider', macroBody);
     return {diagramType: DiagramType.Sequence, code: macroBody};
   }
 }

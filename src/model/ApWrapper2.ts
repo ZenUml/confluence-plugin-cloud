@@ -65,8 +65,8 @@ export default class ApWrapper2 implements IApWrapper {
   getMacroData(): Promise<IMacroData | undefined> {
     return new Promise(((resolve) => {
       try {
-        console.debug('get macro data from', this._confluence);
         this._confluence.getMacroData((data) => {
+          console.debug('Loaded macro data', data);
           resolve(data)
         })
       } catch (e) {
