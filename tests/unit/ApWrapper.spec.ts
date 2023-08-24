@@ -9,6 +9,13 @@ describe('ApWrapper', () => {
     helper.setUpUrlParam('contentKey=zenuml-content-sequence');
   });
 
+  it('gets macro data', async () => {
+    const ap = new ApWrapper2(new MockAp('page-001'));
+    let macroData = await ap.getMacroData();
+    expect(macroData?.customContentId).toEqual("fake-content-id-diagram-sequence");
+    expect(macroData?.uuid).toEqual("fake-macro-uuid");
+  });
+
   it('tells if the user has edit permission', async () => {
     const ap = new ApWrapper2(new MockAp('page-001'));
     ap._requestFn = jest.fn().mockImplementation(async (req: any) => {
