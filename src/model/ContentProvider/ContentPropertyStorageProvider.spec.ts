@@ -2,6 +2,7 @@ import MockAp from '@/model/MockAp'
 import {ContentPropertyStorageProvider} from "@/model/ContentProvider/ContentPropertyStorageProvider";
 import MockApConfluence from "@/model/MockApConfluence";
 import ApWrapper2 from "@/model/ApWrapper2";
+import {DiagramType} from "@/model/Diagram/Diagram";
 
 let mockAp: MockAp, mockApConfluence: MockApConfluence;
 
@@ -37,6 +38,7 @@ describe('ContentPropertyStorageProvider', () => {
     const contentPropertyStorageProvider = new ContentPropertyStorageProvider(new ApWrapper2(mockAp));
     const diagram = await contentPropertyStorageProvider.getDiagram(undefined)
     expect(diagram?.code).toBe('A.method')
+    expect(diagram?.diagramType).toBe(DiagramType.Sequence)
 
     expect(gtag.mock.calls).toEqual([
       ['event', 'load_macro', {
@@ -60,6 +62,7 @@ describe('ContentPropertyStorageProvider', () => {
     const diagram = await contentPropertyStorageProvider.getDiagram(undefined)
 
     expect(diagram?.code).toBe('A.method')
+    expect(diagram?.diagramType).toBe(DiagramType.Sequence)
     const styles = diagram?.styles || {}
     // @ts-ignore
     expect(styles['#A'].backgroundColor).toBe('#FFF')
