@@ -7,46 +7,58 @@
   <!-- Global site tag (gtag.js) - Google Analytics -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=UA-114996686-1"></script>
   <script type="text/javascript" src="js/google-analytics.js?version=2022.01"></script>
-  <script type="text/javascript" src="js/demo/common.js?version=2023.08"></script>
+  <script type="text/javascript" src="js/common.js?version=2023.08.01"></script>
 
   <title>Configuration</title>
   <script>
-    async function init() {
-      const data = await getConsent();
-      document.getElementById('upgrade-consent').checked = data.value;
-    }
 
-    async function saveConsent() {
-      const value = document.getElementById('upgrade-consent').checked;
-      console.log(value);
-      await updateConsent(value);
-    }
-
-    async function getConsent() {
-      const url = `/rest/atlassian-connect/1/addons/${addonKey()}/properties/upgrade-consent`;
-      const response = await AP.request({ type: 'GET', url });
-      return response.body && JSON.parse(response.body);
-    }
-
-    async function updateConsent(value) {
-      const url = `/rest/atlassian-connect/1/addons/${addonKey()}/properties/upgrade-consent`;
-      const response = await AP.request({ type: 'PUT', contentType: 'application/json', data: JSON.stringify(value), url });
-      return response.body && JSON.parse(response.body);
+    async function startDowngrade() {
+      const selectedSpace = document.getElementById("selectOptions").value;
+      console.log('Downgrade - starting with space ', selectedSpace);
+      if(selectedSpace && selectedSpace !== localStorage.selectedSpaceToDowngrade) {
+        localStorage.selectedSpaceToDowngrade = selectedSpace;
+      }
+      AP.user.getCurrentUser(async (u) => await downgrade(u.atlassianAccountId, selectedSpace));
     }
   </script>
 
-  <script type="text/javascript" src="js/util.js" onload="init()"></script>
+  <script type="text/javascript" src="js/util.js"></script>
 
 </head>
 
 <body>
-  <H1>Configuration</H1>
   <!-- Todo: Downgrade button, remove consent, list to-be-upgraded pages -->
-  <label for="upgrade-consent">I consent to upgrade all ZenUML Lite macros to Full</label><br>
-  <input type="checkbox" id="upgrade-consent" name="Upgrade" onclick="saveConsent()">
-  
+  <label for="selectOptions">Select a space:</label>
+  <select id="selectOptions"></select>
+
+  <script>
+    async function initSpaces() {
+      // Sample array of options
+      const spaces = await getSpaces();
+      console.log(spaces);
+
+      // Get the select element by its ID
+      const selectElement = document.getElementById("selectOptions");
+
+      // Iterate through the array and create option elements
+      for (const space of spaces) {
+        const optionElement = document.createElement("option");
+        optionElement.textContent = space.name;
+        optionElement.value = space.key;
+
+        if(localStorage.selectedSpaceToDowngrade === space.key) {
+          optionElement.selected = true;
+        }
+        selectElement.appendChild(optionElement);
+      }
+
+      
+    }
+
+    initSpaces();
+  </script>
   <div>
-    <button>Downgrade</button>
+    <button onclick="startDowngrade()">Downgrade</button>
   </div>
 </body>
 

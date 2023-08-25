@@ -347,11 +347,11 @@
 
   const CUSTOM_CONTENT_TYPES = ['zenuml-content-sequence', 'zenuml-content-graph'];
 
-  const getCustomContentTypePrefix = () => `ac:${addonKey()}-lite`;
+  const getCustomContentTypePrefix = (isLite) => `ac:${addonKey()}${isLite ? '-lite' : ''}`;
 
-  async function searchPagesContainingCustomContent() {
+  async function searchPagesContainingCustomContent(isLite, customContentFilter) {
     const spaceKey = (await getCurrentSpace());
-    const customContentType = t => `${getCustomContentTypePrefix()}:${t}`;
+    const customContentType = t => `${getCustomContentTypePrefix(isLite)}:${t}`;
     const typeClause = t => `type="${customContentType(t)}"`;
     const typesClause = a => a.map(typeClause).join(' or ');
     const searchUrl = `/rest/api/content/search?cql=space="${spaceKey}" and (${typesClause(CUSTOM_CONTENT_TYPES)}) order by lastmodified desc&expand=container,space`;
@@ -362,8 +362,8 @@
       const data = JSON.parse((await AP.request({type: 'GET', url})).body);
       console.debug(`${data?.size} results returned, has next? ${data?._links?.next != null}`);
 
-      const shouldUpgrade = (customContent) => customContent.container?.type === 'page';
-      data.results = data?.results.filter(shouldUpgrade).map(c => c.container.id);
+      const shouldInclude = (customContent) => customContent.container?.type === 'page' && (!customContentFilter || customContentFilter(customContent));
+      data.results = data?.results.filter(shouldInclude).map(c => c.container.id);
       return data;
     };
 

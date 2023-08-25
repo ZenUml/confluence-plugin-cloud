@@ -1,9 +1,18 @@
 
+//old/lite custom content: migrated: true, destCustomContentId: xxx (needed by embedded macro migration)
+//new/full custom content: migrated: true, sourceCustomContentId: xxx (needed by downgrade)
+//content properties
+
 async function cloneAsFull(customContentId) {
   const data = await getContent(customContentId, 'expand=body.raw,version.number,container,space');
   data.body.raw.value = JSON.stringify(Object.assign(JSON.parse(data.body.raw.value), {migrated: true, sourceCustomContentId: customContentId}));
   const data2 = {type: 'ac:com.zenuml.confluence-addon:zenuml-content-sequence', title: data.title, space: {key: data.space.key}, body: data.body,    container: {type: 'page', id: data.container?.id}}
   return await createContent(data2);
+}
+
+async function getSourceCustomContentId(customContentId) {
+  const data = await getContent(customContentId, 'expand=body.raw,version.number,container,space');
+  return JSON.parse(data.body.raw.value).sourceCustomContentId;
 }
 
 async function upgradePage(pageId, userId) {
@@ -44,6 +53,44 @@ async function upgradePage(pageId, userId) {
   }
 }
 
+async function downgradePage(pageId, userId) {
+  console.log(`Downgrade - processing page ${pageId}`)
+
+  const b = await canEdit(pageId, userId);
+  if(!b) {
+    console.log(`Downgrade - no edit permission, skip page ${pageId}`);
+    return;
+  }
+
+  const page = await getContent(pageId, 'expand=body.atlas_doc_format,version.number,container,space');
+  const content = JSON.parse(page.body.atlas_doc_format.value).content;
+  const check = (c) => c.type === 'extension' && c.attrs.extensionType === 'com.atlassian.confluence.macro.core' && /zenuml-(sequence|graph|openapi|embed)-macro/.test(c.attrs.extensionKey);
+  const macros = content.filter(check);
+  const contentIds = macros.map(c => c.attrs?.parameters?.macroParams?.customContentId?.value).filter(i => i);
+
+  if(contentIds.length) {
+    const results = await Promise.all(contentIds.map(i => getSourceCustomContentId(i).then(d => ({source: i, dest: d}))));
+    const resultMap = results.reduce((acc, i) => {acc[i.source] = i.dest; return acc}, {});
+    
+    macros.forEach(c => {
+      c.attrs.extensionKey = `${c.attrs.extensionKey}'-lite'`;
+  
+      const id = c.attrs.parameters?.macroParams?.customContentId?.value;
+      if(id) {
+        c.attrs.parameters.macroParams.customContentId.value = resultMap[id]
+      }
+    });
+    
+    const data = {type: 'page', title: page.title, status: page.status, space: {key: page.space.key}, version: {number: ++page.version.number, message: `ZenUML full macro(s) on this page are downgraded by ZenUML App`}, body: {atlas_doc_format: {value: JSON.stringify({type: 'doc', content}), representation: 'atlas_doc_format'}}};
+    
+    await updateContent(pageId, data);
+    return contentIds.length;
+    
+  } else {
+    console.log(`Downgrade - full macro not found on page ${pageId}`)
+  }
+}
+
 function unique(array) {
   return Array.from(new Set(array));
 }
@@ -62,8 +109,16 @@ async function upgrade(userId) {
     showPopup(pageId, macroCount);
   }
 
-  const pages = await searchPagesContainingCustomContent();
+  const pages = await searchPagesContainingCustomContent(true);
   unique(pages.filter(p => p != pageId)).forEach(async (p) => await upgradePage(p, userId));
+}
+
+async function downgrade(userId) {
+  const pages = await searchPagesContainingCustomContent(false, (c) => {
+    const value = JSON.parse(c.raw.value);
+    return value.upgraded && value.sourceCustomContentId;
+  });
+  unique(pages.filter(p => p != pageId)).forEach(async (p) => await downgradePage(p, userId));
 }
 
 function showPopup(pageId, macroCount) {
