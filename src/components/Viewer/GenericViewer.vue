@@ -44,6 +44,7 @@
 </template>
 
 <script>
+import {trackEvent} from "@/utils/window";
 import {mapState, mapGetters} from "vuex";
 import EventBus from '../../EventBus'
 import Debug from '@/components/Debug/Debug.vue'
@@ -93,9 +94,11 @@ export default {
   },
   methods: {
     edit() {
+      trackEvent('edit', 'click', 'editing');
       EventBus.$emit('edit');
     },
     fullscreen() {
+      trackEvent('fullscreen', 'click', 'viewing');
       EventBus.$emit('fullscreen');
     },
   },
