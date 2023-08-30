@@ -10,6 +10,7 @@ import EventBus from './EventBus'
 import {trackEvent} from "@/utils/window";
 import createAttachmentIfContentChanged from "@/model/Attachment";
 import {DiagramType} from "@/model/Diagram/Diagram";
+import upgrade from "@/jobs/upgrade";
 
 import './assets/tailwind.css'
 
@@ -18,6 +19,8 @@ async function main() {
   const compositeContentProvider = defaultContentProvider(globals.apWrapper as ApWrapper2);
   let {doc} = await compositeContentProvider.load();
   mountRoot(doc, DiagramPortal);
+
+  upgrade.run();
 }
 
 export default main()
