@@ -11,14 +11,14 @@
 
   <title>Configuration</title>
   <script>
+    async function downgradeAllSpaces(userId) {
+      const spaces = await getSpaces();
+      return await Promise.all(spaces.map(space => downgrade(userId, space.key)));
+    }
 
     async function startDowngrade() {
-      const selectedSpace = document.getElementById("selectOptions").value;
-      console.log('Downgrade - starting with space ', selectedSpace);
-      if(selectedSpace && selectedSpace !== localStorage.selectedSpaceToDowngrade) {
-        localStorage.selectedSpaceToDowngrade = selectedSpace;
-      }
-      AP.user.getCurrentUser(async (u) => await downgrade(u.atlassianAccountId, selectedSpace));
+      console.log('Downgrade - processing all spaces');
+      AP.user.getCurrentUser(async (u) => await downgradeAllSpaces(u.atlassianAccountId));
     }
   </script>
 
@@ -27,36 +27,7 @@
 </head>
 
 <body>
-  <!-- Todo: Downgrade button, remove consent, list to-be-upgraded pages -->
-  <label for="selectOptions">Select a space:</label>
-  <select id="selectOptions"></select>
-
-  <script>
-    async function initSpaces() {
-      // Sample array of options
-      const spaces = await getSpaces();
-      console.log(spaces);
-
-      // Get the select element by its ID
-      const selectElement = document.getElementById("selectOptions");
-
-      // Iterate through the array and create option elements
-      for (const space of spaces) {
-        const optionElement = document.createElement("option");
-        optionElement.textContent = space.name;
-        optionElement.value = space.key;
-
-        if(localStorage.selectedSpaceToDowngrade === space.key) {
-          optionElement.selected = true;
-        }
-        selectElement.appendChild(optionElement);
-      }
-
-      
-    }
-
-    initSpaces();
-  </script>
+  <!-- Todo: Downgrade button, list to-be-upgraded pages -->
   <div>
     <button onclick="startDowngrade()">Downgrade</button>
   </div>
