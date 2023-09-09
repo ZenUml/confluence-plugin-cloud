@@ -61,12 +61,16 @@ function getCurrentUserAccountId(): string {
   return window.globals?.apWrapper?.currentUser?.atlassianAccountId || 'unknown_user_account_id';
 }
 
+function addonKey() {
+  return getUrlParam('addonKey');
+}
+
 function r2Track(action: string, eventDetails: any) {
   try {
     fetch('/track', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(Object.assign({baseUrl: getBaseUrl(), action}, eventDetails))
+      body: JSON.stringify(Object.assign({baseUrl: getBaseUrl(), addonKey: addonKey(), action}, eventDetails))
     });
   } catch(e) {
     console.log('Error in calling /track', e)
