@@ -1,4 +1,3 @@
-import { OkResponse } from "./OkResponse";
 import uuidv4 from "./utils/uuid";
 
 const ALLOWED_REFERER_DOMAINS = ['zenuml.com', 'confluence-plugin.pages.dev']
@@ -43,10 +42,12 @@ export const onRequest: PagesFunction = async ({ request, env }) => {
       return new Response(error, { status: 400 });
     }
 
-    await saveToBucket(env.EVENT_BUCKET, body); //make async
+    await saveToBucket(env.EVENT_BUCKET, body);
 
   } catch (e: any) {
     console.error(`Error: `, e);
+    return new Response('Error', { status: 500 });
   }
-  return OkResponse();
+
+  return new Response('', { status: 200 });
 }
