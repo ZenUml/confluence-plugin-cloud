@@ -65,12 +65,16 @@ function addonKey() {
   return getUrlParam('addonKey');
 }
 
+function version() {
+  return getUrlParam('version') || 'unknown_version';
+}
+
 function r2Track(action: string, eventDetails: any) {
   try {
     fetch('/track', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(Object.assign({baseUrl: getBaseUrl(), addonKey: addonKey(), action}, eventDetails))
+      body: JSON.stringify(Object.assign({event_source: window.location.host, addon_key: addonKey(), version: version(), action}, eventDetails))
     });
   } catch(e) {
     console.log('Error in calling /track', e)
