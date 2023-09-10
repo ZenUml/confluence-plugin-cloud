@@ -1,0 +1,52 @@
+import uuidv4 from "./utils/uuid";
+
+const ALLOWED_REFERER_DOMAINS = ['zenuml.com', 'confluence-plugin.pages.dev']
+
+const validateReferer = (referer) => {
+  const refererDomain = new URL(referer).hostname;
+  return ALLOWED_REFERER_DOMAINS.find(d => refererDomain.endsWith(d));
+}
+
+const getKey = (body) => {
+  const now = new Date();
+  const year = now.getUTCFullYear();
+  const month = String(now.getUTCMonth() + 1).padStart(2, '0'); // Adding 1 to make it 1-based
+  const day = String(now.getUTCDate()).padStart(2, '0'); // Two-digit day
+  const hours = String(now.getUTCHours()).padStart(2, '0'); // Two-digit hour
+  const minutes = String(now.getUTCMinutes()).padStart(2, '0'); // Two-digit minute
+  const seconds = String(now.getUTCSeconds()).padStart(2, '0'); // Two-digit second
+  const milliseconds = String(now.getUTCMilliseconds()).padStart(3, '0'); // Three-digit millisecond
+  return `/events/${body.addonKey}/${year}/${month}/${day}/${body.client_domain}/${body.user_account_id}/${hours}${minutes}${seconds}${milliseconds}_${uuidv4()}.json`;
+}
+
+const saveToBucket = async (bucket, body) => {
+  // @ts-ignore
+  return await bucket.put(getKey(body), JSON.stringify(body));
+}
+
+export const onRequest: PagesFunction = async ({ request, env }) => {
+  try {
+    const referer = request.headers.get('referer');
+
+    if (!validateReferer(referer)) {
+      console.log(`Referer ${referer} not allowed`);
+      return new Response('Forbidden', { status: 403 });
+    }
+
+    console.log('Received request from referer', referer);
+    const body = await request.json() as any;
+    if (!body.client_domain || !body.addon_key || !body.user_account_id) {
+      const error = `Missing ${!body.client_domain ? 'client_domain' : (!body.addon_key ? 'addon_key' : 'user_account_id')}`;
+      console.log(error);
+      return new Response(error, { status: 400 });
+    }
+
+    await saveToBucket(env.EVENT_BUCKET, body);
+
+  } catch (e: any) {
+    console.error(`Error: `, e);
+    return new Response('Error', { status: 500 });
+  }
+
+  return new Response('', { status: 200 });
+}
