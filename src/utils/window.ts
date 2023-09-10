@@ -62,7 +62,7 @@ function getCurrentUserAccountId(): string {
 }
 
 function addonKey() {
-  return getUrlParam('addonKey');
+  return getUrlParam('addonKey') || 'unknown_addon';
 }
 
 function version() {
