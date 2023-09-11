@@ -21,7 +21,7 @@ const getKey = (body: EventBody) => {
   const minutes = String(now.getUTCMinutes()).padStart(2, '0'); // Two-digit minute
   const seconds = String(now.getUTCSeconds()).padStart(2, '0'); // Two-digit second
   const milliseconds = String(now.getUTCMilliseconds()).padStart(3, '0'); // Three-digit millisecond
-  return `/events/${body.addon_key}/${year}/${month}/${day}/${body.client_domain}/${body.user_account_id}/${hours}${minutes}${seconds}${milliseconds}_${uuidv4()}.json`;
+  return `events/${body.addon_key}/${year}/${month}/${day}/${body.client_domain}/${body.user_account_id}/${hours}${minutes}${seconds}${milliseconds}_${uuidv4()}.json`;
 }
 
 const saveToBucket = async (bucket: any, body: EventBody) => {
