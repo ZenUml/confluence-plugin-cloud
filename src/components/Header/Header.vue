@@ -24,7 +24,7 @@
     </div>
     <div class="flex items-center">
       <a class="inline-block help mx-1 ml-2" target="_blank" :href="templateUrl">
-        <button class="flex items-center bg-gray-100 px-2 py-1 text-gray-600 text-sm font-semibold rounded">
+        <button class="flex items-center bg-gray-100 px-2 py-1 text-gray-600 text-sm font-semibold rounded" @click="templateClick">
           <span>
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
               <path stroke-linecap="round" stroke-linejoin="round" d="M18.375 12.739l-7.693 7.693a4.5 4.5 0 01-6.364-6.364l10.94-10.94A3 3 0 1119.5 7.372L8.552 18.32m.009-.01l-.01.01m5.699-9.941l-7.81 7.81a1.5 1.5 0 002.112 2.13" />
@@ -34,7 +34,7 @@
         </button>
       </a>
       <a class="inline-block help mx-1 ml-2" target="_blank" :href="helpUrl">
-        <button class="flex items-center bg-gray-100 px-2 py-1 text-gray-600 text-sm font-semibold rounded">
+        <button class="flex items-center bg-gray-100 px-2 py-1 text-gray-600 text-sm font-semibold rounded" @click="helpClick">
           <span>
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
           </span>
@@ -53,6 +53,8 @@ import {mapState, mapMutations} from 'vuex';
 import SaveAndGoBackButton from "@/components/SaveAndGoBackButton";
 import {DiagramType} from "@/model/Diagram/Diagram";
 import EventBus from "@/EventBus";
+import {trackEvent} from "@/utils/window";
+
 export default {
   name: "Header",
   components: {
@@ -80,6 +82,12 @@ export default {
       let type = tab === 'sequence' ? DiagramType.Sequence : DiagramType.Mermaid;
       this.updateDiagramType(type);
     },
+    templateClick() {
+      trackEvent('template', 'click', this.diagramType);
+    },
+    helpClick() {
+      trackEvent('help', 'click', this.diagramType);
+    }
   }
 }
 </script>
