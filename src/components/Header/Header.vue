@@ -1,6 +1,6 @@
 <template>
   <header class="toolbar header border-b border-gray-800 p-2 flex items-center justify-between">
-    <div class="inline-block group ml-2 p-0.5 rounded flex bg-gray-100 hover:bg-gray-200">
+    <div class="group ml-2 p-0.5 rounded flex bg-gray-100 hover:bg-gray-200">
       <button type="button"
               ref = "btn-sequence"
               class="flex focus-visible:ring-2 focus-visible:ring-teal-500 focus-visible:ring-offset-2 rounded focus:outline-none focus-visible:ring-offset-gray-100"
@@ -22,7 +22,17 @@
             :class="diagramType === 'mermaid' ? 'text-gray-900' : 'text-gray-600 group-hover:text-gray-900'">Mermaid</span>
       </button>
     </div>
-    <div class="inline-block flex items-center">
+    <div class="flex items-center">
+      <a class="inline-block help mx-1 ml-2" target="_blank" :href="templateUrl">
+        <button class="flex items-center bg-gray-100 px-2 py-1 text-gray-600 text-sm font-semibold rounded">
+          <span>
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M18.375 12.739l-7.693 7.693a4.5 4.5 0 01-6.364-6.364l10.94-10.94A3 3 0 1119.5 7.372L8.552 18.32m.009-.01l-.01.01m5.699-9.941l-7.81 7.81a1.5 1.5 0 002.112 2.13" />
+            </svg>
+          </span>
+          <span>Templates</span>
+        </button>
+      </a>
       <a class="inline-block help mx-1 ml-2" target="_blank" :href="helpUrl">
         <button class="flex items-center bg-gray-100 px-2 py-1 text-gray-600 text-sm font-semibold rounded">
           <span>
@@ -30,7 +40,6 @@
           </span>
           <span>Help</span>
         </button>
-
       </a>
       <div class="inline-block ml-2">
         <save-and-go-back-button class="ml-2" :saveAndExit="saveAndExit"/>
@@ -57,6 +66,7 @@ export default {
   computed: {
     ...mapState({
       diagramType: state => state.diagram.diagramType,
+      templateUrl: state => state.diagram.diagramType === 'sequence' ? `https://github.com/ZenUml/confluence-plugin-cloud/discussions/489` : 'https://mermaid.js.org/config/Tutorials.html',
     }),
     saveAndExit: function () {
       return function () {
