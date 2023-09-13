@@ -12,7 +12,7 @@ const existingPageId = process.env.PAGE_ID;
     args: ['--disable-web-security', '--disable-features=IsolateOrigins,site-per-process']});
   const page = await browser.newPage();
   await page.goto(existingPageId ? pageUrl(existingPageId) : `${baseUrl}/overview`);
-
+  await page.waitForSelector('input[name=username]');
   const username = process.env.ZENUML_STAGE_USERNAME;
   await page.click('input[name=username]');
   await page.keyboard.type(username);
