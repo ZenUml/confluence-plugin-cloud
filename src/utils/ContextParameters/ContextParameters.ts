@@ -2,8 +2,11 @@
 // xdm_e: the base URL of the host application, used for the JavaScript bridge (xdm - cross domain message)
 
 export function getClientDomain() {
-  const baseUrl = getUrlParam('xdm_e').toLowerCase();
-  return getSubdomain(baseUrl);
+  return getSubdomain(getBaseUrl());
+}
+
+export function getBaseUrl() {
+  return getUrlParam('xdm_e').toLowerCase();
 }
 
 export function getSpaceKey() {
