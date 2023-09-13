@@ -4,7 +4,8 @@
   "description": "",
   "main": "get_csv.js",
   "scripts": {
-    "get": "node get_csv.js"
+    "get": "node get_csv.js",
+    "get-events": "node get_events.js"
   },
   "author": "",
   "license": "ISC",
