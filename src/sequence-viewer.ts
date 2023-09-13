@@ -1,37 +1,26 @@
-import { VueSequence } from '@zenuml/core';
-import '@zenuml/core/dist/style.css'
-import './assets/tailwind.css'
+import ApWrapper2 from "@/model/ApWrapper2";
+import defaultContentProvider from "@/model/ContentProvider/CompositeContentProvider";
+import globals from '@/model/globals';
 
-import './model/MockApConfluence'
-import ExtendedStore from './model/Store'
+import DiagramPortal from "@/components/DiagramPortal.vue";
+import {mountRoot} from "@/mount-root";
+
+import AP from "@/model/AP";
 import EventBus from './EventBus'
-import Viewer from "@/components/Viewer/Viewer.vue";
 import {trackEvent} from "@/utils/window";
 import createAttachmentIfContentChanged from "@/model/Attachment";
-import globals from '@/model/globals';
 import {DiagramType} from "@/model/Diagram/Diagram";
-import defaultContentProvider from "@/model/ContentProvider/CompositeContentProvider";
-import ApWrapper2 from "@/model/ApWrapper2";
-import AP from "@/model/AP";
 
-const Vue = VueSequence.Vue;
-const Vuex = VueSequence.Vuex;
+import './assets/tailwind.css'
 
-Vue.config.productionTip = false
-Vue.use(Vuex)
-
-const store = new Vuex.Store(ExtendedStore);
-
-let render = (h: Function) => h(Viewer);
-
-if(document.getElementById('app')) {
-  new Vue({
-      store,
-      render // with this method, we don't need to use full version of vue
-    }).$mount('#app')
+async function main() {
+  await globals.apWrapper.initializeContext();
+  const compositeContentProvider = defaultContentProvider(globals.apWrapper as ApWrapper2);
+  let {doc} = await compositeContentProvider.load();
+  mountRoot(doc, DiagramPortal);
 }
-// @ts-ignore
-window.store = store
+
+export default main()
 
 EventBus.$on('diagramLoaded', () => {
   console.debug('Resize macro');
@@ -69,10 +58,7 @@ EventBus.$on('edit', () => {
         width: "100%",
         height: "100%",
     }).on('close', async () => {
-    const compositeContentProvider = defaultContentProvider(new ApWrapper2(AP));
-    const {doc} = await compositeContentProvider.load();
-    // @ts-ignore
-    store.state.diagram = doc;
+      location.reload();
   });
 });
 

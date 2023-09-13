@@ -67,7 +67,7 @@ describe('ContentPropertyStorageProvider', () => {
     expect(gtag.mock.calls).toEqual([
       ['event', 'load_macro', {
         event_category: 'content_property',
-        event_label: '_sequence',
+        event_label: 'sequence',
         client_domain: 'unknown_atlassian_domain',
         user_account_id: 'unknown_user_account_id',
         confluence_space: 'unknown_space'

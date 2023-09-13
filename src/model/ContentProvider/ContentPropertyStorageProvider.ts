@@ -82,6 +82,7 @@ export class ContentPropertyStorageProvider implements StorageProvider {
       trackDiagramEvent(contentProperty.value, 'load_macro', 'content_property_old');
     } else {
       contentProperty.value.source = DataSource.ContentProperty;
+      contentProperty.value.diagramType = contentProperty.value.diagramType || DiagramType.Sequence;
       trackDiagramEvent(contentProperty.value, 'load_macro', 'content_property');
     }
     contentProperty.value.id = key;

@@ -91,7 +91,6 @@ async function tryGetAttachment() {
   const pageId = getUrlParam("pageId");
   const attachmentName = 'zenuml-' + getUrlParam("uuid") + '.png';
   const attachments = await global.apWrapper.getAttachments(pageId, {filename: attachmentName});
-  console.debug('Attachment.js - attachments:', attachments);
   const descending = attachments.sort((a, b) => b.version?.number - a.version?.number);
   return descending.length && descending[0];
 }
@@ -133,13 +132,23 @@ async function updateAttachmentProperties(attachmentMeta) {
 
 // Add new version, response does have `results` property.
 async function createAttachmentIfContentChanged(content) {
-  console.debug('Attachment.js - Checking attachment for code:', content);
-  const attachment = await tryGetAttachment();
-  const hash = md5(content);
-  if (!attachment || hash !== attachment.comment) {
-    console.debug(`Attachment.js - ${attachment ? `Updating(old hash: ${attachment.comment}, new: ${hash})` : 'Creating'} attachment:\n`, content);
-    let attachmentMeta = await (attachment ? uploadNewVersionOfAttachment(hash) : uploadNewAttachment(hash))();
-    await updateAttachmentProperties(attachmentMeta);
+  //Ensure this method will NOT be called multiple times at the same time.
+  //There's an issue when diagram is edited through page edit, multiple 'diagramLoaded' events are fired afterwards, thus multiple calls to this method at (almost) same time, caused 409 or 503 error.
+  if(window.createAttachmentInProgress) {
+    return;
+  }
+
+  window.createAttachmentInProgress = true;
+
+  try {
+    const attachment = await tryGetAttachment();
+    const hash = md5(content);
+    if (!attachment || hash !== attachment.comment) {
+      let attachmentMeta = await (attachment ? uploadNewVersionOfAttachment(hash) : uploadNewAttachment(hash))();
+      await updateAttachmentProperties(attachmentMeta);
+    }
+  } finally {
+    window.createAttachmentInProgress = false;
   }
 }
 

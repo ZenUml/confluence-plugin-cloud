@@ -8,20 +8,24 @@ const isLite = process.env.IS_LITE === 'true';
 const existingPageId = process.env.PAGE_ID;
 
 (async () => {
-  const browser = await puppeteer.launch({headless: process.env.CI === "true", 
+  const browser = await puppeteer.launch({headless: process.env.CI === "true",
     args: ['--disable-web-security', '--disable-features=IsolateOrigins,site-per-process']});
   const page = await browser.newPage();
   await page.goto(existingPageId ? pageUrl(existingPageId) : `${baseUrl}/overview`);
-
+  await page.waitForSelector('input[name=username]');
   const username = process.env.ZENUML_STAGE_USERNAME;
-  await page.$eval('input[name=username]', (el, value) => el.value = value, username);
+  await page.click('input[name=username]');
+  await page.keyboard.type(username);
   await page.click("#login-submit");
-  
+
   const password = process.env.ZENUML_STAGE_PASSWORD;
   if(!password) {
     throw 'Error: Missing password';
   }
-  await page.$eval('input[name=password]', (el, value) => el.value = value, password);
+  await page.click('input[name=password]');
+  await page.waitForTimeout(500);  // Waits for 500 milliseconds, otherwise we are not able to type in.
+  await page.keyboard.type(password);
+
   await page.waitForXPath('//span[text() = "Log in"]');
   await page.click("#login-submit");
   await page.waitForSelector('#title-text');
@@ -73,13 +77,14 @@ const existingPageId = process.env.PAGE_ID;
       const editMacroFrame = '//iframe[contains(@src, "sequence-editor.html")]';
       const saveMacroButton = await waitForSelectorInFrame(editMacroFrame, 'div.save-and-exit button');
       await saveMacroButton.click();
+      console.log('Clicked save macro button');
       await waitForSelector(page, editMacroFrame, {hidden: true})
 
       //wait for macro viewer is loaded
       await assertFrame({frameSelector: `//iframe[contains(@id, "zenuml-sequence-macro${getModuleKeySuffix()}")]`,
         contentXpath: '//*[contains(text(), "Order Service (Demonstration only)")]'});
 
-      await page.$eval('#publish-button', e => e.click());
+      await page.$eval('button[data-testid=publish-modal-update-button]', e => e.click());
       await page.waitForNavigation();
     }, {sequence: true});
 
@@ -92,6 +97,7 @@ const existingPageId = process.env.PAGE_ID;
     }, {sequence: {bodyOnly: true}});
   } finally {
     await browser.close();
+    console.log('Browser closed');
   }
 
   async function withNewPage(callback, options) {
@@ -139,7 +145,7 @@ const existingPageId = process.env.PAGE_ID;
 
       try {
         const [sequence, graph, openapi, mermaid] = await Promise.all([
-          options.sequence && createCustomContent(`Sequence custom content of page ${title}`, demoSequenceContent, page.id) 
+          options.sequence && createCustomContent(`Sequence custom content of page ${title}`, demoSequenceContent, page.id)
             || NULL_PROMISE,
           options.graph && createCustomContent(`Graph custom content of page ${title}`, demoGraphContent, page.id)
             || NULL_PROMISE,
@@ -506,7 +512,7 @@ const existingPageId = process.env.PAGE_ID;
 
       if(expectedContentText) {
         result = await frame.$eval(contentSelector, e => e.innerText);
-        log('Content text', contentText);
+        log('Content text', result);
         if(result !== expectedContentText) {
           throw `Assertion failed: Actual content text "${result}" is not equal to "${expectedContentText}"`
         }

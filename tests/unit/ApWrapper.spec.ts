@@ -10,7 +10,7 @@ describe('ApWrapper', () => {
   });
 
   it('tells if the user has edit permission', async () => {
-    const ap = new ApWrapper2(new MockAp());
+    const ap = new ApWrapper2(new MockAp('page-001'));
     ap._requestFn = jest.fn().mockImplementation(async (req: any) => {
       const hasPermission = req.data.includes('user-001');
       return {

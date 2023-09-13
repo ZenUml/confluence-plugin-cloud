@@ -6,6 +6,7 @@
     "engine": "use yarn to install",
     "test:unit": "vue-cli-service test:unit",
     "test:e2e": "ZENUML_STAGE_USERNAME=robot1.yanhui@gmail.com node tests/e2e/demoPage.js",
+    "test:e2e:peng": "ZENUML_STAGE_USERNAME=eagle.xiao@gmail.com node tests/e2e/demoPage.js",
     "test:e2e:yanhui": "ZENUML_STAGE_USERNAME=robot1.yanhui@gmail.com ZENUML_DOMAIN=whimet4.atlassian.net ZENUML_SPACE=WHIMET4 node tests/e2e/demoPage.js",
     "test:e2e:yanhui:existing": "ZENUML_STAGE_USERNAME=robot1.yanhui@gmail.com ZENUML_DOMAIN=whimet4.atlassian.net PAGE_ID=458653717 ZENUML_SPACE=WHIMET4 node tests/e2e/demoPage.js",
     "test:unit:watch": "vue-cli-service test:unit --watch",
@@ -23,7 +24,7 @@
     "install:stg:lite": "pluploader --base-url https://zenuml-stg.atlassian.net/wiki install --cloud --plugin-uri https://air.zenuml.com/descriptor?lite"
   },
   "dependencies": {
-    "@zenuml/core": "^2.0.30",
+    "@zenuml/core": "^3.0.7",
     "html-to-image": "^1.9.0",
     "jest-puppeteer": "^6.1.1",
     "lodash": "^4.17.21",
@@ -36,8 +37,10 @@
     "split.js": "^1.6.5",
     "swagger-editor": "^4.4.0",
     "tailwindcss": "^3.2.4",
+    "vue": "^2.7.14",
     "vue-codemirror": "^4.0.6",
-    "vue-gtag": "^1.16.1"
+    "vue-gtag": "^1.16.1",
+    "vuex": "^3.6.2"
   },
   "devDependencies": {
     "@babel/core": "^7.20.12",

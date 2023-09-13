@@ -1,5 +1,5 @@
 {
   "version": 1,
-  "include": ["/attachment", "/descriptor", "/installed", "/uninstalled"],
+  "include": ["/attachment", "/descriptor", "/installed", "/uninstalled", "/track"],
   "exclude": []
 }

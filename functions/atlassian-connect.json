@@ -373,30 +373,7 @@
       },
       "url": "/get-started.html?version=__VERSION__"
     },
-    "webPanels": [
-      {
-        "url": "/onboarding-panel.html?auth=true&version=__VERSION__&addonKey=__ADDON_KEY__&postInstallPageKey=__POST_INSTALL_KEY__",
-        "location": "atl.footer",
-        "layout": {
-          "width": "0px",
-          "height": "0px"
-        },
-        "weight": 50,
-        "supportsNative": false,
-        "name": {
-          "value": "Onboarding Panel"
-        },
-        "key": "onboarding-panel",
-        "conditions": [
-          {
-              "condition": "has_page_permission",
-              "params": {
-                  "permission": "EDIT"
-              }
-          }
-      ]
-      }
-    ]
+    "webPanels": []
   },
   "apiMigrations": {
     "gdpr": true

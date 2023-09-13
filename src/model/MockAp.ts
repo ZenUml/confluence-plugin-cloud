@@ -2,6 +2,8 @@ import MockApConfluence from "@/model/MockApConfluence";
 import {IAp} from "@/model/IAp";
 import customContentListSeq from "@/model/Ap/MockedResponse/custom-content-list-sequence.json";
 import customContentListGraph from "@/model/Ap/MockedResponse/custom-content-list-graph.json";
+import customContentByIdV1DiagramSequence from "@/model/Ap/MockedResponse/custom-content-by-id-v1-diagram-sequence.json";
+import customContentByIdV1DiagramMermaid from "@/model/Ap/MockedResponse/custom-content-by-id-v1-diagram-mermaid.json";
 
 const CONTRACT: any = {
   customContent: {method: 'get', URL: /\/rest\/api\/content\/(\d+)/},
@@ -27,24 +29,17 @@ interface RequestHandler {
 export default class MockAp implements IAp {
   public confluence: any
   public request: any = async (req: any) => {
-    console.log('req', req);
+    console.debug('req', req);
     if (!req) {
       return 'OK. (req is empty)'
     }
 
     // if request.url start with '/rest/api/content/fake-content-id', return mocked response
-    if (req.url.startsWith('/rest/api/content/fake-content-id')) {
-      return {body: JSON.stringify({
-          body: {
-            raw: {
-              value: JSON.stringify({
-                source: 'custom-content',
-                code: 'A.method',
-                styles:{"#A":{"backgroundColor":"#57d9a3"}}
-              })
-            }
-          }
-      })};
+    if (req.url.startsWith('/rest/api/content/fake-content-id-diagram-sequence')) {
+      return {body: JSON.stringify(customContentByIdV1DiagramSequence)};
+    }
+    if (req.url.startsWith('/rest/api/content/fake-content-id-diagram-mermaid')) {
+      return {body: JSON.stringify(customContentByIdV1DiagramMermaid)};
     }
 
     // if request.url start with '/rest/api/content?', return {}
@@ -124,7 +119,7 @@ export default class MockAp implements IAp {
 
   setupCreateCustomContent(content: any) {
     this.requestHandlers.push({
-      match: r => matchContract(r, 'customContent', 'createCustomContentV2'), 
+      match: r => matchContract(r, 'customContent', 'createCustomContentV2'),
       handle: r => ({body: JSON.stringify({id: content.id, body: {raw: {value: JSON.stringify(content)}}})})} as RequestHandler);
   }
 

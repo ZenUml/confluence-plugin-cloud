@@ -6,7 +6,7 @@
         <editor/>
       </div>
       <div id="workspace-right" class="diagram overflow-auto">
-        <Viewer />
+        <DiagramPortal />
       </div>
     </div>
   </div>
@@ -16,7 +16,7 @@
   import Editor from '@/components/Editor/Editor.vue'
   import Split from 'split.js'
   import Header from "@/components/Header/Header.vue";
-  import Viewer from "@/components/Viewer/Viewer";
+  import DiagramPortal from "@/components/DiagramPortal.vue";
 
   export default {
     name: 'Workspace',
@@ -29,9 +29,9 @@
       }
     },
     components: {
+      DiagramPortal,
       Header,
       Editor,
-      Viewer
     }
   }
 </script>
