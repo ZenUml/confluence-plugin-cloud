@@ -91,7 +91,7 @@
 	Sidebar.prototype.electrical = ['LogicGates', 'Resistors', 'Capacitors', 'Inductors', 'SwitchesRelays', 'Diodes', 'Sources', 'Transistors', 'Misc', 'Audio', 'PlcLadder', 'Abstract', 'Optical', 'VacuumTubes', 'Waveforms', 'Instruments', 'RotMech', 'Transmission'];
 
 	/**
-	 * Description of custom libraries, see https://www.diagrams.net/doc/faq/configure-diagram-editor
+	 * Description of custom libraries, see https://www.drawio.com/doc/faq/configure-diagram-editor
 	 */
 	Sidebar.prototype.customEntries = null;
 	
@@ -99,7 +99,7 @@
 	 * Array of strings for the built-in libraries to be enabled in the more shapes dialog. Null means all,
 	 * empty array means none, possible keys are listed for the libs parameter at
 	 * 
-	 * https://www.diagrams.net/doc/faq/supported-url-parameters
+	 * https://www.drawio.com/doc/faq/supported-url-parameters
 	 */
 	Sidebar.prototype.enabledLibraries = null;
 	
@@ -113,7 +113,7 @@
 	 */
 	Sidebar.prototype.configuration = [{id: 'general', libs: ['general', 'misc', 'advanced']},
 									   {id: 'uml'}, {id: 'uml25'}, {id: 'search'}, {id: 'er'},
-									   {id: 'azure2', prefix: 'azure2', libs: ['AI Machine Learning', 'Analytics', 'App Services', 'Azure Stack', 'Azure VMware Solution', 'Blockchain', 'Compute', 'Containers', 'CXP', 'Databases', 'DevOps', 'General', 'Identity', 'Integration', 'Internet of Things', 'Intune', 'IoT', 'Management Governance', 'Migrate', 'Mixed Reality', 'Monitor', 'Networking', 'Other', 'Preview', 'Security', 'Storage', 'Web']},
+									   {id: 'azure2', prefix: 'azure2', libs: ['AI Machine Learning', 'Analytics', 'App Services', 'Azure Ecosystem', 'Azure Stack', 'Azure VMware Solution', 'Blockchain', 'Compute', 'Containers', 'CXP', 'Databases', 'DevOps', 'General', 'Identity', 'Integration', 'Internet of Things', 'Intune', 'IoT', 'Management Governance', 'Menu', 'Migrate', 'Mixed Reality', 'Monitor', 'Networking', 'Other', 'Preview', 'Security', 'Storage', 'Web']},
 	                                   {id: 'ios', prefix: 'ios', libs: [''/*prefix is library*/, '7icons', '7ui']}, 
 	                                   {id: 'android', prefix: 'android', libs: [''/*prefix is library*/]}, {id: 'aws3d'},
 	                                   {id: 'flowchart'}, {id: 'basic'}, {id: 'infographic'}, {id: 'arrows'}, {id: 'arrows2'}, {id: 'lean_mapping'}, {id: 'citrix'}, {id: 'azure'}, {id: 'network'}, {id: 'vvd'}, 
@@ -191,79 +191,7 @@
 				'.scratchpad'));
 		}
 	};
-
-	/**
-	 * Adds hint for quick tutorial video for certain search terms.
-	 */
-	var siderbarInsertSearchHint = Sidebar.prototype.insertSearchHint;
 	
-	Sidebar.prototype.insertSearchHint = function(div, searchTerm, count, page, results, len, more, terms)
-	{
-		if (terms != null && page == 1)
-		{
-			var hintText = null;
-			
-			// Adds hint for text inserts
-			if (mxUtils.indexOf(terms, 'text') >= 0)
-			{
-				hintText = 'Double click anywhere in the diagram to insert text.';
-			}
-			else
-			{
-				// Checks if any of the following keywords are in the search terms
-				var words = ['line', 'lines', 'arrow', 'arrows', 'connect', 'connection', 'connections',
-				             'connector', 'connectors', 'curve', 'curves', 'link', 'links', 'directed',
-				             'directional', 'bidirectional'];
-				
-				for (var i = 0; i < words.length; i++)
-				{
-					if (mxUtils.indexOf(terms, words[i]) >= 0)
-					{
-						hintText = 'Need help with connections?';
-						break;
-					}
-				}
-			}
-			
-			if (hintText != null && !this.hideSearchHint)
-			{
-				var link = document.createElement('a');
-				link.setAttribute('href', 'https://youtu.be/Z0D96ZikMkc');
-				link.setAttribute('target', '_blank');
-				link.className = 'geTitle';
-				link.style.cssText = 'background-color:#ffd350;border-radius:6px;color:black;' +
-					'border:1px solid black !important;text-align:center;white-space:normal;' +
-					'padding:6px 0px 6px 0px !important;margin:4px 4px 8px 2px;font-size:12px;';
-				mxUtils.write(link, hintText);
-				
-				// Adds close button
-				var img = document.createElement('img');
-				img.setAttribute('src', Dialog.prototype.closeImage);
-				img.setAttribute('title', mxResources.get('hide'));
-				img.className = 'geDialogClose';
-				img.style.position = 'relative';
-				img.style.cursor = 'default';
-				img.style.top = '1px';
-				img.style.right = '0px';
-				
-				mxEvent.addListener(img, 'click', mxUtils.bind(this, function(evt)
-				{
-					link.parentNode.removeChild(link);
-					this.hideSearchHint = true;
-					mxEvent.consume(evt);
-				}));
-				
-				link.appendChild(img);
-				div.appendChild(link);
-				
-				// Shows hint only once
-				this.hideSearchHint = true;
-			}
-		}
-		
-		siderbarInsertSearchHint.apply(this, arguments);
-	};
-
 	/**
 	 * Toggle palette.
 	 */
@@ -329,9 +257,9 @@
 		{
 			for (var i = 0; i < this.customEntries.length; i++)
 			{
-				var section = this.customEntries[i];
+				var section = this.customEntries[i] || {};
 				
-				for (var j = 0; j < section.entries.length; j++)
+				for (var j = 0; section.entries != null && j < section.entries.length; j++)
 				{
 					var entry = section.entries[j];
 					
@@ -374,9 +302,9 @@
 			{
 				for (var i = 0; i < this.customEntries.length; i++)
 				{
-					var section = this.customEntries[i];
+					var section = this.customEntries[i] || {};
 					
-					for (var j = 0; j < section.entries.length; j++)
+					for (var j = 0; section.entries != null && j < section.entries.length; j++)
 					{
 						var entry = section.entries[j];
 						
@@ -471,9 +399,9 @@
 		{
 			for (var i = 0; i < this.customEntries.length; i++)
 			{
-				var section = this.customEntries[i];
+				var section = this.customEntries[i] || {};
 				
-				for (var j = 0; j < section.entries.length; j++)
+				for (var j = 0; section.entries != null && j < section.entries.length; j++)
 				{
 					var entry = section.entries[j];
 					
@@ -492,22 +420,44 @@
 			}
 		}
 	};
-
+	
 	/**
 	 * Overrides the sidebar init.
 	 */
 	Sidebar.prototype.init = function()
 	{
-		// Defines all entries for the sidebar. This is used in the MoreShapes dialog. Create screenshots using the savesidebar URL parameter and
-		// http://www.alderg.com/merge.html for creating a vertical stack of PNG images if multiple sidebars are part of an entry.
+		this.updateEntries();
 
+		// Uses search.xml index file instead (faster load times)
+		this.addStencilsToIndex = false;
+		
+		// Contains additional tags for shapes
+		this.shapetags = {};
+
+		// Adds tags from compressed text file for improved searches
+		if (this.tagIndex != null)
+		{
+			this.addTagIndex(Graph.decompress(this.tagIndex));
+			this.tagIndex = null;	
+		}
+		
+		this.initPalettes();
+	};
+	 
+	/**
+	 * Defines all entries for the sidebar. This is used in the MoreShapes dialog. Create screenshots using the savesidebar URL parameter and
+	 * http://www.alderg.com/merge.html for creating a vertical stack of PNG images if multiple sidebars are part of an entry.
+	 */
+	Sidebar.prototype.updateEntries = function()
+	{
 		var stdEntries = [{title: mxResources.get('general'), id: 'general', image: IMAGE_PATH + '/sidebar-general.png'},
 			{title: mxResources.get('basic'), id: 'basic', image: IMAGE_PATH + '/sidebar-basic.png'},
 			{title: mxResources.get('arrows'), id: 'arrows2', image: IMAGE_PATH + '/sidebar-arrows2.png'},
 			{title: mxResources.get('clipart'), id: 'clipart', image: IMAGE_PATH + '/sidebar-clipart.png'},
 			{title: mxResources.get('flowchart'), id: 'flowchart', image: IMAGE_PATH + '/sidebar-flowchart.png'}];
 		
-		if (urlParams['sketch'] == '1')
+		if (Editor.currentTheme == 'sketch' ||
+			Editor.currentTheme == 'min')
 		{
 			stdEntries = [{title: mxResources.get('searchShapes'), id: 'search'},
 				{title: mxResources.get('scratchpad'), id: '.scratchpad'}].
@@ -570,22 +520,8 @@
 								{title: 'Web Icons', id: 'webicons', image: IMAGE_PATH + '/sidebar-webIcons.png'},
 								{title: mxResources.get('signs'), id: 'signs', image: IMAGE_PATH + '/sidebar-signs.png'}]}];
 
-		// Uses search.xml index file instead (faster load times)
-		this.addStencilsToIndex = false;
-		
-		// Contains additional tags for shapes
-		this.shapetags = {};
+	};
 
-		// Adds tags from compressed text file for improved searches
-		if (this.tagIndex != null)
-		{
-			this.addTagIndex(Graph.decompress(this.tagIndex));
-			this.tagIndex = null;	
-		}
-		
-		this.initPalettes();
-	}
-	
 	/**
 	 * Overridden to add image export via servlet
 	 */
@@ -920,9 +856,9 @@
 			
 			for (var i = 0; i < this.customEntries.length; i++)
 			{
-				var section = this.customEntries[i];
+				var section = this.customEntries[i] || {};
 				
-				for (var j = 0; j < section.entries.length; j++)
+				for (var j = 0; section.entries != null && j < section.entries.length; j++)
 				{
 					var entry = section.entries[j];
 					
@@ -1423,33 +1359,44 @@
 	
 	Sidebar.prototype.getTooltipOffset = function(elt, bounds)
 	{
-		if (Editor.currentTheme == 'simple' || Editor.currentTheme == 'min')
+		if (Editor.currentTheme == 'simple' ||
+			Editor.currentTheme == 'sketch' || 
+			Editor.currentTheme == 'min')
 		{
-			if (this.editorUi.sidebarWindow == null ||
-				mxUtils.isAncestorNode(this.editorUi.sketchPickerMenuElt, elt))
+			if (mxUtils.isAncestorNode(this.editorUi.sketchPickerMenuElt, elt))
 			{
-				var off = mxUtils.getOffset(this.editorUi.sketchPickerMenuElt);
+				var off = mxUtils.getOffset(elt);
+
+				if (Editor.currentTheme == 'simple')
+				{
+					off.x += (elt.offsetWidth - bounds.width) / 2 - 14;
+					off.y = elt.parentNode.offsetHeight - 2;
+				}
+				else
+				{
+					off.x = elt.parentNode.offsetLeft + elt.parentNode.offsetWidth + 2;
+					off.y += (elt.offsetHeight - bounds.height) / 2;
+				}
 				
-				off.x += this.editorUi.sketchPickerMenuElt.offsetWidth + 4;
-				off.y += elt.offsetTop - bounds.height / 2 + 16;
-				
-				return off;
+				return new mxPoint(Math.max(0, off.x), Math.max(0, off.y));
 			}
-			else
+			else if (this.editorUi.sidebarWindow != null)
 			{
-				var result = sidebarGetTooltipOffset.apply(this, arguments);
 				var off = mxUtils.getOffset(this.editorUi.sidebarWindow.window.div);
+
+				off.x += this.editorUi.sidebarWindow.window.div.offsetWidth + 2;
+				off.y += elt.offsetTop + (elt.offsetHeight - bounds.height) / 2;
+
+				if (elt.offsetParent != null)
+				{
+					off.y -= elt.offsetParent.scrollTop;
+				}
 				
-				result.x += off.x - 16;
-				result.y += off.y;
-				
-				return result;
+				return new mxPoint(Math.max(0, off.x), Math.max(0, off.y));
 			}
 		}
-		else
-		{
-			return sidebarGetTooltipOffset.apply(this, arguments);
-		}
+		
+		return sidebarGetTooltipOffset.apply(this, arguments);
 	};
     
 	/**
