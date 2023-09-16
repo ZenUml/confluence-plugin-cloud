@@ -38,7 +38,6 @@ function renderGraph(graphXml: string) {
     AP.resize();
     try {
       if (globals.apWrapper.isDisplayMode() && await globals.apWrapper.canUserEdit()) {
-        trackEvent(DiagramType.Graph, 'before_create_attachment', 'info');
         await createAttachmentIfContentChanged(graphXml);
       } else {
         trackEvent(DiagramType.Graph, 'skip_create_attachment', 'warning');
