@@ -28,7 +28,8 @@ export default {
       // stickyOffset is used only at view mode or edit when the iframe scroll out of the viewport
       // In fullscreen viewer or editor mode, the iFrame element is not scrollable, so we don't need to offset.
       // Note when the iframe is not scrollable, the stickyOffset does not have any effect.
-      await zenuml.render(this.$store.state.diagram.code, {theme:'theme-default', stickyOffset: 56});
+      const theme = localStorage.getItem(`${location.hostname}-zenuml-theme`) || 'theme-default';
+      await zenuml.render(this.$store.state.diagram.code, {theme, stickyOffset: 56});
     }
   },
   watch: {
