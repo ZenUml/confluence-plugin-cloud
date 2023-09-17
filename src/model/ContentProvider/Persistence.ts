@@ -10,6 +10,7 @@ export async function saveToPlatform(diagram: Diagram) {
   const customContentStorageProvider = new CustomContentStorageProvider(apWrapper);
   const id = await customContentStorageProvider.save(diagram);
   trackEvent(diagram.diagramType, 'save_macro', 'custom_content');
+  //Todo: Capture the event of newly created macro
 
   if(await apWrapper.isInContentEdit()) {
     const macroData = await apWrapper.getMacroData();

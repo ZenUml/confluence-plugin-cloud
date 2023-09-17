@@ -6,11 +6,20 @@ export function getClientDomain() {
 }
 
 export function getBaseUrl() {
-  return getUrlParam('xdm_e').toLowerCase();
+  let url = getUrlParam('xdm_e');
+
+  //@ts-ignore
+  if(!url && window.initialContext?.currentPageUrl) {
+    //@ts-ignore
+    url = new URL(window.initialContext?.currentPageUrl).origin; //in macro editor
+  }
+
+  return url.toLowerCase();
 }
 
 export function getSpaceKey() {
-  return getUrlParam('spaceKey');
+  //@ts-ignore
+  return getUrlParam('spaceKey') || window.initialContext?.currentSpace?.key;
 }
 
 export function getSubdomain(baseUrl: string) {

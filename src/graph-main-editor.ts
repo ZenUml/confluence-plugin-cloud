@@ -7,6 +7,7 @@ import {saveToPlatform} from "@/model/ContentProvider/Persistence";
 import ApWrapper2 from "@/model/ApWrapper2";
 import './utils/IgnoreEsc.ts'
 import {trackEvent} from '@/utils/window';
+import MacroUtil from "@/model/MacroUtil";
 
 const compositeContentProvider = defaultContentProvider(new ApWrapper2(AP));
 
@@ -59,6 +60,10 @@ async function initializeMacro() {
         setGraphXml(graphXml);
       }
     })();
+  }
+
+  if(await MacroUtil.isCreateNew()) {
+    trackEvent('start_creating_macro', 'create_macro', 'graph');
   }
 }
 

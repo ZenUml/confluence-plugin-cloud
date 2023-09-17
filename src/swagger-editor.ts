@@ -15,6 +15,8 @@ import {DataSource, DiagramType} from "@/model/Diagram/Diagram";
 import defaultContentProvider from "@/model/ContentProvider/CompositeContentProvider";
 import {saveToPlatform} from "@/model/ContentProvider/Persistence";
 import ApWrapper2 from "@/model/ApWrapper2";
+import MacroUtil from "@/model/MacroUtil";
+import {trackEvent} from '@/utils/window';
 
 async function saveOpenApiAndExit () {
   // @ts-ignore
@@ -52,10 +54,15 @@ async function initializeMacro() {
   window.diagram = doc;
 
   console.log('-------------- loaded spec:', doc?.code)
-    // eslint-disable-next-line
-    // @ts-ignore
-    window.updateSpec(doc?.code || OpenApiExample);
-    console.log('-------------- updateSpec with:', doc?.code)
+  // eslint-disable-next-line
+  // @ts-ignore
+  window.updateSpec(doc?.code || OpenApiExample);
+  console.log('-------------- updateSpec with:', doc?.code)
+
+
+  if(await MacroUtil.isCreateNew()) {
+    trackEvent('start_creating_macro', 'create_macro', 'openapi');
+  }
 }
 
 

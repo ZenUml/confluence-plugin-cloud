@@ -7,14 +7,25 @@ import './assets/tailwind.css'
 import './utils/IgnoreEsc.ts'
 import ApWrapper2 from "@/model/ApWrapper2";
 import uuidv4 from "@/utils/uuid";
+import {trackEvent} from '@/utils/window';
+import MacroUtil from "@/model/MacroUtil";
 
 Vue.config.productionTip = false
 
-if(document.getElementById('app')) {
-    new Vue({
-      render: h => h(DocumentList)
-    }).$mount('#app')
+async function trackCreateNewEvent() {
+  if(await MacroUtil.isCreateNew()) {
+    trackEvent('start_creating_macro', 'create_macro', 'embed');
+  }
 }
+
+if(document.getElementById('app')) {
+  new Vue({
+    render: h => h(DocumentList)
+  }).$mount('#app')
+
+  trackCreateNewEvent();
+}
+
 EventBus.$on('save', async () => {
   const apWrapper = new ApWrapper2(AP);
   const macroData = await apWrapper.getMacroData();
