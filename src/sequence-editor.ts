@@ -34,7 +34,7 @@ async function main() {
   mountRoot(doc, Workspace);
 
   if(await MacroUtil.isCreateNew()) {
-    trackEvent('start_creating_macro', 'create_macro_begin', 'sequence');
+    trackEvent('', 'create_macro_begin', 'sequence');
   }
 }
 

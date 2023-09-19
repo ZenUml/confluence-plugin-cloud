@@ -61,7 +61,7 @@ async function initializeMacro() {
 
 
   if(await MacroUtil.isCreateNew()) {
-    trackEvent('start_creating_macro', 'create_macro', 'openapi');
+    trackEvent('', 'create_macro_begin', 'openapi');
   }
 }
 

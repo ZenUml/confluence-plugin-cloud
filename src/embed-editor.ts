@@ -14,7 +14,7 @@ Vue.config.productionTip = false
 
 async function trackCreateNewEvent() {
   if(await MacroUtil.isCreateNew()) {
-    trackEvent('start_creating_macro', 'create_macro', 'embed');
+    trackEvent('', 'create_macro_begin', 'embed');
   }
 }
 

@@ -63,7 +63,7 @@ async function initializeMacro() {
   }
 
   if(await MacroUtil.isCreateNew()) {
-    trackEvent('start_creating_macro', 'create_macro', 'graph');
+    trackEvent('', 'create_macro_begin', 'graph');
   }
 }
 
