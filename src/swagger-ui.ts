@@ -56,7 +56,6 @@ async function loadDiagram() {
     AP.resize();
     try {
       if(globals.apWrapper.isDisplayMode() && await globals.apWrapper.canUserEdit()) {
-        trackEvent(DiagramType.OpenApi, 'before_create_attachment', 'info');
         await createAttachmentIfContentChanged(doc?.code);
       } else {
         trackEvent(DiagramType.OpenApi, 'skip_create_attachment', 'warning');

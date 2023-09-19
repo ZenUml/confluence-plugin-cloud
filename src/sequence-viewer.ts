@@ -31,7 +31,6 @@ EventBus.$on('diagramLoaded', () => {
 async function createAttachment(code: string, diagramType: DiagramType) {
   try {
     if (globals.apWrapper.isDisplayMode() && await globals.apWrapper.canUserEdit()) {
-      trackEvent(diagramType, 'before_create_attachment', 'info');
       await createAttachmentIfContentChanged(code);
     } else {
       trackEvent(diagramType, 'skip_create_attachment', 'info');
