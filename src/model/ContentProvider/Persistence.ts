@@ -10,7 +10,6 @@ export async function saveToPlatform(diagram: Diagram) {
   const customContentStorageProvider = new CustomContentStorageProvider(apWrapper);
   const id = await customContentStorageProvider.save(diagram);
   trackEvent(diagram.diagramType, 'save_macro', 'custom_content');
-  //Todo: Capture the event of newly created macro
 
   if(await apWrapper.isInContentEdit()) {
     const macroData = await apWrapper.getMacroData();
@@ -19,6 +18,10 @@ export async function saveToPlatform(diagram: Diagram) {
     const params = { uuid, customContentId: id, updatedAt: new Date() };
     apWrapper.saveMacro(params, body);
     trackEvent(diagram.diagramType, 'save_macro', 'macro_body');
+
+    if(!macroData?.uuid) {
+      trackEvent(uuid, 'create_macro_end', diagram.diagramType.toLowerCase());
+    }
   } else {
     console.log('not content edit, skip save macro.');
   }
