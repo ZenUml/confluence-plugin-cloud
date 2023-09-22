@@ -486,9 +486,7 @@ export default class ApWrapper2 implements IApWrapper {
     pageId = pageId || await this._getCurrentPageId();
     queryParameters = queryParameters || {};
     const param = Object.keys(queryParameters).reduce((acc, i) => `${acc}${acc ? '&' : ''}${i}=${queryParameters[i]}`, '');
-    trackEvent(pageId, 'get_attachments', 'before_request');
     const response = await this.request(`/api/v2/pages/${pageId}/attachments${param ? `?${param}` : ''}`);
-    trackEvent(response?.xhr?.status, 'get_attachments', 'after_request');
     return response?.results || [];
   }
 
@@ -496,9 +494,7 @@ export default class ApWrapper2 implements IApWrapper {
     pageId = pageId || await this._getCurrentPageId();
     queryParameters = queryParameters || {};
     const param = Object.keys(queryParameters).reduce((acc, i) => `${acc}${acc ? '&' : ''}${i}=${queryParameters[i]}`, '');
-    trackEvent(pageId, 'get_attachments', 'before_request');
     const response = await this.request(`/rest/api/content/${pageId}/child/attachment${param ? `?expand=version&${param}` : ''}`);
-    trackEvent(response?.xhr?.status, 'get_attachments', 'after_request');
     //set 'comment' as top level field to be consistent with V2 API response
     return response?.results.map((a: any) => Object.assign(a, {comment: a.metadata?.comment})) || [];
   }
