@@ -15,6 +15,8 @@ import './utils/IgnoreEsc.ts'
 import './assets/tailwind.css'
 import {DiagramType, NULL_DIAGRAM} from "@/model/Diagram/Diagram";
 import Example from "@/utils/sequence/Example";
+import {trackEvent} from "@/utils/window";
+import MacroUtil from "@/model/MacroUtil";
 
 async function main() {
   await globals.apWrapper.initializeContext();
@@ -30,6 +32,10 @@ async function main() {
     }
   }
   mountRoot(doc, Workspace);
+
+  if(await MacroUtil.isCreateNew()) {
+    trackEvent('', 'create_macro_begin', 'sequence');
+  }
 }
 
 // We do not have to export main(), but otherwise IDE shows a warning

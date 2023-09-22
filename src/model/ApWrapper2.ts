@@ -51,7 +51,13 @@ export default class ApWrapper2 implements IApWrapper {
       this.currentPageUrl = await this._getCurrentPageUrl();
       this.locationTarget = await this._getLocationTarget();
       this.currentPageId = await this._page.getPageId();
+
       console.log('initializeContext', this.currentUser, this.currentSpace, this.currentPageUrl, this.locationTarget, this.currentPageId);
+      
+      if(window) {
+        //@ts-ignore
+        window.initialContext = {currentUser: this.currentUser, currentSpace: this.currentSpace, currentPageUrl: this.currentPageUrl, currentPageId: this.currentPageId, locationTarget: this.locationTarget};
+      }
     } catch (e: any) {
       console.error(e);
       try {
