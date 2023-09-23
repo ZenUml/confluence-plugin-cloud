@@ -15,6 +15,8 @@ import './assets/tailwind.css'
 
 async function main() {
   await globals.apWrapper.initializeContext();
+  trackEvent('', 'view_macro', 'sequence');
+
   const compositeContentProvider = defaultContentProvider(globals.apWrapper as ApWrapper2);
   let {doc} = await compositeContentProvider.load();
   mountRoot(doc, DiagramPortal);

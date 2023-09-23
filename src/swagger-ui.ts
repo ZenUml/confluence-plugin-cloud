@@ -71,6 +71,8 @@ async function loadDiagram() {
 
 async function initializeMacro() {
   await globals.apWrapper.initializeContext();
+  trackEvent('', 'view_macro', 'openapi');
+
   const compositeContentProvider = defaultContentProvider(new ApWrapper2(AP));
   const {doc} = await compositeContentProvider.load();
   mountRoot(doc, OpenApiViewer);
