@@ -28,7 +28,7 @@ const saveToBucket = async (bucket: any, body: EventBody) => {
   return await bucket.put(getKey(body), JSON.stringify(body));
 }
 
-export const onRequest: PagesFunction = async ({ request, env }) => {
+export const onRequest: PagesFunction = async ({ request, waitUntil, env }) => {
   try {
     const referer = request.headers.get('referer') || '';
 
@@ -46,7 +46,7 @@ export const onRequest: PagesFunction = async ({ request, env }) => {
     }
 
     // @ts-ignore
-    await saveToBucket(env.EVENT_BUCKET, body);
+    waitUntil(saveToBucket(env.EVENT_BUCKET, body));
 
   } catch (e: any) {
     console.error(`Error: `, e);
