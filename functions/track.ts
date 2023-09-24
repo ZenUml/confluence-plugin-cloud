@@ -28,30 +28,28 @@ const saveToBucket = async (bucket: any, body: EventBody) => {
   return await bucket.put(getKey(body), JSON.stringify(body));
 }
 
-export const onRequest: PagesFunction = async ({ request, waitUntil, env }) => {
-  try {
-    const referer = request.headers.get('referer') || '';
+const handleRequst = async ({ request, env }) => {
+  const referer = request.headers.get('referer') || '';
 
-    if (!validateReferer(referer)) {
-      console.log(`Referer ${referer} not allowed`);
-      return new Response('Forbidden', { status: 403 });
-    }
-
-    console.log('Received request from referer', referer);
-    const body = await request.json() as EventBody;
-    if (!body.client_domain || !body.addon_key || !body.user_account_id) {
-      const error = `Missing ${!body.client_domain ? 'client_domain' : (!body.addon_key ? 'addon_key' : 'user_account_id')}`;
-      console.log(error);
-      return new Response(error, { status: 400 });
-    }
-
-    // @ts-ignore
-    waitUntil(saveToBucket(env.EVENT_BUCKET, body));
-
-  } catch (e: any) {
-    console.error(`Error: `, e);
-    return new Response('Error', { status: 500 });
+  if (!validateReferer(referer)) {
+    console.log(`Referer ${referer} not allowed`);
+    return new Response('Forbidden', { status: 403 });
   }
 
-  return new Response('', { status: 200 });
+  console.log('Received request from referer', referer);
+  const body = await request.json() as EventBody;
+  if (!body.client_domain || !body.addon_key || !body.user_account_id) {
+    const error = `Missing ${!body.client_domain ? 'client_domain' : (!body.addon_key ? 'addon_key' : 'user_account_id')}`;
+    console.log(error);
+    return new Response(error, { status: 400 });
+  }
+
+  // @ts-ignore
+  return await saveToBucket(env.EVENT_BUCKET, body);
+}
+
+export const onRequest = async (event) => {
+  event.waitUntil(handleRequst(event)); //async handling
+
+  return new Response('', { status: 204 });
 }
