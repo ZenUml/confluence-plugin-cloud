@@ -72,6 +72,7 @@ async function loadDiagram() {
   console.log('Initializing macro');
   const apWrapper = globals.apWrapper;
   await apWrapper.initializeContext();
+  trackEvent('', 'view_macro', 'graph');
 
   await loadDiagram();
 })()

@@ -3,6 +3,7 @@ import {DiagramType} from "@/model/Diagram/Diagram";
 import AP from "@/model/AP";
 import defaultContentProvider from "@/model/ContentProvider/CompositeContentProvider";
 import ApWrapper2 from "@/model/ApWrapper2";
+import globals from '@/model/globals';
 
 function loadViewer(url: string) {
   const e = document.createElement('meta');
@@ -28,6 +29,9 @@ function getViewerUrl(diagramType: DiagramType) {
 
 async function initializeMacro() {
   try {
+    await globals.apWrapper.initializeContext();
+    trackEvent('', 'view_macro', 'embed');
+
     const contentProvider = defaultContentProvider(new ApWrapper2(AP));
     const { doc } = await contentProvider.load()
     const { diagramType } = doc;

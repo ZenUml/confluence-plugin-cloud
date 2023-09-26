@@ -8,6 +8,7 @@
 import mermaid from 'mermaid'
 import EventBus from "@/EventBus";
 import {DiagramType} from "@/model/Diagram/Diagram";
+import {trackEvent} from "@/utils/window";
 
 mermaid.mermaidAPI.initialize({
   startOnLoad:true
@@ -29,6 +30,7 @@ export default {
     if (!this.mermaidCode) return;
     this.svg = await this.render(this.mermaidCode);
     EventBus.$emit('diagramLoaded', this.mermaidCode, this.$store.state.diagram.diagramType);
+    trackEvent('', 'view_macro', 'mermaid');
   },
   updated() {
     // Don't use updated() to render, because it will cause infinite loop.
