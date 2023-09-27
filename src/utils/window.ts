@@ -1,5 +1,5 @@
 import {DiagramType} from "@/model/Diagram/Diagram";
-import {getBaseUrl, getClientDomain, getSpaceKey} from "@/utils/ContextParameters/ContextParameters";
+import {getClientDomain, getSpaceKey} from "@/utils/ContextParameters/ContextParameters";
 export function getUrlParam (param: string): string | undefined {
   try {
     const matches = (new RegExp(param + '=([^&]*)')).exec(window.location.search);
@@ -17,7 +17,7 @@ interface EventDetails {
   confluence_space: string
 }
 
-export function trackEvent(label: DiagramType | string, action: string, category: string) {
+export function trackEvent(label: DiagramType | string | undefined, action: string, category: string) {
   try {
     let eventDetails = {
       'event_category': category || 'category_not_set',
@@ -34,7 +34,7 @@ export function trackEvent(label: DiagramType | string, action: string, category
     } catch (e) {
       console.error(e);
     }
-    
+
     try {
       // @ts-ignore
       window.gtag && window.gtag('event', action, eventDetails);
