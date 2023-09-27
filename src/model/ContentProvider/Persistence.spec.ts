@@ -3,7 +3,7 @@ import {NULL_DIAGRAM} from "@/model/Diagram/Diagram";
 
 const mockSave = jest.fn(() => "mocked_custom_content_id");
 const mockSaveMacro = jest.fn();
-const mockIsInContentEdit = jest.fn();
+const mockIsInContentEditOrContentCreate = jest.fn();
 const mockGetMacroData = () => {
   return {
     "uuid": "uuid_from_macro_data"
@@ -22,7 +22,7 @@ jest.mock("@/model/ApWrapper2", () => {
   return class ApWrapper2 {
     getMacroData = mockGetMacroData
     saveMacro = mockSaveMacro
-    isInContentEdit = mockIsInContentEdit
+    isInContentEditOrContentCreate = mockIsInContentEditOrContentCreate
   }
 })
 
@@ -34,19 +34,19 @@ describe('Persistence', function () {
 
   beforeEach(() => {
     mockSaveMacro.mockClear();
-    mockIsInContentEdit.mockClear();
+    mockIsInContentEditOrContentCreate.mockClear();
     mockSave.mockClear();
   });
 
   it('should save the diagram in content edit mode', async () => {
-    mockIsInContentEdit.mockReturnValue(true);
+    mockIsInContentEditOrContentCreate.mockReturnValue(true);
     await saveToPlatform(NULL_DIAGRAM);
     expect(mockSave).toBeCalledWith(NULL_DIAGRAM);
     expect(mockSaveMacro).toBeCalledWith(expect.objectContaining({"uuid": "uuid_from_macro_data", "customContentId": "mocked_custom_content_id"}), '')
   })
 
   it('should not save macro in content view mode', async () => {
-    mockIsInContentEdit.mockReturnValue(false);
+    mockIsInContentEditOrContentCreate.mockReturnValue(false);
     await saveToPlatform(NULL_DIAGRAM);
     expect(mockSave).toBeCalledWith(NULL_DIAGRAM);
     expect(mockSaveMacro.mock.calls.length).toBe(0);
