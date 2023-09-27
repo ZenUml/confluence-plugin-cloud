@@ -16,8 +16,7 @@ export async function saveToPlatform(diagram: Diagram) {
     const body = diagram.getCoreData ? diagram.getCoreData() : '';
     const params = { uuid, customContentId: id, updatedAt: new Date() };
     apWrapper.saveMacro(params, body);
-    trackEvent('macro_body', 'save_macro', diagram.diagramType);
-
+    console.debug('Saved macro params and body', params);
     if(!macroData?.uuid) {
       trackEvent(uuid, 'create_macro_end', diagram.diagramType.toLowerCase());
     }
