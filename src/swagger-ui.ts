@@ -6,7 +6,6 @@ import './assets/tailwind.css'
 import OpenApiExample from '@/model/OpenApi/OpenApiExample'
 import createAttachmentIfContentChanged from "@/model/Attachment";
 import {trackEvent} from "@/utils/window";
-import {DiagramType} from "@/model/Diagram/Diagram";
 import globals from '@/model/globals';
 import defaultContentProvider from "@/model/ContentProvider/CompositeContentProvider";
 import ApWrapper2 from "@/model/ApWrapper2";
@@ -58,11 +57,11 @@ async function loadDiagram() {
       if(globals.apWrapper.isDisplayMode() && await globals.apWrapper.canUserEdit()) {
         await createAttachmentIfContentChanged(doc?.code);
       } else {
-        trackEvent(DiagramType.OpenApi, 'skip_create_attachment', 'warning');
+        console.debug("Attachment will no be created as it's not in view mode or the user is unauthorized to edit.");
       }
     } catch (e) {
       // Do not re-throw the error
-      console.error('Error when creating attachment', e);
+      console.error("Error when creating attachment", e);
       trackEvent(JSON.stringify(e), 'create_attachment', 'error');
     }
 

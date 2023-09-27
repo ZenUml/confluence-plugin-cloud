@@ -35,11 +35,11 @@ async function createAttachment(code: string, diagramType: DiagramType) {
     if (globals.apWrapper.isDisplayMode() && await globals.apWrapper.canUserEdit()) {
       await createAttachmentIfContentChanged(code);
     } else {
-      trackEvent(diagramType, 'skip_create_attachment', 'info');
+      console.debug("Attachment will no be created as it's not in view mode or the user is unauthorized to edit.");
     }
   } catch (e) {
     // Do not re-throw the error
-    console.error('Error when creating attachment', e);
+    console.error("Error when creating attachment", e);
     trackEvent(JSON.stringify(e), 'create_attachment' + diagramType, 'error');
   }
 }
