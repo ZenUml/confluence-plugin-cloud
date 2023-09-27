@@ -48,5 +48,5 @@ EventBus.$on('save', async () => {
   setTimeout(() => {
     // @ts-ignore
     AP.dialog.close();
-  }, 100);
+  }, 200);
 });
