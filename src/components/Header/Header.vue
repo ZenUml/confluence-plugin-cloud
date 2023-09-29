@@ -1,38 +1,40 @@
 <template>
   <header class="toolbar header border-b border-gray-800 p-2 flex items-center justify-between">
-    <div class="group ml-2 p-0.5 rounded flex bg-gray-100 hover:bg-gray-200">
-      <button type="button"
-              ref = "btn-sequence"
-              class="flex focus-visible:ring-2 focus-visible:ring-teal-500 focus-visible:ring-offset-2 rounded focus:outline-none focus-visible:ring-offset-gray-100"
-              :class="diagramType === 'sequence' ? 'bg-white shadow-sm ring-1 ring-black ring-opacity-5' : ''"
-              @click="setActiveTab('sequence')"
-              :tabindex="diagramType === 'sequence' ? '0' : '-1'">
-          <span class="p-1 lg:pl-2.5 lg:pr-3.5 rounded flex items-center text-sm font-medium"
-                :class="diagramType === 'sequence' ? 'bg-white shadow-sm ring-1 ring-black ring-opacity-5' : ''">
-            <span class="sr-only lg:not-sr-only text-gray-600 group-hover:text-gray-900"
-                  :class="diagramType === 'sequence' ? 'text-gray-900' : 'text-gray-600 group-hover:text-gray-900'">Sequence</span>
-          </span>
-      </button>
-      <button type="button"
-              ref = "btn-mermaid"
-              class="ml-0.5 p-1 lg:pl-2.5 lg:pr-3.5 rounded flex items-center text-sm text-gray-600 font-medium focus-visible:ring-2 focus-visible:ring-teal-500 focus-visible:ring-offset-2 focus:outline-none focus-visible:ring-offset-gray-100"
-              :class="diagramType === 'mermaid' ? 'bg-white shadow-sm ring-1 ring-black ring-opacity-5' : ''"
-              @click="setActiveTab('mermaid')">
-        <span class="sr-only lg:not-sr-only text-gray-900"
-            :class="diagramType === 'mermaid' ? 'text-gray-900' : 'text-gray-600 group-hover:text-gray-900'">Mermaid</span>
-      </button>
-    </div>
-    <div class="flex items-center">
+    <div class="flex">
+      <div class="group ml-2 p-0.5 rounded flex bg-gray-100 hover:bg-gray-200">
+        <button type="button"
+                ref = "btn-sequence"
+                class="flex focus-visible:ring-2 focus-visible:ring-teal-500 focus-visible:ring-offset-2 rounded focus:outline-none focus-visible:ring-offset-gray-100"
+                :class="diagramType === 'sequence' ? 'bg-white shadow-sm ring-1 ring-black ring-opacity-5' : ''"
+                @click="setActiveTab('sequence')"
+                :tabindex="diagramType === 'sequence' ? '0' : '-1'">
+            <span class="p-1 lg:pl-2.5 lg:pr-3.5 rounded flex items-center text-sm font-medium"
+                  :class="diagramType === 'sequence' ? 'bg-white shadow-sm ring-1 ring-black ring-opacity-5' : ''">
+              <span class="sr-only lg:not-sr-only text-gray-600 group-hover:text-gray-900"
+                    :class="diagramType === 'sequence' ? 'text-gray-900' : 'text-gray-600 group-hover:text-gray-900'">Sequence</span>
+            </span>
+        </button>
+        <button type="button"
+                ref = "btn-mermaid"
+                class="ml-0.5 p-1 lg:pl-2.5 lg:pr-3.5 rounded flex items-center text-sm text-gray-600 font-medium focus-visible:ring-2 focus-visible:ring-teal-500 focus-visible:ring-offset-2 focus:outline-none focus-visible:ring-offset-gray-100"
+                :class="diagramType === 'mermaid' ? 'bg-white shadow-sm ring-1 ring-black ring-opacity-5' : ''"
+                @click="setActiveTab('mermaid')">
+          <span class="sr-only lg:not-sr-only text-gray-900"
+              :class="diagramType === 'mermaid' ? 'text-gray-900' : 'text-gray-600 group-hover:text-gray-900'">Mermaid</span>
+        </button>
+      </div>
       <a class="inline-block help mx-1 ml-2" target="_blank" :href="templateUrl">
         <button class="flex items-center bg-gray-100 px-2 py-1 text-gray-600 text-sm font-semibold rounded" @click="templateClick">
-          <span>
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M18.375 12.739l-7.693 7.693a4.5 4.5 0 01-6.364-6.364l10.94-10.94A3 3 0 1119.5 7.372L8.552 18.32m.009-.01l-.01.01m5.699-9.941l-7.81 7.81a1.5 1.5 0 002.112 2.13" />
-            </svg>
-          </span>
-          <span>Templates</span>
+            <span>
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 18v-5.25m0 0a6.01 6.01 0 001.5-.189m-1.5.189a6.01 6.01 0 01-1.5-.189m3.75 7.478a12.06 12.06 0 01-4.5 0m3.75 2.383a14.406 14.406 0 01-3 0M14.25 18v-.192c0-.983.658-1.823 1.508-2.316a7.5 7.5 0 10-7.517 0c.85.493 1.509 1.333 1.509 2.316V18" />
+              </svg>
+            </span>
+          <span>Examples</span>
         </button>
       </a>
+    </div>
+    <div class="flex items-center">
       <a class="inline-block help mx-1 ml-2" target="_blank" :href="helpUrl">
         <button class="flex items-center bg-gray-100 px-2 py-1 text-gray-600 text-sm font-semibold rounded" @click="helpClick">
           <span>
