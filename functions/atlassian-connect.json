@@ -31,17 +31,17 @@
             "url": "/attachment?version=__VERSION__&spaceKey={space.key}&pageId={page.id}&pageVersion={page.version}&macroId={macro.id}&uuid={uuid}&addonKey=__ADDON_KEY__&contentKey=__CONTENT_KEY__"
           }
         },
-        "url": "/sequence-viewer.html?version=__VERSION__&spaceKey={space.key}&pageId={page.id}&pageVersion={page.version}&macroId={macro.id}&uuid={uuid}&outputType={output.type}&addonKey=__ADDON_KEY__&contentKey=__CONTENT_KEY__",
+        "url": "/sequence-viewer.html?version=__VERSION__&spaceKey={space.key}&pageId={page.id}&pageVersion={page.version}&macroId={macro.id}&uuid={uuid}&outputType={output.type}&externalDiagramUrl={externalDiagramUrl}&addonKey=__ADDON_KEY__&contentKey=__CONTENT_KEY__",
         "description": {
           "value": "Create a ZenUML Sequence Diagram"
         },
         "outputType": "block",
         "bodyType": "plain-text",
         "editor": {
-          "url": "/sequence-editor.html?version=__VERSION__&update=202103291207&addonKey=__ADDON_KEY__&contentKey=__CONTENT_KEY__",
+          "url": "/sequence-editor.html?externalDiagramUrl={externalDiagramUrl}&version=__VERSION__&update=202103291207&addonKey=__ADDON_KEY__&contentKey=__CONTENT_KEY__",
           "width": "100%",
           "height": "100%",
-          "cacheable": true
+          "cacheable": false
         },
         "icon": {
           "width": 16,
@@ -66,8 +66,27 @@
             "required": true,
             "multiple": false,
             "defaultValue": "None"
+          },
+          {
+            "identifier": "externalDiagramUrl",
+            "name": {
+              "value": "externalDiagramUrl",
+              "i18n": "externalDiagramUrl"
+            },
+            "type": "string",
+            "required": false,
+            "multiple": false,
+            "defaultValue": ""
           }
-        ]
+        ],
+        "autoconvert": {
+          "urlParameter": "externalDiagramUrl",
+          "matchers": [
+            {
+              "pattern": "https://zenuml.cn/diagrams/{}"
+            }
+          ]
+        }
       },
       {
         "key": "zenuml-graph-macro",
