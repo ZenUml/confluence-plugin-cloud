@@ -11,7 +11,6 @@
   <title>Onboarding</title>
   <script>
   const STORAGE_KEY = 'onboardingState';
-  const STORAGE_KEY_DEMO_PAGE = 'ZenUMLDemoPagePopupState';
   const DEFAULT_STATE = {users: {}, lastUpdated: new Date()};
   const HELP_DESK_URL = 'https://zenuml.atlassian.net/servicedesk/customer/portals';
 
@@ -28,6 +27,7 @@
     }
 
     try {
+      //Sometime there's no current space, e.g. in "All content" page
       try {
         currentSpace = await getCurrentSpace();
       } catch (e) {
@@ -39,7 +39,6 @@
       const localState = getLocalState(STORAGE_KEY);
       const remoteState = await getAppProperty();
 
-      const demoPagePopupState = getLocalState(STORAGE_KEY_DEMO_PAGE);
       const demoPageExists = await checkDemoPageExists();
 
       const isOnboarded = (u, state) => {
@@ -52,7 +51,7 @@
 
       const expiresOf = (u, state) => state.users[u.atlassianAccountId][version()].expires;
 
-      const checkUser = (u) => {
+      const checkUser = async (u) => {
         userId = u.atlassianAccountId;
 
         const localOnboarded = isOnboarded(u, localState);
@@ -68,9 +67,8 @@
           trackEvent(userId, 'copy_remote_onboarded_state_to_local', 'onboarding');
         }
 
-        if(!demoPageExists && !demoPagePopupState?.displayed) {
-          // demoPagePopup();
-          setLocalState(STORAGE_KEY_DEMO_PAGE, {displayed: true, created: new Date()});
+        if(!demoPageExists) {
+          await createDemoPage();
           trackEvent(userId, 'display', 'demo');
         }
       }
@@ -166,7 +164,7 @@
         'confluence_space': currentSpace
       };
       window.gtag && window.gtag('event', action, eventDetails);
-      zaraz?.track(action, eventDetails);
+      window.zaraz && window.zaraz.track(action, eventDetails);
     } catch (e) {
       reportError(e, 'trackEvent', true);
     }
@@ -295,7 +293,7 @@
         .replaceAll('$$_MERMAID_CONTENT_ID', mermaid.id)
         .replaceAll('$$_GRAPH_CONTENT_ID', graph.id);
 
-      const data = {type: 'page', title: demoPageTitle, status: 'current', space: {key: currentSpace}, version: {number: page.version.number}, body: {atlas_doc_format: {value: body, representation: 'atlas_doc_format'}}};
+      const data = {type: 'page', title: demoPageTitle, status: 'current', space: {key: currentSpace}, version: {number: page.version.number, message: 'Created by ZenUML App'}, body: {atlas_doc_format: {value: body, representation: 'atlas_doc_format'}}};
       const response = await updateContent(page.id, data);
 
       trackEvent(userId, 'published_demo_page', 'demoPage');
