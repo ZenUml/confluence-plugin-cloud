@@ -1,5 +1,11 @@
 import {DiagramType} from "@/model/Diagram/Diagram";
 import {getBaseUrl, getClientDomain, getSpaceKey} from "@/utils/ContextParameters/ContextParameters";
+import mixpanel from "mixpanel-browser";
+
+mixpanel.init('0c62cea9ed2247f4824bf196f6817941', { debug: true, track_pageview: true, persistence: 'localStorage' });
+
+let identified = false;
+
 export function getUrlParam (param: string): string | undefined {
   try {
     const matches = (new RegExp(param + '=([^&]*)')).exec(window.location.search);
@@ -19,6 +25,10 @@ interface EventDetails {
 
 export function trackEvent(label: DiagramType | string, action: string, category: string) {
   try {
+    if(!identified) {
+      mixpanel.identify(getCurrentUserAccountId());
+      identified = true;
+    }
     let eventDetails = {
       'event_category': category || 'category_not_set',
       'event_label' : label || 'label_not_set',
@@ -34,20 +44,19 @@ export function trackEvent(label: DiagramType | string, action: string, category
     } catch (e) {
       console.error(e);
     }
-    
+
+    try {
+      // Track an event. It can be anything, but in this example, we're tracking a Sign Up event.
+      mixpanel.track(action, eventDetails);
+    } catch (e) {
+      console.error('Error in calling mixpanel', e);
+    }
+
     try {
       // @ts-ignore
       window.gtag && window.gtag('event', action, eventDetails);
     } catch(e) {
       console.log('Error in calling gtag', e);
-    }
-
-    // @ts-ignore
-    try {
-      // @ts-ignore
-      zaraz && zaraz.track(action, eventDetails);
-    } catch(e) {
-      console.log('Error in calling zaraz', e);
     }
 
     r2Track(action, eventDetails);
