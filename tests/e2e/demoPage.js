@@ -504,6 +504,9 @@ const existingPageId = process.env.PAGE_ID;
     console.log(`Found "${frameSelector}"`);
 
     const frame = await iframe.contentFrame();
+    if(!frame) {
+      throw `Failed to get content frame of "${frameSelector}"`
+    }
     result = frame;
 
     if(contentSelector) {
