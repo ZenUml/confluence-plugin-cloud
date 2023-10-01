@@ -42,6 +42,7 @@ describe('ContentPropertyStorageProvider', () => {
       ['event', 'load_macro', {
         event_category: 'content_property_old',
         event_label: 'sequence',
+        token: "0c62cea9ed2247f4824bf196f6817941",
         client_domain: 'unknown_atlassian_domain',
         user_account_id: 'unknown_user_account_id',
         confluence_space: 'unknown_space'
@@ -68,6 +69,7 @@ describe('ContentPropertyStorageProvider', () => {
       ['event', 'load_macro', {
         event_category: 'content_property',
         event_label: 'sequence',
+        token: "0c62cea9ed2247f4824bf196f6817941",
         client_domain: 'unknown_atlassian_domain',
         user_account_id: 'unknown_user_account_id',
         confluence_space: 'unknown_space'
