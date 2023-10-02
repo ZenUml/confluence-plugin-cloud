@@ -132,18 +132,16 @@ jobs:
         shell: bash
         run: |
           VERSION="$(echo $(date +'%Y.%m.%d%H%M'))"
-          echo "::set-output name=version::$VERSION"
+          echo "version=$VERSION" >> $GITHUB_ENV
 
       # Create new release draft - which is not publicly visible and requires manual acceptance
       - name: Create Release Draft
         id: createDraft
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          VERSION: $(echo $(date +'%Y.%m.%d%H%M'))
+        uses: softprops/action-gh-release@v1
         with:
-          tag_name: v${{ steps.properties.outputs.version }}-lite
-          release_name: v${{ steps.properties.outputs.version }}-lite
+          token: ${{ secrets.GITHUB_TOKEN }}
+          tag_name: v${{ env.version }}-lite
+          name: v${{ env.version }}-lite
           body: 'This is a draft release for the Lite version of the plugin.'
           draft: true
 
@@ -166,18 +164,16 @@ jobs:
         shell: bash
         run: |
           VERSION="$(echo $(date +'%Y.%m.%d%H%M'))"
-          echo "::set-output name=version::$VERSION"
+          echo "version=$VERSION" >> $GITHUB_ENV
 
       # Create new release draft - which is not publicly visible and requires manual acceptance
       - name: Create Release Draft
         id: createDraft
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          VERSION: $(echo $(date +'%Y.%m.%d%H%M'))
+        uses: softprops/action-gh-release@v1
         with:
-          tag_name: v${{ steps.properties.outputs.version }}-full
-          release_name: v${{ steps.properties.outputs.version }}-full
+          token: ${{ secrets.GITHUB_TOKEN }}
+          tag_name: v${{ env.version }}-full
+          name: v${{ env.version }}-full
           body: 'This is a draft release for the Full version of the plugin.'
           draft: true
 
