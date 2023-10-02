@@ -137,13 +137,12 @@ jobs:
       # Create new release draft - which is not publicly visible and requires manual acceptance
       - name: Create Release Draft
         id: createDraft
-        uses: actions/create-release@v1
+        uses: elgohr/Github-Release-Action@v4
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          VERSION: $(echo $(date +'%Y.%m.%d%H%M'))
         with:
-          tag_name: v${{ steps.properties.outputs.version }}-lite
-          release_name: v${{ steps.properties.outputs.version }}-lite
+          tag: v${{ steps.properties.outputs.version }}-lite
+          name: v${{ steps.properties.outputs.version }}-lite
           body: 'This is a draft release for the Lite version of the plugin.'
           draft: true
 
@@ -171,13 +170,12 @@ jobs:
       # Create new release draft - which is not publicly visible and requires manual acceptance
       - name: Create Release Draft
         id: createDraft
-        uses: actions/create-release@v1
+        uses: elgohr/Github-Release-Action@v4
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          VERSION: $(echo $(date +'%Y.%m.%d%H%M'))
         with:
-          tag_name: v${{ steps.properties.outputs.version }}-full
-          release_name: v${{ steps.properties.outputs.version }}-full
+          tag: v${{ steps.properties.outputs.version }}-full
+          name: v${{ steps.properties.outputs.version }}-full
           body: 'This is a draft release for the Full version of the plugin.'
           draft: true
 
