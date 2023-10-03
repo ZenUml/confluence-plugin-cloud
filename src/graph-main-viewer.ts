@@ -8,7 +8,6 @@ import defaultContentProvider from "@/model/ContentProvider/CompositeContentProv
 import ApWrapper2 from "@/model/ApWrapper2";
 import GraphViewer from "@/components/Viewer/GraphViewer.vue";
 import EventBus from './EventBus'
-import {DiagramType} from "@/model/Diagram/Diagram";
 import {mountRoot} from "@/mount-root";
 
 EventBus.$on('diagramLoaded', () => {
@@ -40,11 +39,11 @@ function renderGraph(graphXml: string) {
       if (globals.apWrapper.isDisplayMode() && await globals.apWrapper.canUserEdit()) {
         await createAttachmentIfContentChanged(graphXml);
       } else {
-        trackEvent(DiagramType.Graph, 'skip_create_attachment', 'warning');
+        console.debug("Attachment will no be created as it's not in view mode or the user is unauthorized to edit.");
       }
     } catch (e) {
       // Do not re-throw the error
-      console.error('Error when creating attachment', e);
+      console.error("Error when creating attachment", e);
       trackEvent(JSON.stringify(e), 'create_attachment', 'error');
     }
   }, 1500);

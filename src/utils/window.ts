@@ -1,5 +1,5 @@
 import {DiagramType} from "@/model/Diagram/Diagram";
-import {getBaseUrl, getClientDomain, getSpaceKey} from "@/utils/ContextParameters/ContextParameters";
+import {getClientDomain, getSpaceKey} from "@/utils/ContextParameters/ContextParameters";
 import mixpanel from "mixpanel-browser";
 
 mixpanel.init('0c62cea9ed2247f4824bf196f6817941', { debug: true, track_pageview: true, persistence: 'localStorage' });
@@ -23,7 +23,7 @@ interface EventDetails {
   confluence_space: string
 }
 
-export function trackEvent(label: DiagramType | string, action: string, category: string) {
+export function trackEvent(label: DiagramType | string | undefined, action: string, category: string) {
   try {
     if(!identified) {
       mixpanel.identify(getCurrentUserAccountId());

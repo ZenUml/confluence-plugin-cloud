@@ -15,7 +15,8 @@ import './assets/tailwind.css'
 
 async function main() {
   await globals.apWrapper.initializeContext();
-  trackEvent('', 'view_macro', 'sequence');
+  const macroData = await globals.apWrapper.getMacroData();
+  trackEvent(macroData?.uuid, 'view_macro', 'sequence');
 
   const compositeContentProvider = defaultContentProvider(globals.apWrapper as ApWrapper2);
   let {doc} = await compositeContentProvider.load();
@@ -35,11 +36,11 @@ async function createAttachment(code: string, diagramType: DiagramType) {
     if (globals.apWrapper.isDisplayMode() && await globals.apWrapper.canUserEdit()) {
       await createAttachmentIfContentChanged(code);
     } else {
-      trackEvent(diagramType, 'skip_create_attachment', 'info');
+      console.debug("Attachment will no be created as it's not in view mode or the user is unauthorized to edit.");
     }
   } catch (e) {
     // Do not re-throw the error
-    console.error('Error when creating attachment', e);
+    console.error("Error when creating attachment", e);
     trackEvent(JSON.stringify(e), 'create_attachment' + diagramType, 'error');
   }
 }
