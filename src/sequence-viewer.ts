@@ -9,9 +9,10 @@ import AP from "@/model/AP";
 import EventBus from './EventBus'
 import {trackEvent} from "@/utils/window";
 import createAttachmentIfContentChanged from "@/model/Attachment";
-import {DiagramType} from "@/model/Diagram/Diagram";
+import {Diagram, DiagramType} from "@/model/Diagram/Diagram";
 
 import './assets/tailwind.css'
+import { saveToPlatform } from "./model/ContentProvider/Persistence";
 
 async function main() {
   await globals.apWrapper.initializeContext();
@@ -52,25 +53,31 @@ EventBus.$on('diagramLoaded', async (code: string, diagramType: DiagramType) => 
 });
 
 EventBus.$on('edit', () => {
-  // @ts-ignore
-  AP.dialog.create(
-    {
-      key: 'zenuml-content-sequence-editor-dialog',
-        chrome: false,
-        width: "100%",
-        height: "100%",
-    }).on('close', async () => {
-      location.reload();
+  AP.dialog.create({
+    key: 'zenuml-content-sequence-editor-dialog',
+      chrome: false,
+      width: "100%",
+      height: "100%",
+  }).on('close', async () => {
+    location.reload();
   });
 });
 
 EventBus.$on('fullscreen', () => {
-  // @ts-ignore
-  AP.dialog.create(
-    {
-      key: 'zenuml-content-sequence-viewer-dialog',
-      chrome: true,
-      width: "100%",
-      height: "100%",
-    });
+  AP.dialog.create({
+    key: 'zenuml-content-sequence-viewer-dialog',
+    chrome: true,
+    width: "100%",
+    height: "100%",
+  }).on('close', async () => {
+    location.reload();
+  });
+});
+
+EventBus.$on('updateContent', async (diagram: Diagram) => {
+  if (await globals.apWrapper.canUserEdit()) {
+    saveToPlatform(diagram)
+  } else {
+    AP.messages.info('Your changes cannot be persistent as you are not authorized to edit.');
+  }
 });
