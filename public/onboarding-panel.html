@@ -222,7 +222,7 @@
   }
 
   function reportDemoPageError(error, context) {
-    trackEvent(`${context} error: ${error && JSON.stringify(error)}`, 'unexpected_error', 'demoPage');
+    trackEvent(`${context} error: ${error && JSON.stringify(error)}`, 'unexpected_error', 'demo');
     console.error(`Error in ${context}. Please report to our helpdesk: ${HELP_DESK_URL}`, error);
   }
 
@@ -269,14 +269,14 @@
   async function createDemoPageDraft() {
     const data = {type: 'page', title: demoPageTitle, status: 'draft', space: {key: currentSpace}, body: {raw: {value: '', representation: 'raw'}}};
     const demoPageDraft = await createContent(data);
-    trackEvent(userId, 'created_demo_page_draft', 'demoPage');
+    trackEvent(userId, 'created_demo_page_draft', 'demo');
     return demoPageDraft;
   }
 
   async function deleteDemoPageDraft(page) {
     //We can't use "Delete content" API as it requires Connect app scope: DELETE
     await updateContent(page.id, Object.assign({}, page, {status: 'trashed'}));
-    trackEvent(userId, 'deleted_demo_page_draft', 'demoPage');
+    trackEvent(userId, 'deleted_demo_page_draft', 'demo');
     return demoPageDraft;
   }
 
@@ -300,7 +300,7 @@
       const data = {type: 'page', title: demoPageTitle, status: 'current', space: {key: currentSpace}, version: {number: page.version.number, message: 'Created by ZenUML App'}, body: {atlas_doc_format: {value: body, representation: 'atlas_doc_format'}}};
       const response = await updateContent(page.id, data);
 
-      trackEvent(userId, 'published_demo_page', 'demoPage');
+      trackEvent(userId, 'published_demo_page', 'demo');
       return response;
     }
     catch(e) {
