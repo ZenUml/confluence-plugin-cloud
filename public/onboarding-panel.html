@@ -34,7 +34,7 @@
       } catch (e) {
         currentSpace = 'unknown_space';
         console.log('Error getting current space', e);
-        trackEvent('error', 'getCurrentSpace', e.message);
+        trackEvent(e.message, 'getCurrentSpace', 'error');
       }
 
       const localState = getLocalState(STORAGE_KEY);
@@ -61,16 +61,15 @@
         if(!localOnboarded && !remoteOnboarded) {
           // popup();
           setOnboardedForOneYear();
-          trackEvent(userId, 'display', 'onboarding');
+          trackEvent('1 year', 'set_onboarded', 'onboarding');
         }
         else if(!localOnboarded) {
           setOnboardedLocalState(u, expiresOf(u, remoteState));
-          trackEvent(userId, 'copy_remote_onboarded_state_to_local', 'onboarding');
+          trackEvent('1 year', 'copy_remote_onboarded_state_to_local', 'onboarding');
         }
 
         if(!demoPageExists) {
           await createDemoPage();
-          trackEvent(userId, 'display', 'demo');
         }
       }
 
@@ -269,14 +268,14 @@
   async function createDemoPageDraft() {
     const data = {type: 'page', title: demoPageTitle, status: 'draft', space: {key: currentSpace}, body: {raw: {value: '', representation: 'raw'}}};
     const demoPageDraft = await createContent(data);
-    trackEvent(userId, 'created_demo_page_draft', 'demo');
+    trackEvent(demoPageDraft.id, 'created_demo_page_draft', 'demo');
     return demoPageDraft;
   }
 
   async function deleteDemoPageDraft(page) {
     //We can't use "Delete content" API as it requires Connect app scope: DELETE
     await updateContent(page.id, Object.assign({}, page, {status: 'trashed'}));
-    trackEvent(userId, 'deleted_demo_page_draft', 'demo');
+    trackEvent(page.id, 'deleted_demo_page_draft', 'demo');
     return demoPageDraft;
   }
 
@@ -300,7 +299,7 @@
       const data = {type: 'page', title: demoPageTitle, status: 'current', space: {key: currentSpace}, version: {number: page.version.number, message: 'Created by ZenUML App'}, body: {atlas_doc_format: {value: body, representation: 'atlas_doc_format'}}};
       const response = await updateContent(page.id, data);
 
-      trackEvent(userId, 'published_demo_page', 'demo');
+      trackEvent(page.id, 'published_demo_page', 'demo');
       return response;
     }
     catch(e) {
