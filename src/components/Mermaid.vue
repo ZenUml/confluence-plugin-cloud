@@ -46,13 +46,8 @@ export default {
   },
   methods: {
     async render(code) {
-      return new Promise(resolve => {
-        mermaid.mermaidAPI.render('any-id',
-          code,
-          (svg) => {
-            resolve(svg)
-          })
-      })
+      const { svg  } = await mermaid.mermaidAPI.render('any-id', code)
+      return svg; 
     }
   }
 }
