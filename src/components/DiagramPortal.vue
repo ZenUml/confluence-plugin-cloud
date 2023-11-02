@@ -1,5 +1,5 @@
 <template>
-  <generic-viewer>
+  <generic-viewer :wide="diagramType==='mermaid'">
     <mermaid v-if="diagramType==='mermaid'"></mermaid>
     <sequence v-if="diagramType==='sequence'"></sequence>
   </generic-viewer>
