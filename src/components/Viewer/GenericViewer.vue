@@ -4,7 +4,7 @@
   <Debug />
   <error-boundary>
 
-  <div class="mx-auto" style="width: fit-content;">
+  <div :class="{'w-full': wide, 'w-fit': !wide, 'mx-auto': true}">
     <div class="frame relative pb-8 m-1" :class="{'w-full': wide, 'min-w-[300px]': !wide}">
       <div class="header flex" :class="{flex: isDisplayMode, hidden: !isDisplayMode}">
         <div class="left">
