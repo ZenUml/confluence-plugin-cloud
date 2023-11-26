@@ -33,7 +33,7 @@
         </div>
       </div>
       <div class="flex justify-center screen-capture-content">
-        <div class="mr-8" :class="{'w-full': wide}">
+        <div :class="{'w-full': wide, 'mr-8': !wide}">
           <slot></slot>
         </div>
       </div>

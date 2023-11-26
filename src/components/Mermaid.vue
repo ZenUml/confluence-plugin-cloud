@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div v-html="svg"></div>
+    <div class="flex justify-center" v-html="svg"></div>
   </div>
 </template>
 
