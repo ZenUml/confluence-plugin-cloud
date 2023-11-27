@@ -238,6 +238,9 @@
             "contentViewComponent": {
               "moduleKey": "zenuml-content-sequence-viewer"
             },
+            "listViewComponent": {
+              "moduleKey": "zenuml-content-sequence-list"
+            },
             "icons": {
               "item": {
                 "width": 16,
@@ -249,6 +252,7 @@
           "apiSupport": {
             "bodyType": "raw",
             "supportedContainerTypes": [
+              "space",
               "page",
               "blogpost",
               "comment"
@@ -262,7 +266,7 @@
             }
           },
           "name": {
-            "value": "ZenUML Sequence Diagram"
+            "value": "ZenUML Diagram"
           },
           "key": "zenuml-content-sequence"
         },
@@ -313,6 +317,13 @@
         "key": "zenuml-content-sequence-viewer",
         "location": "none",
         "url": "/sequence-viewer.html?version=__VERSION__&rendered.for=custom-content-native&spaceKey={space.key}&content.id={content.id}&content.version={content.version}&addonKey=__ADDON_KEY__&contentKey=__CONTENT_KEY__",
+        "name": {
+          "value": "ZenUML Sequence Viewer"
+        }
+      },
+      {
+        "key": "zenuml-content-sequence-list",
+        "url": "/sequence-viewer.html?version=__VERSION__&rendered.for=custom-content-native&spaceKey={space.key}&addonKey=__ADDON_KEY__&contentKey=__CONTENT_KEY__",
         "name": {
           "value": "ZenUML Sequence Viewer"
         }
