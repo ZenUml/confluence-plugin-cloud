@@ -15,7 +15,7 @@ import { ISpace, LocationTarget } from './ILocationContext';
 import { Attachment } from './ConfluenceTypes';
 
 const CUSTOM_CONTENT_TYPES = ['zenuml-content-sequence', 'zenuml-content-graph'];
-const SEARCH_CUSTOM_CONTENT_LIMIT = 1000;
+const SEARCH_CUSTOM_CONTENT_LIMIT = 50;
 
 export default class ApWrapper2 implements IApWrapper {
   versionType: VersionType;
@@ -505,7 +505,7 @@ export default class ApWrapper2 implements IApWrapper {
 
   async _getCurrentSpace(): Promise<ISpace> {
     return this.currentSpace
-      || (this.currentSpace = await this._page.getSpace())
+            || (this.currentSpace = await this._page.getSpace())
       || (this.currentSpace = {key: await this._page.getSpaceKey()});
   }
 

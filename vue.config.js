@@ -76,6 +76,11 @@ module.exports = {
       entry: 'src/embed-editor.ts',
       template: 'public/embed-editor.html',
       chunks: ['chunk-common', 'chunk-embed-editor-vendors', 'embed-editor']
+    },
+    "dashboard": {
+      entry: 'src/dashboard.ts',
+      template: 'public/dashboard.html',
+      chunks: ['chunk-common', 'chunk-dashboard-vendors', 'dashboard']
     }
   },
   chainWebpack: config => {

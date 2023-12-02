@@ -21,7 +21,7 @@
       <div class="flex-1 flex overflow-hidden">
 
         <main class="flex bg-gray-200 flex-1">
-          <div class="flex flex-col w-full max-w-xs flex-grow border-l border-r">
+          <div class="flex flex-col w-full max-w-md flex-grow border-l border-r">
             <div class="flex flex-shrink-0 items-center px-4 py-2 justify-between border-b">
               <button class="flex items-center text-xs font-semibold text-gray-600">
                 Recent diagrams and API specs
@@ -44,6 +44,9 @@
                 <a @click="picked = customContentItem" href="#" v-for="customContentItem in containerPage.customContents" :key="customContentItem.id"
                  :class="{'bg-gray-100': customContentItem.id === (picked && picked.id), 'bg-white': customContentItem.id !== (picked && picked.id)}"
                  class="block px-6 py-3 border-t hover:bg-gray-50">
+                  <div style="width: 64px; height: 64px; ">
+                    <img style="max-width: 64px; max-height: 64px;" src="https://whimet4.atlassian.net/wiki/download/attachments/32997/zenuml-9a31c6fa-0275-4e40-bdb1-2f2f3486c30c.png?api=v2">
+                  </div>
                   <span class="text-sm font-semibold text-gray-900">{{ customContentItem.title }}</span>
                   <div class="flex justify-between">
                     <span class="text-sm font-semibold text-gray-500">{{ customContentItem.value.diagramType }}</span>

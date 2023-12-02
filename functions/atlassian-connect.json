@@ -239,7 +239,7 @@
               "moduleKey": "zenuml-content-sequence-viewer"
             },
             "listViewComponent": {
-              "moduleKey": "zenuml-content-sequence-list"
+              "moduleKey": "zenuml-content-dashboard"
             },
             "icons": {
               "item": {
@@ -322,13 +322,6 @@
         }
       },
       {
-        "key": "zenuml-content-sequence-list",
-        "url": "/sequence-viewer.html?version=__VERSION__&rendered.for=custom-content-native&spaceKey={space.key}&addonKey=__ADDON_KEY__&contentKey=__CONTENT_KEY__",
-        "name": {
-          "value": "ZenUML Sequence Viewer"
-        }
-      },
-      {
         "key": "zenuml-content-sequence-editor-dialog",
         "location": "none",
         "url": "/sequence-editor-dialog.html?version=__VERSION__&spaceKey={space.key}&content.id={content.id}&content.version={content.version}&addonKey=__ADDON_KEY__&contentKey=__CONTENT_KEY__",
@@ -374,6 +367,14 @@
         "url": "/swagger-editor.html?version=__VERSION__&spaceKey={space.key}&addonKey=__ADDON_KEY__&contentKey=__CONTENT_KEY__",
         "name": {
           "value": "ZenUML OpenAPI Editor Dialog"
+        }
+      },
+      {
+        "key": "zenuml-content-dashboard",
+        "location": "none",
+        "url": "/dashboard.html?version=__VERSION__&spaceKey={space.key}&addonKey=__ADDON_KEY__",
+        "name": {
+          "value": "ZenUML Dashboard"
         }
       }
     ],
