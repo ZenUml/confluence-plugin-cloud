@@ -45,7 +45,8 @@
                  :class="{'bg-gray-100': customContentItem.id === (picked && picked.id), 'bg-white': customContentItem.id !== (picked && picked.id)}"
                  class="block px-6 py-3 border-t hover:bg-gray-50">
                   <div style="width: 64px; height: 64px; ">
-                    <img style="max-width: 64px; max-height: 64px;" src="https://whimet4.atlassian.net/wiki/download/attachments/32997/zenuml-9a31c6fa-0275-4e40-bdb1-2f2f3486c30c.png?api=v2">
+                    <!-- <img style="max-width: 64px; max-height: 64px;" src="https://whimet4.atlassian.net/wiki/download/attachments/32997/zenuml-9a31c6fa-0275-4e40-bdb1-2f2f3486c30c.png?api=v2"> -->
+                    <img style="max-width: 64px; max-height: 64px;" :src="customContentItem.imageLink">
                   </div>
                   <span class="text-sm font-semibold text-gray-900">{{ customContentItem.title }}</span>
                   <div class="flex justify-between">
@@ -74,6 +75,8 @@
   import {CustomContentStorageProvider} from "@/model/ContentProvider/CustomContentStorageProvider";
   import ApWrapper2 from "@/model/ApWrapper2";
   import _ from 'lodash';
+  import { ConfluencePage } from "@/model/page/ConfluencePage";
+  import { getAttachmentDownloadLink } from "@/model/Attachment";
 
   export default {
     name: 'DocumentList',
@@ -151,6 +154,20 @@
       const customContentId = await idProvider.getId();
       console.debug(`picked custom content id: ${customContentId}`);
       this.customContentList = await customContentStorageProvider.getCustomContentList();
+
+      for(let i=0; i<this.customContentList.length; i++) {
+        const c = this.customContentList[i];
+        const page = new ConfluencePage(c.container.id, AP);
+        const macro = await page.macroByCustomContentId(c.id); //todo: move to apwrapper2
+        console.log(`macro found for custom content ${c.id} in page ${c.container.id}:`, macro)
+        const uuid = macro?.attrs?.parameters?.macroParams?.uuid?.value;
+        if(uuid) {
+          const link = await getAttachmentDownloadLink(c.container.id, uuid);
+          console.log(`image link of custom content ${c.id} in page ${c.container.id}:`, link);
+          c.imageLink = link;
+        }
+      }
+
       this.picked = this.customContentList.filter(customContentItem => customContentItem?.id === customContentId)[0];
       console.debug(`picked custom content:`, this.picked);
       

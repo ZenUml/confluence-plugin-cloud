@@ -15,7 +15,7 @@ import { ISpace, LocationTarget } from './ILocationContext';
 import { Attachment } from './ConfluenceTypes';
 
 const CUSTOM_CONTENT_TYPES = ['zenuml-content-sequence', 'zenuml-content-graph'];
-const SEARCH_CUSTOM_CONTENT_LIMIT = 50;
+const SEARCH_CUSTOM_CONTENT_LIMIT = 25;
 
 export default class ApWrapper2 implements IApWrapper {
   versionType: VersionType;
@@ -495,8 +495,10 @@ export default class ApWrapper2 implements IApWrapper {
     queryParameters = queryParameters || {};
     const param = Object.keys(queryParameters).reduce((acc, i) => `${acc}${acc ? '&' : ''}${i}=${queryParameters[i]}`, '');
     const response = await this.request(`/rest/api/content/${pageId}/child/attachment${param ? `?expand=version&${param}` : ''}`);
+    console.debug(`found attachments in page ${pageId} with params ${queryParameters}:`, response);
+    const baseLinks = {base: response._links.base, context: response._links.context};
     //set 'comment' as top level field to be consistent with V2 API response
-    return response?.results.map((a: any) => Object.assign(a, {comment: a.metadata?.comment})) || [];
+    return response?.results.map((a: any) => Object.assign(a, {comment: a.metadata?.comment, _links: Object.assign(a._links, baseLinks)})) || [];
   }
 
   _getCurrentUser(): Promise<IUser> {

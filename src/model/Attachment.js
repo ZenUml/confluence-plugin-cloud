@@ -87,6 +87,19 @@ function buildPutRequestToUpdateAttachmentProperties(pageId, attachmentId, versi
   };
 }
 
+function attachmentNameByUuid(uuid) {
+  return `zenuml-${uuid}.png`;
+}
+
+export async function getAttachmentDownloadLink(pageId, macroUuid) {
+  const attachmentName = attachmentNameByUuid(macroUuid);
+  const attachments = await global.apWrapper.getAttachments(pageId, {filename: attachmentName});
+  if(attachments.length > 1) {
+    console.warn(`Multiple attachments found with uuid "${macroUuid}" on page ${pageId}:`, attachments);
+  }
+  return attachments.length && `${attachments[0]._links.base}${attachments[0]._links.download}`;
+}
+
 async function tryGetAttachment() {
   const pageId = getUrlParam("pageId");
   const attachmentName = 'zenuml-' + getUrlParam("uuid") + '.png';
@@ -97,7 +110,7 @@ async function tryGetAttachment() {
 
 async function uploadAttachment2(hash, fnGetUri) {
   const pageId = getUrlParam("pageId");
-  const attachmentName = 'zenuml-' + getUrlParam("uuid") + '.png';
+  const attachmentName = attachmentNameByUuid(getUrlParam("uuid"));
   const uri = fnGetUri(pageId);
   return await uploadAttachment(attachmentName, uri, hash);
 }

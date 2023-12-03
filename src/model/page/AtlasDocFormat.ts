@@ -38,6 +38,9 @@ export interface AtlasDocElement {
 }
 
 export interface MacroParams {
+  uuid?: {
+    value: string;
+  },
   customContentId?: {
     value: string;
   }
