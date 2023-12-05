@@ -1,5 +1,5 @@
 import Vue from 'vue'
-import DocumentList from './components/DocumentList/DocumentList.vue'
+import DashboardDocumentList from './components/DocumentList/DashboardDocumentList.vue'
 
 import EventBus from './EventBus'
 import AP from "@/model/AP";
@@ -8,24 +8,16 @@ import './utils/IgnoreEsc.ts'
 import ApWrapper2 from "@/model/ApWrapper2";
 import uuidv4 from "@/utils/uuid";
 import {trackEvent} from '@/utils/window';
-import MacroUtil from "@/model/MacroUtil";
 
 Vue.config.productionTip = false
 const apWrapper = new ApWrapper2(AP);
 
-async function trackCreateNewEvent() {
-  if(await MacroUtil.isCreateNew()) {
-    await apWrapper.initializeContext();
-    trackEvent('', 'create_macro_begin', 'embed');
-  }
-}
-
 if(document.getElementById('app')) {
   new Vue({
-    render: h => h(DocumentList)
+    render: h => h(DashboardDocumentList)
   }).$mount('#app')
 
-  trackCreateNewEvent();
+  trackEvent('', 'load_dashboard', 'pageview');
 }
 
 EventBus.$on('save', async () => {

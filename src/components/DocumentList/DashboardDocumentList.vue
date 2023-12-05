@@ -21,7 +21,7 @@
       <div class="flex-1 flex overflow-hidden">
 
         <main class="flex bg-gray-200 flex-1">
-          <div class="flex flex-col w-full max-w-xs flex-grow border-l border-r">
+          <div class="flex flex-col w-full max-w-md flex-grow border-l border-r">
             <div class="flex flex-shrink-0 items-center px-4 py-2 justify-between border-b">
               <button class="flex items-center text-xs font-semibold text-gray-600">
                 Recent diagrams and API specs
@@ -33,7 +33,8 @@
             <div class="flex-1 overflow-y-auto">
               <div v-for="containerPage in filteredPageList" :key="containerPage.id" class="block px-6 py-3 bg-white border-t hover:bg-gray-50">
                 <div class="mt-2 text-sm text-gray-600">
-                  <a :href="`${baseUrl}${ containerPage.id }`" target="_blank" class="flex items-center justify-between hover:underline group">
+                  <!-- :href="`${baseUrl}${ containerPage.id }`" -->
+                  <a target="_blank" class="flex items-center justify-between hover:underline group">
                     <span class="inline-block truncate">Page: {{ containerPage.title }}</span>
                     <svg xmlns="http://www.w3.org/2000/svg" class="inline-block h-5 w-5 flex-shrink-0 invisible group-hover:visible" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                       <path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
@@ -44,6 +45,9 @@
                 <a @click="picked = customContentItem" href="#" v-for="customContentItem in containerPage.customContents" :key="customContentItem.id"
                  :class="{'bg-gray-100': customContentItem.id === (picked && picked.id), 'bg-white': customContentItem.id !== (picked && picked.id)}"
                  class="block px-6 py-3 border-t hover:bg-gray-50">
+                  <div style="width: 64px; height: 64px; " v-show="customContentItem.imageLink">
+                    <img style="max-width: 64px; max-height: 64px;" :src="customContentItem.imageLink">
+                  </div>
                   <span class="text-sm font-semibold text-gray-900">{{ customContentItem.title }}</span>
                   <div class="flex justify-between">
                     <span class="text-sm font-semibold text-gray-500">{{ customContentItem.value.diagramType }}</span>
@@ -53,7 +57,8 @@
             </div>
           </div>
           <div id="workspace-right" class="flex-grow h-full bg-white border-t">
-            <iframe id='embedded-viewer' :src='previewSrc' width='100%' height='100%'></iframe>
+            <iframe id='embedded-viewer' :src='previewSrc' width='100%' height='100%'>
+            </iframe>
           </div>
         </main>
       </div>
@@ -71,6 +76,8 @@
   import {CustomContentStorageProvider} from "@/model/ContentProvider/CustomContentStorageProvider";
   import ApWrapper2 from "@/model/ApWrapper2";
   import _ from 'lodash';
+  import { ConfluencePage } from "@/model/page/ConfluencePage";
+  import { getAttachmentDownloadLink } from "@/model/Attachment";
 
   export default {
     name: 'DocumentList',
@@ -147,7 +154,21 @@
       const customContentStorageProvider = new CustomContentStorageProvider(apWrapper);
       const customContentId = await idProvider.getId();
       console.debug(`picked custom content id: ${customContentId}`);
-      this.customContentList = await customContentStorageProvider.getCustomContentList();
+      this.customContentList = await customContentStorageProvider.getCustomContentList(25);
+
+      for(let i=0; i<this.customContentList.length; i++) {
+        const c = this.customContentList[i];
+        const page = new ConfluencePage(c.container.id, AP);
+        const macro = await page.macroByCustomContentId(c.id); //todo: move to apwrapper2
+        console.debug(`macro found for custom content ${c.id} in page ${c.container.id}:`, macro)
+        const uuid = macro?.attrs?.parameters?.macroParams?.uuid?.value;
+        if(uuid) {
+          const link = await getAttachmentDownloadLink(c.container.id, uuid);
+          console.debug(`image link of custom content ${c.id} in page ${c.container.id}:`, link);
+          c.imageLink = link;
+        }
+      }
+
       this.picked = this.customContentList.filter(customContentItem => customContentItem?.id === customContentId)[0];
       console.debug(`picked custom content:`, this.picked);
       
@@ -163,6 +184,21 @@
         }
       } catch (e) {
         console.error(e);
+      }
+
+      if(!this.picked) {
+        const iframe = document.getElementById('embedded-viewer');
+        const iframeDocument = iframe.contentDocument || iframe.contentWindow.document;
+        const textDiv = iframeDocument.createElement('div');
+        textDiv.textContent = 'Select a diagram in the left side panel.';
+        textDiv.style.position = 'absolute';
+        textDiv.style.top = '50%';
+        textDiv.style.left = '50%';
+        textDiv.style.transform = 'translate(-50%, -50%)';
+        textDiv.style.textAlign = 'center';
+        textDiv.style.fontFamily = 'Arial, sans-serif';
+        textDiv.style.fontSize = '18px';
+        iframeDocument.body.appendChild(textDiv);
       }
     },
     methods: {
