@@ -7,10 +7,15 @@
   <meta charset="utf-8">
   <script type="text/javascript" src="js/util.js"></script>
   <script type="text/javascript" src="https://connect-cdn.atl-paas.net/all.js" data-options="sizeToParent:true"></script>
-  <script id="connect-loader">
-    window.split = true;
+  
+  <script>
+    window.addEventListener('message', ({data}) => {
+      if('gotoGetStartedPage' === data) {
+        AP.navigator.go('addonModule', {addonKey: getUrlParam('addonKey'), moduleKey: getUrlParam('postInstallPageKey')});
+      }
+    })
   </script>
-  <title>Embed Editor</title>
+  <title>Dashboard</title>
   <style>
     body.root {
       margin: 0 !important;

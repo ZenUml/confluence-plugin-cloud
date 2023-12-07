@@ -372,7 +372,7 @@
       {
         "key": "zenuml-content-dashboard",
         "location": "none",
-        "url": "/dashboard.html?version=__VERSION__&spaceKey={space.key}&addonKey=__ADDON_KEY__",
+        "url": "/dashboard.html?version=__VERSION__&spaceKey={space.key}&addonKey=__ADDON_KEY__&postInstallPageKey=__POST_INSTALL_KEY__",
         "name": {
           "value": "ZenUML Dashboard"
         }

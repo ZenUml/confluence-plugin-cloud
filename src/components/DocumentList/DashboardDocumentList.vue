@@ -70,7 +70,6 @@
   import SaveAndGoBackButton from "@/components/SaveAndGoBackButton";
   import {DiagramType, getDiagramData} from "@/model/Diagram/Diagram";
   import EventBus from "@/EventBus";
-  import {AtlasPage} from "@/model/page/AtlasPage";
   import AP from "@/model/AP";
   import {MacroIdProvider} from "@/model/ContentProvider/MacroIdProvider";
   import {CustomContentStorageProvider} from "@/model/ContentProvider/CustomContentStorageProvider";
@@ -156,6 +155,23 @@
       console.debug(`picked custom content id: ${customContentId}`);
       this.customContentList = await customContentStorageProvider.getCustomContentList(25);
 
+      //init the right side content
+      const iframe = document.getElementById('embedded-viewer');
+      const iframeDocument = iframe.contentDocument || iframe.contentWindow.document;
+      const div = iframeDocument.createElement('div');
+      div.innerHTML = this.customContentList.length 
+        ? 'Select a diagram from the left side panel.' 
+        : '<a href="#" onclick="parent.postMessage(\'gotoGetStartedPage\')">Get Started</a>';
+      div.style.position = 'absolute';
+      div.style.top = '50%';
+      div.style.left = '50%';
+      div.style.transform = 'translate(-50%, -50%)';
+      div.style.textAlign = 'center';
+      div.style.fontFamily = 'Arial, sans-serif';
+      div.style.fontSize = '18px';
+      iframeDocument.body.appendChild(div);
+
+      //load attachment images
       for(let i=0; i<this.customContentList.length; i++) {
         const c = this.customContentList[i];
         const page = new ConfluencePage(c.container.id, AP);
@@ -167,38 +183,6 @@
           console.debug(`image link of custom content ${c.id} in page ${c.container.id}:`, link);
           c.imageLink = link;
         }
-      }
-
-      this.picked = this.customContentList.filter(customContentItem => customContentItem?.id === customContentId)[0];
-      console.debug(`picked custom content:`, this.picked);
-      
-      try {
-        const atlasPage = new AtlasPage(AP);
-        const pages = 'pages/';
-        const currentPageUrl = await atlasPage.getHref();
-        const pagesIndex = currentPageUrl.indexOf(pages);
-        if (pagesIndex < 0) {
-          console.warn(`Invalid currentPageUrl: ${currentPageUrl}. It should contain ${pages}`);
-        } else {
-          this.baseUrl = currentPageUrl.substring(0, pagesIndex + pages.length);
-        }
-      } catch (e) {
-        console.error(e);
-      }
-
-      if(!this.picked) {
-        const iframe = document.getElementById('embedded-viewer');
-        const iframeDocument = iframe.contentDocument || iframe.contentWindow.document;
-        const textDiv = iframeDocument.createElement('div');
-        textDiv.textContent = 'Select a diagram in the left side panel.';
-        textDiv.style.position = 'absolute';
-        textDiv.style.top = '50%';
-        textDiv.style.left = '50%';
-        textDiv.style.transform = 'translate(-50%, -50%)';
-        textDiv.style.textAlign = 'center';
-        textDiv.style.fontFamily = 'Arial, sans-serif';
-        textDiv.style.fontSize = '18px';
-        iframeDocument.body.appendChild(textDiv);
       }
     },
     methods: {
