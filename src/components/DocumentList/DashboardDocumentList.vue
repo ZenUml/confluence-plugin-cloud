@@ -161,8 +161,8 @@
       const iframeDocument = iframe.contentDocument || iframe.contentWindow.document;
       const div = iframeDocument.createElement('div');
       div.innerHTML = this.customContentList.length 
-        ? 'Select a diagram from the left side panel.' 
-        : '<a href="#" onclick="parent.postMessage(\'gotoGetStartedPage\')">Get Started</a>';
+        ? 'Select a diagram from the left side panel' 
+        : '<a href="https://zenuml.atlassian.net/wiki/spaces/Doc/pages/504659970/Get+started" target="_blank">Learn how to create diagrams and API specs</a>';
       div.style.position = 'absolute';
       div.style.top = '50%';
       div.style.left = '50%';
