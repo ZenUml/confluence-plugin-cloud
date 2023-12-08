@@ -175,14 +175,18 @@
       //load attachment images
       for(let i=0; i<this.customContentList.length; i++) {
         const c = this.customContentList[i];
-        const page = new ConfluencePage(c.container.id, AP);
-        const macro = await page.macroByCustomContentId(c.id); //todo: move to apwrapper2
-        console.debug(`macro found for custom content ${c.id} in page ${c.container.id}:`, macro)
-        const uuid = macro?.attrs?.parameters?.macroParams?.uuid?.value;
-        if(uuid) {
-          const link = await getAttachmentDownloadLink(c.container.id, uuid);
-          console.debug(`image link of custom content ${c.id} in page ${c.container.id}:`, link);
-          c.imageLink = link;
+        try {
+          const page = new ConfluencePage(c.container.id, AP);
+          const macro = await page.macroByCustomContentId(c.id); //todo: move to apwrapper2
+          console.debug(`macro found for custom content ${c.id} in page ${c.container.id}:`, macro)
+          const uuid = macro?.attrs?.parameters?.macroParams?.uuid?.value;
+          if(uuid) {
+            const link = await getAttachmentDownloadLink(c.container.id, uuid);
+            console.debug(`image link of custom content ${c.id} in page ${c.container.id}:`, link);
+            c.imageLink = link;
+          }
+        } catch(e) {
+          console.error(`Error on getting the attachment image of custom content ${c}`, e);
         }
       }
     },
