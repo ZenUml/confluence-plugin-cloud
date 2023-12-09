@@ -21,7 +21,7 @@
       <div class="flex-1 flex overflow-hidden">
 
         <main class="flex bg-gray-200 flex-1">
-          <div class="flex flex-col w-full max-w-md flex-grow border-l border-r">
+          <aside class="flex flex-col w-full max-w-md flex-grow border-l border-r">
             <div class="flex flex-shrink-0 items-center px-4 py-2 justify-between border-b">
               <button class="flex items-center text-xs font-semibold text-gray-600">
                 Recent diagrams and API specs
@@ -46,7 +46,7 @@
                  :class="{'bg-gray-100': item.id === (picked && picked.id), 'bg-white': item.id !== (picked && picked.id)}"
                  class="block px-6 py-3 border-t hover:bg-gray-50">
                   <div style="width: 64px; height: 64px; " v-show="item.imageLink">
-                    <img style="max-width: 64px; max-height: 64px;" :src="item.imageLink">
+                    <img alt="preview image" style="max-width: 64px; max-height: 64px;" :src="item.imageLink">
                   </div>
                   <span class="text-sm font-semibold text-gray-900">{{ item.title }}</span>
                   <div class="flex justify-between">
@@ -55,7 +55,7 @@
                 </a>
               </div>
             </div>
-          </div>
+          </aside>
           <div id="workspace-right" class="flex-grow h-full bg-white border-t">
             <iframe id='embedded-viewer' :src='previewSrc' width='100%' height='100%'>
             </iframe>
@@ -185,8 +185,8 @@
         const iframe = document.getElementById('embedded-viewer');
         const iframeDocument = iframe.contentDocument || iframe.contentWindow.document;
         const div = iframeDocument.createElement('div');
-        div.innerHTML = this.customContentList.length 
-          ? 'Select a diagram from the left side panel' 
+        div.innerHTML = this.customContentList.length
+          ? 'Select a diagram from the left side panel'
           : '<a href="https://zenuml.atlassian.net/wiki/spaces/Doc/pages/504659970/Get+started" target="_blank">Learn how to create diagrams and API specs</a>';
         div.style.position = 'absolute';
         div.style.top = '50%';
