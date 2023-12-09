@@ -33,7 +33,6 @@
             <div class="flex-1 overflow-y-auto">
               <div v-for="containerPage in filteredPageList" :key="containerPage.id" class="block px-6 py-3 bg-white border-t hover:bg-gray-50">
                 <div class="mt-2 text-sm text-gray-600">
-                  <!-- :href="`${baseUrl}${ containerPage.id }`" -->
                   <a href="#" class="flex items-center justify-between hover:underline group" @click="gotoPage(containerPage.id)">
 
                     <span class="inline-block truncate">Page: {{ containerPage.title }}</span>
@@ -43,15 +42,15 @@
                   </a>
                 </div>
 
-                <a @click="picked = customContentItem" href="#" v-for="customContentItem in containerPage.customContents" :key="customContentItem.id"
-                 :class="{'bg-gray-100': customContentItem.id === (picked && picked.id), 'bg-white': customContentItem.id !== (picked && picked.id)}"
+                <a @click="picked = item" href="#" v-for="item in containerPage.customContents" :key="item.id"
+                 :class="{'bg-gray-100': item.id === (picked && picked.id), 'bg-white': item.id !== (picked && picked.id)}"
                  class="block px-6 py-3 border-t hover:bg-gray-50">
-                  <div style="width: 64px; height: 64px; " v-show="customContentItem.imageLink">
-                    <img style="max-width: 64px; max-height: 64px;" :src="customContentItem.imageLink">
+                  <div style="width: 64px; height: 64px; " v-show="item.imageLink">
+                    <img style="max-width: 64px; max-height: 64px;" :src="item.imageLink">
                   </div>
-                  <span class="text-sm font-semibold text-gray-900">{{ customContentItem.title }}</span>
+                  <span class="text-sm font-semibold text-gray-900">{{ item.title }}</span>
                   <div class="flex justify-between">
-                    <span class="text-sm font-semibold text-gray-500">{{ customContentItem.value.diagramType }}</span>
+                    <span class="text-sm font-semibold text-gray-500">{{ item.value.diagramType }}</span>
                   </div>
                 </a>
               </div>
@@ -72,7 +71,6 @@
   import {DiagramType, getDiagramData} from "@/model/Diagram/Diagram";
   import EventBus from "@/EventBus";
   import AP from "@/model/AP";
-  import {MacroIdProvider} from "@/model/ContentProvider/MacroIdProvider";
   import {CustomContentStorageProvider} from "@/model/ContentProvider/CustomContentStorageProvider";
   import ApWrapper2 from "@/model/ApWrapper2";
   import _ from 'lodash';
@@ -80,13 +78,11 @@
   import { getAttachmentDownloadLink } from "@/model/Attachment";
 
   export default {
-    name: 'DocumentList',
+    name: 'DashboardDocumentList',
     data() {
       return {
         customContentList: [],
-        picked: '',
         docTypeFilter: '',
-        baseUrl: '',
         filterKeyword: ''
       };
     },
@@ -148,47 +144,10 @@
         }
       }
     },
-    async created() {
-      const apWrapper = new ApWrapper2(AP);
-      const idProvider = new MacroIdProvider(apWrapper);
-      const customContentStorageProvider = new CustomContentStorageProvider(apWrapper);
-      const customContentId = await idProvider.getId();
-      console.debug(`picked custom content id: ${customContentId}`);
-      this.customContentList = await customContentStorageProvider.getCustomContentList(25);
-
-      //init the right side content
-      const iframe = document.getElementById('embedded-viewer');
-      const iframeDocument = iframe.contentDocument || iframe.contentWindow.document;
-      const div = iframeDocument.createElement('div');
-      div.innerHTML = this.customContentList.length 
-        ? 'Select a diagram from the left side panel' 
-        : '<a href="https://zenuml.atlassian.net/wiki/spaces/Doc/pages/504659970/Get+started" target="_blank">Learn how to create diagrams and API specs</a>';
-      div.style.position = 'absolute';
-      div.style.top = '50%';
-      div.style.left = '50%';
-      div.style.transform = 'translate(-50%, -50%)';
-      div.style.textAlign = 'center';
-      div.style.fontFamily = 'Arial, sans-serif';
-      div.style.fontSize = '18px';
-      iframeDocument.body.appendChild(div);
-
-      //load attachment images
-      for(let i=0; i<this.customContentList.length; i++) {
-        const c = this.customContentList[i];
-        try {
-          const page = new ConfluencePage(c.container.id, AP);
-          const macro = await page.macroByCustomContentId(c.id); //todo: move to apwrapper2
-          console.debug(`macro found for custom content ${c.id} in page ${c.container.id}:`, macro)
-          const uuid = macro?.attrs?.parameters?.macroParams?.uuid?.value;
-          if(uuid) {
-            const link = await getAttachmentDownloadLink(c.container.id, uuid);
-            console.debug(`image link of custom content ${c.id} in page ${c.container.id}:`, link);
-            c.imageLink = link;
-          }
-        } catch(e) {
-          console.error(`Error on getting the attachment image of custom content ${c}`, e);
-        }
-      }
+    async mounted() {
+      await this.loadCustomContents();
+      this.initRightSideContent();
+      await this.loadAttachmentImages();
     },
     methods: {
       setFilter(docType) {
@@ -196,6 +155,46 @@
       },
       gotoPage(pageId) {
         AP.navigator.go('contentview', {contentId: pageId});
+      },
+      async loadCustomContents() {
+        const apWrapper = new ApWrapper2(AP);
+        const customContentStorageProvider = new CustomContentStorageProvider(apWrapper);
+        this.customContentList = await customContentStorageProvider.getCustomContentList(25);
+      },
+      async loadAttachmentImages() {
+        const getImageLink = async (customContent) => {
+          try {
+            const page = new ConfluencePage(customContent.container.id, AP);
+            const macro = await page.macroByCustomContentId(customContent.id); //todo: move to apwrapper2
+            console.debug(`macro found for custom content ${customContent.id} in page ${customContent.container.id}:`, macro)
+            const uuid = macro?.attrs?.parameters?.macroParams?.uuid?.value;
+            if(uuid) {
+              const link = await getAttachmentDownloadLink(customContent.container.id, uuid);
+              console.debug(`image link of custom content ${customContent.id} in page ${customContent.container.id}:`, link);
+              customContent.imageLink = link;
+            }
+          } catch(e) {
+            console.error(`Error on getting the attachment image of custom content ${customContent}`, e);
+          }
+        };
+
+        await Promise.all(this.customContentList.map(getImageLink));
+      },
+      initRightSideContent() {
+        const iframe = document.getElementById('embedded-viewer');
+        const iframeDocument = iframe.contentDocument || iframe.contentWindow.document;
+        const div = iframeDocument.createElement('div');
+        div.innerHTML = this.customContentList.length 
+          ? 'Select a diagram from the left side panel' 
+          : '<a href="https://zenuml.atlassian.net/wiki/spaces/Doc/pages/504659970/Get+started" target="_blank">Learn how to create diagrams and API specs</a>';
+        div.style.position = 'absolute';
+        div.style.top = '50%';
+        div.style.left = '50%';
+        div.style.transform = 'translate(-50%, -50%)';
+        div.style.textAlign = 'center';
+        div.style.fontFamily = 'Arial, sans-serif';
+        div.style.fontSize = '18px';
+        iframeDocument.body.appendChild(div);
       }
     },
     components: {
