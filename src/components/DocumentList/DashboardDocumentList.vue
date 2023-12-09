@@ -1,41 +1,44 @@
 <template>
   <div class="content">
     <div class="workspace h-screen flex flex-col">
-      <header class="flex flex-shrink-0">
-        <div class="flex-1 flex items-center justify-between bg-white px-6">
-          <nav class="flex text-sm font-medium leading-none text-slate-800">
-            <a href="#" class="inline-block ml-2 px-3 py-2 hover:bg-gray-200 rounded-lg" :class="{'bg-gray-200': this.docTypeFilter === ''}" @click="setFilter('')">All</a>
-            <a href="#" class="inline-block ml-2 px-3 py-2 hover:bg-gray-200 rounded-lg" :class="{'bg-gray-200': this.docTypeFilter === 'sequence'}" @click="setFilter('sequence')">Sequence</a>
-            <a href="#" class="inline-block ml-2 px-3 py-2 hover:bg-gray-200 rounded-lg" :class="{'bg-gray-200': this.docTypeFilter === 'mermaid'}" @click="setFilter('mermaid')">Mermaid</a>
-            <a href="#" class="inline-block ml-2 px-3 py-2 hover:bg-gray-200 rounded-lg" :class="{'bg-gray-200': this.docTypeFilter === 'graph'}" @click="setFilter('graph')">Graph</a>
-            <a href="#" class="inline-block ml-2 px-3 py-2 hover:bg-gray-200 rounded-lg" :class="{'bg-gray-200': this.docTypeFilter === 'OpenApi'}" @click="setFilter('OpenApi')">Open API</a>
-          </nav>
+      <header class="flex flex-shrink-0 border-b">
+        <div class="flex items-center justify-between bg-white px-6">
+          <div class="flex items-center">
+              <input v-model="filterKeyword" type="search" placeholder="search in title and content" class="block p-2 text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+              <input type="checkbox" id="mineOnly" class="block ml-3"/>
+              <label id="mineOnlyLbl" for="mineOnly">My Diagrams</label>
+              <nav class="flex text-sm font-medium leading-none text-slate-800">
+                <a href="#" class="inline-block ml-2 px-3 py-2 hover:bg-gray-200 rounded-lg" :class="{'bg-gray-200': this.docTypeFilter === ''}" @click="setFilter('')">All</a>
+                <a href="#" class="inline-block ml-2 px-3 py-2 hover:bg-gray-200 rounded-lg" :class="{'bg-gray-200': this.docTypeFilter === 'sequence'}" @click="setFilter('sequence')">Sequence</a>
+                <a href="#" class="inline-block ml-2 px-3 py-2 hover:bg-gray-200 rounded-lg" :class="{'bg-gray-200': this.docTypeFilter === 'mermaid'}" @click="setFilter('mermaid')">Mermaid</a>
+                <a href="#" class="inline-block ml-2 px-3 py-2 hover:bg-gray-200 rounded-lg" :class="{'bg-gray-200': this.docTypeFilter === 'graph'}" @click="setFilter('graph')">Graph</a>
+                <a href="#" class="inline-block ml-2 px-3 py-2 hover:bg-gray-200 rounded-lg" :class="{'bg-gray-200': this.docTypeFilter === 'OpenApi'}" @click="setFilter('OpenApi')">Open API</a>
+              </nav>
+          </div>
         </div>
-        <div class="w-80 flex-shrink-0 px-4 py-3 bg-white">
+        <div class="flex-1 w-50 flex-shrink-0 px-4 py-3 bg-white">
+          <div class="flex items-center float-right">
+            <button class="imgInput tableList"  :class="{ 'selected': viewStyle=='table' }" title="List view" @click="changeToTableStyle"></button>
+            <button class="imgInput gridList" :class="{ 'selected': viewStyle=='grid' }" title="Grid view" @click="changeToGridStyle"></button>
+          </div>
           <button class="flex items-center float-right h-8 text-white text-sm font-medium">
             <save-and-go-back-button :save-and-exit="saveAndExit" />
           </button>
         </div>
-
       </header>
       <div class="flex-1 flex overflow-hidden">
-
-        <main class="flex bg-gray-200 flex-1">
+        <main v-if="viewStyle=='table'" class="tableViewList bg-gray-200 flex flex-1">
           <div class="flex flex-col w-full max-w-md flex-grow border-l border-r">
             <div class="flex flex-shrink-0 items-center px-4 py-2 justify-between border-b">
               <button class="flex items-center text-xs font-semibold text-gray-600">
                 Recent diagrams and API specs
               </button>
             </div>
-            <div class="flex flex-shrink-0 items-center px-4 py-2 justify-between border-b">
-              <input v-model="filterKeyword" placeholder="search in title and content" class="block p-2 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
-            </div>
             <div class="flex-1 overflow-y-auto">
               <div v-for="containerPage in filteredPageList" :key="containerPage.id" class="block px-6 py-3 bg-white border-t hover:bg-gray-50">
                 <div class="mt-2 text-sm text-gray-600">
                   <!-- :href="`${baseUrl}${ containerPage.id }`" -->
                   <a href="#" class="flex items-center justify-between hover:underline group" @click="gotoPage(containerPage.id)">
-
                     <span class="inline-block truncate">Page: {{ containerPage.title }}</span>
                     <svg xmlns="http://www.w3.org/2000/svg" class="inline-block h-5 w-5 flex-shrink-0 invisible group-hover:visible" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                       <path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
@@ -60,6 +63,38 @@
           <div id="workspace-right" class="flex-grow h-full bg-white border-t">
             <iframe id='embedded-viewer' :src='previewSrc' width='100%' height='100%'>
             </iframe>
+          </div>
+        </main>
+        <main v-if="viewStyle=='grid'" class="gridViewList h-full w-full overflow-auto p-5">
+          <div  v-for="containerPage in filteredPageList" :key="containerPage.id" class="gridDiagram">
+            <div class="gridTitle" title="未命名绘图-1702090356466.drawio">
+              未命名绘图-1702090356466.drawio
+            </div>
+            <div class="gridEditBtnCont">
+              <button class="iconEditBtn" title="编辑"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGhlaWdodD0iMThweCIgdmlld0JveD0iMCAwIDI0IDI0IiB3aWR0aD0iMThweCIgZmlsbD0iIzAwMDAwMCI+PHBhdGggZD0iTTAgMGgyNHYyNEgwVjB6IiBmaWxsPSJub25lIi8+PHBhdGggZD0iTTE0LjA2IDkuMDJsLjkyLjkyTDUuOTIgMTlINXYtLjkybDkuMDYtOS4wNk0xNy42NiAzYy0uMjUgMC0uNTEuMS0uNy4yOWwtMS44MyAxLjgzIDMuNzUgMy43NSAxLjgzLTEuODNjLjM5LS4zOS4zOS0xLjAyIDAtMS40MWwtMi4zNC0yLjM0Yy0uMi0uMi0uNDUtLjI5LS43MS0uMjl6bS0zLjYgMy4xOUwzIDE3LjI1VjIxaDMuNzVMMTcuODEgOS45NGwtMy43NS0zLjc1eiIvPjwvc3ZnPg==" /></button>
+            </div>
+            <div class="gridImgCont">
+              <img src="https://danshuitaihejie.atlassian.net/wiki/download/attachments/327683/%E6%9C%AA%E5%91%BD%E5%90%8D%E7%BB%98%E5%9B%BE-1702090356466.drawio.png?api=v2" class="gridDiagramImg" />
+            </div>
+            <div class="gridBottom flex">
+              <div class="gridContainer">
+                <span class="flex items-center">
+                  <img class="contIcon" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' role='presentation'%3E%3Cpath fill='%232684FF' fill-rule='evenodd' d='M3 0h18a3 3 0 013 3v18a3 3 0 01-3 3H3a3 3 0 01-3-3V3a3 3 0 013-3zm1 18c0 .556.446 1 .995 1h8.01c.54 0 .995-.448.995-1 0-.556-.446-1-.995-1h-8.01c-.54 0-.995.448-.995 1zm0-4c0 .556.448 1 1 1h14c.555 0 1-.448 1-1 0-.556-.448-1-1-1H5c-.555 0-1 .448-1 1zm0-4c0 .556.448 1 1 1h14c.555 0 1-.448 1-1 0-.556-.448-1-1-1H5c-.555 0-1 .448-1 1zm0-4c0 .556.448 1 1 1h14c.555 0 1-.448 1-1 0-.556-.448-1-1-1H5c-.555 0-1 .448-1 1z'%3E%3C/path%3E%3C/svg%3E"  />
+                  <a title="test draw.io macro" href="https://danshuitaihejie.atlassian.net/wiki/spaces/SD/pages/327683/test+draw.io+macro" target="_top">test draw.io macro</a>
+                </span>
+              </div>
+              <div class="gridContributors">
+                <span class="flex justify-end">
+                  <a href="https://danshuitaihejie.atlassian.net/wiki/display/~641fe51f6b29c052ab2ec206" target="_blank" title="fengruixiang uuu">
+                    <span class="avatar">
+                      <span class="avatar-inner">
+                        <img src="https://danshuitaihejie.atlassian.net/wiki/aa-avatar/641fe51f6b29c052ab2ec206" />
+                      </span>
+                    </span>
+                  </a>
+                </span>
+              </div>
+            </div>
           </div>
         </main>
       </div>
@@ -87,7 +122,8 @@
         picked: '',
         docTypeFilter: '',
         baseUrl: '',
-        filterKeyword: ''
+        filterKeyword: '',
+        viewStyle:'table'
       };
     },
     computed: {
@@ -120,7 +156,19 @@
         const pages = Object.keys(map).map(k => Object.assign({}, map[k][0].container || emptyContainer, {customContents: map[k]}));
         const sorted = _.sortBy(pages, [p => p.title?.toLowerCase()]);
         console.debug(`filteredPageList:`, sorted);
-        return sorted;
+        return this.fakeData;
+        //return sorted;
+      },
+      fakeData() {
+        const data = [];
+        for (let i = 1; i <= 20; i++) {
+          const item = {
+            id: `ID ${i}`,
+            title: `Title ${i}`
+          };
+          data.push(item);
+        }
+        return data;
       },
       previewSrc() {
         if (!this.picked) return;
@@ -196,6 +244,12 @@
       },
       gotoPage(pageId) {
         AP.navigator.go('contentview', {contentId: pageId});
+      },
+      changeToTableStyle() {
+        this.viewStyle='table';
+      },
+      changeToGridStyle() {
+        this.viewStyle='grid';
       }
     },
     components: {

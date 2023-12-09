@@ -7,15 +7,127 @@
   <meta charset="utf-8">
   <script type="text/javascript" src="js/util.js"></script>
   <script type="text/javascript" src="https://connect-cdn.atl-paas.net/all.js" data-options="sizeToParent:true"></script>
-  
   <title>Dashboard</title>
   <style>
     body.root {
       margin: 0 !important;
       background: white;
     }
+
     .save-and-exit {
       display: none !important;
+    }
+
+    .tableList {
+      background-image: url(image/list.svg);
+    }
+
+    .gridList {
+      background-image: url(image/grid.svg);
+    }
+
+    .imgInput {
+      cursor: pointer;
+      background-size: contain;
+      background-repeat: no-repeat;
+      display: inline-block;
+      width: 32px;
+      height: 32px;
+      transition: all 100ms ease-in;
+      filter: brightness(1.8) grayscale(1) opacity(.7);
+    }
+
+    .selected,.imgInput:hover {
+      filter: none;
+    }
+
+    input[type="search"] {
+      margin: 0;
+      font-size: 14px;
+      color: #000;
+      border: 1px solid transparent;
+      border-radius: 5px;
+      border: 1px solid #555;
+      width: 300px;
+      padding: 9px 4px 9px 40px;
+      background: transparent url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' class='bi bi-search' viewBox='0 0 16 16'%3E%3Cpath d='M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z'%3E%3C/path%3E%3C/svg%3E") no-repeat 13px center;
+    }
+
+    .gridDiagram {
+      border: 1px solid var(--ds-border, #ddd);
+      display: inline-block;
+      vertical-align: top;
+      border-radius: 3px;
+      overflow: hidden;
+      font-size: 14pt;
+      cursor: pointer;
+      margin: 5px;
+      width: 300px;
+      height: 325px;
+    }
+
+    .gridTitle {
+      font-size: 15px;
+      font-weight: 500;
+      padding: 4px;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      overflow: hidden;
+      width: 88%;
+      display: inline-block;
+    }
+
+    .gridEditBtnCont {
+      text-align: right;
+      overflow: hidden;
+      width: 12%;
+      padding: 4px;
+      display: inline-block;
+    }
+
+    .gridImgCont {
+      height: 250px;
+      width: 300px;
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .gridContainer {
+      width: 70%;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      padding: 4px;
+      font-size: 15px;
+    }
+
+    .gridContributors {
+      width: 30%;
+      text-align: right;
+      overflow: hidden;
+      padding: 4px;
+    }
+
+    .iconEditBtn {
+      border: 1px solid var(--ds-border, #ccc);
+      cursor: pointer;
+      background-color: inherit;
+      border-radius: 100%;
+      padding: 4px;
+      box-shadow: 0 0 0 1px var(--ds-border, #ccc);
+    }
+
+    .avatar-inner img {
+      height: 24px;
+      width: 24px;
+      margin-top: -4px;
+    }
+
+    .contIcon {
+      width: 16px;
+      height: 16px;
+      margin-right: 5px;
     }
   </style>
 </head>
