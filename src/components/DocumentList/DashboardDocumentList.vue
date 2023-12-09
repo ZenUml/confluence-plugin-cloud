@@ -5,7 +5,7 @@
         <div class="flex items-center justify-between bg-white px-6">
           <div class="flex items-center">
               <input v-model="filterKeyword" type="search" placeholder="search in title and content" class="block p-2 text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
-              <input type="checkbox" id="mineOnly" class="block ml-3"/>
+              <input v-model="filterOnlyMine" type="checkbox" id="mineOnly" class="block ml-3"/>
               <label id="mineOnlyLbl" for="mineOnly">My Diagrams</label>
               <nav class="flex text-sm font-medium leading-none text-slate-800">
                 <a href="#" class="inline-block ml-2 px-3 py-2 hover:bg-gray-200 rounded-lg" :class="{'bg-gray-200': this.docTypeFilter === ''}" @click="setFilter('')">All</a>
@@ -35,26 +35,30 @@
               </button>
             </div>
             <div class="flex-1 overflow-y-auto">
-              <div v-for="containerPage in filteredPageList" :key="containerPage.id" class="block px-6 py-3 bg-white border-t hover:bg-gray-50">
-                <div class="mt-2 text-sm text-gray-600">
-                  <!-- :href="`${baseUrl}${ containerPage.id }`" -->
-                  <a href="#" class="flex items-center justify-between hover:underline group" @click="gotoPage(containerPage.id)">
-                    <span class="inline-block truncate">Page: {{ containerPage.title }}</span>
-                    <svg xmlns="http://www.w3.org/2000/svg" class="inline-block h-5 w-5 flex-shrink-0 invisible group-hover:visible" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                      <path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                    </svg>
-                  </a>
-                </div>
-
-                <a @click="picked = customContentItem" href="#" v-for="customContentItem in containerPage.customContents" :key="customContentItem.id"
-                 :class="{'bg-gray-100': customContentItem.id === (picked && picked.id), 'bg-white': customContentItem.id !== (picked && picked.id)}"
-                 class="block px-6 py-3 border-t hover:bg-gray-50">
-                  <div style="width: 64px; height: 64px; " v-show="customContentItem.imageLink">
-                    <img style="max-width: 64px; max-height: 64px;" :src="customContentItem.imageLink">
+              <div v-for="customContentItem in filteredCustomContentList" :key="customContentItem.id" class="block px-6 py-3 bg-white border-t hover:bg-gray-50">
+                <a @click="picked = customContentItem" href="#"
+                :class="{'bg-gray-100': customContentItem.id === (picked && picked.id), 'bg-white': customContentItem.id !== (picked && picked.id)}"
+                class="block hover:bg-gray-50">
+                  <div class="flex">
+                    <div style="width: 64px; height: 64px; " v-show="customContentItem.imageLink">
+                      <img style="max-width: 64px; max-height: 64px;" :src="customContentItem.imageLink">
+                    </div>
+                    <div class="px-2 py-2">
+                      <div>
+                        <span class="text-sm font-semibold text-gray-900">{{ customContentItem.title }}</span>
+                      </div>
+                      <span class="diagramType text-sm px-1 py-1 rounded-md bg-gray-200">{{ customContentItem.value.diagramType }}</span>
+                    </div>
                   </div>
-                  <span class="text-sm font-semibold text-gray-900">{{ customContentItem.title }}</span>
-                  <div class="flex justify-between">
-                    <span class="text-sm font-semibold text-gray-500">{{ customContentItem.value.diagramType }}</span>
+                  <div class="flex items-center">
+                    <span class="flex flex-1 items-center px-2 py-2">
+                      <img class="contIcon" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' role='presentation'%3E%3Cpath fill='%232684FF' fill-rule='evenodd' d='M3 0h18a3 3 0 013 3v18a3 3 0 01-3 3H3a3 3 0 01-3-3V3a3 3 0 013-3zm1 18c0 .556.446 1 .995 1h8.01c.54 0 .995-.448.995-1 0-.556-.446-1-.995-1h-8.01c-.54 0-.995.448-.995 1zm0-4c0 .556.448 1 1 1h14c.555 0 1-.448 1-1 0-.556-.448-1-1-1H5c-.555 0-1 .448-1 1zm0-4c0 .556.448 1 1 1h14c.555 0 1-.448 1-1 0-.556-.448-1-1-1H5c-.555 0-1 .448-1 1zm0-4c0 .556.448 1 1 1h14c.555 0 1-.448 1-1 0-.556-.448-1-1-1H5c-.555 0-1 .448-1 1z'%3E%3C/path%3E%3C/svg%3E"  />
+                      <a :title="customContentItem.container.title" :href="customContentItem.container.link" target="_top">{{customContentItem.container.title}}</a>
+                    </span>
+                    <span class="flex avatar-inner justify-end items-center px-2 py-2">
+                      <img :src="customContentItem.author.avatar"  />
+                      <a :title="customContentItem.author.name " :href="customContentItem.author.link" target="_top">{{customContentItem.author.name}}</a>
+                    </span>
                   </div>
                 </a>
               </div>
@@ -66,29 +70,29 @@
           </div>
         </main>
         <main v-if="viewStyle=='grid'" class="gridViewList h-full w-full overflow-auto p-5">
-          <div  v-for="containerPage in filteredPageList" :key="containerPage.id" class="gridDiagram">
-            <div class="gridTitle" title="未命名绘图-1702090356466.drawio">
-              未命名绘图-1702090356466.drawio
+          <div  v-for="customContentItem in filteredCustomContentList" :key="customContentItem.id" class="gridDiagram">
+            <div class="gridTitle" :title="customContentItem.title">
+              {{ customContentItem.title }}
             </div>
             <div class="gridEditBtnCont">
-              <button class="iconEditBtn" title="编辑"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGhlaWdodD0iMThweCIgdmlld0JveD0iMCAwIDI0IDI0IiB3aWR0aD0iMThweCIgZmlsbD0iIzAwMDAwMCI+PHBhdGggZD0iTTAgMGgyNHYyNEgwVjB6IiBmaWxsPSJub25lIi8+PHBhdGggZD0iTTE0LjA2IDkuMDJsLjkyLjkyTDUuOTIgMTlINXYtLjkybDkuMDYtOS4wNk0xNy42NiAzYy0uMjUgMC0uNTEuMS0uNy4yOWwtMS44MyAxLjgzIDMuNzUgMy43NSAxLjgzLTEuODNjLjM5LS4zOS4zOS0xLjAyIDAtMS40MWwtMi4zNC0yLjM0Yy0uMi0uMi0uNDUtLjI5LS43MS0uMjl6bS0zLjYgMy4xOUwzIDE3LjI1VjIxaDMuNzVMMTcuODEgOS45NGwtMy43NS0zLjc1eiIvPjwvc3ZnPg==" /></button>
+              <button class="iconEditBtn" title="Edit"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGhlaWdodD0iMThweCIgdmlld0JveD0iMCAwIDI0IDI0IiB3aWR0aD0iMThweCIgZmlsbD0iIzAwMDAwMCI+PHBhdGggZD0iTTAgMGgyNHYyNEgwVjB6IiBmaWxsPSJub25lIi8+PHBhdGggZD0iTTE0LjA2IDkuMDJsLjkyLjkyTDUuOTIgMTlINXYtLjkybDkuMDYtOS4wNk0xNy42NiAzYy0uMjUgMC0uNTEuMS0uNy4yOWwtMS44MyAxLjgzIDMuNzUgMy43NSAxLjgzLTEuODNjLjM5LS4zOS4zOS0xLjAyIDAtMS40MWwtMi4zNC0yLjM0Yy0uMi0uMi0uNDUtLjI5LS43MS0uMjl6bS0zLjYgMy4xOUwzIDE3LjI1VjIxaDMuNzVMMTcuODEgOS45NGwtMy43NS0zLjc1eiIvPjwvc3ZnPg==" /></button>
             </div>
             <div class="gridImgCont">
-              <img src="https://danshuitaihejie.atlassian.net/wiki/download/attachments/327683/%E6%9C%AA%E5%91%BD%E5%90%8D%E7%BB%98%E5%9B%BE-1702090356466.drawio.png?api=v2" class="gridDiagramImg" />
+              <img :src="customContentItem.imageLink" class="gridDiagramImg" />
             </div>
             <div class="gridBottom flex">
               <div class="gridContainer">
                 <span class="flex items-center">
                   <img class="contIcon" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' role='presentation'%3E%3Cpath fill='%232684FF' fill-rule='evenodd' d='M3 0h18a3 3 0 013 3v18a3 3 0 01-3 3H3a3 3 0 01-3-3V3a3 3 0 013-3zm1 18c0 .556.446 1 .995 1h8.01c.54 0 .995-.448.995-1 0-.556-.446-1-.995-1h-8.01c-.54 0-.995.448-.995 1zm0-4c0 .556.448 1 1 1h14c.555 0 1-.448 1-1 0-.556-.448-1-1-1H5c-.555 0-1 .448-1 1zm0-4c0 .556.448 1 1 1h14c.555 0 1-.448 1-1 0-.556-.448-1-1-1H5c-.555 0-1 .448-1 1zm0-4c0 .556.448 1 1 1h14c.555 0 1-.448 1-1 0-.556-.448-1-1-1H5c-.555 0-1 .448-1 1z'%3E%3C/path%3E%3C/svg%3E"  />
-                  <a title="test draw.io macro" href="https://danshuitaihejie.atlassian.net/wiki/spaces/SD/pages/327683/test+draw.io+macro" target="_top">test draw.io macro</a>
+                  <a :title="customContentItem.container.title" :href="customContentItem.container.link" target="_top">{{customContentItem.container.title}}</a>
                 </span>
               </div>
               <div class="gridContributors">
                 <span class="flex justify-end">
-                  <a href="https://danshuitaihejie.atlassian.net/wiki/display/~641fe51f6b29c052ab2ec206" target="_blank" title="fengruixiang uuu">
+                  <a :href="customContentItem.author.link" target="_blank" :title="customContentItem.author.name">
                     <span class="avatar">
                       <span class="avatar-inner">
-                        <img src="https://danshuitaihejie.atlassian.net/wiki/aa-avatar/641fe51f6b29c052ab2ec206" />
+                        <img :src="customContentItem.author.avatar" />
                       </span>
                     </span>
                   </a>
@@ -123,13 +127,27 @@
         docTypeFilter: '',
         baseUrl: '',
         filterKeyword: '',
+        filterOnlyMine: false,
         viewStyle:'table'
       };
     },
+    // watch: {
+    //   keyword(newKeyword, oldKeyword) {
+    //     console.log('Keyword changed:', newKeyword, oldKeyword);
+    //     this.fetchAsyncData();
+    //   }
+    // },
     computed: {
-      filteredCustomContentList() {
-        console.debug(`current filterKeyword: ${this.filterKeyword}`);
-
+       filteredCustomContentList() {
+        
+        // console.debug(`search condition filterKeyword: ${this.filterKeyword},docTypeFilter: ${this.docTypeFilter},filterOnlyMine: ${this.filterOnlyMine}`);
+        // const apWrapper = new ApWrapper2(AP);
+        // const idProvider = new MacroIdProvider(apWrapper);
+        // const customContentStorageProvider = new CustomContentStorageProvider(apWrapper);
+        // const customContentId = await idProvider.getId();
+        // console.debug(`picked custom content id: ${customContentId}`);
+        // this.customContentList = await customContentStorageProvider.getCustomContentList(25);
+        // return this.customContentList;
         const results = this.customContentList.filter(item => {
           if(!item?.id) {
             return false;
@@ -148,25 +166,48 @@
           return false;
         });
         console.debug(`filteredCustomContentList:`, results);
+        //return this.fakeData;
         return results;
       },
       filteredPageList() {
         const map = _.groupBy(this.filteredCustomContentList, c => c.container?.id || '0');
+        console.debug(map);
         const emptyContainer = {id: '', title: ''};
         const pages = Object.keys(map).map(k => Object.assign({}, map[k][0].container || emptyContainer, {customContents: map[k]}));
         const sorted = _.sortBy(pages, [p => p.title?.toLowerCase()]);
         console.debug(`filteredPageList:`, sorted);
-        return this.fakeData;
-        //return sorted;
+        return sorted;
       },
       fakeData() {
-        const data = [];
-        for (let i = 1; i <= 20; i++) {
-          const item = {
-            id: `ID ${i}`,
-            title: `Title ${i}`
+        const data= [];
+        for (let i = 1; i <= 10; i++) {
+          let customContent = {
+            container: {
+              id: `container-${i}`,
+              type: `type-${i}`,
+              title: `Title ${i}`,
+              link: `https://danshuitaihejie.atlassian.net/wiki/spaces/SD/pages/557062/test+zenum+macro`
+            },
+            space: {
+              key: `space-${i}`
+            },
+            id: `id-${i}`,
+            version: {
+              number: i
+            },
+            title: `diagram title title title title title${i}`,
+            type: `type-${i}`,
+            value: {diagramType:`diagram-type`},
+            imageLink: `https://danshuitaihejie.atlassian.net/wiki/download/attachments/557062/zenuml-e6ba5472-c61e-4d8f-9259-8278bb16d62b.png?version=1&modificationDate=1702048257962&cacheVersion=1&api=v2`,
+            author: {
+              id: `author-id-${i}`,
+              name: `Author ${i}`,
+              avatar: `https://danshuitaihejie.atlassian.net//wiki/aa-avatar/641fe51f6b29c052ab2ec206`,
+              link: `https://danshuitaihejie.atlassian.net//wiki/display/~641fe51f6b29c052ab2ec206`
+            },
+            updateDate:'2023-12-07T10:11:18.494Z'
           };
-          data.push(item);
+          data.push(customContent);
         }
         return data;
       },
@@ -203,7 +244,7 @@
       const customContentId = await idProvider.getId();
       console.debug(`picked custom content id: ${customContentId}`);
       this.customContentList = await customContentStorageProvider.getCustomContentList(25);
-
+      console.debug(this.customContentList);
       //init the right side content
       const iframe = document.getElementById('embedded-viewer');
       const iframeDocument = iframe.contentDocument || iframe.contentWindow.document;
@@ -237,6 +278,11 @@
           console.error(`Error on getting the attachment image of custom content ${c}`, e);
         }
       }
+    },
+    async fetchAsyncData(){
+      const apWrapper = new ApWrapper2(AP);
+      const customContentStorageProvider = new CustomContentStorageProvider(apWrapper);
+      this.customContentList = await customContentStorageProvider.getCustomContentList();
     },
     methods: {
       setFilter(docType) {

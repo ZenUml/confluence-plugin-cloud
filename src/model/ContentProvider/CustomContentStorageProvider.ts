@@ -18,7 +18,7 @@ export class CustomContentStorageProvider implements StorageProvider {
     return customContent?.value;
   }
 
-  async getCustomContentList(maxItems?: number) {
+  async getCustomContentList(maxItems?: number,pageSize?: number,docType: string='',keyword: string='',onlyMine: boolean=false) {
     return await this.apWrapper.searchCustomContent(maxItems);
   }
 

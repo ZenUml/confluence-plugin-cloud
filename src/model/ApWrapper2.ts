@@ -348,39 +348,28 @@ export default class ApWrapper2 implements IApWrapper {
     }
   }
 
-  async searchCustomContent(maxItems: number = SEARCH_CUSTOM_CONTENT_LIMIT): Promise<Array<ICustomContent>> {
+  async searchCustomContent(maxItems?: number,pageSize: number=25,docType: string='',keyword: string='',onlyMine: boolean=false): Promise<Array<ICustomContent>> {
     const spaceKey = (await this._getCurrentSpace()).key;
     const customContentType = (t: string) => `${this.getCustomContentTypePrefix()}:${t}`;
     const typeClause = (t: string) => `type="${customContentType(t)}"`;
     const typesClause = (a: Array<string>) => a.map(typeClause).join(' or ');
-    const searchUrl = `/rest/api/content/search?cql=space="${spaceKey}" and (${typesClause(CUSTOM_CONTENT_TYPES)}) order by lastmodified desc&expand=body.raw,version.number,container,space`;
-
-    const parseCustomContentBody = (customContent: ICustomContentResponseBody): ICustomContent => {
-      let diagram: any;
-      const rawValue = customContent?.body?.raw?.value;
-      if(rawValue) {
-        try {
-          diagram = JSON.parse(rawValue);
-          diagram.source = DataSource.CustomContent;
-        } catch(e) {
-          console.error(`parseCustomContentBody error: `, e, `raw value: ${rawValue}`);
-          trackEvent(JSON.stringify(e), 'parseCustomContentBody', 'error');
-        }
-      }
-      const result = <unknown>Object.assign({}, customContent, {value: diagram});
-      console.debug(`converted result: `, result);
-      return result as ICustomContent;
-    };
-
+    let keywordFilter='',onlyMineFilter='',docTypeFilter='';
+    if(keyword!='')keywordFilter=` and (title ~ "${keyword}*" or title ~ "${keyword}")`;
+    if(onlyMine)onlyMineFilter=` and contributor = "${this.currentUser?.atlassianAccountId}"`;
+    if(docType!='')docTypeFilter=``;
+    const searchUrl = `/rest/api/content/search?cql=space="${spaceKey}" and (${typesClause(CUSTOM_CONTENT_TYPES)}) ${keywordFilter} ${onlyMineFilter} ${docTypeFilter}order by lastmodified desc&expand=body.raw,version.number,container,space,body.storage,history.contributors.publishers.users`;
+    
     const searchOnce = async (url: string): Promise<SearchResults> => {
       console.debug(`Searching content with ${url}`);
       const data = await this.request(url);
       console.debug(`${data?.size} results returned, has next? ${data?._links?.next != null}`);
 
-      data.results = data?.results.map(parseCustomContentBody).filter((c: ICustomContent) => c.value);
+      data.results = data?.results.map(this.parseCustomContent).filter((c: ICustomContent) => c.value);
       return data;
     };
 
+    let maxItemsCount=SEARCH_CUSTOM_CONTENT_LIMIT;
+    if(maxItems!=undefined)maxItemsCount=maxItems;
     const searchAll = async (): Promise<Array<ICustomContent>> => {
       let url = searchUrl, data;
       let results: Array<ICustomContent> = [];
@@ -388,7 +377,7 @@ export default class ApWrapper2 implements IApWrapper {
         data = await searchOnce(url);
         results = results.concat(data?.results);
         url = data?._links?.next || '';
-      } while(url && results.length < maxItems);
+      } while(url && results.length < maxItemsCount);
       return results;
     };
 
@@ -402,6 +391,71 @@ export default class ApWrapper2 implements IApWrapper {
       return [] as Array<ICustomContent>;
     }
   }
+
+  buildUrl=(sourceUrl: string,newPath: string): string =>{
+    return `${this.extractDomainFromURL(sourceUrl)}/${newPath}`;
+  }
+
+  extractDomainFromURL=(url: string): string =>{
+    try {
+      const parsedUrl = new URL(url);
+      return parsedUrl.origin;
+    } catch (error) {
+      console.error("Invalid URL:", error);
+      return '';
+    }
+  }
+
+  parseCustomContentAuthor = (customContent: ICustomContentResponseBody): any => {
+    let accountId=customContent?.history?.createdBy?.accountId||'';
+    let selfLink=customContent?.history?.createdBy?._links?.self||'';
+    let author: { id: string, name: string, avatar: string, link: string } = {
+      id: accountId,
+      name: customContent?.history?.createdBy?.displayName||'',
+      avatar:  this.buildUrl(selfLink,customContent?.history?.createdBy?.profilePicture?.path||''),
+      link: this.buildUrl(selfLink,'wiki/display/~'+accountId),
+    };
+    return author;
+  };
+
+  parseCustomContent = (customContent: ICustomContentResponseBody): ICustomContent => {
+    const result = <unknown>Object.assign({}, customContent, {
+      value: this.parseCustomContentDiagram(customContent),
+      container:  Object.assign({}, customContent.container, this.parseCustomContentContainer(customContent)),
+      author:  this.parseCustomContentAuthor(customContent)
+    });
+    console.debug(`converted result: `, result);
+    return result as ICustomContent;
+  };
+
+  parseCustomContentContainer = (customContent: ICustomContentResponseBody): any => {
+    let container: { link: string | undefined } = { link: undefined };
+    try {
+      let webui = customContent?.container?._links?.webui||'';
+      let selfUrl = customContent?.container?._links?.self||'';
+      container.link = this.buildUrl(selfUrl,'wiki'+webui);
+    } catch (e) {
+      console.error('parseCustomContentContainer error: ', e);
+      trackEvent(JSON.stringify(e), 'parseCustomContentContainer', 'error');
+    }
+    return container;
+  };
+
+  parseCustomContentDiagram = (customContent: ICustomContentResponseBody): any => {
+    let diagram: any;
+    const rawValue = customContent?.body?.raw?.value;
+    if(rawValue) {
+      try {
+        diagram = JSON.parse(rawValue);
+        diagram.source = DataSource.CustomContent;
+      } catch(e) {
+        console.error(`parseCustomContentDiagram error: `, e, `raw value: ${rawValue}`);
+        trackEvent(JSON.stringify(e), 'parseCustomContentDiagram', 'error');
+      }
+    }
+    return diagram;
+  };
+
 
   async saveCustomContent(customContentId: string, value: Diagram) {
     let result;
