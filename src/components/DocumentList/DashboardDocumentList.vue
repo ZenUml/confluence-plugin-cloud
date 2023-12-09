@@ -82,6 +82,7 @@
     data() {
       return {
         customContentList: [],
+        picked: '',
         docTypeFilter: '',
         filterKeyword: ''
       };
