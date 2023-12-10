@@ -52,6 +52,8 @@
                   <div class="flex justify-between">
                     <span class="text-sm font-semibold text-gray-500">{{ item.value.diagramType }}</span>
                   </div>
+
+                  <button @click="edit(item.id)">Edit</button>
                 </a>
               </div>
             </div>
@@ -196,6 +198,18 @@
         div.style.fontFamily = 'Arial, sans-serif';
         div.style.fontSize = '18px';
         iframeDocument.body.appendChild(div);
+      },
+      edit(customContentId) {
+        AP.dialog.create({
+          key: 'zenuml-content-sequence-editor-dialog-dashboard',
+            chrome: false,
+            width: "100%",
+            height: "100%",
+            customData: {'content.id': customContentId, contentId: customContentId}
+        }).on('close', async () => {
+          const iframe = document.getElementById('embedded-viewer');
+          iframe.contentWindow.location.reload();
+        });
       }
     },
     components: {
