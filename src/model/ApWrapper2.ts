@@ -432,6 +432,9 @@ export default class ApWrapper2 implements IApWrapper {
   };
 
   buildUrl=(sourceUrl: string,newPath: string): string =>{
+    if (newPath && newPath.startsWith("/")) {
+      newPath = newPath.substring(1);
+    }
     return `${this.extractDomainFromURL(sourceUrl)}/${newPath}`;
   }
 
