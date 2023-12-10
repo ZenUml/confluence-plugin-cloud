@@ -32,7 +32,7 @@ export default class ApWrapper2 implements IApWrapper {
   currentPageId: string | undefined;
   currentPageUrl: string | undefined;
   locationTarget: LocationTarget | undefined;
-
+  nextPageUrl: string ='';
   constructor(ap: IAp) {
     this.versionType = this.isLite() ? VersionType.Lite : VersionType.Full;
     this._confluence = ap.confluence;
@@ -51,7 +51,6 @@ export default class ApWrapper2 implements IApWrapper {
       this.currentPageUrl = await this._getCurrentPageUrl();
       this.locationTarget = await this._getLocationTarget();
       this.currentPageId = await this._page.getPageId();
-
       console.log('initializeContext', this.currentUser, this.currentSpace, this.currentPageUrl, this.locationTarget, this.currentPageId);
 
       if(window) {
@@ -348,49 +347,89 @@ export default class ApWrapper2 implements IApWrapper {
     }
   }
 
+   async searchNextPage(): Promise<Array<ICustomContent>> {
+    if(this.nextPageUrl=='')return [] as Array<ICustomContent>;
+    const nextPage = async (): Promise<Array<ICustomContent>> => {
+      let results: Array<ICustomContent> = [],data;
+      data = await this.searchOnce(this.nextPageUrl);
+      this.nextPageUrl=data?._links?.next || '';
+      results=results.concat(data?.results);
+      return results;
+    };
+    try {
+      return await time(nextPage, (duration, results) => {
+        trackEvent(`found ${results.length} content, took ${duration} ms`, 'searchNextPage', 'info');
+      });
+    } catch (e) {
+      console.error('searchNextPage', e);
+      trackEvent(JSON.stringify(e), 'searchNextPage', 'error');
+      return [] as Array<ICustomContent>;
+    }
+   }
   async searchCustomContent(maxItems?: number,pageSize: number=25,docType: string='',keyword: string='',onlyMine: boolean=false): Promise<Array<ICustomContent>> {
     const spaceKey = (await this._getCurrentSpace()).key;
     const customContentType = (t: string) => `${this.getCustomContentTypePrefix()}:${t}`;
     const typeClause = (t: string) => `type="${customContentType(t)}"`;
     const typesClause = (a: Array<string>) => a.map(typeClause).join(' or ');
-    let keywordFilter='',onlyMineFilter='',docTypeFilter='';
+    let maxItemsHasValue=maxItems!=undefined;
+    let keywordFilter='',onlyMineFilter='',docTypeFilter='',limitFilter='';
     if(keyword!='')keywordFilter=` and (title ~ "${keyword}*" or title ~ "${keyword}")`;
     if(onlyMine)onlyMineFilter=` and contributor = "${this.currentUser?.atlassianAccountId}"`;
     if(docType!='')docTypeFilter=``;
-    const searchUrl = `/rest/api/content/search?cql=space="${spaceKey}" and (${typesClause(CUSTOM_CONTENT_TYPES)}) ${keywordFilter} ${onlyMineFilter} ${docTypeFilter}order by lastmodified desc&expand=body.raw,version.number,container,space,body.storage,history.contributors.publishers.users`;
+    if(!maxItemsHasValue)limitFilter=`&limit=${pageSize}`;
+    const searchUrl = `/rest/api/content/search?cql=space="${spaceKey}" and (${typesClause(CUSTOM_CONTENT_TYPES)}) ${keywordFilter} ${onlyMineFilter} ${docTypeFilter}order by lastmodified desc${limitFilter}&expand=body.raw,version.number,container,space,body.storage,history.contributors.publishers.users`;
     
-    const searchOnce = async (url: string): Promise<SearchResults> => {
-      console.debug(`Searching content with ${url}`);
-      const data = await this.request(url);
-      console.debug(`${data?.size} results returned, has next? ${data?._links?.next != null}`);
-
-      data.results = data?.results.map(this.parseCustomContent).filter((c: ICustomContent) => c.value);
-      return data;
-    };
-
     let maxItemsCount=SEARCH_CUSTOM_CONTENT_LIMIT;
-    if(maxItems!=undefined)maxItemsCount=maxItems;
     const searchAll = async (): Promise<Array<ICustomContent>> => {
       let url = searchUrl, data;
       let results: Array<ICustomContent> = [];
       do {
-        data = await searchOnce(url);
+        data = await this.searchOnce(url);
         results = results.concat(data?.results);
         url = data?._links?.next || '';
       } while(url && results.length < maxItemsCount);
       return results;
     };
 
+    const searchPage = async (): Promise<Array<ICustomContent>> => {
+      let url = searchUrl, data;
+      let results: Array<ICustomContent> = [];
+      data = await this.searchOnce(url);
+      console.debug({action:'searchPage searchOnce',data:data});
+      this.nextPageUrl=data?._links?.next || '';
+      results=results.concat(data?.results);
+      console.debug({action:'searchOnce concat',results:results});
+      return results;
+    };
+
     try {
-      return await time(searchAll, (duration, results) => {
-        trackEvent(`found ${results.length} content, took ${duration} ms`, 'searchAll', 'info');
-      });
+      if(maxItemsHasValue){
+        maxItemsCount=maxItems||1;
+        return await time(searchAll, (duration, results) => {
+          trackEvent(`found ${results.length} content, took ${duration} ms`, 'searchAll', 'info');
+        });
+      }
+      else
+      {
+        return await time(searchPage, (duration, results) => {
+          trackEvent(`found ${results.length} content, took ${duration} ms`, 'searchPage', 'info');
+        });
+      }
     } catch (e) {
       console.error('searchCustomContent', e);
       trackEvent(JSON.stringify(e), 'searchCustomContent', 'error');
       return [] as Array<ICustomContent>;
     }
   }
+
+  searchOnce = async (url: string): Promise<SearchResults> => {
+    console.debug(`Searching content with ${url}`);
+    const data = await this.request(url);
+    console.debug(`${data?.size} results returned, has next? ${data?._links?.next != null}`);
+    data.results = data?.results.map(this.parseCustomContent).filter((c: ICustomContent) => c.value);
+    console.debug({action:'searchOnce',data:data});
+    return data;
+  };
 
   buildUrl=(sourceUrl: string,newPath: string): string =>{
     return `${this.extractDomainFromURL(sourceUrl)}/${newPath}`;

@@ -34,14 +34,14 @@
                 Recent diagrams and API specs
               </button>
             </div>
-            <div class="flex-1 overflow-y-auto">
-              <div v-for="customContentItem in filteredCustomContentList" :key="customContentItem.id" class="block px-6 py-3 bg-white border-t hover:bg-gray-50">
+            <div class="flex-1 overflow-y-auto" @scroll="handleScroll">
+              <div v-for="customContentItem in filteredCustomContentList" :key="customContentItem.id" class="block px-4 py-2 bg-white border-t hover:bg-gray-50">
                 <a @click="picked = customContentItem" href="#"
                 :class="{'bg-gray-100': customContentItem.id === (picked && picked.id), 'bg-white': customContentItem.id !== (picked && picked.id)}"
                 class="block hover:bg-gray-50">
                   <div class="flex">
-                    <div style="width: 64px; height: 64px; " v-show="customContentItem.imageLink">
-                      <img style="max-width: 64px; max-height: 64px;" :src="customContentItem.imageLink">
+                    <div style="width: 75px; height: 75px; " v-show="customContentItem.imageLink">
+                      <img style="max-width: 75px; max-height: 75px;" :src="customContentItem.imageLink">
                     </div>
                     <div class="px-2 py-2">
                       <div>
@@ -53,11 +53,11 @@
                   <div class="flex items-center">
                     <span class="flex flex-1 items-center px-2 py-2">
                       <img class="contIcon" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' role='presentation'%3E%3Cpath fill='%232684FF' fill-rule='evenodd' d='M3 0h18a3 3 0 013 3v18a3 3 0 01-3 3H3a3 3 0 01-3-3V3a3 3 0 013-3zm1 18c0 .556.446 1 .995 1h8.01c.54 0 .995-.448.995-1 0-.556-.446-1-.995-1h-8.01c-.54 0-.995.448-.995 1zm0-4c0 .556.448 1 1 1h14c.555 0 1-.448 1-1 0-.556-.448-1-1-1H5c-.555 0-1 .448-1 1zm0-4c0 .556.448 1 1 1h14c.555 0 1-.448 1-1 0-.556-.448-1-1-1H5c-.555 0-1 .448-1 1zm0-4c0 .556.448 1 1 1h14c.555 0 1-.448 1-1 0-.556-.448-1-1-1H5c-.555 0-1 .448-1 1z'%3E%3C/path%3E%3C/svg%3E"  />
-                      <a :title="customContentItem.container.title" :href="customContentItem.container.link" target="_top">{{customContentItem.container.title}}</a>
+                      <a :title="customContentItem.container.title" :href="customContentItem.container.link" target="_blank">{{customContentItem.container.title}}</a>
                     </span>
                     <span class="flex avatar-inner justify-end items-center px-2 py-2">
                       <img :src="customContentItem.author.avatar"  />
-                      <a :title="customContentItem.author.name " :href="customContentItem.author.link" target="_top">{{customContentItem.author.name}}</a>
+                      <a :title="customContentItem.author.name " :href="customContentItem.author.link" target="_blank">{{customContentItem.author.name}}</a>
                     </span>
                   </div>
                 </a>
@@ -69,7 +69,7 @@
             </iframe>
           </div>
         </main>
-        <main v-if="viewStyle=='grid'" class="gridViewList h-full w-full overflow-auto p-5">
+        <main v-if="viewStyle=='grid'" class="gridViewList h-full w-full overflow-auto p-5" @scroll="handleScroll">
           <div  v-for="customContentItem in filteredCustomContentList" :key="customContentItem.id" class="gridDiagram">
             <div class="gridTitle" :title="customContentItem.title">
               {{ customContentItem.title }}
@@ -84,7 +84,7 @@
               <div class="gridContainer">
                 <span class="flex items-center">
                   <img class="contIcon" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' role='presentation'%3E%3Cpath fill='%232684FF' fill-rule='evenodd' d='M3 0h18a3 3 0 013 3v18a3 3 0 01-3 3H3a3 3 0 01-3-3V3a3 3 0 013-3zm1 18c0 .556.446 1 .995 1h8.01c.54 0 .995-.448.995-1 0-.556-.446-1-.995-1h-8.01c-.54 0-.995.448-.995 1zm0-4c0 .556.448 1 1 1h14c.555 0 1-.448 1-1 0-.556-.448-1-1-1H5c-.555 0-1 .448-1 1zm0-4c0 .556.448 1 1 1h14c.555 0 1-.448 1-1 0-.556-.448-1-1-1H5c-.555 0-1 .448-1 1zm0-4c0 .556.448 1 1 1h14c.555 0 1-.448 1-1 0-.556-.448-1-1-1H5c-.555 0-1 .448-1 1z'%3E%3C/path%3E%3C/svg%3E"  />
-                  <a :title="customContentItem.container.title" :href="customContentItem.container.link" target="_top">{{customContentItem.container.title}}</a>
+                  <a :title="customContentItem.container.title" :href="customContentItem.container.link" target="_blank">{{customContentItem.container.title}}</a>
                 </span>
               </div>
               <div class="gridContributors">
@@ -108,18 +108,17 @@
 
 <script>
   import SaveAndGoBackButton from "@/components/SaveAndGoBackButton";
-  import {DiagramType, getDiagramData} from "@/model/Diagram/Diagram";
+  import {DiagramType} from "@/model/Diagram/Diagram";
   import EventBus from "@/EventBus";
   import AP from "@/model/AP";
   import {MacroIdProvider} from "@/model/ContentProvider/MacroIdProvider";
   import {CustomContentStorageProvider} from "@/model/ContentProvider/CustomContentStorageProvider";
   import ApWrapper2 from "@/model/ApWrapper2";
-  import _ from 'lodash';
   import { ConfluencePage } from "@/model/page/ConfluencePage";
   import { getAttachmentDownloadLink } from "@/model/Attachment";
 
   export default {
-    name: 'DocumentList',
+    name: 'DashboardDocumentList',
     data() {
       return {
         customContentList: [],
@@ -128,26 +127,27 @@
         baseUrl: '',
         filterKeyword: '',
         filterOnlyMine: false,
-        viewStyle:'table'
+        viewStyle:'table',
+        customContentStorageProvider:null,
+        filterTimeout:null,
+        nextPagePrevScrollTop: 0,
+        needTryLoadNextPage: true,
+        pageSize:15,
       };
     },
-    // watch: {
-    //   keyword(newKeyword, oldKeyword) {
-    //     console.log('Keyword changed:', newKeyword, oldKeyword);
-    //     this.fetchAsyncData();
-    //   }
-    // },
+    watch: {
+      async filterKeyword(newValue, oldValue) {
+        console.log('filterKeyword changed:', newValue, oldValue);
+        if (this.filterTimeout)clearTimeout(this.filterTimeout);
+        this.filterTimeout = setTimeout(async () => {await this.search();}, 500);
+      },
+      async filterOnlyMine(newValue, oldValue) {
+        console.log('filterOnlyMine changed:', newValue, oldValue);
+        await this.search();
+      }
+    },
     computed: {
        filteredCustomContentList() {
-        
-        // console.debug(`search condition filterKeyword: ${this.filterKeyword},docTypeFilter: ${this.docTypeFilter},filterOnlyMine: ${this.filterOnlyMine}`);
-        // const apWrapper = new ApWrapper2(AP);
-        // const idProvider = new MacroIdProvider(apWrapper);
-        // const customContentStorageProvider = new CustomContentStorageProvider(apWrapper);
-        // const customContentId = await idProvider.getId();
-        // console.debug(`picked custom content id: ${customContentId}`);
-        // this.customContentList = await customContentStorageProvider.getCustomContentList(25);
-        // return this.customContentList;
         const results = this.customContentList.filter(item => {
           if(!item?.id) {
             return false;
@@ -155,28 +155,152 @@
           if(this.docTypeFilter && item?.value?.diagramType?.toLowerCase() !== this.docTypeFilter?.toLowerCase()) {
             return false;
           }
-          if(!this.filterKeyword || this.filterKeyword && (
-            item.container?.title && item.container?.title.toLowerCase().includes(this.filterKeyword.toLowerCase()) ||
-            item.title && item.title.toLowerCase().includes(this.filterKeyword.toLowerCase()) ||
-            item.value?.title && item.value?.title.toLowerCase().includes(this.filterKeyword.toLowerCase()) ||
-            item.value && getDiagramData(item.value).toLowerCase().includes(this.filterKeyword.toLowerCase())
-            )) {
-              return true;
-          }
-          return false;
+          return true;
         });
-        console.debug(`filteredCustomContentList:`, results);
-        //return this.fakeData;
         return results;
       },
-      filteredPageList() {
-        const map = _.groupBy(this.filteredCustomContentList, c => c.container?.id || '0');
-        console.debug(map);
-        const emptyContainer = {id: '', title: ''};
-        const pages = Object.keys(map).map(k => Object.assign({}, map[k][0].container || emptyContainer, {customContents: map[k]}));
-        const sorted = _.sortBy(pages, [p => p.title?.toLowerCase()]);
-        console.debug(`filteredPageList:`, sorted);
-        return sorted;
+      previewSrc() {
+        if (!this.picked) return;
+        function getViewerUrl(diagramType) {
+          if(diagramType === DiagramType.Sequence || diagramType === DiagramType.Mermaid) {
+            return '/sequence-viewer.html';
+          }
+          if(diagramType === DiagramType.Graph) {
+            return '/drawio/viewer.html';
+          }
+          if(diagramType === DiagramType.OpenApi) {
+            return '/swagger-ui.html';
+          }
+
+          console.warn(`Unknown diagramType: ${diagramType}`);
+        }
+        return `${getViewerUrl(this.picked.value.diagramType)}${window.location.search || '?'}&rendered.for=custom-content-native&content.id=${this.picked.id}&embedded=true`;
+
+      },
+      saveAndExit: function () {
+        const that = this;
+        return function () {
+          window.picked = that.picked;
+          EventBus.$emit('save')
+        }
+      }
+    },
+    async created() {
+      const apWrapper = new ApWrapper2(AP);
+      await apWrapper.initializeContext();
+      const idProvider = new MacroIdProvider(apWrapper);
+      this.customContentStorageProvider = new CustomContentStorageProvider(apWrapper);
+      const customContentId = await idProvider.getId();
+      console.debug(`picked custom content id: ${customContentId}`);
+      await this.search();
+      console.debug(this.customContentList);
+      this.initTheRightSideContent();
+    },
+    methods: {
+      setFilter(docType) {
+        this.resetNextPageScorll();
+        this.docTypeFilter = docType;
+      },
+      gotoPage(pageId) {
+        AP.navigator.go('contentview', {contentId: pageId});
+      },
+      changeToTableStyle() {
+        this.viewStyle='table';
+      },
+      changeToGridStyle() {
+        this.viewStyle='grid';
+      },
+      initTheRightSideContent(){
+        //init the right side content
+        const iframe = document.getElementById('embedded-viewer');
+        const iframeDocument = iframe.contentDocument || iframe.contentWindow.document;
+        const div = iframeDocument.createElement('div');
+        div.innerHTML = this.customContentList.length 
+          ? 'Select a diagram from the left side panel' 
+          : '<a href="https://zenuml.atlassian.net/wiki/spaces/Doc/pages/504659970/Get+started" target="_blank">Learn how to create diagrams and API specs</a>';
+        div.style.position = 'absolute';
+        div.style.top = '50%';
+        div.style.left = '50%';
+        div.style.transform = 'translate(-50%, -50%)';
+        div.style.textAlign = 'center';
+        div.style.fontFamily = 'Arial, sans-serif';
+        div.style.fontSize = '18px';
+        iframeDocument.body.appendChild(div);
+      },
+      async handleScroll(event) {
+        const scrollContainer = event.target;
+        const scrollThreshold = 100;
+
+        const isScrolledToBottom =
+          scrollContainer.scrollHeight - scrollContainer.scrollTop <=
+          scrollContainer.clientHeight + scrollThreshold;
+
+        if (isScrolledToBottom && scrollContainer.scrollTop>(this.prevScrollTop+scrollThreshold)) {
+          this.prevScrollTop = scrollContainer.scrollTop;
+          console.debug('need load next page');
+          await this.loadNextPageData();
+        }
+      },
+      resetNextPageScorll(){
+        this.prevScrollTop=0;
+        this.needTryLoadNextPage=true;
+      },
+      async loadCustomContentImage(customContent){
+        const c=customContent;
+        try {
+          const page = new ConfluencePage(c.container.id, AP);
+          const macro = await page.macroByCustomContentId(c.id); //todo: move to apwrapper2
+          console.debug(`macro found for custom content ${c.id} in page ${c.container.id}:`, macro)
+          const uuid = macro?.attrs?.parameters?.macroParams?.uuid?.value;
+          if(uuid) {
+            const link = await getAttachmentDownloadLink(c.container.id, uuid);
+            console.debug(`image link of custom content ${c.id} in page ${c.container.id}:`, link);
+            c.imageLink = link;
+          }
+        } catch(e) {
+          console.error(`Error on getting the attachment image of custom content ${c}`, e);
+        }
+      },
+      isDev(){
+        return process.env.NODE_ENV === 'development';
+      },
+      async loadCustomContentImages(customContentList){
+        for(let i=0; i<customContentList.length; i++) {
+          await this.loadCustomContentImage(customContentList[i]);
+        }
+      },
+      async search(){
+        this.resetNextPageScorll();
+        if (this.isDev())
+        {
+          this.customContentList=this.fakeData();
+          return;
+        }
+        this.customContentList.push(this.fakeData());
+        try{
+          let searchedCustomContentList=await this.customContentStorageProvider.getCustomContentList(undefined,this.pageSize,this.docTypeFilter,this.filterKeyword,this.filterOnlyMine);
+          await this.loadCustomContentImages(searchedCustomContentList);
+          this.customContentList=searchedCustomContentList;
+        } catch(e) {
+          console.error(`Error search`, e);
+        }
+      },
+      async loadNextPageData(){
+        if(!this.needTryLoadNextPage)return;
+        if (this.isDev()){
+          this.customContentList=this.customContentList.concat(this.fakeData());
+          if(this.customContentList.length>40)this.needTryLoadNextPage=false;
+          return;
+        }
+        let nextPageDataList=await this.customContentStorageProvider.searchNextPage();
+        console.debug(`loadNextPageData load data count:${nextPageDataList.length}`);
+        if(nextPageDataList.length==0){
+          this.needTryLoadNextPage=false;
+          return;
+        }
+        await this.loadCustomContentImages(nextPageDataList);
+        this.customContentList=this.customContentList.concat(nextPageDataList);
+        console.debug(`customContentList data count:${this.customContentList.length}`);
       },
       fakeData() {
         const data= [];
@@ -211,92 +335,6 @@
         }
         return data;
       },
-      previewSrc() {
-        if (!this.picked) return;
-        function getViewerUrl(diagramType) {
-          if(diagramType === DiagramType.Sequence || diagramType === DiagramType.Mermaid) {
-            return '/sequence-viewer.html';
-        }
-          if(diagramType === DiagramType.Graph) {
-            return '/drawio/viewer.html';
-          }
-          if(diagramType === DiagramType.OpenApi) {
-            return '/swagger-ui.html';
-          }
-
-          console.warn(`Unknown diagramType: ${diagramType}`);
-        }
-        return `${getViewerUrl(this.picked.value.diagramType)}${window.location.search || '?'}&rendered.for=custom-content-native&content.id=${this.picked.id}&embedded=true`;
-
-      },
-      saveAndExit: function () {
-        const that = this;
-        return function () {
-          window.picked = that.picked;
-          EventBus.$emit('save')
-        }
-      }
-    },
-    async created() {
-      const apWrapper = new ApWrapper2(AP);
-      const idProvider = new MacroIdProvider(apWrapper);
-      const customContentStorageProvider = new CustomContentStorageProvider(apWrapper);
-      const customContentId = await idProvider.getId();
-      console.debug(`picked custom content id: ${customContentId}`);
-      this.customContentList = await customContentStorageProvider.getCustomContentList(25);
-      console.debug(this.customContentList);
-      //init the right side content
-      const iframe = document.getElementById('embedded-viewer');
-      const iframeDocument = iframe.contentDocument || iframe.contentWindow.document;
-      const div = iframeDocument.createElement('div');
-      div.innerHTML = this.customContentList.length 
-        ? 'Select a diagram from the left side panel' 
-        : '<a href="https://zenuml.atlassian.net/wiki/spaces/Doc/pages/504659970/Get+started" target="_blank">Learn how to create diagrams and API specs</a>';
-      div.style.position = 'absolute';
-      div.style.top = '50%';
-      div.style.left = '50%';
-      div.style.transform = 'translate(-50%, -50%)';
-      div.style.textAlign = 'center';
-      div.style.fontFamily = 'Arial, sans-serif';
-      div.style.fontSize = '18px';
-      iframeDocument.body.appendChild(div);
-
-      //load attachment images
-      for(let i=0; i<this.customContentList.length; i++) {
-        const c = this.customContentList[i];
-        try {
-          const page = new ConfluencePage(c.container.id, AP);
-          const macro = await page.macroByCustomContentId(c.id); //todo: move to apwrapper2
-          console.debug(`macro found for custom content ${c.id} in page ${c.container.id}:`, macro)
-          const uuid = macro?.attrs?.parameters?.macroParams?.uuid?.value;
-          if(uuid) {
-            const link = await getAttachmentDownloadLink(c.container.id, uuid);
-            console.debug(`image link of custom content ${c.id} in page ${c.container.id}:`, link);
-            c.imageLink = link;
-          }
-        } catch(e) {
-          console.error(`Error on getting the attachment image of custom content ${c}`, e);
-        }
-      }
-    },
-    async fetchAsyncData(){
-      const apWrapper = new ApWrapper2(AP);
-      const customContentStorageProvider = new CustomContentStorageProvider(apWrapper);
-      this.customContentList = await customContentStorageProvider.getCustomContentList();
-    },
-    methods: {
-      setFilter(docType) {
-        this.docTypeFilter = docType;
-      },
-      gotoPage(pageId) {
-        AP.navigator.go('contentview', {contentId: pageId});
-      },
-      changeToTableStyle() {
-        this.viewStyle='table';
-      },
-      changeToGridStyle() {
-        this.viewStyle='grid';
-      }
     },
     components: {
       SaveAndGoBackButton,
