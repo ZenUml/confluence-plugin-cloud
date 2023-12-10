@@ -2,10 +2,30 @@ export interface ICustomContentResponseBody {
   id: string;
   body: {
     raw: {
-      value: string;
+      value: string
     }
-  },
-  container?: { id: string, type: string };
+  };
+  history?:{
+    createdBy?: {
+      accountId: string,
+      displayName: string,
+      profilePicture?:{
+        path: string
+      },
+      _links?:{
+        self: string
+      }
+    }
+  };
+  container?: { 
+    id: string,
+    type: string, 
+    title: string,
+    _links?: {
+      self: string,
+      webui: string
+    }
+  };
 }
 
 export interface ICustomContentResponseBodyV2 {
