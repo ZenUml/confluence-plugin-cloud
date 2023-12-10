@@ -267,6 +267,7 @@
       async loadCustomContentImages(customContentList){
         for(let i=0; i<customContentList.length; i++) {
           await this.loadCustomContentImage(customContentList[i]);
+          this.$forceUpdate();
         }
       },
       async search(){
@@ -276,10 +277,9 @@
           this.customContentList=this.fakeData();
           return;
         }
-        this.customContentList.push(this.fakeData());
         try{
           let searchedCustomContentList=await this.customContentStorageProvider.getCustomContentList(undefined,this.pageSize,this.docTypeFilter,this.filterKeyword,this.filterOnlyMine);
-          await this.loadCustomContentImages(searchedCustomContentList);
+          this.loadCustomContentImages(searchedCustomContentList);//Reasons not to use 'await':Synchronization will cause the page to remain motionless, so asynchronous is used. After each image link is retrieved, 'this.$forceUpdate();' is called to force a refresh.
           this.customContentList=searchedCustomContentList;
         } catch(e) {
           console.error(`Error search`, e);
@@ -298,7 +298,7 @@
           this.needTryLoadNextPage=false;
           return;
         }
-        await this.loadCustomContentImages(nextPageDataList);
+        this.loadCustomContentImages(nextPageDataList);
         this.customContentList=this.customContentList.concat(nextPageDataList);
         console.debug(`customContentList data count:${this.customContentList.length}`);
       },
