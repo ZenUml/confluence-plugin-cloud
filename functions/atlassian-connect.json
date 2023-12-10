@@ -238,6 +238,9 @@
             "contentViewComponent": {
               "moduleKey": "zenuml-content-sequence-viewer"
             },
+            "listViewComponent": {
+              "moduleKey": "zenuml-content-dashboard"
+            },
             "icons": {
               "item": {
                 "width": 16,
@@ -249,6 +252,7 @@
           "apiSupport": {
             "bodyType": "raw",
             "supportedContainerTypes": [
+              "space",
               "page",
               "blogpost",
               "comment"
@@ -262,7 +266,7 @@
             }
           },
           "name": {
-            "value": "ZenUML Sequence Diagram"
+            "value": "ZenUML"
           },
           "key": "zenuml-content-sequence"
         },
@@ -363,6 +367,14 @@
         "url": "/swagger-editor.html?version=__VERSION__&spaceKey={space.key}&addonKey=__ADDON_KEY__&contentKey=__CONTENT_KEY__",
         "name": {
           "value": "ZenUML OpenAPI Editor Dialog"
+        }
+      },
+      {
+        "key": "zenuml-content-dashboard",
+        "location": "none",
+        "url": "/dashboard.html?version=__VERSION__&spaceKey={space.key}&addonKey=__ADDON_KEY__&postInstallPageKey=__POST_INSTALL_KEY__",
+        "name": {
+          "value": "ZenUML Dashboard"
         }
       }
     ],
