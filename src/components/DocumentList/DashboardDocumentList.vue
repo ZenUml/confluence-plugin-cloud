@@ -118,7 +118,6 @@
   import {DiagramType} from "@/model/Diagram/Diagram";
   import EventBus from "@/EventBus";
   import AP from "@/model/AP";
-  import {MacroIdProvider} from "@/model/ContentProvider/MacroIdProvider";
   import {CustomContentStorageProvider} from "@/model/ContentProvider/CustomContentStorageProvider";
   import ApWrapper2 from "@/model/ApWrapper2";
   import { ConfluencePage } from "@/model/page/ConfluencePage";
@@ -192,15 +191,11 @@
         }
       }
     },
-    async created() {
+    async mounted() {
       const apWrapper = new ApWrapper2(AP);
       await apWrapper.initializeContext();
-      const idProvider = new MacroIdProvider(apWrapper);
       this.customContentStorageProvider = new CustomContentStorageProvider(apWrapper);
-      const customContentId = await idProvider.getId();
-      console.debug(`picked custom content id: ${customContentId}`);
       await this.search();
-      console.debug(this.customContentList);
       this.initTheRightSideContent();
     },
     methods: {
@@ -280,11 +275,11 @@
         } catch(e) {
           console.error(`Error on getting the attachment image of custom content ${c}`, e);
         }
+        this.$forceUpdate();
       },
       async loadCustomContentImages(customContentList){
         for(let i=0; i<customContentList.length; i++) {
           await this.loadCustomContentImage(customContentList[i]);
-          this.$forceUpdate();
         }
       },
       async search(){
