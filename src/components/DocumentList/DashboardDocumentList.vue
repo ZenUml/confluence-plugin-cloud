@@ -35,11 +35,15 @@
               </button>
             </div>
             <div class="flex-1 overflow-y-auto" @scroll="handleScroll">
-              <div v-for="customContentItem in filteredCustomContentList" :key="customContentItem.id" class="block px-4 py-2 bg-white border-t hover:bg-gray-50">
+              <div v-for="(customContentItem,index) in filteredCustomContentList" :key="customContentItem.id" class="relative block px-4 py-2 bg-white border-t hover:bg-gray-50">
+                <div class="absolute left-0 top-0 w-6 min-w-6 max-w-10 h-6 text-xs bg-gray-400 text-white py-1 px-1 items-center justify-center">
+                  <span class="flex font-bold items-center justify-center">{{index+1}}</span>
+                </div>
                 <a @click="picked = customContentItem" href="#"
                 :class="{'bg-gray-100': customContentItem.id === (picked && picked.id), 'bg-white': customContentItem.id !== (picked && picked.id)}"
                 class="block hover:bg-gray-50">
-                  <div class="flex">
+                  <div class="flex justify-end">
+                    
                     <div style="width: 75px; height: 75px; " v-show="customContentItem.imageLink">
                       <img style="max-width: 75px; max-height: 75px;" :src="customContentItem.imageLink">
                     </div>
@@ -49,18 +53,21 @@
                       </div>
                       <span class="diagramType text-sm px-1 py-1 rounded-md bg-gray-200">{{ customContentItem.value.diagramType }}</span>
                     </div>
-                  </div>
-                  <div class="flex items-center">
-                    <span class="flex flex-1 items-center px-2 py-2">
-                      <img class="contIcon" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' role='presentation'%3E%3Cpath fill='%232684FF' fill-rule='evenodd' d='M3 0h18a3 3 0 013 3v18a3 3 0 01-3 3H3a3 3 0 01-3-3V3a3 3 0 013-3zm1 18c0 .556.446 1 .995 1h8.01c.54 0 .995-.448.995-1 0-.556-.446-1-.995-1h-8.01c-.54 0-.995.448-.995 1zm0-4c0 .556.448 1 1 1h14c.555 0 1-.448 1-1 0-.556-.448-1-1-1H5c-.555 0-1 .448-1 1zm0-4c0 .556.448 1 1 1h14c.555 0 1-.448 1-1 0-.556-.448-1-1-1H5c-.555 0-1 .448-1 1zm0-4c0 .556.448 1 1 1h14c.555 0 1-.448 1-1 0-.556-.448-1-1-1H5c-.555 0-1 .448-1 1z'%3E%3C/path%3E%3C/svg%3E"  />
-                      <a :title="customContentItem.container.title" :href="customContentItem.container.link" target="_blank">{{customContentItem.container.title}}</a>
-                    </span>
-                    <span class="flex avatar-inner justify-end items-center px-2 py-2">
-                      <img :src="customContentItem.author.avatar"  />
-                      <a :title="customContentItem.author.name " :href="customContentItem.author.link" target="_blank">{{customContentItem.author.name}}</a>
-                    </span>
+                    <div class="gridEditBtnCont">
+                      <button class="iconEditBtn" title="Edit"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGhlaWdodD0iMThweCIgdmlld0JveD0iMCAwIDI0IDI0IiB3aWR0aD0iMThweCIgZmlsbD0iIzAwMDAwMCI+PHBhdGggZD0iTTAgMGgyNHYyNEgwVjB6IiBmaWxsPSJub25lIi8+PHBhdGggZD0iTTE0LjA2IDkuMDJsLjkyLjkyTDUuOTIgMTlINXYtLjkybDkuMDYtOS4wNk0xNy42NiAzYy0uMjUgMC0uNTEuMS0uNy4yOWwtMS44MyAxLjgzIDMuNzUgMy43NSAxLjgzLTEuODNjLjM5LS4zOS4zOS0xLjAyIDAtMS40MWwtMi4zNC0yLjM0Yy0uMi0uMi0uNDUtLjI5LS43MS0uMjl6bS0zLjYgMy4xOUwzIDE3LjI1VjIxaDMuNzVMMTcuODEgOS45NGwtMy43NS0zLjc1eiIvPjwvc3ZnPg==" /></button>
+                    </div>
                   </div>
                 </a>
+                <div class="flex items-center">
+                  <span class="flex flex-1 items-center px-2 py-2">
+                    <img class="contIcon" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' role='presentation'%3E%3Cpath fill='%232684FF' fill-rule='evenodd' d='M3 0h18a3 3 0 013 3v18a3 3 0 01-3 3H3a3 3 0 01-3-3V3a3 3 0 013-3zm1 18c0 .556.446 1 .995 1h8.01c.54 0 .995-.448.995-1 0-.556-.446-1-.995-1h-8.01c-.54 0-.995.448-.995 1zm0-4c0 .556.448 1 1 1h14c.555 0 1-.448 1-1 0-.556-.448-1-1-1H5c-.555 0-1 .448-1 1zm0-4c0 .556.448 1 1 1h14c.555 0 1-.448 1-1 0-.556-.448-1-1-1H5c-.555 0-1 .448-1 1zm0-4c0 .556.448 1 1 1h14c.555 0 1-.448 1-1 0-.556-.448-1-1-1H5c-.555 0-1 .448-1 1z'%3E%3C/path%3E%3C/svg%3E"  />
+                    <a :title="customContentItem.container.title" :href="customContentItem.container.link" target="_blank">{{customContentItem.container.title}}</a>
+                  </span>
+                  <span class="flex avatar-inner justify-end items-center px-2 py-2">
+                    <img :src="customContentItem.author.avatar"  />
+                    <a :title="customContentItem.author.name" :href="customContentItem.author.link" target="_blank">{{customContentItem.author.name}}</a>
+                  </span>
+                </div>
               </div>
             </div>
           </div>
