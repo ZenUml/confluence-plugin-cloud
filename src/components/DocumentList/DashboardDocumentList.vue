@@ -268,9 +268,6 @@
           console.error(`Error on getting the attachment image of custom content ${c}`, e);
         }
       },
-      isDev(){
-        return process.env.NODE_ENV === 'development';
-      },
       async loadCustomContentImages(customContentList){
         for(let i=0; i<customContentList.length; i++) {
           await this.loadCustomContentImage(customContentList[i]);
@@ -279,11 +276,6 @@
       },
       async search(){
         this.resetNextPageScorll();
-        if (this.isDev())
-        {
-          this.customContentList=this.fakeData();
-          return;
-        }
         try{
           let searchedCustomContentList=await this.customContentStorageProvider.getCustomContentList(undefined,this.pageSize,this.docTypeFilter,this.filterKeyword,this.filterOnlyMine);
           this.loadCustomContentImages(searchedCustomContentList);//Reasons not to use 'await':Synchronization will cause the page to remain motionless, so asynchronous is used. After each image link is retrieved, 'this.$forceUpdate();' is called to force a refresh.
@@ -294,11 +286,6 @@
       },
       async loadNextPageData(){
         if(!this.needTryLoadNextPage)return;
-        if (this.isDev()){
-          this.customContentList=this.customContentList.concat(this.fakeData());
-          if(this.customContentList.length>40)this.needTryLoadNextPage=false;
-          return;
-        }
         let nextPageDataList=await this.customContentStorageProvider.searchNextPage();
         console.debug(`loadNextPageData load data count:${nextPageDataList.length}`);
         if(nextPageDataList.length==0){
@@ -308,40 +295,7 @@
         this.loadCustomContentImages(nextPageDataList);
         this.customContentList=this.customContentList.concat(nextPageDataList);
         console.debug(`customContentList data count:${this.customContentList.length}`);
-      },
-      fakeData() {
-        const data= [];
-        for (let i = 1; i <= 10; i++) {
-          let customContent = {
-            container: {
-              id: `container-${i}`,
-              type: `type-${i}`,
-              title: `Title ${i}`,
-              link: `https://danshuitaihejie.atlassian.net/wiki/spaces/SD/pages/557062/test+zenum+macro`
-            },
-            space: {
-              key: `space-${i}`
-            },
-            id: `id-${i}`,
-            version: {
-              number: i
-            },
-            title: `diagram title title title title title${i}`,
-            type: `type-${i}`,
-            value: {diagramType:`diagram-type`},
-            imageLink: `https://danshuitaihejie.atlassian.net/wiki/download/attachments/557062/zenuml-e6ba5472-c61e-4d8f-9259-8278bb16d62b.png?version=1&modificationDate=1702048257962&cacheVersion=1&api=v2`,
-            author: {
-              id: `author-id-${i}`,
-              name: `Author ${i}`,
-              avatar: `https://danshuitaihejie.atlassian.net//wiki/aa-avatar/641fe51f6b29c052ab2ec206`,
-              link: `https://danshuitaihejie.atlassian.net//wiki/display/~641fe51f6b29c052ab2ec206`
-            },
-            updateDate:'2023-12-07T10:11:18.494Z'
-          };
-          data.push(customContent);
-        }
-        return data;
-      },
+      }
     },
     components: {
       SaveAndGoBackButton,
