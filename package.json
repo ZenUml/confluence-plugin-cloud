@@ -24,7 +24,7 @@
     "install:stg:lite": "pluploader --base-url https://zenuml-stg.atlassian.net/wiki install --cloud --plugin-uri https://air.zenuml.com/descriptor?lite"
   },
   "dependencies": {
-    "@zenuml/core": "^3.12.1",
+    "@zenuml/core": "^3.15.5",
     "html-to-image": "^1.9.0",
     "jest-puppeteer": "^6.1.1",
     "lodash": "^4.17.21",
@@ -128,7 +128,7 @@
   "engines": {
     "node": ">=14"
   },
-  "volta": {
+  "g": {
     "node": "16.18.1"
   }
 }
