@@ -68,21 +68,28 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref } from "vue";
+import {onMounted, onUnmounted, ref} from "vue";
 import useCSATState from "@/hooks/useCSATState";
 import { trackEvent } from "@/utils/window";
 
 const score = [1, 2, 3, 4, 5];
 const submitted = ref(false);
 const open = ref(false);
-
 const { checkStateOfCSAT, updateStateOfCSAT } = useCSATState();
+
+let timer: number;
 
 onMounted(async () => {
   const isPopped = await checkStateOfCSAT();
   if (!isPopped) {
-    open.value = true;
+    timer = setTimeout(() => {
+      open.value = true;
+    }, 1000 * 60)
   }
+});
+
+onUnmounted(() => {
+  clearTimeout(timer)
 });
 
 const handlePopTooFrequentlyClick = () =>
