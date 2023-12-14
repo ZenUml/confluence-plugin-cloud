@@ -55,7 +55,7 @@
           >Tell us more</a
         >
       </div>
-      <transition name="fade">
+      <transition name="fade-no-transform">
         <div
           class="absolute inset-0 bg-inherit rounded-lg flex items-center justify-center"
           v-if="submitted"
@@ -84,7 +84,7 @@ onMounted(async () => {
   if (!isPopped) {
     timer = setTimeout(() => {
       open.value = true;
-    }, 1000 * 60)
+    }, 1000 * 2)
   }
 });
 
@@ -110,24 +110,26 @@ const handleClick = (value: number) => {
     open.value = false;
     submitted.value = false;
     updateStateOfCSAT();
-  }, 3000);
+  }, 2500);
 };
 </script>
 
 <style scoped>
-.fade-enter-active,
-.fade-leave-active {
-  transition: opacity 0.3s;
+.fade-enter-active, .fade-leave-active {
+  transition: all .3s ease;
 }
-
-.fade-enter-from,
-.fade-leave-to {
+.fade-enter, .fade-leave-to {
   opacity: 0;
+  transform: translateY(30px);
+}
+.fade-leave-active {
+  transform: translateY(30px);
 }
 
-.fade-enter-to,
-.fade-leave-from {
-  opacity: 1;
-  transition-delay: 1500ms;
+.fade-no-transform-enter-active, .fade-no-transform-leave-active {
+  transition: opacity .3s ease;
+}
+.fade-no-transform-enter, .fade-no-transform-leave-to {
+  opacity: 0;
 }
 </style>
