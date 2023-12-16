@@ -233,77 +233,77 @@
       }
     ],
     "customContent": [
-        {
-          "uiSupport": {
-            "contentViewComponent": {
-              "moduleKey": "zenuml-content-sequence-viewer"
-            },
-            "listViewComponent": {
-              "moduleKey": "zenuml-content-dashboard"
-            },
-            "icons": {
-              "item": {
-                "width": 16,
-                "height": 16,
-                "url": "image/zenuml_logo.png"
-              }
+      {
+        "uiSupport": {
+          "contentViewComponent": {
+            "moduleKey": "zenuml-content-sequence-viewer"
+          },
+          "listViewComponent": {
+            "moduleKey": "zenuml-content-dashboard"
+          },
+          "icons": {
+            "item": {
+              "width": 16,
+              "height": 16,
+              "url": "image/zenuml_logo.png"
             }
-          },
-          "apiSupport": {
-            "bodyType": "raw",
-            "supportedContainerTypes": [
-              "space",
-              "page",
-              "blogpost",
-              "comment"
-            ],
-            "supportedChildTypes": [
-              "attachment",
-              "comment"
-            ],
-            "indexing": {
-              "enabled": true
-            }
-          },
-          "name": {
-            "value": "ZenUML"
-          },
-          "key": "zenuml-content-sequence"
+          }
         },
-        {
-          "uiSupport": {
-            "contentViewComponent": {
-              "moduleKey": "zenuml-content-graph-viewer"
-            },
-            "icons": {
-              "item": {
-                "width": 16,
-                "height": 16,
-                "url": "image/zenuml_logo.png"
-              }
+        "apiSupport": {
+          "bodyType": "raw",
+          "supportedContainerTypes": [
+            "space",
+            "page",
+            "blogpost",
+            "comment"
+          ],
+          "supportedChildTypes": [
+            "attachment",
+            "comment"
+          ],
+          "indexing": {
+            "enabled": true
+          }
+        },
+        "name": {
+          "value": "ZenUML"
+        },
+        "key": "zenuml-content-sequence"
+      },
+      {
+        "uiSupport": {
+          "contentViewComponent": {
+            "moduleKey": "zenuml-content-graph-viewer"
+          },
+          "icons": {
+            "item": {
+              "width": 16,
+              "height": 16,
+              "url": "image/zenuml_logo.png"
             }
-          },
-          "apiSupport": {
-            "bodyType": "raw",
-            "supportedContainerTypes": [
-              "page",
-              "blogpost",
-              "comment"
-            ],
-            "supportedChildTypes": [
-              "attachment",
-              "comment"
-            ],
-            "indexing": {
-              "enabled": true
-            }
-          },
-          "name": {
-            "value": "ZenUML Graph"
-          },
-          "key": "zenuml-content-graph"
-        }
-      ],
+          }
+        },
+        "apiSupport": {
+          "bodyType": "raw",
+          "supportedContainerTypes": [
+            "page",
+            "blogpost",
+            "comment"
+          ],
+          "supportedChildTypes": [
+            "attachment",
+            "comment"
+          ],
+          "indexing": {
+            "enabled": true
+          }
+        },
+        "name": {
+          "value": "ZenUML Graph"
+        },
+        "key": "zenuml-content-graph"
+      }
+    ],
     "generalPages": [
       {
         "key": "zenuml-content-sequence-viewer-dialog",
@@ -330,11 +330,11 @@
         }
       },
       {
-        "key": "zenuml-content-sequence-editor-dialog-dashboard",
+        "key": "zenuml-content-dashboard-sequence-editor-dialog",
         "location": "none",
         "url": "/sequence-editor-dialog.html?version=__VERSION__&spaceKey={space.key}&addonKey=__ADDON_KEY__&contentKey=__CONTENT_KEY__&rendered.for=custom-content-native&contentId={contentId}",
         "name": {
-          "value": "ZenUML Sequence Editor"
+          "value": "ZenUML Dashboard Sequence Editor Dialog"
         }
       },
       {
@@ -362,6 +362,14 @@
         }
       },
       {
+        "key": "zenuml-content-dashboard-graph-editor-dialog",
+        "location": "none",
+        "url": "/drawio/editor.html?version=__VERSION__&spaceKey={space.key}&addonKey=__ADDON_KEY__&contentKey=__CONTENT_KEY__&rendered.for=custom-content-native&contentId={contentId}",
+        "name": {
+          "value": "ZenUML Dashboard Graph Editor Dialog"
+        }
+      },
+      {
         "key": "zenuml-content-openapi-viewer-dialog",
         "location": "none",
         "url": "/swagger-ui.html?version=__VERSION__&spaceKey={space.key}&addonKey=__ADDON_KEY__&contentKey=__CONTENT_KEY__",
@@ -375,6 +383,14 @@
         "url": "/swagger-editor.html?version=__VERSION__&spaceKey={space.key}&addonKey=__ADDON_KEY__&contentKey=__CONTENT_KEY__",
         "name": {
           "value": "ZenUML OpenAPI Editor Dialog"
+        }
+      },
+      {
+        "key": "zenuml-content-dashboard-openapi-editor-dialog",
+        "location": "none",
+        "url": "/swagger-editor.html?version=__VERSION__&spaceKey={space.key}&addonKey=__ADDON_KEY__&contentKey=__CONTENT_KEY__&rendered.for=custom-content-native&contentId={contentId}",
+        "name": {
+          "value": "ZenUML Dashboard OpenAPI Editor Dialog"
         }
       },
       {
