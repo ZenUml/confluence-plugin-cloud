@@ -4,38 +4,22 @@ import {getUrlParam, trackEvent} from '@/utils/window.ts';
 import AP from "@/model/AP";
 import global from '@/model/globals';
 
-const watermarkImage = new Image();
-watermarkImage.src = URL.createObjectURL(new Blob([require('@/assets/logo.png')], { type: 'image/png' }));
+const shouldApplyWatermark = true;
 
-function iframeToPng(iframe) {
-  return new Promise((resolv) => {
-    window.addEventListener('message', ({source, data}) => {
-      if(source.location.href !== window.location.href && data?.action === 'export.result') {
-        resolv(data.data);
-        console.debug('received PNG export result from iframe');
-      }
-    });
+// init watermark image
+let watermarkImage;
+(async () => {
+  const logoFile = require('@/assets/zenuml-logo.png') 
+  const response = await fetch(logoFile);
+  const logoBlob = await response.blob();
+   watermarkImage = await createImageBitmap(logoBlob);
+})()
 
-    iframe.contentWindow.postMessage({action: 'export'});
-    console.debug('fired PNG export to iframe');
-  });
-}
 
 function toPng() {
   try {
-    /*
-    There are 3 options:
-    1) Get iframe document.body and generate png in parent frame; problem is: no style
-    2) Call "toPng" method on iframe.contentWindow
-    3) postMessage to iframe and receive result as message
-    */
-    const mainFrame = document.getElementById('mainFrame');
-    if(mainFrame) {
-      return iframeToPng(mainFrame);
-    }
-
-    var node = document.getElementsByClassName('screen-capture-content')[0];
-    return htmlToImage.toBlob(node, {bgcolor: 'white'});
+    const node = document.getElementsByClassName('screen-capture-content')[0];
+    return htmlToImage.toBlob(node, { bgcolor: 'white' });
   } catch (e) {
     console.error('Failed to convert to png', e);
     trackEvent(JSON.stringify(e), 'convert_to_png', 'error');
@@ -77,22 +61,34 @@ function applyWatermark(targetImg, watermark) {
   ctx.drawImage(targetImg, 0, 0);
 
   ctx.globalAlpha = 0.3;
-  const StepY = 200; 
-  const StepX = 150; 
+  const StepY = 200;
+  const StepX = 150;
   for (let x = 50; x < targetImg.width; x += StepX) {
     for (let y = 50; y < targetImg.height; y += StepY) {
       ctx.drawImage(watermark, x, y, watermark.width, watermark.height);
     }
   }
-  return canvas.toBlob()
+  return new Promise((resolve, reject) => {
+    canvas.toBlob(blob => {
+      if (blob) {
+        resolve(blob);
+      } else {
+        reject(new Error('Canvas to Blob conversion failed'));
+      }
+    })
+  })
 }
 
 async function uploadAttachment(attachmentName, uri, hash) {
-  const rawBlob = await toPng();
-  const targetImage = new Image();
-  targetImage.src = URL.createObjectURL(rawBlob);
-  const blob = applyWatermark(targetImage, watermarkImage);
-  const file = new File([blob], attachmentName, {type: 'image/png'});
+  let blob;
+  const imageBlob = await toPng();
+  if (shouldApplyWatermark) {
+  const targetImage = await createImageBitmap(imageBlob);
+  blob = await applyWatermark(targetImage, watermarkImage);
+  } else {
+    blob = imageBlob;
+  }
+  const file = new File([blob], attachmentName, { type: 'image/png' });
   console.debug('Uploading attachment to', uri);
   return await AP.request(buildPostRequestToUploadAttachment(uri, hash, file));
 }
@@ -149,7 +145,7 @@ function uploadNewVersionOfAttachment(hash) {
     await uploadAttachment2(hash, (pageId) => {
       return buildAttachmentBasePath(pageId) + '/' + attachmentId + '/data';
     });
-    return {attachmentId, versionNumber, hash};
+    return { attachmentId, versionNumber, hash };
   }
 }
 
