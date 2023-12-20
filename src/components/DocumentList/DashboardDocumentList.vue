@@ -200,7 +200,8 @@
         iframeDocument.body.appendChild(div);
       },
       edit(customContentId, diagramType) {
-        const type = diagramType.toLowerCase();
+        //Mermaid diagram uses sequence editor
+        const type = (diagramType === DiagramType.Mermaid ? DiagramType.Sequence : diagramType).toLowerCase();
         AP.dialog.create({
           key: `zenuml-content-dashboard-${type}-editor-dialog`,
           chrome: false,
