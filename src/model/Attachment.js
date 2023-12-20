@@ -4,6 +4,9 @@ import {getUrlParam, trackEvent} from '@/utils/window.ts';
 import AP from "@/model/AP";
 import global from '@/model/globals';
 
+const watermarkImage = new Image();
+watermarkImage.src = URL.createObjectURL(new Blob([require('@/assets/logo.png')], { type: 'image/png' }));
+
 function iframeToPng(iframe) {
   return new Promise((resolv) => {
     window.addEventListener('message', ({source, data}) => {
@@ -65,8 +68,30 @@ function buildPostRequestToUploadAttachment(uri, hash, file) {
   };
 }
 
+function applyWatermark(targetImg, watermark) {
+  const canvas = document.createElement('canvas');
+  const ctx = canvas.getContext('2d');
+  canvas.width = targetImg.width;
+  canvas.height = targetImg.height;
+
+  ctx.drawImage(targetImg, 0, 0);
+
+  ctx.globalAlpha = 0.3;
+  const StepY = 200; 
+  const StepX = 150; 
+  for (let x = 50; x < targetImg.width; x += StepX) {
+    for (let y = 50; y < targetImg.height; y += StepY) {
+      ctx.drawImage(watermark, x, y, watermark.width, watermark.height);
+    }
+  }
+  return canvas.toBlob()
+}
+
 async function uploadAttachment(attachmentName, uri, hash) {
-  const blob = await toPng();
+  const rawBlob = await toPng();
+  const targetImage = new Image();
+  targetImage.src = URL.createObjectURL(rawBlob);
+  const blob = applyWatermark(targetImage, watermarkImage);
   const file = new File([blob], attachmentName, {type: 'image/png'});
   console.debug('Uploading attachment to', uri);
   return await AP.request(buildPostRequestToUploadAttachment(uri, hash, file));
