@@ -169,23 +169,23 @@ module.exports = {
     },
     proxy: {
       '/descriptor': {
-        target: 'http://localhost:8788/',
-        changeOrigin: true
+        target: 'http://127.0.0.1:8788/',
+        changeOrigin: false,
       },
       '/atlassian-connect-lite.json': {
-        target: 'http://localhost:8788/',
+        target: 'http://127.0.0.1:8788/',
         changeOrigin: true
       },
       '/installed': {
-        target: 'http://localhost:8788/',
+        target: 'http://127.0.0.1:8788/',
         changeOrigin: true
       },
       '/uninstalled': {
-        target: 'http://localhost:8788/',
+        target: 'http://127.0.0.1:8788/',
         changeOrigin: true
       },
       '/attachment': {
-        target: 'http://localhost:8788/',
+        target: 'http://127.0.0.1:8788/',
         changeOrigin: true
       }
     },
