@@ -6,10 +6,13 @@ import global from '@/model/globals';
 
 const shouldApplyWatermark = true;
 
-// init watermark image
+// initialize watermark image
 let watermarkImage;
 (async () => {
-  const logoFile = require('@/assets/zenuml-logo.png') 
+  const logoFile = require('@/assets/zenuml-logo.png')
+  if (window.fetch === undefined) {
+    return
+  }
   const response = await fetch(logoFile);
   const logoBlob = await response.blob();
    watermarkImage = await createImageBitmap(logoBlob);
