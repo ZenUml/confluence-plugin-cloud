@@ -32,10 +32,14 @@ async function trackEvent({eventType, ...restProps}: EventParams) {
     body: body,
   };
 
-  const response = await fetch(HTTP_API_ENDPOINT, request);
+  try {
+    const response = await fetch(HTTP_API_ENDPOINT, request);
 
-  const data = await response.text(); // assuming server responds with json
-  console.log(data);
+    const data = await response.text(); // assuming server responds with json
+    console.log(data);
+  } catch (error) {
+    console.error('Error sending event:', error);
+  }
 }
 
 
