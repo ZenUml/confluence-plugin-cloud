@@ -31,6 +31,7 @@ export default class ApWrapper2 implements IApWrapper {
   currentSpace: ISpace | undefined;
   currentPageId: string | undefined;
   currentPageUrl: string | undefined;
+  baseUrl: string | undefined;
   locationTarget: LocationTarget | undefined;
 
   constructor(ap: IAp) {
@@ -49,6 +50,7 @@ export default class ApWrapper2 implements IApWrapper {
       this.currentUser = await this._getCurrentUser();
       this.currentSpace = await this._getCurrentSpace();
       this.currentPageUrl = await this._getCurrentPageUrl();
+      this.baseUrl = await this._getBaseUrl();
       this.locationTarget = await this._getLocationTarget();
       this.currentPageId = await this._page.getPageId();
 
@@ -487,7 +489,8 @@ export default class ApWrapper2 implements IApWrapper {
     queryParameters = queryParameters || {};
     const param = Object.keys(queryParameters).reduce((acc, i) => `${acc}${acc ? '&' : ''}${i}=${queryParameters[i]}`, '');
     const response = await this.request(`/api/v2/pages/${pageId}/attachments${param ? `?${param}` : ''}`);
-    return response?.results || [];
+    const base = await this._getBaseUrl();
+    return response?.results && response?.results.map((a: any) => Object.assign(a, {_links: {base, download: a.downloadLink}})) || [];
   }
 
   async getAttachments(pageId?: string, queryParameters?: any): Promise<Array<Attachment>> {
@@ -517,6 +520,16 @@ export default class ApWrapper2 implements IApWrapper {
 
   async _getCurrentPageUrl(): Promise<string> {
     return this.currentPageUrl || (this.currentPageUrl = await this._page.getHref());
+  }
+
+  async _getBaseUrl(): Promise<string> {
+    const baseOf = (url: string) => {
+      const u = new URL(url);
+      const parts = u.pathname.split('/');
+      const firstPart = parts.length > 0 && parts[1];
+      return `${u.origin}/${firstPart}`;
+    };
+    return this.baseUrl || (this.baseUrl = baseOf(await this._getCurrentPageUrl()));
   }
 
   async _getLocationTarget(): Promise<LocationTarget> {
