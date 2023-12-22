@@ -4,8 +4,6 @@ import {getUrlParam, trackEvent} from '@/utils/window.ts';
 import AP from "@/model/AP";
 import global from '@/model/globals';
 
-const shouldApplyWatermark = true;
-
 // initialize watermark image
 let watermarkImage;
 (async () => {
@@ -15,14 +13,18 @@ let watermarkImage;
   }
   const response = await fetch(logoFile);
   const logoBlob = await response.blob();
-   watermarkImage = await createImageBitmap(logoBlob);
+  watermarkImage = await createImageBitmap(logoBlob);
 })()
 
 
-function toPng() {
+async function toPng(withWatermark = false) {
   try {
     const node = document.getElementsByClassName('screen-capture-content')[0];
-    return htmlToImage.toBlob(node, { bgcolor: 'white' });
+    if (withWatermark) {
+      return await applyWatermark(node, watermarkImage);
+    } else {
+      return htmlToImage.toBlob(node, { bgcolor: 'white' });
+    }
   } catch (e) {
     console.error('Failed to convert to png', e);
     trackEvent(JSON.stringify(e), 'convert_to_png', 'error');
@@ -55,19 +57,22 @@ function buildPostRequestToUploadAttachment(uri, hash, file) {
   };
 }
 
-function applyWatermark(targetImg, watermark) {
-  const canvas = document.createElement('canvas');
+async function applyWatermark(node, watermark, opt = {
+  opacity: 0.3,
+  initialX: 50,
+  initialY: 50,
+  stepX: 150,
+  stepY: 200
+}) {
+  const canvas = await htmlToImage.toCanvas(node);
   const ctx = canvas.getContext('2d');
-  canvas.width = targetImg.width;
-  canvas.height = targetImg.height;
+  const {initialX, initialY, stepX, stepY} = opt;
 
-  ctx.drawImage(targetImg, 0, 0);
+  ctx.globalAlpha = opt.opacity;
 
-  ctx.globalAlpha = 0.3;
-  const StepY = 200;
-  const StepX = 150;
-  for (let x = 50; x < targetImg.width; x += StepX) {
-    for (let y = 50; y < targetImg.height; y += StepY) {
+  // tile the watermark
+  for (let x = initialX; x < canvas.width; x += stepX) {
+    for (let y = initialY; y < canvas.height; y += stepY) {
       ctx.drawImage(watermark, x, y, watermark.width, watermark.height);
     }
   }
@@ -83,13 +88,10 @@ function applyWatermark(targetImg, watermark) {
 }
 
 async function uploadAttachment(attachmentName, uri, hash) {
-  let blob;
-  const imageBlob = await toPng();
-  if (shouldApplyWatermark) {
-  const targetImage = await createImageBitmap(imageBlob);
-  blob = await applyWatermark(targetImage, watermarkImage);
-  } else {
-    blob = imageBlob;
+  const withWatermark = true; // TODO: make this configurable
+  const blob = await toPng(withWatermark).catch(e => console.error('Failed to convert to png', e));
+  if (!blob) {
+    return;
   }
   const file = new File([blob], attachmentName, { type: 'image/png' });
   console.debug('Uploading attachment to', uri);
