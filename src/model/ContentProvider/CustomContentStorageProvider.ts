@@ -1,6 +1,7 @@
 import ApWrapper2 from "@/model/ApWrapper2";
 import {StorageProvider} from "@/model/ContentProvider/StorageProvider";
 import {Diagram, NULL_DIAGRAM} from "@/model/Diagram/Diagram";
+import { SearchResults } from "../ICustomContent";
 
 export class CustomContentStorageProvider implements StorageProvider {
   private apWrapper: ApWrapper2;
@@ -18,11 +19,15 @@ export class CustomContentStorageProvider implements StorageProvider {
     return customContent?.value;
   }
 
-  async getCustomContentList(maxItems?: number,pageSize?: number,docType: string='',keyword: string='',onlyMine: boolean=false) {
-    return await this.apWrapper.searchCustomContent(maxItems,pageSize,docType,keyword,onlyMine);
+  async getCustomContentList(maxItems?: number) {
+    return await this.apWrapper.searchCustomContent(maxItems);
   }
-  async searchNextPage() {
-    return await this.apWrapper.searchNextPage();
+
+  async searchPagedCustomContent(pageSize?: number,keyword: string='',onlyMine: boolean=false,docType: string='',): Promise<SearchResults> {
+    return await this.apWrapper.searchPagedCustomContent(pageSize,keyword,onlyMine,docType);
+  }
+  async searchNextPageCustomContent(nextPageUrl: string): Promise<SearchResults> {
+    return await this.apWrapper.searchPagedCustomContentByUrl(nextPageUrl);
   }
 
   async save(diagram: Diagram): Promise<string> {

@@ -138,6 +138,7 @@
         filterTimeout:null,
         nextPagePrevScrollTop: 0,
         needTryLoadNextPage: true,
+        nextPageUrl:'',
         pageSize:15,
       };
     },
@@ -286,8 +287,12 @@
       async search(){
         this.resetNextPageScorll();
         try{
-          let searchedCustomContentList=await this.customContentStorageProvider.getCustomContentList(undefined,this.pageSize,this.docTypeFilter,this.filterKeyword,this.filterOnlyMine);
-          this.loadCustomContentImages(searchedCustomContentList);//Reasons not to use 'await':Synchronization will cause the page to remain motionless, so asynchronous is used. After each image link is retrieved, 'this.$forceUpdate();' is called to force a refresh.
+          let searchResult=await this.customContentStorageProvider.searchPagedCustomContent(this.pageSize,this.filterKeyword,this.filterOnlyMine,this.docTypeFilter);
+          console.debug({actiion:'search',searchResult:searchResult});
+          let searchedCustomContentList=searchResult.results;
+          //Reasons not to use 'await this.loadCustomContentImages':Synchronization will cause the page to remain motionless, so asynchronous is used. After each image link is retrieved, 'this.$forceUpdate();' is called to force a refresh.
+          this.loadCustomContentImages(searchedCustomContentList);
+          this.nextPageUrl=searchResult?._links?.next||'';
           this.customContentList=searchedCustomContentList;
         } catch(e) {
           console.error(`Error search`, e);
@@ -295,13 +300,15 @@
       },
       async loadNextPageData(){
         if(!this.needTryLoadNextPage)return;
-        let nextPageDataList=await this.customContentStorageProvider.searchNextPage();
+        let searchResult=await this.customContentStorageProvider.searchNextPageCustomContent(this.nextPageUrl);
+        let nextPageDataList=searchResult.results;
         console.debug(`loadNextPageData load data count:${nextPageDataList.length}`);
         if(nextPageDataList.length==0){
           this.needTryLoadNextPage=false;
           return;
         }
         this.loadCustomContentImages(nextPageDataList);
+        this.nextPageUrl=searchResult?._links?.next||'';
         this.customContentList=this.customContentList.concat(nextPageDataList);
         console.debug(`customContentList data count:${this.customContentList.length}`);
       }
