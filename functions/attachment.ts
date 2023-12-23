@@ -9,7 +9,7 @@ export const onRequestGet: PagesFunction = async (params: any) => {
   const pageId = searchParams.get('pageId') || '';
   const appKey = searchParams.get('addonKey') || '';
 
-  const hostName = baseURL ? new URL(baseURL).hostname : 'unknown_host';
+  const hostName = baseURL ? new URL(baseURL).hostname : '';
   // @ts-ignore
   const subDomain = hostName.split('.')[0] || 'unknown_domain';
 
