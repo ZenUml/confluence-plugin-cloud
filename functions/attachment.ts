@@ -20,7 +20,7 @@ export const onRequestGet: PagesFunction = async (params: any) => {
       confluence_page: pageId,
       confluence_space: spaceName,
       app_key: appKey,
-      domain: subDomain
+      client_domain: subDomain
     });
   } catch (error) {
     console.error("Failed to track retrieve_attachment: ", error);
