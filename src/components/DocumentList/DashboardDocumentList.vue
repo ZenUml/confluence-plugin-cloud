@@ -241,7 +241,7 @@
           customData: { 'content.id': customContentId, contentId: customContentId }
         }).on('close', async () => {
           const iframe = document.getElementById('embedded-viewer');
-          iframe.contentWindow.location.reload();
+          if(iframe)iframe.contentWindow.location.reload();
         });
       },
       async handleScroll(event) {
