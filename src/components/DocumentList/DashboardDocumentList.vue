@@ -223,9 +223,12 @@
         const iframe = document.getElementById('embedded-viewer');
         const iframeDocument = iframe.contentDocument || iframe.contentWindow.document;
         const div = iframeDocument.createElement('div');
-        div.innerHTML = this.customContentList.length 
-          ? 'Select a diagram from the left side panel' 
-          : '<a href="https://zenuml.atlassian.net/wiki/spaces/Doc/pages/504659970/Get+started" target="_blank">Learn how to create diagrams and API specs</a>';
+        div.innerHTML = this.customContentList.length
+          ? 'Select a diagram from the left side panel'
+          : `<div style="margin-bottom: 10px;">
+              <button onclick="parent.getStarted()" style="height: 50px; width: 150px; font-size: medium;">Get Started</button>
+             </div>
+            <a href="https://zenuml.atlassian.net/wiki/spaces/Doc/pages/504659970/Get+started" target="_blank">Learn how to create diagrams and API specs</a>`;
         div.style.position = 'absolute';
         div.style.top = '50%';
         div.style.left = '50%';

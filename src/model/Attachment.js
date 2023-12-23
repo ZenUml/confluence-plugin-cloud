@@ -93,7 +93,7 @@ function attachmentNameByUuid(uuid) {
 
 export async function getAttachmentDownloadLink(pageId, macroUuid) {
   const attachmentName = attachmentNameByUuid(macroUuid);
-  const attachments = await global.apWrapper.getAttachments(pageId, {filename: attachmentName});
+  const attachments = await global.apWrapper.getAttachmentsV2(pageId, {filename: attachmentName});
   if(attachments.length > 1) {
     console.warn(`Multiple attachments found with uuid "${macroUuid}" on page ${pageId}:`, attachments);
   }
@@ -103,7 +103,7 @@ export async function getAttachmentDownloadLink(pageId, macroUuid) {
 async function tryGetAttachment() {
   const pageId = getUrlParam("pageId");
   const attachmentName = 'zenuml-' + getUrlParam("uuid") + '.png';
-  const attachments = await global.apWrapper.getAttachments(pageId, {filename: attachmentName});
+  const attachments = await global.apWrapper.getAttachmentsV2(pageId, {filename: attachmentName});
   const descending = attachments.sort((a, b) => b.version?.number - a.version?.number);
   return descending.length && descending[0];
 }
