@@ -9,7 +9,15 @@ export interface ICustomContent {
   title?: string;
   type?: string;
   value: Diagram;
-  author?: { id: string, name: string, avatar: string, link: string };
+  author?: User;
+  contributors?:Array<User>;
+}
+
+export class User {
+   id: string='';
+   name: string='';
+   avatar: string='';
+   link: string ='';
 }
 
 export interface ICustomContentV2 extends ICustomContentResponseBodyV2 {

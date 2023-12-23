@@ -3,12 +3,12 @@ import time from '@/utils/timer';
 import {IApWrapper, VersionType} from "@/model/IApWrapper";
 import {IMacroData} from "@/model/IMacroData";
 import {IContentProperty} from "@/model/IContentProperty";
-import {ICustomContent, ICustomContentV2, SearchResults} from "@/model/ICustomContent";
+import {ICustomContent, ICustomContentV2, SearchResults, User} from "@/model/ICustomContent";
 import {IUser} from "@/model/IUser";
 import {IConfluence} from "@/model/IConfluence";
 import {IAp} from "@/model/IAp";
 import {DataSource, Diagram} from "@/model/Diagram/Diagram";
-import {ICustomContentResponseBody, ICustomContentResponseBodyV2} from "@/model/ICustomContentResponseBody";
+import {AccountUser, ICustomContentResponseBody, ICustomContentResponseBodyV2} from "@/model/ICustomContentResponseBody";
 import {AtlasPage} from "@/model/page/AtlasPage";
 import CheckPermission, {PermissionCheckRequestFunc} from "@/model/page/CheckPermission";
 import { ISpace, LocationTarget } from './ILocationContext';
@@ -449,26 +449,40 @@ export default class ApWrapper2 implements IApWrapper {
     }
   }
 
-  parseCustomContentAuthor = (customContent: ICustomContentResponseBody): any => {
-    let accountId=customContent?.history?.createdBy?.accountId||'';
-    let selfLink=customContent?.history?.createdBy?._links?.self||'';
-    let author: { id: string, name: string, avatar: string, link: string } = {
-      id: accountId,
-      name: customContent?.history?.createdBy?.displayName||'',
-      avatar:  this.buildUrl(selfLink,customContent?.history?.createdBy?.profilePicture?.path||''),
-      link: this.buildUrl(selfLink,'wiki/display/~'+accountId),
-    };
-    return author;
-  };
-
   parseCustomContent = (customContent: ICustomContentResponseBody): ICustomContent => {
     const result = <unknown>Object.assign({}, customContent, {
       value: this.parseCustomContentDiagram(customContent),
       container:  Object.assign({}, customContent.container, this.parseCustomContentContainer(customContent)),
-      author:  this.parseCustomContentAuthor(customContent)
+      author:  this.parseUser(customContent?.history?.createdBy),
+      contributors: this.parseCustomContentContributors(customContent)
     });
     console.debug(`converted result: `, result);
     return result as ICustomContent;
+  };
+
+  parseUser=(accountUser:AccountUser|undefined): User|undefined=>{
+    if(accountUser==undefined)return undefined
+    let accountId=accountUser.accountId||'';
+    let selfLink=accountUser._links?.self||'';
+    let user: User = {
+      id: accountId,
+      name: accountUser.displayName||'',
+      avatar:  this.buildUrl(selfLink,accountUser.profilePicture?.path||''),
+      link: this.buildUrl(selfLink,'wiki/display/~'+accountId),
+    };
+    return user;
+  }
+
+  parseCustomContentContributors = (customContent: ICustomContentResponseBody): Array<User> => {
+    let contributors: Array<User>=[];
+    const accountUsers=customContent?.history?.contributors?.publishers?.users||new Array<AccountUser>;
+    for(let i=0;i<accountUsers.length;i++)
+    {
+      let user=this.parseUser(accountUsers[i]);
+      if(user==undefined)continue;
+      contributors.push(user);
+    }
+    return contributors;
   };
 
   parseCustomContentContainer = (customContent: ICustomContentResponseBody): any => {

@@ -64,8 +64,13 @@
                     <a :title="customContentItem.container.title" :href="customContentItem.container.link" target="_blank">{{customContentItem.container.title}}</a>
                   </span>
                   <span class="flex avatar-inner justify-end items-center px-2 py-2">
-                    <img :src="customContentItem.author.avatar"  />
-                    <a :title="customContentItem.author.name" :href="customContentItem.author.link" target="_blank">{{customContentItem.author.name}}</a>
+                    <a v-for="contributor in customContentItem.contributors" :key="contributor.id"  :href="contributor.link" target="_blank" :title="contributor.name">
+                      <span class="avatar">
+                        <span class="avatar-inner">
+                          <img :src="contributor.avatar" />
+                        </span>
+                      </span>
+                    </a>
                   </span>
                 </div>
               </div>
@@ -95,11 +100,11 @@
                 </span>
               </div>
               <div class="gridContributors">
-                <span class="flex justify-end">
-                  <a :href="customContentItem.author.link" target="_blank" :title="customContentItem.author.name">
+                <span  class="flex justify-end">
+                  <a v-for="contributor in customContentItem.contributors" :key="contributor.id"  :href="contributor.link" target="_blank" :title="contributor.name">
                     <span class="avatar">
                       <span class="avatar-inner">
-                        <img :src="customContentItem.author.avatar" />
+                        <img :src="contributor.avatar" />
                       </span>
                     </span>
                   </a>

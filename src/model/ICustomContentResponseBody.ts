@@ -6,14 +6,10 @@ export interface ICustomContentResponseBody {
     }
   };
   history?:{
-    createdBy?: {
-      accountId: string,
-      displayName: string,
-      profilePicture?:{
-        path: string
-      },
-      _links?:{
-        self: string
+    createdBy?: AccountUser,
+    contributors?:{
+      publishers?:{
+        users?:Array<AccountUser>
       }
     }
   };
@@ -26,6 +22,17 @@ export interface ICustomContentResponseBody {
       webui: string
     }
   };
+}
+
+export interface AccountUser {
+  accountId: string,
+  displayName: string,
+  profilePicture?:{
+    path: string
+  },
+  _links?:{
+    self: string
+  }
 }
 
 export interface ICustomContentResponseBodyV2 {
