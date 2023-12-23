@@ -9,7 +9,9 @@ export const onRequestGet: PagesFunction = async (params: any) => {
   const pageId = searchParams.get('pageId') || '';
   const appKey = searchParams.get('addonKey') || '';
 
-  const domain = baseURL ? new URL(baseURL).hostname : 'unknown_domain';
+  const hostName = baseURL ? new URL(baseURL).hostname : 'unknown_host';
+  // @ts-ignore
+  const subDomain = hostName.split('.')[0] || 'unknown_domain';
 
   try {
     await trackEvent({
@@ -18,7 +20,7 @@ export const onRequestGet: PagesFunction = async (params: any) => {
       confluence_page: pageId,
       confluence_space: spaceName,
       app_key: appKey,
-      domain
+      domain: subDomain
     });
   } catch (error) {
     console.error("Failed to track retrieve_attachment: ", error);
