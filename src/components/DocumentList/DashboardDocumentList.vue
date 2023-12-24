@@ -67,7 +67,7 @@
                     <a v-for="contributor in customContentItem.contributors" :key="contributor.id"  :href="contributor.link" target="_blank" :title="contributor.name">
                       <span class="avatar">
                         <span class="avatar-inner">
-                          <img :src="contributor.avatar" @error="loadDefaultAvatar" />
+                          <img :src="contributor.avatar" @error="loadDefaultAvatar" class="rounded-full" />
                         </span>
                       </span>
                     </a>
@@ -104,7 +104,7 @@
                   <a v-for="contributor in customContentItem.contributors" :key="contributor.id"  :href="contributor.link" target="_blank" :title="contributor.name">
                     <span class="avatar">
                       <span class="avatar-inner">
-                        <img :src="contributor.avatar" @error="loadDefaultAvatar" />
+                        <img :src="contributor.avatar" @error="loadDefaultAvatar" class="rounded-full" />
                       </span>
                     </span>
                   </a>
