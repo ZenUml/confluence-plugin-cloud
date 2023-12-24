@@ -8,6 +8,10 @@ const ExtendedStore: StoreOptions<RootState> = {
   mutations: {
     updateCode2(state: any, payload: any) {
       state.diagram.code = payload
+      // update title
+      if (state.diagram.code.split('\n')[0].startsWith('title ')) {
+        state.diagram.title = state.diagram.code.split('\n')[0].substring(6).trim()
+      }
     },
     updateMermaidCode(state: any, payload: any) {
       state.diagram.mermaidCode = payload
@@ -15,6 +19,15 @@ const ExtendedStore: StoreOptions<RootState> = {
     updateDiagramType(state: any, payload: any) {
       state.diagram.diagramType = payload
     },
+    updateTitle(state: any, payload: any) {
+      state.diagram.title = payload.trim()
+      // update title in code
+      if (state.diagram.code.split('\n')[0].startsWith('title ')) {
+        state.diagram.code = `title ${payload.trim()} \n` + state.diagram.code.split('\n').slice(1).join('\n')
+      } else {
+        state.diagram.code = `title ${payload.trim()} \n` + state.diagram.code
+      }
+    }
   },
   actions: {
     updateCode2({commit}: any, payload: any) {
@@ -25,6 +38,9 @@ const ExtendedStore: StoreOptions<RootState> = {
     },
     updateDiagramType({commit}: any, payload: DiagramType) {
       commit('updateDiagramType', payload)
+    },
+    updateTitle({commit}: any, payload: any) {
+      commit('updateTitle', payload)
     }
   },
   getters: {

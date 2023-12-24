@@ -24,6 +24,7 @@ async function main() {
 export default main();
 
 EventBus.$on('save', async () => {
+  console.log('save3');
   await saveToPlatform(store.state.diagram);
   // @ts-ignore
   AP.dialog.close();

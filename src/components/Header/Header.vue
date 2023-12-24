@@ -23,8 +23,8 @@
               :class="diagramType === 'mermaid' ? 'text-gray-900' : 'text-gray-600 group-hover:text-gray-900'">Mermaid</span>
         </button>
       </div>
-      <a class="inline-block help mx-1 ml-2" target="_blank" :href="templateUrl">
-        <button class="flex items-center bg-gray-100 px-2 py-1 text-gray-600 text-sm font-semibold rounded" @click="templateClick">
+      <a class="inline-block help mx-2" target="_blank" :href="templateUrl">
+        <button class="flex items-center bg-gray-100 px-2 py-1 text-sm font-semibold rounded h-[100%] hover:bg-gray-200" @click="templateClick">
             <span>
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 18v-5.25m0 0a6.01 6.01 0 001.5-.189m-1.5.189a6.01 6.01 0 01-1.5-.189m3.75 7.478a12.06 12.06 0 01-4.5 0m3.75 2.383a14.406 14.406 0 01-3 0M14.25 18v-.192c0-.983.658-1.823 1.508-2.316a7.5 7.5 0 10-7.517 0c.85.493 1.509 1.333 1.509 2.316V18" />
@@ -33,6 +33,7 @@
           <span>Examples</span>
         </button>
       </a>
+      <input type="text" placeholder="Title" :value="title" @input="changeTitle" class="px-1 border-2 border-solid border-[#091e4224] rounded-[3px] focus:border-[#388bff] hover:border-[#388bff] outline-none transition-[border-color]">
     </div>
     <div class="flex items-center">
       <a class="inline-block help mx-1 ml-2" target="_blank" :href="helpUrl">
@@ -71,6 +72,7 @@ export default {
     ...mapState({
       diagramType: state => state.diagram.diagramType,
       templateUrl: state => state.diagram.diagramType === 'sequence' ? `https://github.com/ZenUml/confluence-plugin-cloud/discussions/489` : 'https://mermaid.js.org/config/Tutorials.html',
+      title: state => state.diagram.title
     }),
     saveAndExit: function () {
       return function () {
@@ -89,6 +91,9 @@ export default {
     },
     helpClick() {
       trackEvent('help', 'click', this.diagramType);
+    },
+    changeTitle(value) {
+      this.$store.dispatch('updateTitle', value.target.value);
     }
   }
 }

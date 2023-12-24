@@ -6,7 +6,7 @@ interface Props {
 
 export function SaveAndGoBackButton(props: Props) {
   return (
-    <div className="save-and-exit inline-block test">
+    <div className=" inline-block ml-2">
       <button className="flex items-center bg-blue-700 px-2 py-1 text-white text-sm font-semibold rounded" onClick={props.saveAndExit}>
         <span>
           <svg
