@@ -44,8 +44,8 @@
                 class="block hover:bg-gray-50">
                   <div class="flex justify-end">
                     
-                    <div style="width: 75px; height: 75px; " v-show="customContentItem.imageLink">
-                      <img style="max-width: 75px; max-height: 75px;" :src="customContentItem.imageLink">
+                    <div style="width: 75px; height: 75px; ">
+                      <img style="max-width: 75px; max-height: 75px;" :src="customContentItem.imageLink" @error="loadDefaultDiagram">
                     </div>
                     <div class="px-2 py-2">
                       <div>
@@ -67,7 +67,7 @@
                     <a v-for="contributor in customContentItem.contributors" :key="contributor.id"  :href="contributor.link" target="_blank" :title="contributor.name">
                       <span class="avatar">
                         <span class="avatar-inner">
-                          <img :src="contributor.avatar" />
+                          <img :src="contributor.avatar" @error="loadDefaultAvatar" />
                         </span>
                       </span>
                     </a>
@@ -90,7 +90,7 @@
               <button class="iconEditBtn" title="Edit" @click="edit(customContentItem.id, customContentItem.value.diagramType)"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGhlaWdodD0iMThweCIgdmlld0JveD0iMCAwIDI0IDI0IiB3aWR0aD0iMThweCIgZmlsbD0iIzAwMDAwMCI+PHBhdGggZD0iTTAgMGgyNHYyNEgwVjB6IiBmaWxsPSJub25lIi8+PHBhdGggZD0iTTE0LjA2IDkuMDJsLjkyLjkyTDUuOTIgMTlINXYtLjkybDkuMDYtOS4wNk0xNy42NiAzYy0uMjUgMC0uNTEuMS0uNy4yOWwtMS44MyAxLjgzIDMuNzUgMy43NSAxLjgzLTEuODNjLjM5LS4zOS4zOS0xLjAyIDAtMS40MWwtMi4zNC0yLjM0Yy0uMi0uMi0uNDUtLjI5LS43MS0uMjl6bS0zLjYgMy4xOUwzIDE3LjI1VjIxaDMuNzVMMTcuODEgOS45NGwtMy43NS0zLjc1eiIvPjwvc3ZnPg==" /></button>
             </div>
             <div class="gridImgCont">
-              <img :src="customContentItem.imageLink" class="gridDiagramImg" />
+              <img :src="customContentItem.imageLink" class="gridDiagramImg" @error="loadDefaultDiagram" />
             </div>
             <div class="gridBottom flex">
               <div class="gridContainer">
@@ -104,7 +104,7 @@
                   <a v-for="contributor in customContentItem.contributors" :key="contributor.id"  :href="contributor.link" target="_blank" :title="contributor.name">
                     <span class="avatar">
                       <span class="avatar-inner">
-                        <img :src="contributor.avatar" />
+                        <img :src="contributor.avatar" @error="loadDefaultAvatar" />
                       </span>
                     </span>
                   </a>
@@ -319,6 +319,14 @@
         this.nextPageUrl=searchResult?._links?.next||'';
         this.customContentList=this.customContentList.concat(nextPageDataList);
         console.debug(`customContentList data count:${this.customContentList.length}`);
+      },
+      loadDefaultAvatar(e){
+        console.debug({action:'loadDefaultAvatar',url:e.target.src});
+        e.target.src='/image/default_avatar.png';
+      },
+      loadDefaultDiagram(e){
+        console.debug({action:'loadDefaultDiagram',url:e.target.src});
+        e.target.src='/image/default_diagram.png';
       }
     },
     components: {
