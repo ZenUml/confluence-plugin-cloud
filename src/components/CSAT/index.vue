@@ -91,7 +91,7 @@ onMounted(async () => {
   if (!isPopped) {
     timer = setTimeout(() => {
       open.value = true;
-    }, 1000 * 2)
+    }, 1000 * 60)
   }
 });
 
