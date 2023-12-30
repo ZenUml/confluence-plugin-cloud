@@ -361,7 +361,10 @@ export default class ApWrapper2 implements IApWrapper {
     const typesClauseFilter=this.buildTypesClauseFilter();
     const spaceKeyFilter = (await this._getCurrentSpace()).key;
     let keywordFilter='',onlyMineFilter='',docTypeFilter='',limitFilter='';
-    if(keyword!='')keywordFilter=` and (title ~ "${keyword}*" or title ~ "${keyword}")`;
+    if(keyword!=''){
+      const formatKeyword=keyword.replace(/[-:]/g, " ");
+      keywordFilter=` and (title ~ "${formatKeyword}*" or title ~ "*${formatKeyword}*" or title ~ "${formatKeyword}")`;
+    }
     if(onlyMine)onlyMineFilter=` and contributor = "${this.currentUser?.atlassianAccountId}"`;
     if(docType!='')docTypeFilter=``;
     if(limit!=undefined)limitFilter=`&limit=${limit}`;
