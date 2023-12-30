@@ -22,6 +22,7 @@ const ExtendedStore: StoreOptions<RootState> = {
     updateTitle(state: any, payload: any) {
       state.diagram.title = payload.trim()
       // update title in code
+      if (state.diagramType !== 'sequence') return
       if (state.diagram.code.split('\n')[0].startsWith('title ')) {
         state.diagram.code = `title ${payload.trim()} \n` + state.diagram.code.split('\n').slice(1).join('\n')
       } else {

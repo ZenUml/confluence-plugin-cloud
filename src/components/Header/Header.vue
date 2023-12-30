@@ -33,7 +33,8 @@
           <span>Examples</span>
         </button>
       </a>
-      <input type="text" placeholder="Title" :value="title" @input="changeTitle" class="px-1 border-2 border-solid border-[#091e4224] rounded-[3px] focus:border-[#388bff] hover:border-[#388bff] outline-none transition-[border-color]">
+      <input v-if="diagramType === 'sequence'" type="text" placeholder="Title" :value="seqTitle" @input="changeTitle" class="px-1 border-2 border-solid border-[#091e4224] rounded-[3px] focus:border-[#388bff] hover:border-[#388bff] outline-none transition-[border-color]">
+      <input v-if="diagramType === 'mermaid'" type="text" placeholder="Title" :value="mermaidTitle" @input="changeTitle" class="px-1 border-2 border-solid border-[#091e4224] rounded-[3px] focus:border-[#388bff] hover:border-[#388bff] outline-none transition-[border-color]">
     </div>
     <div class="flex items-center">
       <a class="inline-block help mx-1 ml-2" target="_blank" :href="helpUrl">
@@ -45,56 +46,97 @@
         </button>
       </a>
       <div class="inline-block ml-2">
-        <save-and-go-back-button class="ml-2" :saveAndExit="saveAndExit"/>
+        <save-and-go-back-button class="ml-2" :saveAndExit="saveAndExit" :disabled="disableSaveAndExit"/>
       </div>
     </div>
   </header>
 </template>
 
 <script>
-import {mapState, mapMutations} from 'vuex';
+import { mapState, mapMutations } from "vuex";
 import SaveAndGoBackButton from "@/components/SaveAndGoBackButton";
-import {DiagramType} from "@/model/Diagram/Diagram";
+import { DiagramType } from "@/model/Diagram/Diagram";
 import EventBus from "@/EventBus";
-import {trackEvent} from "@/utils/window";
+import { trackEvent } from "@/utils/window";
 
 export default {
   name: "Header",
   components: {
-    SaveAndGoBackButton,
+    SaveAndGoBackButton
   },
   data() {
     return {
-      helpUrl: 'https://zenuml.atlassian.net/wiki/spaces/Doc/overview',
-    }
+      helpUrl: "https://zenuml.atlassian.net/wiki/spaces/Doc/overview",
+      seqTitle: "",
+      mermaidTitle: ""
+    };
   },
   computed: {
     ...mapState({
       diagramType: state => state.diagram.diagramType,
-      templateUrl: state => state.diagram.diagramType === 'sequence' ? `https://github.com/ZenUml/confluence-plugin-cloud/discussions/489` : 'https://mermaid.js.org/config/Tutorials.html',
+      seqCode: state => state.diagram.code,
+      templateUrl: state =>
+        state.diagram.diagramType === "sequence"
+          ? `https://github.com/ZenUml/confluence-plugin-cloud/discussions/489`
+          : "https://mermaid.js.org/config/Tutorials.html",
       title: state => state.diagram.title
     }),
-    saveAndExit: function () {
-      return function () {
-        EventBus.$emit('save')
+    saveAndExit: function() {
+      return function() {
+        EventBus.$emit("save");
+      };
+    },
+    disableSaveAndExit: function() {
+      if (this.diagramType === "sequence") {
+        return !this.seqTitle;
+      } else {
+        return !this.mermaidTitle;
+      }
+    }
+  },
+  watch: {
+    diagramType: function(newVal) {
+      this.$store.dispatch("updateTitle", newVal === "mermaid" ? this.mermaidTitle : this.seqTitle);
+    },
+    title: function(newVal) {
+      if (this.diagramType === "mermaid") {
+        this.mermaidTitle = newVal;
+      } else {
+        this.seqTitle = newVal;
       }
     }
   },
   methods: {
-    ...mapMutations(['updateDiagramType']),
+    ...mapMutations(["updateDiagramType"]),
     setActiveTab(tab) {
-      let type = tab === 'sequence' ? DiagramType.Sequence : DiagramType.Mermaid;
-      this.updateDiagramType(type);
+      this.updateDiagramType(tab === "sequence" ? DiagramType.Sequence : DiagramType.Mermaid);
     },
     templateClick() {
-      trackEvent('template', 'click', this.diagramType);
+      trackEvent("template", "click", this.diagramType);
     },
     helpClick() {
-      trackEvent('help', 'click', this.diagramType);
+      trackEvent("help", "click", this.diagramType);
     },
     changeTitle(value) {
-      this.$store.dispatch('updateTitle', value.target.value);
+      if (this.diagramType === "mermaid") {
+        this.mermaidTitle = value.target.value;
+      } else {
+        this.seqTitle = value.target.value;
+      }
+      this.$store.dispatch("updateTitle", value.target.value);
+    }
+  },
+  mounted() {
+    if (this.diagramType === "mermaid") {
+      this.mermaidTitle = this.title;
+
+      const firstLine = this.seqCode?.split('\n')[0];
+      if (firstLine?.trimStart().startsWith('title ')) {
+        this.seqTitle = firstLine.trimStart().substring(6).trim();
+      }
+    } else {
+      this.seqTitle = this.title;
     }
   }
-}
+};
 </script>

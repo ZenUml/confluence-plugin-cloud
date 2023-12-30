@@ -87,7 +87,7 @@ const Component = ({ saveAndExit }: Props) => {
           </button>
         </a>
         <div className="inline-block ml-2">
-          <SaveAndGoBackButton saveAndExit={saveAndExit} />
+          <SaveAndGoBackButton saveAndExit={saveAndExit} disabled={!title} />
         </div>
       </div>
     </header>
