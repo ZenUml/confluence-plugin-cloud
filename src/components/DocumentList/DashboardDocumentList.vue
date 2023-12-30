@@ -45,7 +45,8 @@
                   <div class="flex justify-end">
                     
                     <div style="width: 75px; height: 75px; ">
-                      <img style="max-width: 75px; max-height: 75px;" :src="customContentItem.imageLink" @error="loadDefaultDiagram">
+                      <img v-if="customContentItem.imageLink" style="max-width: 75px; max-height: 75px;" :src="customContentItem.imageLink" @error="loadDefaultDiagram">
+                      <img v-if="!customContentItem.imageLink" style="max-width: 75px; max-height: 75px;" :src="defaultDiagramImageUrl">
                     </div>
                     <div class="px-2 py-2">
                       <div>
@@ -90,7 +91,8 @@
               <button class="iconEditBtn" title="Edit" @click="edit(customContentItem.id, customContentItem.value.diagramType)"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGhlaWdodD0iMThweCIgdmlld0JveD0iMCAwIDI0IDI0IiB3aWR0aD0iMThweCIgZmlsbD0iIzAwMDAwMCI+PHBhdGggZD0iTTAgMGgyNHYyNEgwVjB6IiBmaWxsPSJub25lIi8+PHBhdGggZD0iTTE0LjA2IDkuMDJsLjkyLjkyTDUuOTIgMTlINXYtLjkybDkuMDYtOS4wNk0xNy42NiAzYy0uMjUgMC0uNTEuMS0uNy4yOWwtMS44MyAxLjgzIDMuNzUgMy43NSAxLjgzLTEuODNjLjM5LS4zOS4zOS0xLjAyIDAtMS40MWwtMi4zNC0yLjM0Yy0uMi0uMi0uNDUtLjI5LS43MS0uMjl6bS0zLjYgMy4xOUwzIDE3LjI1VjIxaDMuNzVMMTcuODEgOS45NGwtMy43NS0zLjc1eiIvPjwvc3ZnPg==" /></button>
             </div>
             <div class="gridImgCont">
-              <img :src="customContentItem.imageLink" class="gridDiagramImg" @error="loadDefaultDiagram" />
+              <img v-if="customContentItem.imageLink" :src="customContentItem.imageLink" class="gridDiagramImg" @error="loadDefaultDiagram" />
+              <img v-if="!customContentItem.imageLink" :src="defaultDiagramImageUrl" class="gridDiagramImg" />
             </div>
             <div class="gridBottom flex">
               <div class="gridContainer">
@@ -145,6 +147,7 @@
         needTryLoadNextPage: true,
         nextPageUrl:'',
         pageSize:15,
+        defaultDiagramImageUrl:'/image/default_diagram.png'
       };
     },
     watch: {
@@ -328,7 +331,7 @@
       },
       loadDefaultDiagram(e){
         console.debug({action:'loadDefaultDiagram',url:e.target.src});
-        e.target.src='/image/default_diagram.png';
+        e.target.src=this.defaultDiagramImageUrl;
       }
     },
     components: {
