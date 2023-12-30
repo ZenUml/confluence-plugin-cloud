@@ -269,6 +269,7 @@
       resetNextPageScorll(){
         this.prevScrollTop=0;
         this.needTryLoadNextPage=true;
+        this.nextPageUrl='';
       },
       async loadCustomContentImage(customContent){
         const c=customContent;
@@ -309,15 +310,16 @@
       async loadNextPageData(){
         if(!this.needTryLoadNextPage)return;
         let searchResult=await this.customContentStorageProvider.searchNextPageCustomContent(this.nextPageUrl);
+        this.nextPageUrl=searchResult?._links?.next||'';
+        if(this.nextPageUrl==''){
+          this.needTryLoadNextPage=false;
+        }
         let nextPageDataList=searchResult.results;
         console.debug(`loadNextPageData load data count:${nextPageDataList.length}`);
-        if(nextPageDataList.length==0){
-          this.needTryLoadNextPage=false;
-          return;
+        if(nextPageDataList.length>0){
+          this.loadCustomContentImages(nextPageDataList);
+          this.customContentList=this.customContentList.concat(nextPageDataList);
         }
-        this.loadCustomContentImages(nextPageDataList);
-        this.nextPageUrl=searchResult?._links?.next||'';
-        this.customContentList=this.customContentList.concat(nextPageDataList);
         console.debug(`customContentList data count:${this.customContentList.length}`);
       },
       loadDefaultAvatar(e){
