@@ -42,8 +42,7 @@
                 <a @click="picked = customContentItem" href="#"
                 :class="{'bg-gray-100': customContentItem.id === (picked && picked.id), 'bg-white': customContentItem.id !== (picked && picked.id)}"
                 class="block hover:bg-gray-50">
-                  <div class="flex justify-end">
-                    
+                  <div class="flex">
                     <div style="width: 75px; height: 75px; ">
                       <img v-if="customContentItem.imageLink" style="max-width: 75px; max-height: 75px;" :src="customContentItem.imageLink" @error="loadDefaultDiagram">
                       <img v-if="!customContentItem.imageLink" style="max-width: 75px; max-height: 75px;" :src="defaultDiagramImageUrl">
