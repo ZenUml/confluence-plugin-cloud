@@ -432,7 +432,7 @@ export default class ApWrapper2 implements IApWrapper {
     console.debug(`Searching content with ${url}`);
     const data = await this.request(url);
     console.debug(`${data?.size} results returned, has next? ${data?._links?.next != null}`);
-    data.results = data?.results.map(this.parseCustomContent).filter((c: ICustomContent) => c.value);
+    data.results = data?.results.map(this.parseCustomContent).filter((c: ICustomContent) => c.value&&c.value.diagramType);
     console.debug({action:'searchOnce',data:data});
     return data;
   };
@@ -509,6 +509,7 @@ export default class ApWrapper2 implements IApWrapper {
     if(rawValue) {
       try {
         diagram = JSON.parse(rawValue);
+        if(diagram.diagramType==undefined)return null;
         diagram.source = DataSource.CustomContent;
       } catch(e) {
         console.error(`parseCustomContentDiagram error: `, e, `raw value: ${rawValue}`);
