@@ -34,7 +34,7 @@
                 Recent diagrams and API specs
               </button>
             </div>
-            <div class="flex-1 overflow-y-auto" @scroll="handleScroll">
+            <div id="tableScrollContainer" class="flex-1 overflow-y-auto" @scroll="handleScroll">
               <div v-for="(customContentItem,index) in filteredCustomContentList" :key="customContentItem.id" class="relative block px-4 py-2 bg-white border-t hover:bg-gray-50">
                 <div class="absolute left-0 top-0 w-6 min-w-6 max-w-10 h-6 text-xs bg-gray-400 text-white py-1 px-1 items-center justify-center">
                   <span class="flex font-bold items-center justify-center">{{index+1}}</span>
@@ -81,7 +81,7 @@
             </iframe>
           </div>
         </main>
-        <main v-if="viewStyle=='grid'" class="gridViewList h-full w-full overflow-auto p-5" @scroll="handleScroll">
+        <main id="gridScrollContainer" v-if="viewStyle=='grid'" class="gridViewList h-full w-full overflow-auto p-5" @scroll="handleScroll">
           <div  v-for="customContentItem in filteredCustomContentList" :key="customContentItem.id" class="gridDiagram">
             <div class="gridTitle" :title="customContentItem.title">
               {{ customContentItem.title }}
@@ -208,17 +208,18 @@
     },
     methods: {
       setFilter(docType) {
-        this.resetNextPageScorll();
         this.docTypeFilter = docType;
       },
       gotoPage(pageId) {
         AP.navigator.go('contentview', {contentId: pageId});
       },
-      changeToTableStyle() {
+      async changeToTableStyle() {
         this.viewStyle='table';
+        await this.checkAutoLoadNextPageData();
       },
-      changeToGridStyle() {
+      async changeToGridStyle() {
         this.viewStyle='grid';
+        await this.checkAutoLoadNextPageData();
       },
       initTheRightSideContent(){
         //init the right side content
@@ -303,24 +304,40 @@
           let searchedCustomContentList=searchResult.results;
           //Reasons not to use 'await this.loadCustomContentImages':Synchronization will cause the page to remain motionless, so asynchronous is used. After each image link is retrieved, 'this.$forceUpdate();' is called to force a refresh.
           this.loadCustomContentImages(searchedCustomContentList);
-          this.nextPageUrl=searchResult?._links?.next||'';
+          this.updateNexPageUrl(searchResult);
           this.customContentList=searchedCustomContentList;
+          await this.checkAutoLoadNextPageData();
         } catch(e) {
           console.error(`Error search`, e);
         }
       },
-      async loadNextPageData(){
-        if(!this.needTryLoadNextPage)return;
-        let searchResult=await this.customContentStorageProvider.searchNextPageCustomContent(this.nextPageUrl);
+      updateNexPageUrl(searchResult){
         this.nextPageUrl=searchResult?._links?.next||'';
         if(this.nextPageUrl==''){
           this.needTryLoadNextPage=false;
         }
+      },
+      async checkAutoLoadNextPageData(){
+        setTimeout(async()=>{
+          const scrollContainerElement = document.getElementById(`${this.viewStyle}ScrollContainer`);
+          const hasScroll = scrollContainerElement.scrollHeight > scrollContainerElement.clientHeight;
+          console.debug({action:"checkAutoLoadNextPageData",hasScroll:hasScroll});
+          if(this.needTryLoadNextPage && !hasScroll){
+            console.debug({action:"checkAutoLoadNextPageData",msg:'need auto load'});
+            await this.loadNextPageData();
+          }
+        },200);
+      },
+      async loadNextPageData(){
+        if(!this.needTryLoadNextPage)return;
+        let searchResult=await this.customContentStorageProvider.searchNextPageCustomContent(this.nextPageUrl);
+        this.updateNexPageUrl(searchResult);
         let nextPageDataList=searchResult.results;
         console.debug(`loadNextPageData load data count:${nextPageDataList.length}`);
         if(nextPageDataList.length>0){
           this.loadCustomContentImages(nextPageDataList);
           this.customContentList=this.customContentList.concat(nextPageDataList);
+          await this.checkAutoLoadNextPageData();
         }
         console.debug(`customContentList data count:${this.customContentList.length}`);
       },
