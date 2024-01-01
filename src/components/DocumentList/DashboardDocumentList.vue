@@ -20,6 +20,8 @@
           <div class="flex items-center float-right">
             <button class="imgInput tableList"  :class="{ 'selected': viewStyle=='table' }" title="List view" @click="changeToTableStyle"></button>
             <button class="imgInput gridList" :class="{ 'selected': viewStyle=='grid' }" title="Grid view" @click="changeToGridStyle"></button>
+            <button class="imgInput fullScreen" v-if="!fullScreen"  title="Full Screen" @click="enterFullScreen"></button>
+            <button class="imgInput exitFullScreen" v-if="fullScreen"  title="Exit Full Screen" @click="exitFullScreen"></button>
           </div>
           <button class="flex items-center float-right h-8 text-white text-sm font-medium">
             <save-and-go-back-button :save-and-exit="saveAndExit" />
@@ -133,6 +135,7 @@
     name: 'DashboardDocumentList',
     data() {
       return {
+        fullScreen: false,
         customContentList: [],
         picked: '',
         docTypeFilter: '',
@@ -202,11 +205,51 @@
     async mounted() {
       const apWrapper = new ApWrapper2(AP);
       await apWrapper.initializeContext();
+      this.loadInitCustomData(await apWrapper.getDialogCustomData());
       this.customContentStorageProvider = new CustomContentStorageProvider(apWrapper);
       await this.search();
       this.initTheRightSideContent();
     },
     methods: {
+      loadInitCustomData(customData){
+        console.debug({action:"loadInitCustomData",customData:customData});
+        if(customData){
+          Object.keys(customData).forEach(key => {
+            this[key] = customData[key];
+          });
+        } 
+      },
+      buildInitCustomData(){
+       return {
+        fullScreen:this.fullScreen,
+        docTypeFilter:this.docTypeFilter,
+        filterKeyword:this.filterKeyword,
+        filterOnlyMine:this.filterOnlyMine,
+        viewStyle:this.viewStyle
+       }
+      },
+      enterFullScreen() {
+        this.fullScreen=true;
+        AP.dialog.create({
+          key: `zenuml-content-dashboard`,
+          chrome: false,
+          width: "100%",
+          height: "100%",
+          customData: this.buildInitCustomData()
+        }).on('close', async (customData) => {
+          console.debug({action:"enterFullScreen on close",customData:customData});
+          this.loadInitCustomData(customData);
+          await this.search();
+        });
+      },
+      tryRefreshEmbeddedViewer(){
+        const iframe = document.getElementById('embedded-viewer');
+        if(iframe)iframe.contentWindow.location.reload();
+      },
+      exitFullScreen() {
+        this.fullScreen=false;
+        AP.dialog.close(this.buildInitCustomData());
+      },
       setFilter(docType) {
         this.docTypeFilter = docType;
       },
@@ -251,8 +294,7 @@
           height: "100%",
           customData: { 'content.id': customContentId, contentId: customContentId }
         }).on('close', async () => {
-          const iframe = document.getElementById('embedded-viewer');
-          if(iframe)iframe.contentWindow.location.reload();
+          this.tryRefreshEmbeddedViewer();
         });
       },
       async handleScroll(event) {
