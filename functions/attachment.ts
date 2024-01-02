@@ -26,8 +26,12 @@ export const onRequestGet: PagesFunction = async (params: any) => {
     console.error("Failed to track retrieve_attachment: ", error);
   }
 
+  const isLite = params.request.url.includes('lite');
+  let upgradDesc = "";
+  if(isLite)upgradDesc = `<p style="color:#97a0af;font-style:italic;">Elevate your ZenUML experience by upgrading to our Paid Version. For detailed instructions and benefits, visit https://zenuml.com/upgrade.</p>`;
+
   return new Response(
-    `<ac:image ac:width="950"> <ri:attachment ri:filename="zenuml-${uuid}.png" /> </ac:image>`,
+    `${upgradDesc}<ac:image ac:width="950"> <ri:attachment ri:filename="zenuml-${uuid}.png" /> </ac:image>`,
     {}
   );
 };
