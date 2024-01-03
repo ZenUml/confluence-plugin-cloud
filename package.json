@@ -85,7 +85,7 @@
     "vue-cli-plugin-tailwind": "~3.0.0",
     "vue-jest": "^3.0.5",
     "vue-template-compiler": "^2.7.14",
-    "wrangler": "^2.1.13"
+    "wrangler": "^2.20.2"
   },
   "eslintConfig": {
     "root": true,
