@@ -1,4 +1,4 @@
-import {getUrlParam, trackEvent} from '@/utils/window';
+import {getUrlParam, trackEvent, addonKey} from '@/utils/window';
 import time from '@/utils/timer';
 import {IApWrapper, VersionType} from "@/model/IApWrapper";
 import {IMacroData} from "@/model/IMacroData";
@@ -6,6 +6,7 @@ import {IContentProperty} from "@/model/IContentProperty";
 import {ICustomContent, ICustomContentV2, SearchResults, User} from "@/model/ICustomContent";
 import {IUser} from "@/model/IUser";
 import {IConfluence} from "@/model/IConfluence";
+import {ILicense} from "@/model/ILicense";
 import {IAp} from "@/model/IAp";
 import {DataSource, Diagram} from "@/model/Diagram/Diagram";
 import {AccountUser, ICustomContentResponseBody, ICustomContentResponseBodyV2} from "@/model/ICustomContentResponseBody";
@@ -33,6 +34,7 @@ export default class ApWrapper2 implements IApWrapper {
   currentPageUrl: string | undefined;
   baseUrl: string | undefined;
   locationTarget: LocationTarget | undefined;
+  license: ILicense | undefined;
   constructor(ap: IAp) {
     this.versionType = this.isLite() ? VersionType.Lite : VersionType.Full;
     this._confluence = ap.confluence;
@@ -52,7 +54,10 @@ export default class ApWrapper2 implements IApWrapper {
       this.baseUrl = await this._getBaseUrl();
       this.locationTarget = await this._getLocationTarget();
       this.currentPageId = await this._page.getPageId();
-      console.log('initializeContext', this.currentUser, this.currentSpace, this.currentPageUrl, this.locationTarget, this.currentPageId);
+      if(this.versionType === VersionType.Full){
+        this.license = await this._getLicense();
+      }
+      console.log('initializeContext', this.currentUser, this.currentSpace, this.currentPageUrl, this.locationTarget, this.currentPageId,this.license);
 
       if(window) {
         //@ts-ignore
@@ -647,6 +652,19 @@ export default class ApWrapper2 implements IApWrapper {
     return this.baseUrl || (this.baseUrl = baseOf(await this._getCurrentPageUrl()));
   }
 
+  async _getLicense(): Promise<ILicense|undefined> {
+    const url = `/rest/atlassian-connect/1/addons/${addonKey()}`;
+    try {
+      const response = await this._requestFn({type: 'GET', url});
+      const license: ILicense = JSON.parse(response.body);
+      trackEvent(response.body, 'getLicense', 'info');
+      return license;
+    } catch (e) {
+      trackEvent(JSON.stringify(e), 'getLicense', 'error');
+      return undefined;
+    }
+  }
+
   async _getLocationTarget(): Promise<LocationTarget> {
     return this.locationTarget || (this.locationTarget = await this._page.getLocationTarget());
   }
@@ -661,7 +679,7 @@ export default class ApWrapper2 implements IApWrapper {
     return await CheckPermission(pageId, this.currentUser?.atlassianAccountId || '', this._requestFn as PermissionCheckRequestFunc)
   }
 
-  isLite(): boolean {
+   isLite(): boolean {
     // @ts-ignore
     return getUrlParam('addonKey')?.includes('lite');
   }
