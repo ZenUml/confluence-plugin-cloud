@@ -17,7 +17,7 @@ import {saveToPlatform} from "@/model/ContentProvider/Persistence";
 import ApWrapper2 from "@/model/ApWrapper2";
 import MacroUtil from "@/model/MacroUtil";
 import {trackEvent} from '@/utils/window';
-
+import "swagger-editor/dist/swagger-editor.css";
 async function saveOpenApiAndExit () {
   // @ts-ignore
   const code = window.specContent;
