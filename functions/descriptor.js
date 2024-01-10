@@ -2,7 +2,6 @@ const descriptor = require('./atlassian-connect.json');
 const liteKeySuffix = '-lite';
 const liteNameSuffix = ' Lite';
 const VERSION = '2023.06';
-
 export const onRequestGet = async (params) => {
   const req = params.request;
   let host = req.headers.get('x-forwarded-host');
@@ -103,3 +102,6 @@ export const onRequestGet = async (params) => {
     }
   );
 };
+export const isLite = (appKey) =>{
+  return appKey.includes(liteKeySuffix);
+}
