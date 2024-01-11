@@ -76,7 +76,7 @@
     "eslint-plugin-vue": "^7.5.0",
     "jest": "^27.1.0",
     "longjohn": "^0.2.12",
-    "postcss": "^8.4.19",
+    "postcss": "8.4.31",
     "speed-measure-webpack-plugin": "^1.5.0",
     "test-lib": "^2.1.2",
     "toucan-js": "^2.6.1",
@@ -85,7 +85,7 @@
     "vue-cli-plugin-tailwind": "~3.0.0",
     "vue-jest": "^3.0.5",
     "vue-template-compiler": "^2.7.14",
-    "wrangler": "^2.1.13"
+    "wrangler": "^3.22.1"
   },
   "eslintConfig": {
     "root": true,
