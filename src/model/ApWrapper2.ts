@@ -655,7 +655,7 @@ export default class ApWrapper2 implements IApWrapper {
   async _getLicense(): Promise<ILicense|undefined> {
     const url = `/rest/atlassian-connect/1/addons/${addonKey()}`;
     try {
-      const response = await this._requestFn({type: 'GET', url});
+      const response: ILicense = await this.request(url);
       const license: ILicense = JSON.parse(response.body);
       trackEvent(response.body, 'getLicense', 'info');
       return license;
