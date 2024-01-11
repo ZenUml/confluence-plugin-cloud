@@ -175,6 +175,11 @@
       },
       previewSrc() {
         if (!this.picked) return;
+        if(!this.picked.value?.diagramType) {
+          console.warn(`Unknown diagramType:`, this.picked.value);
+          return '';
+        }
+
         function getViewerUrl(diagramType) {
           if(diagramType === DiagramType.Sequence || diagramType === DiagramType.Mermaid) {
             return '/sequence-viewer.html';
@@ -291,10 +296,8 @@
         }
         this.$forceUpdate();
       },
-      async loadCustomContentImages(customContentList){
-        for(let i=0; i<customContentList.length; i++) {
-          await this.loadCustomContentImage(customContentList[i]);
-        }
+      async loadCustomContentImages(customContentList) {
+        await Promise.all(customContentList.filter(c => c.container?.id).map(c => this.loadCustomContentImage(c)));
       },
       async search(){
         this.resetNextPageScorll();
