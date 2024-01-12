@@ -15127,7 +15127,7 @@ swagger-client@^3.23.0, swagger-client@^3.24.6:
     traverse "~0.6.6"
     undici "^5.24.0"
 
-swagger-editor@^4.11.2:
+swagger-editor@^4.4.0:
   version "4.11.2"
   resolved "https://registry.yarnpkg.com/swagger-editor/-/swagger-editor-4.11.2.tgz#332e51737bfa4c69577d383908232c334b726bce"
   integrity sha512-Hl5rwMTeRVOyii+OLubW++PWh2rajZFOE6UiM9aKFySsRTNDlkQjtBgBiqBVgKFUvK6bmxS786MleYRdQlYHzA==
