@@ -150,7 +150,7 @@
 
 <script>
 import { mapState, mapMutations } from "vuex";
-import SaveAndGoBackButton from "@/components/SaveAndGoBackButton";
+import SaveAndGoBackButton from "@/components/SaveAndGoBackButton.vue";
 import { DiagramType } from "@/model/Diagram/Diagram";
 import EventBus from "@/EventBus";
 import { trackEvent } from "@/utils/window";

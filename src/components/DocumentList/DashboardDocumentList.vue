@@ -121,7 +121,7 @@
 </template>
 
 <script>
-  import SaveAndGoBackButton from "@/components/SaveAndGoBackButton";
+  import SaveAndGoBackButton from "@/components/SaveAndGoBackButton.vue";
   import {DiagramType} from "@/model/Diagram/Diagram";
   import EventBus from "@/EventBus";
   import AP from "@/model/AP";

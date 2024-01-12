@@ -48,7 +48,7 @@ import {trackEvent} from "@/utils/window";
 import {mapState, mapGetters} from "vuex";
 import EventBus from '../../EventBus'
 import Debug from '@/components/Debug/Debug.vue'
-import ErrorBoundary from "@/components/ErrorBoundary";
+import ErrorBoundary from "@/components/ErrorBoundary.vue";
 import globals from '@/model/globals';
 import {DataSource} from "@/model/Diagram/Diagram";
 import {getUrlParam} from '@/utils/window';
