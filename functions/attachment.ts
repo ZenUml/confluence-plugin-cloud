@@ -1,8 +1,9 @@
 import {trackEvent} from "./utils/zaraz";
+import {checkWhiteList} from "./utils/white-list";
 import { isLite } from './descriptor.js';
 export const onRequestGet: PagesFunction = async (params: any) => {
   const {searchParams} = new URL(params.request.url);
-
+ 
   const uuid = searchParams.get('uuid') || '';
   const baseURL = searchParams.get('xdm_e') || '';
   const spaceName = searchParams.get('spaceKey') || '';
@@ -26,7 +27,7 @@ export const onRequestGet: PagesFunction = async (params: any) => {
     console.error("Failed to track retrieve_attachment: ", error);
   }
 
-  const upgradeDesc = isLite(appKey) ? `<p style="color:#97a0af;font-style:italic;">Elevate your ZenUML experience by upgrading to our Paid Version. For detailed instructions and benefits, visit https://zenuml.com/upgrade.</p>` : "";
+  const upgradeDesc = (isLite(appKey) && checkWhiteList(params.env,subDomain)) ? `<p style="color:#97a0af;font-style:italic;">Elevate your ZenUML experience by upgrading to our Paid Version. For detailed instructions and benefits, visit https://zenuml.com/upgrade.</p>` : "";
   return new Response(
     `${upgradeDesc}<ac:image ac:width="950"> <ri:attachment ri:filename="zenuml-${uuid}.png" /> </ac:image>`,
     {}
