@@ -1,4 +1,4 @@
-import Vue from 'vue'
+import { createApp } from 'vue'
 import DocumentList from './components/DocumentList/DocumentList.vue'
 
 import EventBus from './EventBus'
@@ -10,7 +10,6 @@ import uuidv4 from "@/utils/uuid";
 import {trackEvent} from '@/utils/window';
 import MacroUtil from "@/model/MacroUtil";
 
-Vue.config.productionTip = false
 const apWrapper = new ApWrapper2(AP);
 
 async function trackCreateNewEvent() {
@@ -21,9 +20,8 @@ async function trackCreateNewEvent() {
 }
 
 if(document.getElementById('app')) {
-  new Vue({
-    render: h => h(DocumentList)
-  }).$mount('#app')
+  const app = createApp(DocumentList)
+  app.mount('#app')
 
   trackCreateNewEvent();
 }
@@ -38,7 +36,7 @@ EventBus.$on('save', async () => {
   if(!macroData?.uuid) {
     trackEvent(uuid, 'create_macro_end', 'embed');
   }
-  
+
   // @ts-ignore
   AP.dialog.close();
 });

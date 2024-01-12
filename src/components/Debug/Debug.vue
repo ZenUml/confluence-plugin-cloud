@@ -28,9 +28,9 @@ import {MacroIdProvider} from "@/model/ContentProvider/MacroIdProvider";
 import AP from "@/model/AP";
 import ApWrapper2 from "@/model/ApWrapper2";
 
-const commitHash = process.env.VUE_APP_GIT_HASH;
-const gitBranch = process.env.VUE_APP_GIT_BRANCH;
-const gitTag = process.env.VUE_APP_GIT_TAG;
+const commitHash = 'process.env.VUE_APP_GIT_HASH';
+const gitBranch = 'process.env.VUE_APP_GIT_HASH';
+const gitTag = 'process.env.VUE_APP_GIT_HASH';
 export default {
   name: "Debug",
   data() {
