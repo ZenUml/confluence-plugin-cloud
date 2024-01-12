@@ -17,10 +17,7 @@ import 'codemirror/keymap/sublime'
 // language js
 import 'codemirror/mode/javascript/javascript.js'
 import 'codemirror/addon/display/placeholder.js'
-import 'codemirror/theme/base16-dark.css'
 import 'codemirror/addon/edit/closebrackets.js'
-import 'codemirror/lib/codemirror.css'
-import 'codemirror/theme/base16-dark.css'
 import EventBus from '@/EventBus'
 import globals from "@/model/globals";
 import {DiagramType} from "@/model/Diagram/Diagram";
@@ -117,15 +114,15 @@ export default {
   }
 }
 </script>
-
 <style>
-@import "codemirror/lib/codemirror.css";
+@import 'codemirror/lib/codemirror.css';
+@import 'codemirror/theme/base16-dark.css';
 @import "codemirror/theme/monokai.css";
 
 .CodeMirror {
   font-family: Menlo, 'Fira Code', Monaco, source-code-pro, "Ubuntu Mono", "DejaVu sans mono", Consolas, monospace;
   font-size: 16px;
-  height: 100%;
+  height: 100%!important;
   width: 100%;
 }
 </style>

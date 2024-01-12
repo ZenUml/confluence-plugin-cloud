@@ -25,26 +25,19 @@ function getHtmlFiles(dir) {
   return htmlFiles;
 }
 
-
 export default defineConfig({
   build: {
     rollupOptions: {
       input: getHtmlFiles('./').concat(getHtmlFiles('./drawio')),
       output: {
+        // TODO: improve the strategy
         manualChunks(id) {
-          if (id.includes('react') || id.includes('react-dom')) {
-            return 'react-vendor'
-          }
-          if (id.includes('swagger-ui')) {
-            return 'swagger-ui'
+          if ((id.includes('node_modules') && id.includes('swagger'))) {
+            return 'swagger'
           }
 
-          if (id.includes('swagger-client')) {
-            return 'swagger-client'
-          }
-
-          if (id.includes('swagger-editor')) {
-            return 'swagger-editor'
+          if (id.includes('mermaid')) {
+            return 'mermaid'
           }
 
           if (id.includes('lodash')) {
