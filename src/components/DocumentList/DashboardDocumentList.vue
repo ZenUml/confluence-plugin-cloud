@@ -137,6 +137,7 @@
       return {
         fullScreen: false,
         customContentList: [],
+        hasData: false,
         picked: '',
         docTypeFilter: '',
         baseUrl: '',
@@ -161,6 +162,10 @@
       async filterOnlyMine(newValue, oldValue) {
         console.log('filterOnlyMine changed:', newValue, oldValue);
         await this.search();
+      },
+      async customContentList(newValue, oldValue) {
+        console.log('customContentList changed:', newValue, oldValue);
+        if(this.filteredCustomContentList.length>0) this.hasData = true;
       }
     },
     computed: {
@@ -208,9 +213,15 @@
       this.loadInitCustomData(await apWrapper.getDialogCustomData());
       this.customContentStorageProvider = new CustomContentStorageProvider(apWrapper);
       await this.search();
+      this.checkIfHasData();
       this.initTheRightSideContent();
     },
     methods: {
+      checkIfHasData(){
+        if(this.fullScreen==false && this.customContentList.length>0){
+          this.hasData = true;
+        }
+      },
       loadInitCustomData(customData){
         console.debug({action:"loadInitCustomData",customData:customData});
         if(customData){
@@ -225,7 +236,8 @@
         docTypeFilter:this.docTypeFilter,
         filterKeyword:this.filterKeyword,
         filterOnlyMine:this.filterOnlyMine,
-        viewStyle:this.viewStyle
+        viewStyle:this.viewStyle,
+        hasData:this.hasData
        }
       },
       enterFullScreen() {
@@ -269,7 +281,7 @@
         const iframe = document.getElementById('embedded-viewer');
         const iframeDocument = iframe.contentDocument || iframe.contentWindow.document;
         const div = iframeDocument.createElement('div');
-        div.innerHTML = this.customContentList.length
+        div.innerHTML = this.hasData
           ? 'Select a diagram from the left side panel'
           : `<div style="margin-bottom: 10px;">
               <button onclick="parent.getStarted()" style="height: 50px; width: 150px; font-size: medium;">Get Started</button>
