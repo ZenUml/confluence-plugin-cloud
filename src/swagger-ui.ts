@@ -1,4 +1,5 @@
 import SwaggerUIBundle from 'swagger-ui'
+import "swagger-ui/dist/swagger-ui.css";
 import SpecListener from './utils/spec-listener'
 import AP from "@/model/AP";
 import './assets/tailwind.css'
