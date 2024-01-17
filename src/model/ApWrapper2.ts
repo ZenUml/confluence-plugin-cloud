@@ -1,4 +1,4 @@
-import {getUrlParam, trackEvent} from '@/utils/window';
+import {getUrlParam, trackEvent, addonKey} from '@/utils/window';
 import time from '@/utils/timer';
 import {IApWrapper, VersionType} from "@/model/IApWrapper";
 import {IMacroData} from "@/model/IMacroData";
@@ -6,6 +6,7 @@ import {IContentProperty} from "@/model/IContentProperty";
 import {ICustomContent, ICustomContentV2, SearchResults, User} from "@/model/ICustomContent";
 import {IUser} from "@/model/IUser";
 import {IConfluence} from "@/model/IConfluence";
+import {ILicense} from "@/model/ILicense";
 import {IAp} from "@/model/IAp";
 import {DataSource, Diagram} from "@/model/Diagram/Diagram";
 import {AccountUser, ICustomContentResponseBody, ICustomContentResponseBodyV2} from "@/model/ICustomContentResponseBody";
@@ -33,6 +34,7 @@ export default class ApWrapper2 implements IApWrapper {
   currentPageUrl: string | undefined;
   baseUrl: string | undefined;
   locationTarget: LocationTarget | undefined;
+  license: ILicense | undefined;
   constructor(ap: IAp) {
     this.versionType = this.isLite() ? VersionType.Lite : VersionType.Full;
     this._confluence = ap.confluence;
@@ -52,7 +54,10 @@ export default class ApWrapper2 implements IApWrapper {
       this.baseUrl = await this._getBaseUrl();
       this.locationTarget = await this._getLocationTarget();
       this.currentPageId = await this._page.getPageId();
-      console.log('initializeContext', this.currentUser, this.currentSpace, this.currentPageUrl, this.locationTarget, this.currentPageId);
+      if(this.versionType === VersionType.Full){
+        this.license = await this._getLicense();
+      }
+      console.log('initializeContext', this.currentUser, this.currentSpace, this.currentPageUrl, this.locationTarget, this.currentPageId,this.license);
 
       if(window) {
         //@ts-ignore
@@ -128,6 +133,10 @@ export default class ApWrapper2 implements IApWrapper {
 
   getCustomContentType() {
     return `${this.getCustomContentTypePrefix()}:${this.getContentKey()}`;
+  }
+
+  customContentType(type: string) {
+    return `${this.getCustomContentTypePrefix()}:${type}`;
   }
 
   parseCustomContentResponse(response: { body: string; }): ICustomContentResponseBody {
@@ -348,11 +357,8 @@ export default class ApWrapper2 implements IApWrapper {
     }
   }
 
-  
-
    buildTypesClauseFilter(): string{
-    const customContentType = (t: string) => `${this.getCustomContentTypePrefix()}:${t}`;
-    const typeClause = (t: string) => `type="${customContentType(t)}"`;
+    const typeClause = (t: string) => `type="${this.customContentType(t)}"`;
     const typesClause = (a: Array<string>) => a.map(typeClause).join(' or ');
     return typesClause(CUSTOM_CONTENT_TYPES);
    }
@@ -384,8 +390,20 @@ export default class ApWrapper2 implements IApWrapper {
       } while(url && results.length < maxItems);
       return results;
     };
+
+    const searchAllWithFallback = async (): Promise<Array<ICustomContent>> => {
+      const results = await searchAll();
+      if(results.length) {
+        return results;
+      }
+
+      const results2 = await this.getCustomContentByTypes(CUSTOM_CONTENT_TYPES);
+      trackEvent(`found ${results2.length} content`, 'getCustomContentByTypes', 'info');
+      return results2;
+    };
+
     try {
-      return await time(searchAll, (duration, results) => {
+      return await time(searchAllWithFallback, (duration, results) => {
         trackEvent(`found ${results.length} content, took ${duration} ms`, 'searchAll', 'info');
       });
     } catch (e) {
@@ -416,11 +434,11 @@ export default class ApWrapper2 implements IApWrapper {
     };
     try {
       return await time(searchCustomContent, (duration, results) => {
-        trackEvent(`found ${results.length} content, took ${duration} ms`, 'searchCustomContent', 'info');
+        trackEvent(`found ${results.length} content, took ${duration} ms`, 'searchPagedCustomContentByUrl', 'info');
       });
     } catch (e) {
-      console.error('searchCustomContentByUrl', e);
-      trackEvent(JSON.stringify(e), 'searchCustomContentByUrl', 'error');
+      console.error('searchPagedCustomContentByUrl', e);
+      trackEvent(JSON.stringify(e), 'searchPagedCustomContentByUrl', 'error');
       return  {
         size: 0,
         results: []
@@ -519,6 +537,41 @@ export default class ApWrapper2 implements IApWrapper {
     return diagram;
   };
 
+  async getCustomContentByType(type: string): Promise<Array<ICustomContent>> {
+    try {
+      const space = await this._getCurrentSpace();
+      const spaceId = space.id;
+      const url = `/api/v2/spaces/${spaceId}/custom-content?type=${this.customContentType(type)}&body-format=raw`;
+      const response: {results: Array<any>} = await this.request(url);
+
+      const parseCustomContentBodyV2 = (customContent: ICustomContentResponseBodyV2): ICustomContent => {
+        let diagram: any;
+        const rawValue = customContent?.body?.raw?.value;
+        if(rawValue) {
+          try {
+            diagram = JSON.parse(rawValue);
+            diagram.source = DataSource.CustomContent;
+          } catch(e) {
+            console.error(`parseCustomContentBodyV2 error: `, e, `raw value: ${rawValue}`);
+            trackEvent(JSON.stringify(e), 'parseCustomContentBodyV2', 'error');
+          }
+        }
+        const result = <unknown>Object.assign({}, customContent, {value: diagram}, {container: {id: customContent.pageId}});
+        console.debug(`converted result: `, result);
+        return result as ICustomContent;
+      };
+
+      return response.results.map(parseCustomContentBodyV2).filter(c => c.value?.diagramType);
+    } catch (e) {
+      console.error('getCustomContentByType:', e);
+      trackEvent(JSON.stringify(e), 'getCustomContentByType', 'error');
+      return [];
+    }
+  }
+  async getCustomContentByTypes(types: Array<string>): Promise<Array<ICustomContent>> {
+    const [r1, r2] = await Promise.all(types.map(t => this.getCustomContentByType(t)));
+    return r1?.concat(r2);
+  }
 
   async saveCustomContent(customContentId: string, value: Diagram) {
     let result;
@@ -647,6 +700,19 @@ export default class ApWrapper2 implements IApWrapper {
     return this.baseUrl || (this.baseUrl = baseOf(await this._getCurrentPageUrl()));
   }
 
+  async _getLicense(): Promise<ILicense|undefined> {
+    const url = `/rest/atlassian-connect/1/addons/${addonKey()}`;
+    try {
+      const response = await this.request(url);
+      const license: ILicense = JSON.parse(response.body);
+      trackEvent(response.body, 'getLicense', 'info');
+      return license;
+    } catch (e) {
+      trackEvent(JSON.stringify(e), 'getLicense', 'error');
+      return undefined;
+    }
+  }
+
   async _getLocationTarget(): Promise<LocationTarget> {
     return this.locationTarget || (this.locationTarget = await this._page.getLocationTarget());
   }
@@ -661,7 +727,7 @@ export default class ApWrapper2 implements IApWrapper {
     return await CheckPermission(pageId, this.currentUser?.atlassianAccountId || '', this._requestFn as PermissionCheckRequestFunc)
   }
 
-  isLite(): boolean {
+   isLite(): boolean {
     // @ts-ignore
     return getUrlParam('addonKey')?.includes('lite');
   }

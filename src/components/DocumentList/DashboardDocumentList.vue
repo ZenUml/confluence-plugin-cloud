@@ -18,6 +18,7 @@
         </div>
         <div class="flex-1 w-50 flex-shrink-0 px-4 py-3 bg-white">
           <div class="flex items-center float-right">
+            <button v-show="isMigrationEnabled" @click="migrate" class="flex items-center bg-blue-700 px-2 py-1 text-white text-sm font-semibold rounded">Migrate to Full</button>
             <button class="imgInput tableList"  :class="{ 'selected': viewStyle=='table' }" title="List view" @click="changeToTableStyle"></button>
             <button class="imgInput gridList" :class="{ 'selected': viewStyle=='grid' }" title="Grid view" @click="changeToGridStyle"></button>
           </div>
@@ -34,7 +35,7 @@
                 Recent diagrams and API specs
               </button>
             </div>
-            <div class="flex-1 overflow-y-auto" @scroll="handleScroll">
+            <div id="tableScrollContainer" class="flex-1 overflow-y-auto" @scroll="handleScroll">
               <div v-for="(customContentItem,index) in filteredCustomContentList" :key="customContentItem.id" class="relative block px-4 py-2 bg-white border-t hover:bg-gray-50">
                 <div class="absolute left-0 top-0 w-6 min-w-6 max-w-10 h-6 text-xs bg-gray-400 text-white py-1 px-1 items-center justify-center">
                   <span class="flex font-bold items-center justify-center">{{index+1}}</span>
@@ -81,7 +82,7 @@
             </iframe>
           </div>
         </main>
-        <main v-if="viewStyle=='grid'" class="gridViewList h-full w-full overflow-auto p-5" @scroll="handleScroll">
+        <main id="gridScrollContainer" v-if="viewStyle=='grid'" class="gridViewList h-full w-full overflow-auto p-5" @scroll="handleScroll">
           <div  v-for="customContentItem in filteredCustomContentList" :key="customContentItem.id" class="gridDiagram">
             <div class="gridTitle" :title="customContentItem.title">
               {{ customContentItem.title }}
@@ -128,6 +129,7 @@
   import ApWrapper2 from "@/model/ApWrapper2";
   import { ConfluencePage } from "@/model/page/ConfluencePage";
   import { getAttachmentDownloadLink } from "@/model/Attachment";
+  import upgrade from "@/utils/upgrade";
 
   export default {
     name: 'DashboardDocumentList',
@@ -146,7 +148,8 @@
         needTryLoadNextPage: true,
         nextPageUrl:'',
         pageSize:15,
-        defaultDiagramImageUrl:'/image/default_diagram.png'
+        defaultDiagramImageUrl:'/image/default_diagram.png',
+        isMigrationEnabled: false,
       };
     },
     watch: {
@@ -175,6 +178,11 @@
       },
       previewSrc() {
         if (!this.picked) return;
+        if(!this.picked.value?.diagramType) {
+          console.warn(`Unknown diagramType:`, this.picked.value);
+          return '';
+        }
+
         function getViewerUrl(diagramType) {
           if(diagramType === DiagramType.Sequence || diagramType === DiagramType.Mermaid) {
             return '/sequence-viewer.html';
@@ -205,20 +213,23 @@
       this.customContentStorageProvider = new CustomContentStorageProvider(apWrapper);
       await this.search();
       this.initTheRightSideContent();
+
+      this.isMigrationEnabled = apWrapper.isLite() && upgrade.isEnabled();
     },
     methods: {
       setFilter(docType) {
-        this.resetNextPageScorll();
         this.docTypeFilter = docType;
       },
       gotoPage(pageId) {
         AP.navigator.go('contentview', {contentId: pageId});
       },
-      changeToTableStyle() {
+      async changeToTableStyle() {
         this.viewStyle='table';
+        await this.checkAutoLoadNextPageData();
       },
-      changeToGridStyle() {
+      async changeToGridStyle() {
         this.viewStyle='grid';
+        await this.checkAutoLoadNextPageData();
       },
       initTheRightSideContent(){
         //init the right side content
@@ -290,10 +301,8 @@
         }
         this.$forceUpdate();
       },
-      async loadCustomContentImages(customContentList){
-        for(let i=0; i<customContentList.length; i++) {
-          await this.loadCustomContentImage(customContentList[i]);
-        }
+      async loadCustomContentImages(customContentList) {
+        await Promise.all(customContentList.filter(c => c.container?.id).map(c => this.loadCustomContentImage(c)));
       },
       async search(){
         this.resetNextPageScorll();
@@ -303,24 +312,40 @@
           let searchedCustomContentList=searchResult.results;
           //Reasons not to use 'await this.loadCustomContentImages':Synchronization will cause the page to remain motionless, so asynchronous is used. After each image link is retrieved, 'this.$forceUpdate();' is called to force a refresh.
           this.loadCustomContentImages(searchedCustomContentList);
-          this.nextPageUrl=searchResult?._links?.next||'';
+          this.updateNexPageUrl(searchResult);
           this.customContentList=searchedCustomContentList;
+          await this.checkAutoLoadNextPageData();
         } catch(e) {
           console.error(`Error search`, e);
         }
       },
-      async loadNextPageData(){
-        if(!this.needTryLoadNextPage)return;
-        let searchResult=await this.customContentStorageProvider.searchNextPageCustomContent(this.nextPageUrl);
+      updateNexPageUrl(searchResult){
         this.nextPageUrl=searchResult?._links?.next||'';
         if(this.nextPageUrl==''){
           this.needTryLoadNextPage=false;
         }
+      },
+      async checkAutoLoadNextPageData(){
+        setTimeout(async()=>{
+          const scrollContainerElement = document.getElementById(`${this.viewStyle}ScrollContainer`);
+          const hasScroll = scrollContainerElement.scrollHeight > scrollContainerElement.clientHeight;
+          console.debug({action:"checkAutoLoadNextPageData",hasScroll:hasScroll});
+          if(this.needTryLoadNextPage && !hasScroll){
+            console.debug({action:"checkAutoLoadNextPageData",msg:'need auto load'});
+            await this.loadNextPageData();
+          }
+        },200);
+      },
+      async loadNextPageData(){
+        if(!this.needTryLoadNextPage)return;
+        let searchResult=await this.customContentStorageProvider.searchNextPageCustomContent(this.nextPageUrl);
+        this.updateNexPageUrl(searchResult);
         let nextPageDataList=searchResult.results;
         console.debug(`loadNextPageData load data count:${nextPageDataList.length}`);
         if(nextPageDataList.length>0){
           this.loadCustomContentImages(nextPageDataList);
           this.customContentList=this.customContentList.concat(nextPageDataList);
+          await this.checkAutoLoadNextPageData();
         }
         console.debug(`customContentList data count:${this.customContentList.length}`);
       },
@@ -331,6 +356,9 @@
       loadDefaultDiagram(e){
         console.debug({action:'loadDefaultDiagram',url:e.target.src});
         e.target.src=this.defaultDiagramImageUrl;
+      },
+      migrate() {
+        upgrade.run();
       }
     },
     components: {
