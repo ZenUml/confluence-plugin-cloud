@@ -18,6 +18,7 @@
         </div>
         <div class="flex-1 w-50 flex-shrink-0 px-4 py-3 bg-white">
           <div class="flex items-center float-right">
+            <button v-show="isMigrationEnabled" @click="migrate" class="flex items-center bg-blue-700 px-2 py-1 text-white text-sm font-semibold rounded">Migrate to Full</button>
             <button class="imgInput tableList"  :class="{ 'selected': viewStyle=='table' }" title="List view" @click="changeToTableStyle"></button>
             <button class="imgInput gridList" :class="{ 'selected': viewStyle=='grid' }" title="Grid view" @click="changeToGridStyle"></button>
           </div>
@@ -128,6 +129,7 @@
   import ApWrapper2 from "@/model/ApWrapper2";
   import { ConfluencePage } from "@/model/page/ConfluencePage";
   import { getAttachmentDownloadLink } from "@/model/Attachment";
+  import upgrade from "@/utils/upgrade";
 
   export default {
     name: 'DashboardDocumentList',
@@ -146,7 +148,8 @@
         needTryLoadNextPage: true,
         nextPageUrl:'',
         pageSize:15,
-        defaultDiagramImageUrl:'/image/default_diagram.png'
+        defaultDiagramImageUrl:'/image/default_diagram.png',
+        isMigrationEnabled: false,
       };
     },
     watch: {
@@ -210,6 +213,8 @@
       this.customContentStorageProvider = new CustomContentStorageProvider(apWrapper);
       await this.search();
       this.initTheRightSideContent();
+
+      this.isMigrationEnabled = apWrapper.isLite() && upgrade.isEnabled();
     },
     methods: {
       setFilter(docType) {
@@ -351,6 +356,9 @@
       loadDefaultDiagram(e){
         console.debug({action:'loadDefaultDiagram',url:e.target.src});
         e.target.src=this.defaultDiagramImageUrl;
+      },
+      migrate() {
+        upgrade.run();
       }
     },
     components: {
