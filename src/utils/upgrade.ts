@@ -3,7 +3,7 @@ import { getUrlParam, trackEvent } from "@/utils/window";
 //new/full custom content: migrated: true, sourceCustomContentId: xxx (needed by downgrade)
 //content properties
 
-const UPGRADE_INCLUDE_DOMAINS = ['whimet4'];
+const UPGRADE_INCLUDE_DOMAINS = ['whimet4', 'zenuml-stg'];
 
 async function request(params: any) {
   //@ts-ignore
