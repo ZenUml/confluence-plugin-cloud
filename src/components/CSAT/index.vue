@@ -105,6 +105,9 @@ const handleSkipClick = () => {
 
 const handlePopTooFrequentlyClick = () => {
   trackEvent("csat", "csat_too_frequent", "operation");
+  open.value = false;
+  hasFeedback.value = false;
+  updateStateOfCSAT();
 }
 
 const handleTellUsMoreClick = () => {
