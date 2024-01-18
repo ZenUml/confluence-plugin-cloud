@@ -67,16 +67,19 @@ async function initializeMacro() {
       }
     })();
   }
-  new Vue({
-    render: (h: Function) =>
-      h(CreateGraph, {
-        props: {
-          onConfirm: (title: string) => {
-            window.diagram.title = title;
+  if (!doc?.id || !doc?.title) {
+    new Vue({
+      render: (h: Function) =>
+        h(CreateGraph, {
+          props: {
+            forEnforceTitle: Boolean(doc?.id),
+            onConfirm: (title: string) => {
+              window.diagram.title = title;
+            }
           }
-        }
-      }) // with this method, we don't need to use full version of vue
-  }).$mount("#create-modal");
+        })
+    }).$mount("#create-modal");
+  }
 
   if (await MacroUtil.isCreateNew()) {
     trackEvent("", "create_macro_begin", "graph");

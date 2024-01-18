@@ -1,8 +1,8 @@
 module.exports = {
-  content: ['./public/**/*.html', './src/**/*.vue', './src/**/*.tsx'],
+  content: ["./public/**/*.html", "./src/**/*.vue", "./src/**/*.tsx"],
   darkMode: false, // or 'media' or 'class'
   theme: {
-    extend: {},
+    extend: {}
   },
-  plugins: [],
-}
+  plugins: [require("tailwind-scrollbar")({ nocompatible: true })]
+};
