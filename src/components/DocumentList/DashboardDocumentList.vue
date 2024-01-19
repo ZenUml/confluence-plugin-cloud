@@ -225,6 +225,9 @@
       },
       async changeToTableStyle() {
         this.viewStyle='table';
+        setTimeout(() => {
+          this.initTheRightSideContent();
+        }, 500);
         await this.checkAutoLoadNextPageData();
       },
       async changeToGridStyle() {
@@ -235,7 +238,11 @@
         //init the right side content
         const iframe = document.getElementById('embedded-viewer');
         const iframeDocument = iframe.contentDocument || iframe.contentWindow.document;
+        const initContentClassName = "init-content";
+        const hasInitContent = iframeDocument.querySelectorAll(`.${initContentClassName}`).length!=0;
+        if(iframe.src!='' || hasInitContent) return;
         const div = iframeDocument.createElement('div');
+        div.classList.add(initContentClassName);
         div.innerHTML = this.customContentList.length
           ? 'Select a diagram from the left side panel'
           : `<div style="margin-bottom: 10px;">
