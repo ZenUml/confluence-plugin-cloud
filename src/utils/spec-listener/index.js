@@ -8,6 +8,7 @@ export const updateSpec = (ori) => (...args) => {
 
   console.debug('---------- spec:', spec)
   window.specContent = spec;
+  window.specListeners && window.specListeners.forEach(listener => listener(spec))
 }
 
 export default function(system) {

@@ -18,16 +18,20 @@
     }
 
     body {
-      font-family: Roboto, sans-serif;
       font-size: 9px;
       line-height: 1.42857143;
       color: #444;
       margin: 0px;
       background: white;
+      position: relative;
     }
 
     #swagger-editor {
       font-size: 1.3em;
+      position: relative;
+      height: calc(100vh - 50px);
+      padding-top: 50px;
+      font-family: Roboto, sans-serif;
     }
 
     #editor-wrapper * {
@@ -56,12 +60,19 @@
       z-index: 1000;
       right: 10px;
     }
+
+    #header {
+      position: absolute;
+      z-index: 1;
+      font-size: 16px;
+      width: 100%;
+    }
   </style>
 
 </head>
 
 <body>
-  <div id="save-and-go-back">Save and Go back to Confluence</div>
+  <div id="header"></div>
   <div id="swagger-editor"></div>
   <!-- built files will be auto injected -->
 </body>

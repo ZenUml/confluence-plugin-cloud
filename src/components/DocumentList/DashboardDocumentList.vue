@@ -268,6 +268,7 @@
           height: "100%",
           customData: { 'content.id': customContentId, contentId: customContentId }
         }).on('close', async () => {
+          this.search();
           const iframe = document.getElementById('embedded-viewer');
           if(iframe)iframe.contentWindow.location.reload();
         });

@@ -4,14 +4,14 @@ import SpecListener from './utils/spec-listener'
 
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { SaveAndGoBackButton } from "@/components/react/SaveAndGoBackButton";
+import Header from "@/components/react/Header";
 // @ts-ignore
 import './assets/tailwind.css'
 
 import OpenApiExample from '@/model/OpenApi/OpenApiExample'
 import globals from '@/model/globals';
 import AP from "@/model/AP";
-import './utils/IgnoreEsc.ts'
+import './utils/IgnoreEsc'
 import {DataSource, DiagramType} from "@/model/Diagram/Diagram";
 import defaultContentProvider from "@/model/ContentProvider/CompositeContentProvider";
 import {saveToPlatform} from "@/model/ContentProvider/Persistence";
@@ -20,13 +20,10 @@ import MacroUtil from "@/model/MacroUtil";
 import {trackEvent} from '@/utils/window';
 
 async function saveOpenApiAndExit () {
-  // @ts-ignore
   const code = window.specContent;
   const diagram = {
-    title: '',
+    ...window.diagram,
     code: code,
-    styles: {},
-    mermaidCode: '',
     diagramType: DiagramType.OpenApi,
     source: DataSource.CustomContent
   };
@@ -39,10 +36,6 @@ async function saveOpenApiAndExit () {
   AP.dialog.close();
 }
 
-ReactDOM.render(
-  React.createElement(SaveAndGoBackButton as any, { saveAndExit: saveOpenApiAndExit }),
-  document.getElementById('save-and-go-back')
-);
 
 async function initializeMacro() {
   const apWrapper = globals.apWrapper;
@@ -60,6 +53,10 @@ async function initializeMacro() {
   window.updateSpec(doc?.code || OpenApiExample);
   console.log('-------------- updateSpec with:', doc?.code)
 
+  ReactDOM.render(
+    React.createElement(Header as any, { saveAndExit: saveOpenApiAndExit }),
+    document.getElementById('header')
+  );
 
   if(await MacroUtil.isCreateNew()) {
     trackEvent('', 'create_macro_begin', 'openapi');
@@ -86,7 +83,6 @@ window.onload = function () {
   // eslint-disable-next-line
   // @ts-ignore
   window.editor = editor
-
 
   initializeMacro();
 }
