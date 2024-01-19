@@ -1,4 +1,5 @@
 import SwaggerEditorBundle from 'swagger-editor'
+import "swagger-editor/dist/swagger-editor.css";
 import SpecListener from './utils/spec-listener'
 
 import React from 'react';
