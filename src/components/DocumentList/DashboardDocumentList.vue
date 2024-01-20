@@ -18,6 +18,7 @@
         </div>
         <div class="flex-1 w-50 flex-shrink-0 px-4 py-3 bg-white">
           <div class="flex items-center float-right">
+            <button v-show="isMigrationEnabled" @click="migrate" class="flex items-center bg-blue-700 px-2 py-1 text-white text-sm font-semibold rounded">Migrate to Full</button>
             <button class="imgInput tableList"  :class="{ 'selected': viewStyle=='table' }" title="List view" @click="changeToTableStyle"></button>
             <button class="imgInput gridList" :class="{ 'selected': viewStyle=='grid' }" title="Grid view" @click="changeToGridStyle"></button>
             <button class="imgInput fullScreen" v-if="!fullScreen"  title="Full Screen" @click="enterFullScreen"></button>
@@ -130,6 +131,7 @@
   import ApWrapper2 from "@/model/ApWrapper2";
   import { ConfluencePage } from "@/model/page/ConfluencePage";
   import { getAttachmentDownloadLink } from "@/model/Attachment";
+  import upgrade from "@/utils/upgrade";
 
   export default {
     name: 'DashboardDocumentList',
@@ -150,7 +152,8 @@
         needTryLoadNextPage: true,
         nextPageUrl:'',
         pageSize:15,
-        defaultDiagramImageUrl:'/image/default_diagram.png'
+        defaultDiagramImageUrl:'/image/default_diagram.png',
+        isMigrationEnabled: false,
       };
     },
     watch: {
@@ -183,6 +186,11 @@
       },
       previewSrc() {
         if (!this.picked) return;
+        if(!this.picked.value?.diagramType) {
+          console.warn(`Unknown diagramType:`, this.picked.value);
+          return '';
+        }
+
         function getViewerUrl(diagramType) {
           if(diagramType === DiagramType.Sequence || diagramType === DiagramType.Mermaid) {
             return '/sequence-viewer.html';
@@ -215,6 +223,8 @@
       await this.search();
       this.checkIfHasData();
       this.initTheRightSideContent();
+
+      this.isMigrationEnabled = apWrapper.isLite() && upgrade.isEnabled();
     },
     methods: {
       checkIfHasData(){
@@ -270,6 +280,9 @@
       },
       async changeToTableStyle() {
         this.viewStyle='table';
+        setTimeout(() => {
+          this.initTheRightSideContent();
+        }, 500);
         await this.checkAutoLoadNextPageData();
       },
       async changeToGridStyle() {
@@ -280,7 +293,11 @@
         //init the right side content
         const iframe = document.getElementById('embedded-viewer');
         const iframeDocument = iframe.contentDocument || iframe.contentWindow.document;
+        const initContentClassName = "init-content";
+        const hasInitContent = iframeDocument.querySelectorAll(`.${initContentClassName}`).length!=0;
+        if(iframe.src!='' || hasInitContent) return;
         const div = iframeDocument.createElement('div');
+        div.classList.add(initContentClassName);
         div.innerHTML = this.hasData
           ? 'Select a diagram from the left side panel'
           : `<div style="margin-bottom: 10px;">
@@ -345,10 +362,8 @@
         }
         this.$forceUpdate();
       },
-      async loadCustomContentImages(customContentList){
-        for(let i=0; i<customContentList.length; i++) {
-          await this.loadCustomContentImage(customContentList[i]);
-        }
+      async loadCustomContentImages(customContentList) {
+        await Promise.all(customContentList.filter(c => c.container?.id).map(c => this.loadCustomContentImage(c)));
       },
       async search(){
         this.resetNextPageScorll();
@@ -402,6 +417,9 @@
       loadDefaultDiagram(e){
         console.debug({action:'loadDefaultDiagram',url:e.target.src});
         e.target.src=this.defaultDiagramImageUrl;
+      },
+      migrate() {
+        upgrade.run();
       }
     },
     components: {

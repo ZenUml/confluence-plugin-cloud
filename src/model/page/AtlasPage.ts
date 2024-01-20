@@ -33,9 +33,9 @@ export class AtlasPage {
     });
   }
   
-  async _getContext(): Promise<IContext> {
+  _getContext(): Promise<IContext> {
     if(this._apContext) {
-      return this._apContext;
+      return Promise.resolve(this._apContext);
     }
 
     const self = this;
