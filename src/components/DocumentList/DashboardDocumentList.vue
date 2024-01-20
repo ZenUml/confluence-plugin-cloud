@@ -18,7 +18,7 @@
         </div>
         <div class="flex-1 w-50 flex-shrink-0 px-4 py-3 bg-white">
           <div class="flex items-center float-right">
-            <button v-show="isMigrationEnabled" @click="migrate" class="flex items-center bg-blue-700 px-2 py-1 text-white text-sm font-semibold rounded">Migrate to Full</button>
+            <button v-show="isMigrationEnabled" :disabled="migrationProgress.inProgress" @click="migrate" class="flex items-center bg-blue-700 px-2 py-1 text-white text-sm font-semibold rounded">{{ migrateButtonText }}</button>
             <button class="imgInput tableList"  :class="{ 'selected': viewStyle=='table' }" title="List view" @click="changeToTableStyle"></button>
             <button class="imgInput gridList" :class="{ 'selected': viewStyle=='grid' }" title="Grid view" @click="changeToGridStyle"></button>
           </div>
@@ -150,6 +150,7 @@
         pageSize:15,
         defaultDiagramImageUrl:'/image/default_diagram.png',
         isMigrationEnabled: false,
+        migrationProgress: {inProgress: false, migrated: 0, total: 0}
       };
     },
     watch: {
@@ -205,6 +206,9 @@
           window.picked = that.picked;
           EventBus.$emit('save')
         }
+      },
+      migrateButtonText: function() {
+        return this.migrationProgress.inProgress ? `Migrating - ${this.migrationProgress.migrated} migrated out of ${this.migrationProgress.total} ..` : 'Migrate to Full';
       }
     },
     async mounted() {
@@ -359,7 +363,11 @@
         e.target.src=this.defaultDiagramImageUrl;
       },
       migrate() {
-        upgrade.run();
+        upgrade.run(({migrated, total, completed}) => {
+          this.migrationProgress.inProgress = !completed;
+          this.migrationProgress.migrated = migrated;
+          this.migrationProgress.total = total;
+        });
       }
     },
     components: {

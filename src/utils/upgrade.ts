@@ -74,7 +74,7 @@ async function canEdit(pageId: string, userId: string) {
   return response.body && JSON.parse(response.body).hasPermission;
 }
 
-async function upgradePage(pageId: string, userId: string) {
+async function upgradePage(pageId: string, userId: string, migratedCallback: any = undefined) {
   const b = await canEdit(pageId, userId);
   if(!b) {
     console.log(`Upgrade - no edit permission, skip page ${pageId}`);
@@ -104,6 +104,8 @@ async function upgradePage(pageId: string, userId: string) {
     
     await updatePage(pageId, data);
     console.log(`Upgrade - finished page ${pageId}`);
+
+    migratedCallback && migratedCallback(contentIds.length);
 
     return contentIds.length;
     
@@ -220,7 +222,7 @@ async function time(action: any, callback: any) {
   }
 }
 
-async function upgrade(userId: string) {
+async function upgrade(userId: string, progressReporter: any = undefined) {
   //@ts-ignore
   const context = await AP.context.getContext();
   let currentPageId = '';
@@ -228,7 +230,7 @@ async function upgrade(userId: string) {
     currentPageId = context.confluence.content.id;
     const macroCount = await upgradePage(currentPageId, userId)
     if(macroCount) {
-      showPopup(currentPageId, macroCount);
+      showPopupForReload(currentPageId, macroCount);
     }
   }
 
@@ -236,9 +238,18 @@ async function upgrade(userId: string) {
   const pageIds = contents.map((c: any) => c.container.id);
   const uniqPageIds = unique(pageIds.filter((p: string) => p != currentPageId));
 
-  const results = await Promise.all(uniqPageIds.map(pageId => upgradePage(pageId, userId)));
+  let migrated = 0;
+  const migratedCallback = (migratedMacrosCount: number) => {
+    migrated += migratedMacrosCount;
+    progressReporter({migrated, total: contents.length});
+  };
 
-  console.log(`Upgrade - finished space ${context.confluence?.space?.key}, ${results.filter(r => r).reduce((i, acc) => acc = acc + i, 0)} macros upgraded in ${results.length} pages`);
+  const results = await Promise.all(uniqPageIds.map(pageId => upgradePage(pageId, userId, migratedCallback)));
+  const macroCount = results.filter(r => r).reduce((i, acc) => acc = acc + i, 0);
+  const report = `Upgrade - finished space ${context.confluence?.space?.key}, ${macroCount} macros upgraded in ${results.length} pages`;
+  console.log(report);
+  progressReporter({migrated, total: contents.length, completed: true});
+  showPopup(`Migrated ${macroCount} macros in ${results.length} pages`);
 }
 
 async function downgrade(userId: string, spaceKey: string) {
@@ -252,14 +263,13 @@ async function downgrade(userId: string, spaceKey: string) {
   pages.forEach(async (p) => await downgradePage(p, userId));
 }
 
-function showPopup(pageId: string, macroCount: number) {
+function showPopupForReload(pageId: string, macroCount: number) {
   //@ts-ignore
-  const flag = AP.flag.create({
-    title: `${macroCount} Lite macros migrated to Full on page ${pageId}`,
-    actions: {
+  const flag = showPopup(`${macroCount} Lite macros migrated to Full on page ${pageId}`,
+    {
       'reload': 'Reload Page'
     }
-  });
+  );
 
   //@ts-ignore
   AP.events.on('flag.action', function(e) {
@@ -270,9 +280,19 @@ function showPopup(pageId: string, macroCount: number) {
 
       //@ts-ignore
       AP.navigator.go('contentview', {contentId: pageId});
-
     }
   });
+}
+
+function showPopup(title: string, actions: any = undefined): any {
+  //@ts-ignore
+  if(showPopup.flag) {
+    //@ts-ignore
+    showPopup.flag.close();
+  }
+
+  //@ts-ignore
+  return showPopup.flag = AP.flag.create({ title, actions });
 }
 
 
@@ -293,11 +313,13 @@ function isUpgradeEnabled(): boolean {
 
 export default {
   isEnabled: isUpgradeEnabled,
-  run() {
+  run(progressReporter: any) {
     if(isUpgradeEnabled()) {
-      console.log('Upgrade - atlassian domain allowed, kicking off..')
+      console.log('Upgrade - atlassian domain allowed, kicking off..');
+      showPopup('Started to migrate ZenUML Lite macros in the current space');
+
       //@ts-ignore
-      AP.user.getCurrentUser(async (u) => await upgrade(u.atlassianAccountId));
+      AP.user.getCurrentUser(async (u) => await upgrade(u.atlassianAccountId, progressReporter));
     }
   }
 };
