@@ -214,7 +214,8 @@
       await this.search();
       this.initTheRightSideContent();
 
-      this.isMigrationEnabled = apWrapper.isLite() && upgrade.isEnabled();
+      const hasFull = await apWrapper.hasFullAddon();
+      this.isMigrationEnabled = apWrapper.isLite() && hasFull && upgrade.isEnabled();
     },
     methods: {
       setFilter(docType) {
