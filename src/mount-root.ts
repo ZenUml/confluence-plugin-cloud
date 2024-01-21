@@ -14,9 +14,7 @@ export function mountRoot(doc: Diagram, component: Component) {
   store.state.diagram = doc;
   if (document.getElementById('app')) {
 
-    const app = createApp({
-      render: () => h(component)
-    });
+    const app = createApp(component);
     app.use(store).mount('#app')
   }
 }
