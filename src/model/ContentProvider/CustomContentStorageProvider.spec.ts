@@ -3,6 +3,8 @@ import {CustomContentStorageProvider} from "@/model/ContentProvider/CustomConten
 import {NULL_DIAGRAM} from "@/model/Diagram/Diagram";
 import ApWrapper2 from "@/model/ApWrapper2";
 
+global.fetch = () => Promise.resolve(new Response("mock fetch success"));
+
 describe('CustomContentStorageProvider', () => {
   test('cannot find custom content', async () => {
     const mockAp = new MockAp(undefined);

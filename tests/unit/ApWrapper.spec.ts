@@ -3,6 +3,9 @@ import ApWrapper2 from "@/model/ApWrapper2";
 import {setUpWindowLocation} from "../SetUpWindowLocation";
 import {buildCustomContentResponse, buildEnrichedCustomContent} from "../CustomContentFixtures";
 import helper from './TestHelper';
+import {vi} from "vitest";
+
+global.fetch = () => Promise.resolve(new Response("mock fetch success"));
 
 describe('ApWrapper', () => {
   beforeEach(() => {
@@ -11,7 +14,7 @@ describe('ApWrapper', () => {
 
   it('tells if the user has edit permission', async () => {
     const ap = new ApWrapper2(new MockAp('page-001'));
-    ap._requestFn = jest.fn().mockImplementation(async (req: any) => {
+    ap._requestFn = vi.fn().mockImplementation(async (req: any) => {
       const hasPermission = req.data.includes('user-001');
       return {
         body: JSON.stringify({
@@ -48,11 +51,11 @@ describe('ApWrapper', () => {
     setUpWindowLocation("?contentKey=zenuml-content-sequence");
     let mockAp = new MockAp();
     let apWrapper2 = new ApWrapper2(mockAp);
-    const _requestFn = jest.fn().mockImplementation(async () => {
+    const _requestFn = vi.fn().mockImplementation(async () => {
       return buildCustomContentResponse("12345", "A.method")});
     apWrapper2._requestFn = _requestFn.bind(apWrapper2);
 
-    const getPageId = jest.fn().mockImplementation(async () => { return 12345 });
+    const getPageId = vi.fn().mockImplementation(async () => { return 12345 });
     apWrapper2._page.getPageId = getPageId.bind(apWrapper2);
     expect(await apWrapper2.getCustomContentById("custom-content-001"))
       .toEqual(buildEnrichedCustomContent("custom-content-001", "12345", "A.method", false));
@@ -62,11 +65,11 @@ describe('ApWrapper', () => {
     setUpWindowLocation("?contentKey=zenuml-content-sequence");
     let mockAp = new MockAp();
     let apWrapper2 = new ApWrapper2(mockAp);
-    const _requestFn = jest.fn().mockImplementation(async () => {
+    const _requestFn = vi.fn().mockImplementation(async () => {
       return buildCustomContentResponse("12346", "A.method")});
     apWrapper2._requestFn = _requestFn.bind(apWrapper2);
 
-    const getPageId = jest.fn().mockImplementation(async () => { return 12345 });
+    const getPageId = vi.fn().mockImplementation(async () => { return 12345 });
     apWrapper2._page.getPageId = getPageId.bind(apWrapper2);
     expect(await apWrapper2.getCustomContentById("custom-content-001"))
       .toEqual(buildEnrichedCustomContent("custom-content-001", "12346", "A.method", true));
@@ -85,7 +88,7 @@ describe('ApWrapper', () => {
     setUpWindowLocation("?contentKey=zenuml-content-sequence");
     let mockAp = new MockAp();
     let apWrapper2 = new ApWrapper2(mockAp);
-    const _getCurrentUser = jest.fn().mockImplementation(async () => {
+    const _getCurrentUser = vi.fn().mockImplementation(async () => {
       throw new Error("IGNORE ME");
     });
     apWrapper2._getCurrentUser = _getCurrentUser.bind(apWrapper2);
@@ -98,7 +101,7 @@ describe('ApWrapper', () => {
     setUpWindowLocation("?contentKey=zenuml-content-sequence");
     let mockAp = new MockAp();
     let apWrapper2 = new ApWrapper2(mockAp);
-    const _getCurrentSpace = jest.fn().mockImplementation(async () => {
+    const _getCurrentSpace = vi.fn().mockImplementation(async () => {
       throw new Error("IGNORE ME");
     });
     apWrapper2._getCurrentSpace = _getCurrentSpace.bind(apWrapper2);

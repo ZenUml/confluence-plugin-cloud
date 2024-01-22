@@ -62,7 +62,7 @@
 </template>
 
 <script>
-  import SaveAndGoBackButton from "@/components/SaveAndGoBackButton";
+  import SaveAndGoBackButton from "@/components/SaveAndGoBackButton.vue";
   import {DiagramType, getDiagramData} from "@/model/Diagram/Diagram";
   import EventBus from "@/EventBus";
   import {AtlasPage} from "@/model/page/AtlasPage";
@@ -150,7 +150,7 @@
       this.customContentList = await customContentStorageProvider.getCustomContentList();
       this.picked = this.customContentList.filter(customContentItem => customContentItem?.id === customContentId)[0];
       console.debug(`picked custom content:`, this.picked);
-      
+
       try {
         const atlasPage = new AtlasPage(AP);
         const pages = 'pages/';

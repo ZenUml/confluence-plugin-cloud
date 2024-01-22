@@ -2,9 +2,12 @@ import MockAp from '@/model/MockAp'
 import {ContentPropertyStorageProvider} from "@/model/ContentProvider/ContentPropertyStorageProvider";
 import MockApConfluence from "@/model/MockApConfluence";
 import ApWrapper2 from "@/model/ApWrapper2";
+import {vi} from "vitest";
+
+global.fetch = () => Promise.resolve(new Response("mock fetch success"));
+
 
 let mockAp: MockAp, mockApConfluence: MockApConfluence;
-
 
 // generate response for AP.request. The parameter is the `value` at {body:"body: raw: { value }"}
 describe('ContentPropertyStorageProvider', () => {
@@ -15,7 +18,7 @@ describe('ContentPropertyStorageProvider', () => {
     mockAp = new MockAp(contentId);
     mockApConfluence = mockAp.confluence as MockApConfluence;
 
-    gtag = jest.fn();
+    gtag = vi.fn();
     // @ts-ignore
     window.gtag = gtag;
   });

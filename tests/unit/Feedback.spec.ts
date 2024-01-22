@@ -1,9 +1,10 @@
 import { shallowMount } from '@vue/test-utils'
 import SendFeedback from '@/components/SendFeedback.vue'
 import { trackEvent } from '@/utils/window'
+import {vi} from "vitest";
 
-jest.mock('@/utils/window', () => ({
-  trackEvent: jest.fn()
+vi.mock('@/utils/window', () => ({
+  trackEvent: vi.fn()
 }))
 
 describe('SendFeedback.vue', () => {
