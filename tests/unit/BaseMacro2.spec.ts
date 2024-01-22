@@ -7,12 +7,17 @@ import MockApConfluence from "@/model/MockApConfluence";
 import {saveToPlatform} from "@/model/ContentProvider/Persistence";
 import defaultContentProvider from "@/model/ContentProvider/CompositeContentProvider";
 import AP from "@/model/AP";
+import {vi} from "vitest";
+
+global.fetch = () => Promise.resolve(new Response("mock fetch success"));
 
 let mockAp: MockAp;
 let mockApConfluence: MockApConfluence;
 
-jest.mock('../../src/utils/uuid', () => {
-  return () => 'random_uuid'
+vi.mock('../../src/utils/uuid', () => {
+  return {
+    default: 'random_uuid'
+  }
 })
 
 describe('Content loading', () => {
@@ -39,7 +44,7 @@ describe('Content loading', () => {
   it('update custom content if _customContentId is not null', async () => {
     setUp('contentKey=sequence');
     mockAp.setupUpdateCustomContent('1234', {id: 1234});
-    
+
     const customContentId = await saveToPlatform({
       diagramType: DiagramType.Sequence,
       code: 'A.m',
@@ -56,7 +61,7 @@ describe('Content loading', () => {
       setUp("contentKey=zenuml-content-sequence");
       let mockAp = new MockAp();
       let apWrapper2 = new ApWrapper2(mockAp);
-      const getLocationContext = jest.fn().mockImplementation(async () => {
+      const getLocationContext = vi.fn().mockImplementation(async () => {
         return {
           contentId: "page-001"
         }
@@ -65,11 +70,11 @@ describe('Content loading', () => {
       expect(await apWrapper2._page.getPageId()).toBe('page-001');
       mockApConfluence = mockAp.confluence;
 
-      const _requestFn = jest.fn().mockImplementation(async () => {
+      const _requestFn = vi.fn().mockImplementation(async () => {
         return buildCustomContentResponse("page-002", "A.method");
       });
       apWrapper2._requestFn = _requestFn.bind(apWrapper2);
-      const getMacroData = jest.fn().mockImplementation(async () => {
+      const getMacroData = vi.fn().mockImplementation(async () => {
         return {
           customContentId: 1234
         }

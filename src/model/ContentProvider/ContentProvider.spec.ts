@@ -1,10 +1,11 @@
 import MockAp from '@/model/MockAp'
 import helper from '../../../tests/unit/TestHelper';
 import MockApConfluence from "@/model/MockApConfluence";
+import {vi} from "vitest";
 
 let mockAp: MockAp, mockApConfluence: MockApConfluence;
 
-jest.mock('@/utils/uuid', () => {
+vi.mock('@/utils/uuid', () => {
   return () => 'random_uuid'
 })
 
@@ -22,7 +23,7 @@ describe('Content Provider', () => {
     helper.setUpUrlParam('contentKey=sequence');
 
     mockAp = new MockAp(contentId);
-    jest.mock('@/model/AP', () => {
+    vi.mock('@/model/AP', () => {
         return mockAp;
       }
     )
@@ -34,7 +35,7 @@ describe('Content Provider', () => {
     // @ts-ignore
     // macro = new Macro(new ApWrapper2(mockAp));
 
-    gtag = jest.fn();
+    gtag = vi.fn();
     // @ts-ignore
     window.gtag = gtag;
   });

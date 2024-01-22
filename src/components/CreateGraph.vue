@@ -52,10 +52,10 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
+import { defineComponent, nextTick, ref } from "vue";
 import Button from "./AUI/Button.vue";
 
-export default Vue.extend({
+export default defineComponent({
   props: {
     forEnforceTitle: Boolean,
     onConfirm: {
@@ -66,25 +66,30 @@ export default Vue.extend({
   components: {
     Button
   },
-  data() {
-    return {
-      inputRef: null as HTMLInputElement | null,
-      visible: true,
-      title: ""
-    };
-  },
-  methods: {
-    handleConfirm() {
-      this.visible = false;
-      if (this.onConfirm) {
-        this.onConfirm(this.title);
+  setup(props) {
+    const inputRef = ref(null);
+    const visible = ref(true);
+    const title = ref('');
+
+    const handleConfirm = () => {
+      visible.value = false;
+      if (props.onConfirm) {
+        props.onConfirm(title.value);
       }
-    }
-  },
-  async mounted() {
-    Vue.nextTick(() => {
-      if (this.$refs.inputRef) (this.$refs.inputRef as any).focus();
+    };
+
+    nextTick(() => {
+      if (inputRef.value) {
+        inputRef.value.focus();
+      }
     });
+
+    return {
+      inputRef,
+      visible,
+      title,
+      handleConfirm
+    };
   }
 });
 </script>

@@ -1,10 +1,11 @@
 import {AtlasPage} from "@/model/page/AtlasPage";
 import {ILocationContext, LocationTarget} from "@/model/ILocationContext";
+import {vi} from "vitest";
 
 describe('Page', () => {
   it('should know its page id', async () => {
     const page = new AtlasPage();
-    const getLocationContext = jest.fn().mockImplementation(async (): Promise<ILocationContext> => {
+    const getLocationContext = vi.fn().mockImplementation(async (): Promise<ILocationContext> => {
       return {
         spaceKey: "space-001",
         contentType: "page",
@@ -25,8 +26,8 @@ describe('Page', () => {
   // a `MacroParams` object and returns a boolean.
   it('should count macros that match the matcher', async () => {
     const page = new AtlasPage();
-    page.getPageId = jest.fn().mockImplementation(() => "page-001");
-    page._requestFn = jest.fn().mockImplementation(async () => {
+    page.getPageId = vi.fn().mockImplementation(() => "page-001");
+    page._requestFn = vi.fn().mockImplementation(async () => {
       let doc = {
         type: "doc",
         content: [

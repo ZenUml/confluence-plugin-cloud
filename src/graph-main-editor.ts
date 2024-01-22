@@ -9,7 +9,7 @@ import "./utils/IgnoreEsc";
 import { trackEvent } from "@/utils/window";
 import MacroUtil from "@/model/MacroUtil";
 import "./assets/tailwind.css";
-import Vue from "vue";
+import { createApp } from "vue";
 import CreateGraph from "@/components/CreateGraph.vue";
 
 const compositeContentProvider = defaultContentProvider(new ApWrapper2(AP));
@@ -68,17 +68,13 @@ async function initializeMacro() {
     })();
   }
   if (!doc?.id || !doc?.title) {
-    new Vue({
-      render: (h: Function) =>
-        h(CreateGraph, {
-          props: {
-            forEnforceTitle: Boolean(doc?.id),
-            onConfirm: (title: string) => {
-              window.diagram.title = title;
-            }
-          }
-        })
-    }).$mount("#create-modal");
+    const app = createApp(CreateGraph,{
+        forEnforceTitle: Boolean(doc?.id),
+        onConfirm: (title: string) => {
+          window.diagram.title = title;
+        }
+      });
+    app.mount('#create-modal')
   }
 
   if (await MacroUtil.isCreateNew()) {

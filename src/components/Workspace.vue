@@ -18,7 +18,7 @@
   import Split from 'split.js'
   import Header from "@/components/Header/Header.vue";
   import DiagramPortal from "@/components/DiagramPortal.vue";
-  import CSAT from '@/components/CSAT'
+  import CSAT from '@/components/CSAT/index.vue'
   export default {
     name: 'Workspace',
     props: {
