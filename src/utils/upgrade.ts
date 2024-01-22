@@ -82,14 +82,26 @@ async function upgradePage(pageId: string, userId: string, migratedCallback: any
   }
 
   const page = await getPage(pageId);
+  const traversal = (array: any, result: Array<any>): any => { 
+    result.push(...array); 
+    array.forEach((c: any) => {
+      if(c.content) {
+        traversal(c.content, result)
+      }
+    })
+  };
   const content = JSON.parse(page.body.atlas_doc_format.value).content;
+  const allContents: Array<any> = [];
+  traversal(content, allContents);
+
   const check = (c: any) => c.type === 'extension' && c.attrs.extensionType === 'com.atlassian.confluence.macro.core' && /zenuml-(sequence|graph|openapi|embed)-macro-lite/.test(c.attrs.extensionKey);
-  const macros = content.filter(check);
+
+  const macros = allContents.filter(check);
   const contentIds = macros.map((c: any) => c.attrs?.parameters?.macroParams?.customContentId?.value).filter((i: any) => i);
 
   if(contentIds.length) {
     const clones = await Promise.all(contentIds.map((i: any) => cloneAsFull(i).then(d => ({source: i, dest: d.id}))));
-    const cloneMap = clones.reduce((acc, i) => {acc[i.source] = i.dest; return acc}, {});
+    const cloneMap = clones.reduce((acc: any, i) => {acc[i.source] = i.dest; return acc}, {});
     
     macros.forEach((c: any) => {
       c.attrs.extensionKey = c.attrs.extensionKey.replace('-lite', '');
@@ -245,7 +257,7 @@ async function upgrade(userId: string, progressReporter: any = undefined) {
   };
 
   const results = await Promise.all(uniqPageIds.map(pageId => upgradePage(pageId, userId, migratedCallback)));
-  const macroCount = results.filter(r => r).reduce((i, acc) => acc = acc + i, 0);
+  const macroCount = results.filter(r => r).reduce((acc: number, i: any) => acc = acc + i, 0);
   const report = `Upgrade - finished space ${context.confluence?.space?.key}, ${macroCount} macros upgraded in ${results.length} pages`;
   console.log(report);
   progressReporter({migrated, total: contents.length, completed: true});
