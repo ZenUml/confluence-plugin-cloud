@@ -374,12 +374,15 @@
         e.target.src=this.defaultDiagramImageUrl;
       },
       migrate() {
+        this.migratedCount = 0;
+        this.migrationTotal = 0;
+        this.isMigrationInProgress = true;
+
         upgrade.run(({migrated, total, completed}) => {
           this.isMigrationInProgress = !completed;
           this.migratedCount = migrated;
           this.migrationTotal = total;
         });
-        this.isMigrationInProgress = true;
       }
     },
     components: {
