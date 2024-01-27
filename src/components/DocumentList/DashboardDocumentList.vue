@@ -18,7 +18,7 @@
         </div>
         <div class="flex-1 w-50 flex-shrink-0 px-4 py-3 bg-white">
           <div class="flex items-center float-right">
-            <button v-show="isMigrationEnabled" :disabled="migrationProgress.inProgress" @click="migrate" class="flex items-center bg-blue-700 px-2 py-1 text-white text-sm font-semibold rounded">{{ migrateButtonText }}</button>
+            <button v-show="isMigrationEnabled" :disabled="isMigrationInProgress" @click="migrate" class="flex items-center bg-blue-700 px-2 py-1 text-white text-sm font-semibold rounded">{{ migrateButtonText }}</button>
             <button class="imgInput tableList"  :class="{ 'selected': viewStyle=='table' }" title="List view" @click="changeToTableStyle"></button>
             <button class="imgInput gridList" :class="{ 'selected': viewStyle=='grid' }" title="Grid view" @click="changeToGridStyle"></button>
           </div>
@@ -150,7 +150,9 @@
         pageSize:15,
         defaultDiagramImageUrl:'/image/default_diagram.png',
         isMigrationEnabled: false,
-        migrationProgress: {inProgress: false, migrated: 0, total: 0}
+        isMigrationInProgress: false,
+        migratedCount: 0,
+        migrationTotal: 0,
       };
     },
     watch: {
@@ -208,7 +210,8 @@
         }
       },
       migrateButtonText: function() {
-        return this.migrationProgress.inProgress ? `Migrating - ${this.migrationProgress.migrated} migrated out of ${this.migrationProgress.total} ..` : 'Migrate to Full';
+        const progress = () => this.migrationTotal ? ` - ${this.migratedCount} migrated out of ${this.migrationTotal}` : '';
+        return this.isMigrationInProgress ? `Migrating${progress()} ...` : 'Migrate to Full';
       }
     },
     async mounted() {
@@ -372,10 +375,11 @@
       },
       migrate() {
         upgrade.run(({migrated, total, completed}) => {
-          this.migrationProgress.inProgress = !completed;
-          this.migrationProgress.migrated = migrated;
-          this.migrationProgress.total = total;
+          this.isMigrationInProgress = !completed;
+          this.migratedCount = migrated;
+          this.migrationTotal = total;
         });
+        this.isMigrationInProgress = true;
       }
     },
     components: {
