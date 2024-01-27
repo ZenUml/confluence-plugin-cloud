@@ -8,6 +8,7 @@ firebase-debug.log
 
 dist
 .cache
+.wrangler
 
 # Log files
 npm-debug.log*
