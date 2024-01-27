@@ -1,6 +1,6 @@
 <template>
   <header
-    class="toolbar header border-b border-gray-800 p-2 flex items-center justify-between relative z-10"
+    class="toolbar header border-b border-gray-800 p-2 flex items-center justify-between relative z-10 h-[49px]"
   >
     <div class="flex shrink-1 min-w-0">
       <div class="group ml-2 p-0.5 rounded flex bg-gray-100 hover:bg-gray-200">
@@ -87,7 +87,7 @@
         placeholder="Title"
         :value="seqTitle"
         @input="handleTitleChange"
-        class="px-1 border-2 border-solid border-[#091e4224] rounded-[3px] focus:border-[#388bff] hover:border-[#388bff] outline-none transition-[border-color]"
+        class="px-1 border-2 border-solid border-[#091e4224] rounded-[3px] focus:border-[#388bff] hover:border-[#388bff] outline-none transition-[border-color] pr-8 h-8"
         :class="{ 'border-[#c9372c]': titleError }"
       />
       <input
@@ -99,6 +99,53 @@
         class="px-1 border-2 border-solid border-[#091e4224] rounded-[3px] focus:border-[#388bff] hover:border-[#388bff] outline-none transition-[border-color]"
         :class="{ 'border-[#c9372c]': titleError }"
       />
+      <div
+        v-if="diagramType === 'sequence'"
+        class="flex ml-[-28px] items-center text-sm"
+      >
+        <button
+          class="rounded-sm px-[2px] text-gray-600 hover:bg-gray-200"
+          :class="{ 'pointer-events-none': titleLoading }"
+          title="Generate title with AI"
+          @click="handleGenerateTitle"
+          :disabled="titleLoading"
+        >
+          <svg
+            v-if="!titleLoading"
+            xmlns="http://www.w3.org/2000/svg"
+            class="w-5"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            stroke-width="2"
+            stroke="currentColor"
+            fill="none"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+            <path
+              d="M16 18a2 2 0 0 1 2 2a2 2 0 0 1 2 -2a2 2 0 0 1 -2 -2a2 2 0 0 1 -2 2zm0 -12a2 2 0 0 1 2 2a2 2 0 0 1 2 -2a2 2 0 0 1 -2 -2a2 2 0 0 1 -2 2zm-7 12a6 6 0 0 1 6 -6a6 6 0 0 1 -6 -6a6 6 0 0 1 -6 6a6 6 0 0 1 6 6z"
+            />
+          </svg>
+          <svg
+            v-if="titleLoading"
+            xmlns="http://www.w3.org/2000/svg"
+            class="w-5 animate-spin text-gray-200"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            stroke-width="2"
+            stroke="currentColor"
+            fill="none"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+            <path d="M12 3a9 9 0 1 0 9 9" />
+          </svg>
+        </button>
+      </div>
     </div>
     <div class="flex items-center shrink-0">
       <a class="inline-block help mx-1 ml-2" target="_blank" :href="helpUrl">
@@ -145,6 +192,14 @@
         </div>
       </div>
     </div>
+    <Modal :visible="noticeModalVisible" :onConfirm="generateTitle" :onCancel="handleCloseModal">
+      <template v-slot:body>
+        <p>
+          This is an experimental feature, and your data will be sent to
+          Cloudflare. Cloudflare will not use your data as training data.
+        </p>
+      </template>
+    </Modal>
   </header>
 </template>
 
@@ -154,31 +209,36 @@ import SaveAndGoBackButton from "@/components/SaveAndGoBackButton.vue";
 import { DiagramType } from "@/model/Diagram/Diagram";
 import EventBus from "@/EventBus";
 import { trackEvent } from "@/utils/window";
+import Modal from "@/components/Modal/Modal.vue";
 
 export default {
   name: "Header",
   components: {
-    SaveAndGoBackButton
+    SaveAndGoBackButton,
+    Modal,
   },
   data() {
     return {
       helpUrl: "https://zenuml.atlassian.net/wiki/spaces/Doc/overview",
       seqTitle: "",
       mermaidTitle: "",
-      titleError: false
+      titleError: false,
+      titleLoading: false,
+      noticeModalVisible: false,
     };
   },
   computed: {
     ...mapState({
-      diagramType: state => state.diagram.diagramType,
-      seqCode: state => state.diagram.code,
-      templateUrl: state =>
+      diagramType: (state) => state.diagram.diagramType,
+      seqCode: (state) => state.diagram.code,
+      mermaidCode: (state) => state.diagram.mermaidCode,
+      templateUrl: (state) =>
         state.diagram.diagramType === "sequence"
           ? `https://github.com/ZenUml/confluence-plugin-cloud/discussions/489`
           : 'https://mermaid.js.org/ecosystem/tutorials.html',
-      title: state => state.diagram.title
+      title: (state) => state.diagram.title
     }),
-    saveAndExit: function() {
+    saveAndExit: function () {
       return () => {
         if (this.diagramType === "sequence" && !this.seqTitle) {
           return (this.titleError = true);
@@ -188,22 +248,22 @@ export default {
         }
         EventBus.$emit("save");
       };
-    }
+    },
   },
   watch: {
-    diagramType: function(newVal) {
+    diagramType: function (newVal) {
       this.$store.dispatch(
         "updateTitle",
         newVal === "mermaid" ? this.mermaidTitle : this.seqTitle
       );
     },
-    title: function(newVal) {
+    title: function (newVal) {
       if (this.diagramType === "mermaid") {
         this.mermaidTitle = newVal;
       } else {
         this.seqTitle = newVal;
       }
-    }
+    },
   },
   methods: {
     ...mapMutations(["updateDiagramType"]),
@@ -228,7 +288,36 @@ export default {
         this.seqTitle = value.target.value;
       }
       this.$store.dispatch("updateTitle", value.target.value);
-    }
+    },
+    handleGenerateTitle() {
+      this.noticeModalVisible = true;
+    },
+    handleCloseModal() {
+      this.noticeModalVisible = false;
+    },
+    async generateTitle() {
+      this.noticeModalVisible = false;
+      this.titleLoading = true;
+      const res = await fetch(
+        "https://llm-generate-titles.zenuml.workers.dev",
+        {
+          method: "POST",
+          body: JSON.stringify({
+            dsl:
+              this.diagramType === "mermaid" ? this.mermaidCode : this.seqCode,
+          }),
+        }
+      ).catch((e) => {
+        this.titleLoading = false;
+        console.error(e);
+      });
+      this.titleLoading = false;
+      if (this.diagramType === "mermaid") {
+        this.mermaidTitle = await res.text();
+      } else {
+        this.seqTitle = await res.text();
+      }
+    },
   },
   mounted() {
     if (this.diagramType === "mermaid") {
@@ -236,14 +325,11 @@ export default {
 
       const firstLine = this.seqCode?.split("\n")[0];
       if (firstLine?.trimStart().startsWith("title ")) {
-        this.seqTitle = firstLine
-          .trimStart()
-          .substring(6)
-          .trim();
+        this.seqTitle = firstLine.trimStart().substring(6).trim();
       }
     } else {
       this.seqTitle = this.title;
     }
-  }
+  },
 };
 </script>
