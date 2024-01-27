@@ -1,24 +1,30 @@
-import globals from '@/model/globals';
+import globals from "@/model/globals";
 import AP from "@/model/AP";
 import defaultContentProvider from "@/model/ContentProvider/CompositeContentProvider";
-import {decompress} from "@/utils/compress";
-import {DiagramType} from "@/model/Diagram/Diagram";
-import {saveToPlatform} from "@/model/ContentProvider/Persistence";
+import { decompress } from "@/utils/compress";
+import { DiagramType } from "@/model/Diagram/Diagram";
+import { saveToPlatform } from "@/model/ContentProvider/Persistence";
 import ApWrapper2 from "@/model/ApWrapper2";
-import './utils/IgnoreEsc.ts'
-import {trackEvent} from '@/utils/window';
+import "./utils/IgnoreEsc";
+import { trackEvent } from "@/utils/window";
 import MacroUtil from "@/model/MacroUtil";
+import "./assets/tailwind.css";
+import { createApp } from "vue";
+import CreateGraph from "@/components/CreateGraph.vue";
 
 const compositeContentProvider = defaultContentProvider(new ApWrapper2(AP));
 
 async function saveAndExit(graphXml: string) {
   // @ts-ignore
-  window.diagram = Object.assign(window.diagram || {}, {diagramType: DiagramType.Graph, graphXml});
+  window.diagram = Object.assign(window.diagram || {}, {
+    diagramType: DiagramType.Graph,
+    graphXml
+  });
 
   // @ts-ignore
   await saveToPlatform(window.diagram);
   // @ts-ignore
-  console.log('Save and exit', window.diagram);
+  console.log("Save and exit", window.diagram);
   /* eslint-disable no-undef */
   AP.dialog.close();
 }
@@ -30,23 +36,23 @@ async function initializeMacro() {
   const apWrapper = globals.apWrapper;
   await apWrapper.initializeContext();
 
-  const {doc} = await compositeContentProvider.load();
+  const { doc } = await compositeContentProvider.load();
   let graphXml = doc.graphXml;
 
   // @ts-ignore
   window.diagram = doc;
 
   if (doc?.compressed) {
-    trackEvent('compressed_field_editor', 'load', 'warning');
-    if (!graphXml?.startsWith('<mxGraphModel')) {
+    trackEvent("compressed_field_editor", "load", "warning");
+    if (!graphXml?.startsWith("<mxGraphModel")) {
       graphXml = decompress(doc.graphXml);
-      trackEvent('compressed_content_editor', 'load', 'warning');
+      trackEvent("compressed_content_editor", "load", "warning");
     }
     delete doc.compressed;
-    console.debug('delete doc.compressed');
+    console.debug("delete doc.compressed");
   }
 
-  if(graphXml) {
+  if (graphXml) {
     // set diagram content
     await (async () => {
       console.debug("Waiting for EditorUi.init");
@@ -61,9 +67,18 @@ async function initializeMacro() {
       }
     })();
   }
+  if (!doc?.id || !doc?.title) {
+    const app = createApp(CreateGraph,{
+        forEnforceTitle: Boolean(doc?.id),
+        onConfirm: (title: string) => {
+          window.diagram.title = title;
+        }
+      });
+    app.mount('#create-modal')
+  }
 
-  if(await MacroUtil.isCreateNew()) {
-    trackEvent('', 'create_macro_begin', 'graph');
+  if (await MacroUtil.isCreateNew()) {
+    trackEvent("", "create_macro_begin", "graph");
   }
 }
 

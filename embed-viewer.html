@@ -4,22 +4,19 @@
   <!-- Global site tag (gtag.js) - Google Analytics -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=UA-114996686-1"></script>
   <script type="text/javascript" src="js/google-analytics.js?version=2022.01"></script>
+  <title>Embed Viewer</title>
+
   <meta charset="utf-8">
   <script type="text/javascript" src="js/util.js"></script>
   <script type="text/javascript" src="https://connect-cdn.atl-paas.net/all.js"></script>
-  <script id="connect-loader">
-    window.split = true;
-  </script>
-  <title>Sequence Editor</title>
-  <style>
-    body.root {
-      margin: 0 !important;
-      background: white;
-    }
-  </style>
+
+  <script id="connect-loader"></script>
+
 </head>
-<body style="height: 100vh;" class="root">
-<div id="app" class="container"></div>
-<!-- built files will be auto injected -->
+<body>
+<div class="mx-auto" style="width: fit-content">
+  <div id="app"></div>
+</div>
 </body>
+<script type="module" src="src/embed-viewer.ts"></script>
 </html>

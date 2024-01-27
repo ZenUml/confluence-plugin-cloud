@@ -1,11 +1,14 @@
-//The following  environment variables need to be set on https://dash.cloudflare.com/xxxxxxx/pages/view/confluence-pulgin/settings/environment-variables :
-//WHITE_LIST:	subDomain1,subDomain2 #if contains * ,will effect all domain.
-function checkWhiteList(env: any, subDomain: string) {
-  const whiteListNames: string[] = env.WHITE_LIST
-    ? env.WHITE_LIST.split(",").map(name => name.trim().toLowerCase()).filter(name => name !== "")
-    : [];
-  if(whiteListNames.includes("*"))return true;
-  return whiteListNames.includes(subDomain.toLowerCase());
+async function checkWhiteList(kv: any, key: string, subDomain: string) {
+  try {
+    const names = await kv.get(key);
+    //whiteListNames:	subDomain1,subDomain2 #if contains * ,will effect all domain.
+    const whiteListNames: string[] =  names? names.split(",").map(name => name.trim().toLowerCase()).filter(name => name !== ""): [];
+    if(whiteListNames.includes("*"))return true;
+    return whiteListNames.includes(subDomain.toLowerCase());
+  } catch (error) {
+    console.error("Failed to check white list: ", error);
+  }
+  return false;
 }
 
 export {

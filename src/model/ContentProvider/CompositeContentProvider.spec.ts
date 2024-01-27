@@ -4,6 +4,9 @@ import ApWrapper2 from "@/model/ApWrapper2";
 import TestHelper from '../../../tests/unit/TestHelper';
 import globals from '@/model/globals';
 
+global.fetch = () => Promise.resolve(new Response("mock fetch success"));
+
+
 describe('CompositeContentProvider', () => {
   test('should fallback to content property when no custom content id is provided', async () => {
     const mockAp = new MockAp('contentId');
@@ -51,7 +54,7 @@ describe('CompositeContentProvider', () => {
       const {doc} = (await contentProvider.load());
       expect(doc.code).toBe('A.method');
     })
-    
+
     afterEach(() => {
       globals.isEmbedded = false;
     });

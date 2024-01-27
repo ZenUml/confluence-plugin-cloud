@@ -1,7 +1,8 @@
 import {trackEvent} from "./utils/zaraz";
+import {Env} from "./utils/KVEnv";
 import {checkWhiteList} from "./utils/white-list";
 import { isLite } from './descriptor.js';
-export const onRequestGet: PagesFunction = async (params: any) => {
+export const onRequestGet: PagesFunction<Env> = async (params: any) => {
   const {searchParams} = new URL(params.request.url);
  
   const uuid = searchParams.get('uuid') || '';
@@ -27,7 +28,14 @@ export const onRequestGet: PagesFunction = async (params: any) => {
     console.error("Failed to track retrieve_attachment: ", error);
   }
 
-  const upgradeDesc = (isLite(appKey) && checkWhiteList(params.env,subDomain)) ? `<p style="color:#97a0af;font-style:italic;">Elevate your ZenUML experience by upgrading to our Paid Version. For detailed instructions and benefits, visit https://zenuml.com/upgrade.</p>` : "";
+  // try {
+  //   const WHITE_LIST_PDF = await params.env.FEATURES.get("WHITE_LIST_PDF");
+  //   console.log("kv WHITE_LIST_PDF",WHITE_LIST_PDF);
+  // } catch (error) {
+  //   console.error("fail kv WHITE_LIST_PDF", error);
+  // }
+ 
+  const upgradeDesc = (isLite(appKey) && await checkWhiteList(params.env.FEATURES,"WHITE_LIST_PDF",subDomain)) ? `<p style="color:#97a0af;font-style:italic;">Elevate your ZenUML experience by upgrading to our Paid Version. For detailed instructions and benefits, visit https://zenuml.com/upgrade.</p>` : "";
   return new Response(
     `${upgradeDesc}<ac:image ac:width="950"> <ri:attachment ri:filename="zenuml-${uuid}.png" /> </ac:image>`,
     {}

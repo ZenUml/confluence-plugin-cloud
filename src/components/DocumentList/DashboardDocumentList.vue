@@ -121,7 +121,7 @@
 </template>
 
 <script>
-  import SaveAndGoBackButton from "@/components/SaveAndGoBackButton";
+  import SaveAndGoBackButton from "@/components/SaveAndGoBackButton.vue";
   import {DiagramType} from "@/model/Diagram/Diagram";
   import EventBus from "@/EventBus";
   import AP from "@/model/AP";
@@ -230,6 +230,9 @@
       },
       async changeToTableStyle() {
         this.viewStyle='table';
+        setTimeout(() => {
+          this.initTheRightSideContent();
+        }, 500);
         await this.checkAutoLoadNextPageData();
       },
       async changeToGridStyle() {
@@ -240,7 +243,11 @@
         //init the right side content
         const iframe = document.getElementById('embedded-viewer');
         const iframeDocument = iframe.contentDocument || iframe.contentWindow.document;
+        const initContentClassName = "init-content";
+        const hasInitContent = iframeDocument.querySelectorAll(`.${initContentClassName}`).length!=0;
+        if(iframe.src!='' || hasInitContent) return;
         const div = iframeDocument.createElement('div');
+        div.classList.add(initContentClassName);
         div.innerHTML = this.customContentList.length
           ? 'Select a diagram from the left side panel'
           : `<div style="margin-bottom: 10px;">
@@ -266,6 +273,7 @@
           height: "100%",
           customData: { 'content.id': customContentId, contentId: customContentId }
         }).on('close', async () => {
+          this.search();
           const iframe = document.getElementById('embedded-viewer');
           if(iframe)iframe.contentWindow.location.reload();
         });

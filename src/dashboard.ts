@@ -1,4 +1,4 @@
-import Vue from 'vue'
+import { createApp } from 'vue'
 import DashboardDocumentList from './components/DocumentList/DashboardDocumentList.vue'
 
 import EventBus from './EventBus'
@@ -9,14 +9,11 @@ import ApWrapper2 from "@/model/ApWrapper2";
 import uuidv4 from "@/utils/uuid";
 import {trackEvent} from '@/utils/window';
 
-Vue.config.productionTip = false
 const apWrapper = new ApWrapper2(AP);
 
 if(document.getElementById('app')) {
-  new Vue({
-    render: h => h(DashboardDocumentList)
-  }).$mount('#app')
-
+  const app = createApp(DashboardDocumentList);
+  app.mount('#app')
   trackEvent('', 'load_dashboard', 'pageview');
 }
 
@@ -30,7 +27,7 @@ EventBus.$on('save', async () => {
   if(!macroData?.uuid) {
     trackEvent(uuid, 'create_macro_end', 'embed');
   }
-  
+
   // @ts-ignore
   AP.dialog.close();
 });
