@@ -2,8 +2,7 @@ import React, { FormEventHandler, useEffect, useState } from "react";
 import { trackEvent } from "@/utils/window";
 import { SaveAndGoBackButton } from "./SaveAndGoBackButton";
 import yaml from "js-yaml";
-import { log } from "lzutf8";
-//feng
+
 interface Props {
   saveAndExit: VoidFunction;
 }
@@ -18,7 +17,7 @@ const Component = ({ saveAndExit }: Props) => {
     setTitleStateValue(value);
     if (window.diagram)
     {
-      window.diagram.title=value;
+      window.diagram.title = value;
     }
   };
 
