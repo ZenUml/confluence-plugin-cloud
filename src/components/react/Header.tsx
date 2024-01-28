@@ -2,20 +2,30 @@ import React, { FormEventHandler, useEffect, useState } from "react";
 import { trackEvent } from "@/utils/window";
 import { SaveAndGoBackButton } from "./SaveAndGoBackButton";
 import yaml from "js-yaml";
-
+import { log } from "lzutf8";
+//feng
 interface Props {
   saveAndExit: VoidFunction;
 }
 const Component = ({ saveAndExit }: Props) => {
-  const [title, setTitle] = useState("");
+  const [title, setTitleStateValue] = useState("");
 
   const helpClick = () => {
     trackEvent("help", "click", "open-api");
   };
+
+  const setTitle = (value: any) => {
+    setTitleStateValue(value);
+    if (window.diagram)
+    {
+      window.diagram.title=value;
+    }
+  };
+
   const changeTitle: FormEventHandler<HTMLInputElement> = e => {
     setTitle(e.currentTarget.value);
-    if (window.diagram) {
-      window.diagram.title = e.currentTarget.value;
+    if (window.diagram)
+    {
       yaml.loadAll(window.specContent || '', function (data) {
         const doc: Record<string, any> = data as any;
         doc.info.title = e.currentTarget.value;
@@ -93,5 +103,7 @@ const Component = ({ saveAndExit }: Props) => {
     </header>
   );
 };
+
+
 
 export default Component;
