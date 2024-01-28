@@ -15,14 +15,14 @@ const Component = ({ saveAndExit }: Props) => {
 
   const setTitle = (value: any) => {
     setTitleStateValue(value);
-    if (window.diagram){
+    if (window.diagram) {
       window.diagram.title = value;
     }
   };
 
   const changeTitle: FormEventHandler<HTMLInputElement> = e => {
     setTitle(e.currentTarget.value);
-    if (window.diagram){
+    if (window.diagram) {
       yaml.loadAll(window.specContent || '', function (data) {
         const doc: Record<string, any> = data as any;
         doc.info.title = e.currentTarget.value;
