@@ -3,7 +3,7 @@ import { getUrlParam, trackEvent } from "@/utils/window";
 //new/full custom content: migrated: true, sourceCustomContentId: xxx (needed by downgrade)
 //content properties
 
-const UPGRADE_INCLUDE_DOMAINS = ['whimet4', 'zenuml-stg'];
+const UPGRADE_INCLUDE_DOMAINS = ['whimet4', 'zenuml-dashboard-full-test'];
 
 async function request(params: any) {
   //@ts-ignore
@@ -82,8 +82,8 @@ async function upgradePage(pageId: string, userId: string, migratedCallback: any
   }
 
   const page = await getPage(pageId);
-  const traversal = (array: any, result: Array<any>): any => { 
-    result.push(...array); 
+  const traversal = (array: any, result: Array<any>): any => {
+    result.push(...array);
     array.forEach((c: any) => {
       if(c.content) {
         traversal(c.content, result)
@@ -102,25 +102,25 @@ async function upgradePage(pageId: string, userId: string, migratedCallback: any
   if(contentIds.length) {
     const clones = await Promise.all(contentIds.map((i: any) => cloneAsFull(i).then(d => ({source: i, dest: d.id}))));
     const cloneMap = clones.reduce((acc: any, i) => {acc[i.source] = i.dest; return acc}, {});
-    
+
     macros.forEach((c: any) => {
       c.attrs.extensionKey = c.attrs.extensionKey.replace('-lite', '');
-  
+
       const id = c.attrs.parameters?.macroParams?.customContentId?.value;
       if(id) {
         c.attrs.parameters.macroParams.customContentId.value = cloneMap[id]
       }
     });
-    
+
     const data = {id: pageId, title: page.title, status: page.status, version: {number: ++page.version.number, message: `ZenUML lite macro(s) on this page are upgraded by ZenUML App`}, body: {value: JSON.stringify({type: 'doc', content}), representation: 'atlas_doc_format'}};
-    
+
     await updatePage(pageId, data);
     console.log(`Upgrade - finished page ${pageId}`);
 
     migratedCallback && migratedCallback(contentIds.length);
 
     return contentIds.length;
-    
+
   } else {
     console.log(`Upgrade - lite macro not found in latest version of page ${pageId}`)
   }
@@ -144,21 +144,21 @@ async function downgradePage(pageId: string, userId: string) {
   if(contentIds.length) {
     const results = await Promise.all(contentIds.map((i: any) => getSourceCustomContentId(i).then(d => ({source: i, dest: d}))));
     const resultMap = results.reduce((acc, i) => {acc[i.source] = i.dest; return acc}, {});
-    
+
     macros.forEach((c: any) => {
       c.attrs.extensionKey = `${c.attrs.extensionKey}'-lite'`;
-  
+
       const id = c.attrs.parameters?.macroParams?.customContentId?.value;
       if(id) {
         c.attrs.parameters.macroParams.customContentId.value = resultMap[id]
       }
     });
-    
+
     const data = {type: 'page', title: page.title, status: page.status, space: {key: page.space.key}, version: {number: ++page.version.number, message: `ZenUML full macro(s) on this page are downgraded by ZenUML App`}, body: {atlas_doc_format: {value: JSON.stringify({type: 'doc', content}), representation: 'atlas_doc_format'}}};
-    
+
     await updateContent(pageId, data);
     return contentIds.length;
-    
+
   } else {
     console.log(`Downgrade - full macro not found on page ${pageId}`)
   }
@@ -270,7 +270,7 @@ async function downgrade(userId: string, spaceKey: string) {
     const value: any = JSON.parse(c.body.raw.value);
     return value.upgraded && value.sourceCustomContentId;
   }));
-  
+
   console.log("Pages to downgrade: ", pages)
   pages.forEach(async (p) => await downgradePage(p, userId));
 }
