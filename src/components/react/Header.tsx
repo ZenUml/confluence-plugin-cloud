@@ -7,21 +7,21 @@ interface Props {
   saveAndExit: VoidFunction;
 }
 const Component = ({ saveAndExit }: Props) => {
-  const [title, setTitleStateValue] = useState("");
+  const [title, setTitle] = useState("");
 
   const helpClick = () => {
     trackEvent("help", "click", "open-api");
   };
 
-  const setTitle = (value: any) => {
-    setTitleStateValue(value);
+  const setTitleWithSideEffect = (value: any) => {
+    setTitle(value);
     if (window.diagram) {
       window.diagram.title = value;
     }
   };
 
   const changeTitle: FormEventHandler<HTMLInputElement> = e => {
-    setTitle(e.currentTarget.value);
+    setTitleWithSideEffect(e.currentTarget.value);
     if (window.diagram) {
       yaml.loadAll(window.specContent || '', function (data) {
         const doc: Record<string, any> = data as any;
@@ -34,13 +34,13 @@ const Component = ({ saveAndExit }: Props) => {
     if (window.diagram) {
       yaml.loadAll(window.diagram.code || '', function (data) {
         const doc: Record<string, any> = data as any;
-        if (doc?.info?.title) setTitle(doc.info.title);
+        if (doc?.info?.title) setTitleWithSideEffect(doc.info.title);
       });
     }
     const handleEditorChange = (spec: string) => {
       yaml.loadAll(spec, function (data) {
         const doc: Record<string, any> = data as any;
-        setTitle(doc?.info?.title || '');
+        setTitleWithSideEffect(doc?.info?.title || '');
       });
     };
     if (!window.specListeners) window.specListeners = [];
