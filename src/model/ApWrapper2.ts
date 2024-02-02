@@ -704,10 +704,11 @@ export default class ApWrapper2 implements IApWrapper {
     const url = `/rest/atlassian-connect/1/addons/${_addonKey || addonKey()}`;
     try {
       const license: ILicense = await this.request(url);
+      console.debug("getLicense",url,license);
       trackEvent(JSON.stringify(license), 'getLicense', 'info');
       return license;
     } catch (e) {
-      console.error('getLicense error:', e);
+      console.error('getLicense',e);
       trackEvent(JSON.stringify(e), 'getLicense', 'error');
       return undefined;
     }

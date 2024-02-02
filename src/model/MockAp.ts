@@ -35,10 +35,10 @@ export default class MockAp implements IAp {
     }
 
     // if request.url start with '/rest/api/content/fake-content-id', return mocked response
-    if (req.url.startsWith('/rest/api/content/fake-content-id-diagram-sequence')) {
+    if (req.url.startsWith('/api/v2/custom-content/fake-content-id-diagram-sequence')) {
       return {body: JSON.stringify(customContentByIdV1DiagramSequence)};
     }
-    if (req.url.startsWith('/rest/api/content/fake-content-id-diagram-mermaid')) {
+    if (req.url.startsWith('/api/v2/custom-content/fake-content-id-diagram-mermaid')) {
       return {body: JSON.stringify(customContentByIdV1DiagramMermaid)};
     }
 

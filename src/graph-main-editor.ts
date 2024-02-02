@@ -10,7 +10,7 @@ import { trackEvent } from "@/utils/window";
 import MacroUtil from "@/model/MacroUtil";
 import "./assets/tailwind.css";
 import { createApp } from "vue";
-import CreateGraph from "@/components/CreateGraph.vue";
+import DrawIoExtension from "@/components/DrawIoExtension/DrawIoExtension.vue";
 
 const compositeContentProvider = defaultContentProvider(new ApWrapper2(AP));
 
@@ -67,15 +67,10 @@ async function initializeMacro() {
       }
     })();
   }
-  if (!doc?.id || !doc?.title) {
-    const app = createApp(CreateGraph,{
-        forEnforceTitle: Boolean(doc?.id),
-        onConfirm: (title: string) => {
-          window.diagram.title = title;
-        }
-      });
-    app.mount('#create-modal')
-  }
+  const header = createApp(DrawIoExtension, {
+    doc
+  });
+  header.mount("#drawioExtension");
 
   if (await MacroUtil.isCreateNew()) {
     trackEvent("", "create_macro_begin", "graph");
