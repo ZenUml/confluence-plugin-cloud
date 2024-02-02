@@ -53,10 +53,18 @@
 
 <script lang="ts">
 import { defineComponent, nextTick, ref } from "vue";
-import Button from "./AUI/Button.vue";
+import Button from "@/components/AUI/Button.vue";
 
 export default defineComponent({
   props: {
+    visible: {
+      type: Boolean,
+      default: false
+    },
+    defaultTitle: {
+      type: String,
+      default: ""
+    },
     forEnforceTitle: Boolean,
     onConfirm: {
       type: Function,
@@ -67,12 +75,10 @@ export default defineComponent({
     Button
   },
   setup(props) {
-    const inputRef = ref(null);
-    const visible = ref(true);
-    const title = ref('');
+    const inputRef = ref<HTMLInputElement>();
+    const title = ref(props.defaultTitle);
 
     const handleConfirm = () => {
-      visible.value = false;
       if (props.onConfirm) {
         props.onConfirm(title.value);
       }
@@ -86,7 +92,6 @@ export default defineComponent({
 
     return {
       inputRef,
-      visible,
       title,
       handleConfirm
     };
