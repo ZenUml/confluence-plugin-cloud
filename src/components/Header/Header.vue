@@ -175,7 +175,7 @@ export default {
       templateUrl: state =>
         state.diagram.diagramType === "sequence"
           ? `https://github.com/ZenUml/confluence-plugin-cloud/discussions/489`
-          : "https://mermaid.js.org/config/Tutorials.html",
+          : 'https://mermaid.js.org/ecosystem/tutorials.html',
       title: state => state.diagram.title
     }),
     saveAndExit: function() {
