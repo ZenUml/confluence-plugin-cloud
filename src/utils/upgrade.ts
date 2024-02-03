@@ -261,7 +261,7 @@ async function upgrade(userId: string, progressReporter: any = undefined) {
   const report = `Upgrade - finished space ${context.confluence?.space?.key}, ${macroCount} macros upgraded in ${results.length} pages`;
   console.log(report);
   progressReporter({migrated, total: contents.length, completed: true});
-  showPopup(`Migrated ${macroCount} macros in ${results.length} pages`);
+  showPopup(`Migrated ${macroCount} macro(s) on ${results.length} page(s)`);
 }
 
 async function downgrade(userId: string, spaceKey: string) {
