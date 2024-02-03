@@ -18,7 +18,7 @@
         </div>
         <div class="flex-1 w-50 flex-shrink-0 px-4 py-3 bg-white">
           <div class="flex items-center float-right">
-            <button v-show="isMigrationEnabled" @click="migrate" class="flex items-center bg-blue-700 px-2 py-1 text-white text-sm font-semibold rounded">Migrate to Full</button>
+            <button v-show="isMigrationEnabled" :disabled="isMigrationInProgress" @click="migrate" class="flex items-center bg-blue-700 px-2 py-1 text-white text-sm font-semibold rounded">{{ migrateButtonText }}</button>
             <button class="imgInput tableList"  :class="{ 'selected': viewStyle=='table' }" title="List view" @click="changeToTableStyle"></button>
             <button class="imgInput gridList" :class="{ 'selected': viewStyle=='grid' }" title="Grid view" @click="changeToGridStyle"></button>
           </div>
@@ -150,6 +150,9 @@
         pageSize:15,
         defaultDiagramImageUrl:'/image/default_diagram.png',
         isMigrationEnabled: false,
+        isMigrationInProgress: false,
+        migratedCount: 0,
+        migrationTotal: 0,
       };
     },
     watch: {
@@ -205,6 +208,10 @@
           window.picked = that.picked;
           EventBus.$emit('save')
         }
+      },
+      migrateButtonText: function() {
+        const progress = () => this.migrationTotal ? ` - ${this.migratedCount} migrated out of ${this.migrationTotal}` : '';
+        return this.isMigrationInProgress ? `Migrating${progress()} ...` : 'Migrate to Full';
       }
     },
     async mounted() {
@@ -214,7 +221,8 @@
       await this.search();
       this.initTheRightSideContent();
 
-      this.isMigrationEnabled = apWrapper.isLite() && upgrade.isEnabled();
+      const hasFull = await apWrapper.hasFullAddon();
+      this.isMigrationEnabled = apWrapper.isLite() && hasFull && upgrade.isEnabled();
     },
     methods: {
       setFilter(docType) {
@@ -366,7 +374,15 @@
         e.target.src=this.defaultDiagramImageUrl;
       },
       migrate() {
-        upgrade.run();
+        this.migratedCount = 0;
+        this.migrationTotal = 0;
+        this.isMigrationInProgress = true;
+
+        upgrade.run(({migrated, total, completed}) => {
+          this.isMigrationInProgress = !completed;
+          this.migratedCount = migrated;
+          this.migrationTotal = total;
+        });
       }
     },
     components: {

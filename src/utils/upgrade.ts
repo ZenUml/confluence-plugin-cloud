@@ -3,7 +3,7 @@ import { getUrlParam, trackEvent } from "@/utils/window";
 //new/full custom content: migrated: true, sourceCustomContentId: xxx (needed by downgrade)
 //content properties
 
-const UPGRADE_INCLUDE_DOMAINS = ['whimet4', 'zenuml-stg'];
+const UPGRADE_INCLUDE_DOMAINS = ['whimet4', 'zenuml-dashboard-full-test'];
 
 async function request(params: any) {
   //@ts-ignore
@@ -74,7 +74,7 @@ async function canEdit(pageId: string, userId: string) {
   return response.body && JSON.parse(response.body).hasPermission;
 }
 
-async function upgradePage(pageId: string, userId: string) {
+async function upgradePage(pageId: string, userId: string, migratedCallback: any = undefined) {
   const b = await canEdit(pageId, userId);
   if(!b) {
     console.log(`Upgrade - no edit permission, skip page ${pageId}`);
@@ -82,31 +82,45 @@ async function upgradePage(pageId: string, userId: string) {
   }
 
   const page = await getPage(pageId);
+  const traversal = (array: any, result: Array<any>): any => {
+    result.push(...array);
+    array.forEach((c: any) => {
+      if(c.content) {
+        traversal(c.content, result)
+      }
+    })
+  };
   const content = JSON.parse(page.body.atlas_doc_format.value).content;
+  const allContents: Array<any> = [];
+  traversal(content, allContents);
+
   const check = (c: any) => c.type === 'extension' && c.attrs.extensionType === 'com.atlassian.confluence.macro.core' && /zenuml-(sequence|graph|openapi|embed)-macro-lite/.test(c.attrs.extensionKey);
-  const macros = content.filter(check);
+
+  const macros = allContents.filter(check);
   const contentIds = macros.map((c: any) => c.attrs?.parameters?.macroParams?.customContentId?.value).filter((i: any) => i);
 
   if(contentIds.length) {
     const clones = await Promise.all(contentIds.map((i: any) => cloneAsFull(i).then(d => ({source: i, dest: d.id}))));
-    const cloneMap = clones.reduce((acc, i) => {acc[i.source] = i.dest; return acc}, {});
-    
+    const cloneMap = clones.reduce((acc: any, i) => {acc[i.source] = i.dest; return acc}, {});
+
     macros.forEach((c: any) => {
       c.attrs.extensionKey = c.attrs.extensionKey.replace('-lite', '');
-  
+
       const id = c.attrs.parameters?.macroParams?.customContentId?.value;
       if(id) {
         c.attrs.parameters.macroParams.customContentId.value = cloneMap[id]
       }
     });
-    
+
     const data = {id: pageId, title: page.title, status: page.status, version: {number: ++page.version.number, message: `ZenUML lite macro(s) on this page are upgraded by ZenUML App`}, body: {value: JSON.stringify({type: 'doc', content}), representation: 'atlas_doc_format'}};
-    
+
     await updatePage(pageId, data);
     console.log(`Upgrade - finished page ${pageId}`);
 
+    migratedCallback && migratedCallback(contentIds.length);
+
     return contentIds.length;
-    
+
   } else {
     console.log(`Upgrade - lite macro not found in latest version of page ${pageId}`)
   }
@@ -130,21 +144,21 @@ async function downgradePage(pageId: string, userId: string) {
   if(contentIds.length) {
     const results = await Promise.all(contentIds.map((i: any) => getSourceCustomContentId(i).then(d => ({source: i, dest: d}))));
     const resultMap = results.reduce((acc, i) => {acc[i.source] = i.dest; return acc}, {});
-    
+
     macros.forEach((c: any) => {
       c.attrs.extensionKey = `${c.attrs.extensionKey}'-lite'`;
-  
+
       const id = c.attrs.parameters?.macroParams?.customContentId?.value;
       if(id) {
         c.attrs.parameters.macroParams.customContentId.value = resultMap[id]
       }
     });
-    
+
     const data = {type: 'page', title: page.title, status: page.status, space: {key: page.space.key}, version: {number: ++page.version.number, message: `ZenUML full macro(s) on this page are downgraded by ZenUML App`}, body: {atlas_doc_format: {value: JSON.stringify({type: 'doc', content}), representation: 'atlas_doc_format'}}};
-    
+
     await updateContent(pageId, data);
     return contentIds.length;
-    
+
   } else {
     console.log(`Downgrade - full macro not found on page ${pageId}`)
   }
@@ -220,7 +234,7 @@ async function time(action: any, callback: any) {
   }
 }
 
-async function upgrade(userId: string) {
+async function upgrade(userId: string, progressReporter: any = undefined) {
   //@ts-ignore
   const context = await AP.context.getContext();
   let currentPageId = '';
@@ -228,7 +242,7 @@ async function upgrade(userId: string) {
     currentPageId = context.confluence.content.id;
     const macroCount = await upgradePage(currentPageId, userId)
     if(macroCount) {
-      showPopup(currentPageId, macroCount);
+      showPopupForReload(currentPageId, macroCount);
     }
   }
 
@@ -236,9 +250,18 @@ async function upgrade(userId: string) {
   const pageIds = contents.map((c: any) => c.container.id);
   const uniqPageIds = unique(pageIds.filter((p: string) => p != currentPageId));
 
-  const results = await Promise.all(uniqPageIds.map(pageId => upgradePage(pageId, userId)));
+  let migrated = 0;
+  const migratedCallback = (migratedMacrosCount: number) => {
+    migrated += migratedMacrosCount;
+    progressReporter({migrated, total: contents.length});
+  };
 
-  console.log(`Upgrade - finished space ${context.confluence?.space?.key}, ${results.filter(r => r).reduce((i, acc) => acc = acc + i, 0)} macros upgraded in ${results.length} pages`);
+  const results = await Promise.all(uniqPageIds.map(pageId => upgradePage(pageId, userId, migratedCallback)));
+  const macroCount = results.filter(r => r).reduce((acc: number, i: any) => acc = acc + i, 0);
+  const report = `Upgrade - finished space ${context.confluence?.space?.key}, ${macroCount} macros upgraded in ${results.length} pages`;
+  console.log(report);
+  progressReporter({migrated, total: contents.length, completed: true});
+  showPopup(`Migrated ${macroCount} macro(s) on ${results.length} page(s)`);
 }
 
 async function downgrade(userId: string, spaceKey: string) {
@@ -247,19 +270,18 @@ async function downgrade(userId: string, spaceKey: string) {
     const value: any = JSON.parse(c.body.raw.value);
     return value.upgraded && value.sourceCustomContentId;
   }));
-  
+
   console.log("Pages to downgrade: ", pages)
   pages.forEach(async (p) => await downgradePage(p, userId));
 }
 
-function showPopup(pageId: string, macroCount: number) {
+function showPopupForReload(pageId: string, macroCount: number) {
   //@ts-ignore
-  const flag = AP.flag.create({
-    title: `${macroCount} Lite macros migrated to Full on page ${pageId}`,
-    actions: {
+  const flag = showPopup(`${macroCount} Lite macros migrated to Full on page ${pageId}`,
+    {
       'reload': 'Reload Page'
     }
-  });
+  );
 
   //@ts-ignore
   AP.events.on('flag.action', function(e) {
@@ -270,9 +292,19 @@ function showPopup(pageId: string, macroCount: number) {
 
       //@ts-ignore
       AP.navigator.go('contentview', {contentId: pageId});
-
     }
   });
+}
+
+function showPopup(title: string, actions: any = undefined): any {
+  //@ts-ignore
+  if(showPopup.flag) {
+    //@ts-ignore
+    showPopup.flag.close();
+  }
+
+  //@ts-ignore
+  return showPopup.flag = AP.flag.create({ title, actions });
 }
 
 
@@ -293,11 +325,13 @@ function isUpgradeEnabled(): boolean {
 
 export default {
   isEnabled: isUpgradeEnabled,
-  run() {
+  run(progressReporter: any) {
     if(isUpgradeEnabled()) {
-      console.log('Upgrade - atlassian domain allowed, kicking off..')
+      console.log('Upgrade - atlassian domain allowed, kicking off..');
+      showPopup('Started to migrate ZenUML Lite macros in the current space');
+
       //@ts-ignore
-      AP.user.getCurrentUser(async (u) => await upgrade(u.atlassianAccountId));
+      AP.user.getCurrentUser(async (u) => await upgrade(u.atlassianAccountId, progressReporter));
     }
   }
 };
