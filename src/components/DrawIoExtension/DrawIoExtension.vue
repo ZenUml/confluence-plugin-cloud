@@ -37,6 +37,7 @@ export default defineComponent({
     };
     onMounted(() => {
       if (props.doc?.id) {
+        if (!props.doc.title) return
         title.value = props.doc.title;
       } else {
         modalVisible.value = true;
