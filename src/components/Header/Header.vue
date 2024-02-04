@@ -100,7 +100,7 @@
         :class="{ 'border-[#c9372c]': titleError }"
       />
       <div
-        v-if="diagramType === 'sequence'"
+        v-if="isAiTitleEnabled"
         class="flex ml-[-28px] items-center text-sm"
       >
         <button
@@ -210,6 +210,7 @@ import { DiagramType } from "@/model/Diagram/Diagram";
 import EventBus from "@/EventBus";
 import { trackEvent } from "@/utils/window";
 import Modal from "@/components/Modal/Modal.vue";
+import FeatureSwitch from "@/model/FeatureSwitch";
 
 export default {
   name: "Header",
@@ -225,6 +226,7 @@ export default {
       titleError: false,
       titleLoading: false,
       noticeModalVisible: false,
+      aiTitleFeatureEnabled: false,
     };
   },
   computed: {
@@ -248,6 +250,9 @@ export default {
         }
         EventBus.$emit("save");
       };
+    },
+    isAiTitleEnabled: function() {
+      return this.aiTitleFeatureEnabled && this.diagramType === 'sequence';
     },
   },
   watch: {
@@ -319,7 +324,7 @@ export default {
       }
     },
   },
-  mounted() {
+  async mounted() {
     if (this.diagramType === "mermaid") {
       this.mermaidTitle = this.title;
 
@@ -330,6 +335,8 @@ export default {
     } else {
       this.seqTitle = this.title;
     }
+
+    this.aiTitleFeatureEnabled = await FeatureSwitch.isAiTitleEnabled();
   },
 };
 </script>
