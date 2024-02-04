@@ -311,8 +311,8 @@ async function createCustomContent(title, body, containerPageId) {
   return response.body && JSON.parse(response.body);
 }
 
-async function createDemoPageDraft() {
-  const data = { spaceId: currentSpace?.id, status: 'draft', title: demoPageTitle, body: { value: '', representation: 'storage' } };
+async function createDemoPageDraft(title, parentId) {
+  const data = { spaceId: currentSpace?.id, status: 'draft', title: title || demoPageTitle, parentId, body: { value: '', representation: 'storage' } };
   const demoPageDraft = await createPage(data);
   trackEvent(userId, 'created_demo_page_draft', 'demoPage');
   return demoPageDraft;
@@ -327,15 +327,15 @@ async function deleteDemoPageDraft(page) {
   trackEvent(userId, 'deleted_demo_page_draft', 'demoPage');
 }
 
-async function createDemoPage() {
-  const page = await createDemoPageDraft();
+async function createDemoPage(title, parentId) {
+  const page = await createDemoPageDraft(title, parentId);
 
   try {
     const [sequence, openAPI, mermaid, graph] = await Promise.all([
-      createCustomContent(demoSequenceTitle, demoSequenceContent, page.id),
-      createCustomContent(demoOpenAPITitle, demoOpenAPIContent, page.id),
-      createCustomContent(demoMermaidTitle, demoMermaidContent, page.id),
-      createCustomContent(demoGraphTitle, demoGraphContent, page.id)
+      createCustomContent(title ? `${title} - sequence` : demoSequenceTitle, demoSequenceContent, page.id),
+      createCustomContent(title ? `${title} - openapi` : demoOpenAPITitle, demoOpenAPIContent, page.id),
+      createCustomContent(title ? `${title} - mermaid` : demoMermaidTitle, demoMermaidContent, page.id),
+      createCustomContent(title ? `${title} - graph` : demoGraphTitle, demoGraphContent, page.id)
     ]);
 
     const body = JSON.stringify(demoPageContent)
@@ -344,7 +344,7 @@ async function createDemoPage() {
       .replaceAll('$$_MERMAID_CONTENT_ID', mermaid.id)
       .replaceAll('$$_GRAPH_CONTENT_ID', graph.id);
 
-    const data = { id: page.id, status: 'current', title: demoPageTitle, spaceId: currentSpace?.id, body: { value: body, representation: 'atlas_doc_format' }, version: { number: page.version.number } };
+    const data = { id: page.id, status: 'current', title: title || demoPageTitle, spaceId: currentSpace?.id, body: { value: body, representation: 'atlas_doc_format' }, version: { number: page.version.number } };
     const response = await updatePage(page.id, data);
 
     trackEvent(userId, 'published_demo_page', 'demoPage');
@@ -385,5 +385,18 @@ async function getStarted() {
     AP.navigator.go('contentview', {contentId: demoPage.id});
   } catch (e) {
     trackEvent('error', 'getStarted', JSON.stringify(e));
+  }
+}
+
+async function createPages(parentId, count) {
+  try {
+    currentSpace = await getCurrentSpace();
+    for(let i = 0; i < count; i++) {
+      await createDemoPage(`Test page - ${i} - ${new Date().toISOString()}`, parentId);
+    }
+
+    console.log(`${count} pages created under page ${parentId}`);
+  } catch (e) {
+    console.error('createPages error:', e)
   }
 }

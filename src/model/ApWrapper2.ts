@@ -700,17 +700,24 @@ export default class ApWrapper2 implements IApWrapper {
     return this.baseUrl || (this.baseUrl = baseOf(await this._getCurrentPageUrl()));
   }
 
-  async _getLicense(): Promise<ILicense|undefined> {
-    const url = `/rest/atlassian-connect/1/addons/${addonKey()}`;
+  async _getLicense(_addonKey: string = ''): Promise<ILicense|undefined> {
+    const url = `/rest/atlassian-connect/1/addons/${_addonKey || addonKey()}`;
     try {
-      const response = await this.request(url);
-      const license: ILicense = JSON.parse(response.body);
-      trackEvent(response.body, 'getLicense', 'info');
+      const license: ILicense = await this.request(url);
+      console.debug("getLicense",url,license);
+      trackEvent(JSON.stringify(license), 'getLicense', 'info');
       return license;
     } catch (e) {
+      console.error('getLicense',e);
       trackEvent(JSON.stringify(e), 'getLicense', 'error');
       return undefined;
     }
+  }
+
+  async hasFullAddon(): Promise<boolean> {
+    const fullAddonKey: string = addonKey().replace('-lite', '');
+    console.debug('check full addon: ', fullAddonKey)
+    return await this._getLicense(fullAddonKey) != null;
   }
 
   async _getLocationTarget(): Promise<LocationTarget> {

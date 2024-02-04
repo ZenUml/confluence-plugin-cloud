@@ -15,6 +15,9 @@ export const onRequestGet: PagesFunction<Env> = async (params: any) => {
   // @ts-ignore
   const subDomain = hostName.split('.')[0] || 'unknown_domain';
 
+  const needUpgradeDesc = (isLite(appKey) && await checkWhiteList(params.env.FEATURES,"WHITE_LIST_PDF",subDomain));
+  const upgradeDesc = needUpgradeDesc ? `<p style="color:#97a0af;font-style:italic;">Elevate your ZenUML experience by upgrading to our Paid Version. For detailed instructions and benefits, visit https://zenuml.com/upgrade.</p>` : "";
+  
   try {
     await trackEvent({
       eventType: 'retrieve_attachment',
@@ -22,20 +25,13 @@ export const onRequestGet: PagesFunction<Env> = async (params: any) => {
       confluence_page: pageId,
       confluence_space: spaceName,
       app_key: appKey,
-      client_domain: subDomain
+      client_domain: subDomain,
+      upgrade_instructions: needUpgradeDesc
     });
   } catch (error) {
     console.error("Failed to track retrieve_attachment: ", error);
   }
 
-  // try {
-  //   const WHITE_LIST_PDF = await params.env.FEATURES.get("WHITE_LIST_PDF");
-  //   console.log("kv WHITE_LIST_PDF",WHITE_LIST_PDF);
-  // } catch (error) {
-  //   console.error("fail kv WHITE_LIST_PDF", error);
-  // }
- 
-  const upgradeDesc = (isLite(appKey) && await checkWhiteList(params.env.FEATURES,"WHITE_LIST_PDF",subDomain)) ? `<p style="color:#97a0af;font-style:italic;">Elevate your ZenUML experience by upgrading to our Paid Version. For detailed instructions and benefits, visit https://zenuml.com/upgrade.</p>` : "";
   return new Response(
     `${upgradeDesc}<ac:image ac:width="950"> <ri:attachment ri:filename="zenuml-${uuid}.png" /> </ac:image>`,
     {}

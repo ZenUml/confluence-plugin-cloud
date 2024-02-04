@@ -23,12 +23,12 @@ import globals from "@/model/globals";
 import {DiagramType} from "@/model/Diagram/Diagram";
 import codemirror from "codemirror";
 
+let cmEditor
 
 export default {
   name: 'editor',
   data() {
     return {
-      htmlEditor: null,
       cmOptions: {
         tabSize: 4,
         mode: 'text/javascript',
@@ -48,7 +48,7 @@ export default {
   },
   methods: {
     initEditor: function (options){
-      this.htmlEditor = codemirror.fromTextArea(this.$refs.htmlEditor, options);
+      cmEditor = codemirror.fromTextArea(this.$refs.htmlEditor, options);
     },
     onEditorCodeChange: function (newCode) {
       const isMermaid = this.diagramType === 'mermaid';
@@ -74,7 +74,7 @@ export default {
   },
   watch: {
     diagramType(){
-      this.htmlEditor.setValue(this.code)
+      cmEditor.setValue(this.code)
     }
   },
   async created() {
@@ -87,26 +87,26 @@ export default {
       if(that.mark) {
         that.mark.clear()
       }
-      that.mark = htmlEditor.markText({
+      that.mark = cmEditor.markText({
         line: codeRange.start.line-1, ch: codeRange.start.col
       }, {
         line: codeRange.stop.line-1, ch: codeRange.stop.col
       }, {css: 'background: gray'})
     })
-    this.htmlEditor.setValue(this.code)
-    this.htmlEditor.on('change', _.debounce((instance) => {
+    cmEditor.setValue(this.code)
+    cmEditor.on('change', _.debounce((instance) => {
       this.onEditorCodeChange(instance.getValue())
     }, 500))
-    this.htmlEditor?.on('cursorActivity',_.debounce(() => {
+    cmEditor?.on('cursorActivity',_.debounce(() => {
       if (this.mark) {
         this.mark.clear()
       }
-      const cursor = this.htmlEditor.getCursor();
+      const cursor = cmEditor.getCursor();
       const line = cursor.line;
       let pos = cursor.ch;
 
       for (let i = 0; i < line; i++) {
-        pos += this.htmlEditor.getLine(i).length + 1
+        pos += cmEditor.getLine(i).length + 1
       }
       that.$store.state.cursor = pos
     }, 500))
