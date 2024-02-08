@@ -15,7 +15,7 @@ jobs:
     steps:
       # Check out current repository
       - name: Fetch Sources
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           ref: ${{ github.event.release.tag_name }}
       # Set environment variables
@@ -26,9 +26,9 @@ jobs:
           # extract License from github.event.release.tag_name
           LICENSE=$(echo ${{ github.event.release.tag_name }} | cut -d'-' -f2)
           echo "::set-output name=license::$LICENSE"
-      - uses: actions/setup-node@v3
+      - uses: actions/setup-node@v4
         with:
-          node-version: '18.x'
+          node-version: '20.x'
           cache: 'yarn'
       - name: yarn install
         shell: bash
