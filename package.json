@@ -128,9 +128,9 @@
     "react-dom": "ReactDOM"
   },
   "engines": {
-    "node": ">=14"
+    "node": ">=20"
   },
   "volta": {
-    "node": "18.18.2"
+    "node": "20.11.0"
   }
 }
