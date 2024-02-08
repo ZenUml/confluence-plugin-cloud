@@ -12,7 +12,7 @@ async function getAtlassianDomain(): Promise<string> {
   return '';
 }
 
-const AI_TITLE_ENABLED_DOMAINS = ['whimet4', 'zenuml-stg', 'zenuml'];
+const AI_TITLE_ENABLED_DOMAINS = ['whimet4', 'zenuml-stg', 'zenuml', 'dyon'];
 
 export default {
   isAiTitleEnabled: async () => AI_TITLE_ENABLED_DOMAINS.includes(await getAtlassianDomain())

@@ -87,8 +87,8 @@
         placeholder="Title"
         :value="seqTitle"
         @input="handleTitleChange"
-        class="px-1 border-2 border-solid border-[#091e4224] rounded-[3px] focus:border-[#388bff] hover:border-[#388bff] outline-none transition-[border-color] pr-8 h-8"
-        :class="{ 'border-[#c9372c]': titleError }"
+        class="px-1 border-2 border-solid border-[#091e4224] rounded-[3px] focus:border-[#388bff] hover:border-[#388bff] outline-none transition-[border-color] h-8"
+        :class="{ 'border-[#c9372c]': titleError, 'pr-8': isAiTitleEnabled }"
       />
       <input
         v-if="diagramType === 'mermaid'"
@@ -96,13 +96,10 @@
         placeholder="Title"
         :value="mermaidTitle"
         @input="handleTitleChange"
-        class="px-1 border-2 border-solid border-[#091e4224] rounded-[3px] focus:border-[#388bff] hover:border-[#388bff] outline-none transition-[border-color]"
-        :class="{ 'border-[#c9372c]': titleError }"
+        class="px-1 border-2 border-solid border-[#091e4224] rounded-[3px] focus:border-[#388bff] hover:border-[#388bff] outline-none transition-[border-color] h-8"
+        :class="{ 'border-[#c9372c]': titleError, 'pr-8': isAiTitleEnabled }"
       />
-      <div
-        v-if="isAiTitleEnabled"
-        class="flex ml-[-28px] items-center text-sm"
-      >
+      <div v-if="isAiTitleEnabled" class="flex ml-[-28px] items-center text-sm">
         <button
           class="rounded-sm px-[2px] text-gray-600 hover:bg-gray-200"
           :class="{ 'pointer-events-none': titleLoading }"
@@ -192,7 +189,11 @@
         </div>
       </div>
     </div>
-    <Modal :visible="noticeModalVisible" :onConfirm="generateTitle" :onCancel="handleCloseModal">
+    <Modal
+      :visible="noticeModalVisible"
+      :onConfirm="generateTitle"
+      :onCancel="handleCloseModal"
+    >
       <template v-slot:body>
         <p>
           This is an experimental feature, and your data will be sent to
@@ -211,6 +212,11 @@ import EventBus from "@/EventBus";
 import { trackEvent } from "@/utils/window";
 import Modal from "@/components/Modal/Modal.vue";
 import FeatureSwitch from "@/model/FeatureSwitch";
+import { toast } from "@/utils/toast";
+
+function getMermaidType (dsl) {
+    return dsl.trim().split('\n')[0].split(' ')[0];
+}
 
 export default {
   name: "Header",
@@ -237,8 +243,8 @@ export default {
       templateUrl: (state) =>
         state.diagram.diagramType === "sequence"
           ? `https://github.com/ZenUml/confluence-plugin-cloud/discussions/489`
-          : 'https://mermaid.js.org/ecosystem/tutorials.html',
-      title: (state) => state.diagram.title
+          : "https://mermaid.js.org/ecosystem/tutorials.html",
+      title: (state) => state.diagram.title,
     }),
     saveAndExit: function () {
       return () => {
@@ -251,8 +257,8 @@ export default {
         EventBus.$emit("save");
       };
     },
-    isAiTitleEnabled: function() {
-      return this.aiTitleFeatureEnabled && this.diagramType === 'sequence';
+    isAiTitleEnabled: function () {
+      return this.aiTitleFeatureEnabled;
     },
   },
   watch: {
@@ -310,12 +316,18 @@ export default {
           body: JSON.stringify({
             dsl:
               this.diagramType === "mermaid" ? this.mermaidCode : this.seqCode,
+            type: this.diagramType === "mermaid" ? getMermaidType(this.mermaidCode) : "sequence",
           }),
         }
       ).catch((e) => {
         this.titleLoading = false;
-        console.error(e);
+        toast({ message: e.message, duration: 3000 });
       });
+      if (!res.ok) {
+        this.titleLoading = false;
+        toast({ message: await res.text(), duration: 3000 });
+        return;
+      }
       this.titleLoading = false;
       if (this.diagramType === "mermaid") {
         this.mermaidTitle = await res.text();
