@@ -74,13 +74,7 @@ async function canEdit(pageId: string, userId: string) {
   return response.body && JSON.parse(response.body).hasPermission;
 }
 
-async function upgradePage(pageId: string, userId: string, migratedCallback: any = undefined) {
-  const b = await canEdit(pageId, userId);
-  if(!b) {
-    console.log(`Upgrade - no edit permission, skip page ${pageId}`);
-    return;
-  }
-
+async function upgradePage(pageId: string, migratedCallback: any = undefined) {
   const page = await getPage(pageId);
   const traversal = (array: any, result: Array<any>): any => {
     result.push(...array);
@@ -195,7 +189,7 @@ async function searchCustomContent(isLite: boolean, spaceKey: string | undefined
     const data = JSON.parse((await request({type: 'GET', url})).body);
     console.debug(`${data?.size} results returned, has next? ${data?._links?.next != null}`);
 
-    const shouldInclude = (customContent: any) => customContent.container?.type === 'page' && (!customContentFilter || customContentFilter(customContent));
+    const shouldInclude = (c: any) => c.container?.type === 'page' && (!customContentFilter || customContentFilter(c));
     data.results = data?.results.filter(shouldInclude);
     return data;
   };
@@ -237,18 +231,13 @@ async function time(action: any, callback: any) {
 async function upgrade(userId: string, progressReporter: any = undefined) {
   //@ts-ignore
   const context = await AP.context.getContext();
-  let currentPageId = '';
-  if(context?.confluence?.content?.type === 'page') {
-    currentPageId = context.confluence.content.id;
-    const macroCount = await upgradePage(currentPageId, userId)
-    if(macroCount) {
-      showPopupForReload(currentPageId, macroCount);
-    }
-  }
-
-  const contents = await searchCustomContent(true);
+  const contents = await searchCustomContent(true, context.confluence?.space?.key);
   const pageIds = contents.map((c: any) => c.container.id);
-  const uniqPageIds = unique(pageIds.filter((p: string) => p != currentPageId));
+  const uniqPageIds = unique(pageIds);
+
+  const canEditResults = await Promise.all(uniqPageIds.map(p => canEdit(p, userId).then(b => ({pageId: p, canEdit: b}))));
+  const editablePageIds = canEditResults.filter(i => i.canEdit).map(i => i.pageId);
+  const uneditablePageCount = canEditResults.filter(i => !i.canEdit).length;
 
   let migrated = 0;
   const migratedCallback = (migratedMacrosCount: number) => {
@@ -256,12 +245,15 @@ async function upgrade(userId: string, progressReporter: any = undefined) {
     progressReporter({migrated, total: contents.length});
   };
 
-  const results = await Promise.all(uniqPageIds.map(pageId => upgradePage(pageId, userId, migratedCallback)));
+  const results = await Promise.all(editablePageIds.map(p => upgradePage(p, migratedCallback)));
   const macroCount = results.filter(r => r).reduce((acc: number, i: any) => acc = acc + i, 0);
-  const report = `Upgrade - finished space ${context.confluence?.space?.key}, ${macroCount} macros upgraded in ${results.length} pages`;
+  const pagesCount = results.filter(r => r).length;
+  const report = `Upgrade - finished space ${context.confluence?.space?.key}, ${macroCount} macros upgraded in ${pagesCount} pages, ${uneditablePageCount} pages skipped due to the lack of edit permission`;
   console.log(report);
+
   progressReporter({migrated, total: contents.length, completed: true});
-  showPopup(`Migrated ${macroCount} macro(s) on ${results.length} page(s)`);
+
+  showPopup(`Migrated ${macroCount} macro(s) on ${pagesCount} page(s). ${uneditablePageCount ? uneditablePageCount + ' page(s) are skipped as the current user does not have edit permission.' : ''}`);
 }
 
 async function downgrade(userId: string, spaceKey: string) {
