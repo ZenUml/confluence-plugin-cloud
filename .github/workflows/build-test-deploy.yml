@@ -137,10 +137,10 @@ jobs:
       # Create new release draft - which is not publicly visible and requires manual acceptance
       - name: Create Release Draft
         id: createDraft
-        uses: softprops/action-gh-release@v1
+        uses: ncipollo/release-action@v1
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          tag_name: v${{ env.version }}-lite
+          tag: v${{ env.version }}-lite
           name: v${{ env.version }}-lite
           body: 'This is a draft release for the Lite version of the plugin.'
           draft: true
@@ -149,7 +149,7 @@ jobs:
     name: Draft release for the Full version
     # don't run on pull requests to avoid creating draft releases for pull requests
     # only run on the master branch, to avoid cutting releases from feature branches
-    if: ${{ github.event_name != 'pull_request' && github.ref == 'refs/heads/cicd/upgrade-to-node-20' }}
+    if: ${{ github.event_name != 'pull_request' && github.ref == 'refs/heads/master' }}
     needs: [staging-full-test]
     runs-on: ubuntu-latest
     steps:
