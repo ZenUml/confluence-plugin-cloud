@@ -21,6 +21,8 @@
             <button v-show="isMigrationEnabled" :disabled="isMigrationInProgress" @click="migrate" class="flex items-center bg-blue-700 px-2 py-1 text-white text-sm font-semibold rounded">{{ migrateButtonText }}</button>
             <button class="imgInput tableList"  :class="{ 'selected': viewStyle=='table' }" title="List view" @click="changeToTableStyle"></button>
             <button class="imgInput gridList" :class="{ 'selected': viewStyle=='grid' }" title="Grid view" @click="changeToGridStyle"></button>
+            <button class="imgInput fullScreen" v-if="!fullScreen"  title="Full Screen" @click="enterFullScreen"></button>
+            <button class="imgInput exitFullScreen" v-if="fullScreen"  title="Exit Full Screen" @click="exitFullScreen"></button>
           </div>
           <button class="flex items-center float-right h-8 text-white text-sm font-medium">
             <save-and-go-back-button :save-and-exit="saveAndExit" />
@@ -135,7 +137,9 @@
     name: 'DashboardDocumentList',
     data() {
       return {
+        fullScreen: false,
         customContentList: [],
+        hasData: false,
         picked: '',
         docTypeFilter: '',
         baseUrl: '',
@@ -164,6 +168,10 @@
       async filterOnlyMine(newValue, oldValue) {
         console.log('filterOnlyMine changed:', newValue, oldValue);
         await this.search();
+      },
+      async customContentList(newValue, oldValue) {
+        console.log('customContentList changed:', newValue, oldValue);
+        if(this.filteredCustomContentList.length>0) this.hasData = true;
       }
     },
     computed: {
@@ -217,14 +225,61 @@
     async mounted() {
       const apWrapper = new ApWrapper2(AP);
       await apWrapper.initializeContext();
+      this.loadInitCustomData(await apWrapper.getDialogCustomData());
       this.customContentStorageProvider = new CustomContentStorageProvider(apWrapper);
       await this.search();
+      this.checkIfHasData();
       this.initTheRightSideContent();
 
       const hasFull = await apWrapper.hasFullAddon();
       this.isMigrationEnabled = apWrapper.isLite() && hasFull && upgrade.isEnabled();
     },
     methods: {
+      checkIfHasData(){
+        if(this.fullScreen==false && this.customContentList.length>0){
+          this.hasData = true;
+        }
+      },
+      loadInitCustomData(customData){
+        console.debug({action:"loadInitCustomData",customData:customData});
+        if(customData){
+          Object.keys(customData).forEach(key => {
+            this[key] = customData[key];
+          });
+        } 
+      },
+      buildInitCustomData(){
+       return {
+        fullScreen:this.fullScreen,
+        docTypeFilter:this.docTypeFilter,
+        filterKeyword:this.filterKeyword,
+        filterOnlyMine:this.filterOnlyMine,
+        viewStyle:this.viewStyle,
+        hasData:this.hasData
+       }
+      },
+      enterFullScreen() {
+        this.fullScreen=true;
+        AP.dialog.create({
+          key: `zenuml-content-dashboard`,
+          chrome: false,
+          width: "100%",
+          height: "100%",
+          customData: this.buildInitCustomData()
+        }).on('close', async (customData) => {
+          console.debug({action:"enterFullScreen on close",customData:customData});
+          this.loadInitCustomData(customData);
+          await this.search();
+        });
+      },
+      tryRefreshEmbeddedViewer(){
+        const iframe = document.getElementById('embedded-viewer');
+        if(iframe)iframe.contentWindow.location.reload();
+      },
+      exitFullScreen() {
+        this.fullScreen=false;
+        AP.dialog.close(this.buildInitCustomData());
+      },
       setFilter(docType) {
         this.docTypeFilter = docType;
       },
@@ -251,7 +306,7 @@
         if(iframe.src!='' || hasInitContent) return;
         const div = iframeDocument.createElement('div');
         div.classList.add(initContentClassName);
-        div.innerHTML = this.customContentList.length
+        div.innerHTML = this.hasData
           ? 'Select a diagram from the left side panel'
           : `<div style="margin-bottom: 10px;">
               <button onclick="parent.getStarted()" style="height: 50px; width: 150px; font-size: medium;">Get Started</button>
@@ -276,9 +331,7 @@
           height: "100%",
           customData: { 'content.id': customContentId, contentId: customContentId }
         }).on('close', async () => {
-          this.search();
-          const iframe = document.getElementById('embedded-viewer');
-          if(iframe)iframe.contentWindow.location.reload();
+          this.tryRefreshEmbeddedViewer();
         });
       },
       async handleScroll(event) {
