@@ -211,11 +211,12 @@ import { DiagramType } from "@/model/Diagram/Diagram";
 import EventBus from "@/EventBus";
 import { trackEvent } from "@/utils/window";
 import Modal from "@/components/Modal/Modal.vue";
-import FeatureSwitch from "@/model/FeatureSwitch";
 import { toast } from "@/utils/toast";
+import aiGenerateTitle from "@/apis/aiGenerateTitle";
+import getFeatureFlags from '@/apis/featureFlags'
 
-function getMermaidType (dsl) {
-    return dsl.trim().split('\n')[0].split(' ')[0];
+function getMermaidType(dsl) {
+  return dsl.trim().split("\n")[0].split(" ")[0];
 }
 
 export default {
@@ -309,17 +310,13 @@ export default {
     async generateTitle() {
       this.noticeModalVisible = false;
       this.titleLoading = true;
-      const res = await fetch(
-        "https://llm-generate-titles.zenuml.workers.dev",
-        {
-          method: "POST",
-          body: JSON.stringify({
-            dsl:
-              this.diagramType === "mermaid" ? this.mermaidCode : this.seqCode,
-            type: this.diagramType === "mermaid" ? getMermaidType(this.mermaidCode) : "sequence",
-          }),
-        }
-      ).catch((e) => {
+      const res = await aiGenerateTitle({
+        dsl: this.diagramType === "mermaid" ? this.mermaidCode : this.seqCode,
+        type:
+          this.diagramType === "mermaid"
+            ? getMermaidType(this.mermaidCode)
+            : "sequence",
+      }).catch((e) => {
         this.titleLoading = false;
         toast({ message: e.message, duration: 3000 });
       });
@@ -348,7 +345,7 @@ export default {
       this.seqTitle = this.title;
     }
 
-    this.aiTitleFeatureEnabled = await FeatureSwitch.isAiTitleEnabled();
+    this.aiTitleFeatureEnabled = await getFeatureFlags(['AI_TITLE']).then(res => res.AI_TITLE.enabled);
   },
 };
 </script>
