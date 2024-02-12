@@ -216,7 +216,19 @@ import aiGenerateTitle from "@/apis/aiGenerateTitle";
 import getFeatureFlags from '@/apis/featureFlags'
 
 function getMermaidType(dsl) {
-  return dsl.trim().split("\n")[0].split(" ")[0];
+  let type = dsl.trim().split("\n")[0].split(" ")[0];
+  const typeMap = {
+    graph: "flow chart",
+    sequenceDiagram: "sequence",
+    gantt: "gantt chart",
+    classDiagram: "class",
+    gitGraph: "git",
+    erDiagram: "entity relationship",
+    journey: "journey",
+    quadrantChart: "quadrant chart",
+    'xychart-beta': "xy chart",
+  }
+  return typeMap[type] || type
 }
 
 export default {
