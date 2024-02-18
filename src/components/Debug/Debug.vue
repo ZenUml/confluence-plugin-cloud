@@ -29,7 +29,7 @@ import AP from "@/model/AP";
 import ApWrapper2 from "@/model/ApWrapper2";
 
 const commitHash = import.meta.env.VITE_APP_GIT_HASH;
-const gitBranch = import.meta.env.VITE_APP_GIT_HASH;
+const gitBranch = import.meta.env.VITE_APP_GIT_BRANCH;
 const gitTag = import.meta.env.VITE_APP_GIT_HASH;
 export default {
   name: "Debug",
