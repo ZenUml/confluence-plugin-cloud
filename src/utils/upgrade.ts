@@ -3,57 +3,52 @@ import { getUrlParam, trackEvent } from "@/utils/window";
 //new/full custom content: migrated: true, sourceCustomContentId: xxx (needed by downgrade)
 //content properties
 
-const UPGRADE_INCLUDE_DOMAINS = ['whimet4', 'zenuml-dashboard-full-test'];
+const UPGRADE_INCLUDE_DOMAINS = ['whimet4', 'whimet6', 'zenuml-dashboard-full-test'];
 
-async function request(params: any) {
-  //@ts-ignore
-  return await AP.request(params);
-}
-
-async function request2(url: string, data: any = undefined, method: string | undefined = undefined): Promise<any> {
+async function request(url: string, data: any = undefined, method: string | undefined = undefined): Promise<any> {
   const type = data ? method || 'POST' : 'GET';
   const params = Object.assign({url, type}, data ? {contentType: 'application/json', data: JSON.stringify(data)}: {});
-  const response = await request(params);
+  //@ts-ignore
+  const response = await AP.request(params);
   return Object.assign({}, response && response.body && JSON.parse(response.body), {xhr: response.xhr});
 }
 
 async function getContent(id: string, queryParams: string) {
   const params = queryParams ? '?' + queryParams : '';
   const url = `/rest/api/content/${id}${params}`;
-  const response = await request({type: 'GET', url});
-  return response.body && JSON.parse(response.body);
+  return await request(url);
 }
 
 async function getPage(id: string) {
   const url = `/api/v2/pages/${id}?body-format=atlas_doc_format`;
-  return await request2(url);
+  return await request(url);
 }
 
 async function updatePage(id: string, data: any) {
   const url = `/api/v2/pages/${id}`;
-  return await request2(url, data, 'PUT');
+  return await request(url, data, 'PUT');
 }
 
 async function getCustomContent(id: string) {
   const url = `/api/v2/custom-content/${id}?body-format=raw`;
-  return await request2(url);
+  return await request(url);
 }
 
 async function createCustomContent(data: any) {
-  const url = `/api/v2/custom-content`;
-  return await request2(url, data);
+  return await request(`/api/v2/custom-content`, data);
 }
 
 async function createContent(data: any) {
-  const url = `/rest/api/content`;
-  const response = await request({type: 'POST', contentType: 'application/json', data: JSON.stringify(data), url});
-  return response.body && JSON.parse(response.body);
+  return await request(`/rest/api/content`, data);
 }
 
 async function updateContent(id: string, data: any) {
   const url = `/rest/api/content/${id}`;
-  const response = await request({type: 'PUT', contentType: 'application/json', data: JSON.stringify(data), url});
-  return response.body && JSON.parse(response.body);
+  return await request(url, data, 'PUT');
+}
+
+async function getAllSpaces() {
+  return (await request(`/api/v2/spaces`)).results;
 }
 
 async function cloneAsFull(customContentId: string) {
@@ -70,11 +65,11 @@ async function getSourceCustomContentId(customContentId: string) {
 
 async function canEdit(pageId: string, userId: string) {
   const url = `/rest/api/content/${pageId}/permission/check`;
-  const response = await request({type: 'POST', contentType: 'application/json', data: JSON.stringify({subject: {type: 'user', identifier: userId}, operation: 'update'}), url});
-  return response.body && JSON.parse(response.body).hasPermission;
+  const data = await request(url, {subject: {type: 'user', identifier: userId}, operation: 'update'});
+  return data.hasPermission;
 }
 
-async function upgradePage(pageId: string, migratedCallback: any = undefined) {
+async function upgradePage(pageId: string, migratedCallback: any, spaceKey: string) {
   const page = await getPage(pageId);
   const traversal = (array: any, result: Array<any>): any => {
     result.push(...array);
@@ -109,7 +104,7 @@ async function upgradePage(pageId: string, migratedCallback: any = undefined) {
     const data = {id: pageId, title: page.title, status: page.status, version: {number: ++page.version.number, message: `ZenUML lite macro(s) on this page are upgraded by ZenUML App`}, body: {value: JSON.stringify({type: 'doc', content}), representation: 'atlas_doc_format'}};
 
     await updatePage(pageId, data);
-    console.log(`Upgrade - finished page ${pageId}`);
+    console.log(`Upgrade - ${contentIds.length} macro(s) migrated on page ${pageId} in space ${spaceKey}`);
 
     migratedCallback && migratedCallback(contentIds.length);
 
@@ -186,7 +181,7 @@ async function searchCustomContent(isLite: boolean, spaceKey: string | undefined
   //search custom content whose container is page and return the page id
   const searchOnce = async (url: string) => {
     console.debug(`Searching content with ${url}`);
-    const data = JSON.parse((await request({type: 'GET', url})).body);
+    const data = await request(url);
     console.debug(`${data?.size} results returned, has next? ${data?._links?.next != null}`);
 
     const shouldInclude = (c: any) => c.container?.type === 'page' && (!customContentFilter || customContentFilter(c));
@@ -228,10 +223,21 @@ async function time(action: any, callback: any) {
   }
 }
 
-async function upgrade(userId: string, progressReporter: any = undefined) {
-  //@ts-ignore
-  const context = await AP.context.getContext();
-  const contents = await searchCustomContent(true, context.confluence?.space?.key);
+async function upgradeAllSpaces(userId: string, report: any) {
+  report.migratedMacros = report.totalMacros = report.totalPages = report.uneditablePages = 0;
+
+  const spaces = await getAllSpaces();
+  await Promise.all(spaces.map((s: any) => upgradeSpace(userId, s.key, report)));
+
+  report({migrated: report.migrated, total: report.total, completed: true});
+
+  console.log(`Upgrade - migrated ${report.migratedMacros} macro(s) on ${report.totalPages} page(s) in all spaces. ${report.uneditablePages} page(s) skipped(no edit permission). Total macro(s): ${report.totalMacros}.`)
+
+  showPopup(`Migrated ${report.migratedMacros} macro(s) on ${report.totalPages} page(s). ${report.uneditablePages > 0 ? report.uneditablePages + ' page(s) are skipped as the current user does not have edit permission.' : ''}`);
+}
+
+async function upgradeSpace(userId: string, spaceKey: string, report: any) {
+  const contents = await searchCustomContent(true, spaceKey);
   const pageIds = contents.map((c: any) => c.container.id);
   const uniqPageIds = unique(pageIds);
 
@@ -239,21 +245,20 @@ async function upgrade(userId: string, progressReporter: any = undefined) {
   const editablePageIds = canEditResults.filter(i => i.canEdit).map(i => i.pageId);
   const uneditablePageCount = canEditResults.filter(i => !i.canEdit).length;
 
-  let migrated = 0;
-  const migratedCallback = (migratedMacrosCount: number) => {
-    migrated += migratedMacrosCount;
-    progressReporter({migrated, total: contents.length});
+  report.totalMacros += contents.length;
+  report.uneditablePages += uneditablePageCount;
+  
+  const pageMigratedCallback = (macrosCount: number) => {
+    report.migratedMacros += macrosCount;
+    report.totalPages++;
+    report({migrated: report.migratedMacros, total: report.totalMacros});
   };
 
-  const results = await Promise.all(editablePageIds.map(p => upgradePage(p, migratedCallback)));
+  const results = await Promise.all(editablePageIds.map(p => upgradePage(p, pageMigratedCallback, spaceKey)));
   const macroCount = results.filter(r => r).reduce((acc: number, i: any) => acc = acc + i, 0);
   const pagesCount = results.filter(r => r).length;
-  const report = `Upgrade - finished space ${context.confluence?.space?.key}, ${macroCount} macros upgraded in ${pagesCount} pages, ${uneditablePageCount} pages skipped due to the lack of edit permission`;
-  console.log(report);
 
-  progressReporter({migrated, total: contents.length, completed: true});
-
-  showPopup(`Migrated ${macroCount} macro(s) on ${pagesCount} page(s). ${uneditablePageCount ? uneditablePageCount + ' page(s) are skipped as the current user does not have edit permission.' : ''}`);
+  console.log(`Upgrade - finished space ${spaceKey}, ${macroCount} macros upgraded in ${pagesCount} pages, ${uneditablePageCount} pages skipped(no edit permission)`);
 }
 
 async function downgrade(userId: string, spaceKey: string) {
@@ -265,27 +270,6 @@ async function downgrade(userId: string, spaceKey: string) {
 
   console.log("Pages to downgrade: ", pages)
   pages.forEach(async (p) => await downgradePage(p, userId));
-}
-
-function showPopupForReload(pageId: string, macroCount: number) {
-  //@ts-ignore
-  const flag = showPopup(`${macroCount} Lite macros migrated to Full on page ${pageId}`,
-    {
-      'reload': 'Reload Page'
-    }
-  );
-
-  //@ts-ignore
-  AP.events.on('flag.action', function(e) {
-    flag && flag.close();
-
-    if(e.actionIdentifier === 'reload') {
-      trackEvent(pageId, 'reload', 'lite-to-full-upgrade');
-
-      //@ts-ignore
-      AP.navigator.go('contentview', {contentId: pageId});
-    }
-  });
 }
 
 function showPopup(title: string, actions: any = undefined): any {
@@ -320,10 +304,10 @@ export default {
   run(progressReporter: any) {
     if(isUpgradeEnabled()) {
       console.log('Upgrade - atlassian domain allowed, kicking off..');
-      showPopup('Started to migrate ZenUML Lite macros in the current space');
+      showPopup('Started to migrate ZenUML Lite macros in all spaces');
 
       //@ts-ignore
-      AP.user.getCurrentUser(async (u) => await upgrade(u.atlassianAccountId, progressReporter));
+      AP.user.getCurrentUser(async (u) => await upgradeAllSpaces(u.atlassianAccountId, progressReporter));
     }
   }
 };
