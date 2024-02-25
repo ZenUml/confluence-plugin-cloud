@@ -1,22 +1,25 @@
 import { getUrlParam } from "@/utils/window";
 import Global from "@/model/globals/Global";
+import { getPortalDomain } from "./portalDomain";
 
-export const FEATURES = ['AI_TITLE']
+export const FEATURES = ["AI_TITLE"];
 
 async function getAtlassianDomain(): Promise<string> {
   const pattern = /\/\/([a-z0-9-_]+)\.atlassian\.net/i;
-  const x = getUrlParam('xdm_e') || (await Global.apWrapper._getCurrentPageUrl());
+  const x =
+    getUrlParam("xdm_e") || (await Global.apWrapper._getCurrentPageUrl());
   const url: any = x && decodeURIComponent(x);
   const result = pattern.exec(url);
-  if(result && result.length > 1) {
+  if (result && result.length > 1) {
     return result[1];
   }
-  return '';
+  return "";
 }
 
-export default async function(features: string[]) {
-  const client = await getAtlassianDomain()
+export default async function (features: string[]) {
+  const client = await getAtlassianDomain();
+  const portal = await getPortalDomain();
   return fetch(
-    `https://zenuml-portal.zenuml.workers.dev/feature-flags?client=${client}&features=${features.join(',')}`,
-  ).then(res => res.json())
+    `${portal}/feature-flags?client=${client}&features=${features.join(",")}`
+  ).then((res) => res.json());
 }
