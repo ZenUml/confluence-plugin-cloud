@@ -285,7 +285,7 @@
         this.trackFullScreenEvent('exit');
       },
       trackFullScreenEvent(category) {
-        trackEvent('', 'dashboard-full-screen', category);
+        trackEvent('', 'dashboard_full_screen', category);
       },
       setFilter(docType) {
         this.docTypeFilter = docType;
