@@ -43,8 +43,8 @@ export function trackEvent(
   try {
     const userAccountId = getCurrentUserAccountId();
     if (!identified) {
-      identified = userAccountId != unknownUserAccountId;
       mixpanel.identify(userAccountId);
+      identified = userAccountId != unknownUserAccountId;
     }
     let eventDetails = {
       event_category: category || "category_not_set",
