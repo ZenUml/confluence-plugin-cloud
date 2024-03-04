@@ -12,6 +12,7 @@ mixpanel.init("0c62cea9ed2247f4824bf196f6817941", {
 });
 
 let identified = false;
+const unknownUserAccountId  = "unknown_user_account_id";
 
 export function getUrlParam(param: string): string | undefined {
   try {
@@ -40,9 +41,10 @@ export function trackEvent(
   resetEventDetails = {}
 ) {
   try {
+    const userAccountId = getCurrentUserAccountId();
     if (!identified) {
-      mixpanel.identify(getCurrentUserAccountId());
-      identified = true;
+      identified = userAccountId != unknownUserAccountId;
+      mixpanel.identify(userAccountId);
     }
     let eventDetails = {
       event_category: category || "category_not_set",
@@ -54,7 +56,7 @@ export function trackEvent(
       eventDetails = {
         ...eventDetails,
         client_domain: getClientDomain() || "unknown_atlassian_domain",
-        user_account_id: getCurrentUserAccountId(),
+        user_account_id: userAccountId,
         confluence_space: getSpaceKey() || "unknown_space",
       };
     } catch (e) {
@@ -88,7 +90,7 @@ function getCurrentUserAccountId(): string {
   return (
     // @ts-ignore
     window.globals?.apWrapper?.currentUser?.atlassianAccountId ||
-    "unknown_user_account_id"
+    unknownUserAccountId
   );
 }
 
