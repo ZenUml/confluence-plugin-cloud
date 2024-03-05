@@ -37,7 +37,7 @@
       </div>
       <div class="flex justify-center screen-capture-content">
         <div :class="{'w-full': wide, 'mr-8': !wide}">
-          <slot></slot>
+          <slot class="slot-abcd"></slot>
         </div>
       </div>
     </div>
@@ -109,8 +109,17 @@ export default {
     },
     async downloadPng() {
       trackEvent('download_png', 'click', 'viewing');
-      const node = document.getElementsByClassName('screen-capture-content')[0];
-      const png = await htmlToImage.toBlob(node, {bgcolor: 'white'});
+      let node = null;
+      const parent = document.querySelector('.screen-capture-content');
+
+      if (parent) {
+        node = parent.querySelector('.zenuml.sequence-diagram');
+      }
+
+      if (!node) {
+        node = parent;
+      }
+      const png = await htmlToImage.toBlob(node, {backgroundColor: 'white'});
       saveAs(png, 'zenuml-for-confluence.png');
     },
   },
