@@ -18,7 +18,7 @@ async function getAtlassianDomain(): Promise<string> {
 
 export default async function (features: string[]) {
   const client = await getAtlassianDomain();
-  const portal = await getPortalDomain();
+  const portal = getPortalDomain();
   return fetch(
     `${portal}/feature-flags?client=${client}&features=${features.join(",")}`
   ).then((res) => res.json());

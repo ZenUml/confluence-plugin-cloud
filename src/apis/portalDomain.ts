@@ -1,12 +1,7 @@
-import { getAtlassianDomain } from "@/utils/user";
-
-let domain = "";
-export async function getPortalDomain() {
-  if (!domain) {
-    domain =
-      (await getAtlassianDomain()) === "zenuml-stg"
-        ? "https://portal-stg.zenuml.com"
-        : "https://portal.zenuml.com";
-  }
-  return domain;
+export function getPortalDomain() {
+  return ["conf-full.zenuml.com", "conf-lite.zenuml.com"].includes(
+    window.location.host
+  )
+    ? "https://portal-stg.zenuml.com"
+    : "https://portal.zenuml.com";
 }
