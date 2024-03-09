@@ -25,6 +25,7 @@
   "dependencies": {
     "@vue/compat": "^3.1.0",
     "@zenuml/core": "^3.16.0",
+    "file-saver": "^2.0.5",
     "html-to-image": "^1.9.0",
     "js-yaml": "^4.1.0",
     "lodash": "^4.17.21",
@@ -40,7 +41,6 @@
     "tiny-emitter": "^2.1.0",
     "vue": "^3.1.0",
     "vue-codemirror": "^4.0.6",
-    "vue-gtag": "^1.16.1",
     "vuex": "^4.1.0"
   },
   "devDependencies": {
@@ -129,9 +129,9 @@
     "react-dom": "ReactDOM"
   },
   "engines": {
-    "node": ">=14"
+    "node": ">=20"
   },
   "volta": {
-    "node": "18.18.2"
+    "node": "20.11.0"
   }
 }

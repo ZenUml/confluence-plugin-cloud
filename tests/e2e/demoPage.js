@@ -540,13 +540,14 @@ const existingPageId = process.env.PAGE_ID;
     return e;
   }
 
-  async function waitForSelector(page, selector, options) {
+  async function waitForSelector(container, selector, options) {
+    const isXpath = selector.indexOf('/') === 0;
     try {
-      const isXpath = selector.indexOf('/') === 0;
-      return await (isXpath ? page.waitForXPath(selector, options) : page.waitForSelector(selector, options));
+      return await (isXpath ? container.waitForXPath(selector, options) : container.waitForSelector(selector, options));
     } catch(e) {
+      console.log(`Error on waiting for ${selector} in ${container}`);
       if(!options || !options.hidden) {
-        await printDebugInfo(page, selector);
+        await printDebugInfo(container, selector);
       }
       throw e;
     }
