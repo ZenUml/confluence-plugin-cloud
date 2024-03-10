@@ -2,8 +2,6 @@ import { getUrlParam } from "@/utils/window";
 import Global from "@/model/globals/Global";
 import { getPortalDomain } from "./portalDomain";
 
-export const FEATURES = ["AI_TITLE"];
-
 async function getAtlassianDomain(): Promise<string> {
   const pattern = /\/\/([a-z0-9-_]+)\.atlassian\.net/i;
   const x =
