@@ -32,7 +32,7 @@ runs:
       shell: bash
       run: yarn build:${{ inputs.license }}
     - name: Publish
-      uses: cloudflare/wrangler-action@2.0.0
+      uses: cloudflare/wrangler-action@v3
       with:
         apiToken: ${{ inputs.cloudflare-api-token }}
         accountId: ${{ inputs.cloudflare-account-id }}
