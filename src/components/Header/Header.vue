@@ -213,7 +213,7 @@ import { trackEvent } from "@/utils/window";
 import Modal from "@/components/Modal/Modal.vue";
 import { toast } from "@/utils/toast";
 import aiGenerateTitle from "@/apis/aiGenerateTitle";
-import getFeatureFlags from '@/apis/featureFlags'
+import getFeatureFlags from '@/apis/featureFlags';
 
 function getMermaidType(dsl) {
   let type = dsl.trim().split("\n")[0].split(" ")[0];
