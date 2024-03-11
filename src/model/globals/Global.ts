@@ -1,9 +1,8 @@
-import {IApWrapper} from "@/model/IApWrapper";
 import AP, {isEmbedded} from "@/model/AP";
 import ApWrapper2 from "@/model/ApWrapper2";
 
 const global = {
-  apWrapper: new ApWrapper2(AP) as IApWrapper,
+  apWrapper: new ApWrapper2(AP),
   isEmbedded: isEmbedded,
 };
 

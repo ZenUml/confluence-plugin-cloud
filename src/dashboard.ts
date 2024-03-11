@@ -8,13 +8,17 @@ import './utils/IgnoreEsc.ts'
 import ApWrapper2 from "@/model/ApWrapper2";
 import uuidv4 from "@/utils/uuid";
 import {trackEvent} from '@/utils/window';
+import globals from '@/model/globals';
 
 const apWrapper = new ApWrapper2(AP);
 
 if(document.getElementById('app')) {
   const app = createApp(DashboardDocumentList);
-  app.mount('#app')
-  trackEvent('', 'load_dashboard', 'pageview');
+  app.mount('#app');
+  (async () => {
+    await globals.apWrapper.initializeContext();
+    trackEvent('', 'load_dashboard', 'pageview');
+  })();
 }
 
 EventBus.$on('save', async () => {

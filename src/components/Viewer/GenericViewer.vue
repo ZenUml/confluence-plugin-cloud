@@ -25,6 +25,9 @@
                 <path fill-rule="evenodd" clip-rule="evenodd" d="M2 14H5C5.26522 14 5.51957 14.1054 5.70711 14.2929C5.89464 14.4804 6 14.7348 6 15C6 15.2652 5.89464 15.5196 5.70711 15.7071C5.51957 15.8946 5.26522 16 5 16H2C1.46957 16 0.960859 15.7893 0.585786 15.4142C0.210714 15.0391 0 14.5304 0 14V11C0 10.7348 0.105357 10.4804 0.292893 10.2929C0.48043 10.1054 0.734784 10 1 10C1.26522 10 1.51957 10.1054 1.70711 10.2929C1.89464 10.4804 2 10.7348 2 11V14ZM14 16H11C10.7348 16 10.4804 15.8946 10.2929 15.7071C10.1054 15.5196 10 15.2652 10 15C10 14.7348 10.1054 14.4804 10.2929 14.2929C10.4804 14.1054 10.7348 14 11 14H14V11C14 10.7348 14.1054 10.4804 14.2929 10.2929C14.4804 10.1054 14.7348 10 15 10C15.2652 10 15.5196 10.1054 15.7071 10.2929C15.8946 10.4804 16 10.7348 16 11V14C16 14.5304 15.7893 15.0391 15.4142 15.4142C15.0391 15.7893 14.5304 16 14 16ZM2 0H5C5.26522 0 5.51957 0.105357 5.70711 0.292893C5.89464 0.48043 6 0.734784 6 1C6 1.26522 5.89464 1.51957 5.70711 1.70711C5.51957 1.89464 5.26522 2 5 2H2V5C2 5.26522 1.89464 5.51957 1.70711 5.70711C1.51957 5.89464 1.26522 6 1 6C0.734784 6 0.48043 5.89464 0.292893 5.70711C0.105357 5.51957 0 5.26522 0 5V2C0 1.46957 0.210714 0.960859 0.585786 0.585786C0.960859 0.210714 1.46957 0 2 0ZM14 2H11C10.7348 2 10.4804 1.89464 10.2929 1.70711C10.1054 1.51957 10 1.26522 10 1C10 0.734784 10.1054 0.48043 10.2929 0.292893C10.4804 0.105357 10.7348 0 11 0H14C14.5304 0 15.0391 0.210714 15.4142 0.585786C15.7893 0.960859 16 1.46957 16 2V5C16 5.26522 15.8946 5.51957 15.7071 5.70711C15.5196 5.89464 15.2652 6 15 6C14.7348 6 14.4804 5.89464 14.2929 5.70711C14.1054 5.51957 14 5.26522 14 5V2Z" fill="#47566F"/>
               </svg>
             </button>
+            <button @click="downloadPng" class="p-1">
+              <svg width="20" height="20" viewBox="0 0 24 24" role="presentation"><path d="M12 15a3 3 0 110-6 3 3 0 010 6zm1-12h6c1.136 0 2 1 2 2v6l-2-2V5h-4l-2-2zM3 11V5c0-1.136 1-2 2-2h6L9 5H5v4l-2 2zm8 10H5c-1.136 0-2-1-2-2v-6l2 2v4h4l2 2zm10-8v6c0 1.136-1 2-2 2h-6l2-2h4v-4l2-2z" fill="currentColor" fill-rule="evenodd"></path></svg>
+            </button>
             <send-feedback/>
           </div>
         </div>
@@ -45,6 +48,8 @@
 
 <script>
 import {trackEvent} from "@/utils/window";
+import { saveAs } from 'file-saver';
+
 import {mapState, mapGetters} from "vuex";
 import EventBus from '../../EventBus'
 import Debug from '@/components/Debug/Debug.vue'
@@ -53,6 +58,7 @@ import globals from '@/model/globals';
 import {DataSource} from "@/model/Diagram/Diagram";
 import {getUrlParam} from '@/utils/window';
 import SendFeedback from "@/components/SendFeedback.vue";
+import * as htmlToImage from "html-to-image";
 
 export default {
   name: "GenericViewer",
@@ -100,6 +106,21 @@ export default {
     fullscreen() {
       trackEvent('fullscreen', 'click', 'viewing');
       EventBus.$emit('fullscreen');
+    },
+    async downloadPng() {
+      trackEvent('download_png', 'click', 'viewing');
+      let node = null;
+      const parent = document.querySelector('.screen-capture-content');
+
+      if (parent) {
+        node = parent.querySelector('.zenuml.sequence-diagram');
+      }
+
+      if (!node) {
+        node = parent;
+      }
+      const png = await htmlToImage.toBlob(node, {backgroundColor: 'white'});
+      saveAs(png, 'zenuml-for-confluence.png');
     },
   },
 }

@@ -132,6 +132,8 @@
   import { ConfluencePage } from "@/model/page/ConfluencePage";
   import { getAttachmentDownloadLink } from "@/model/Attachment";
   import upgrade from "@/utils/upgrade";
+  import {trackEvent} from '@/utils/window';
+  import globals from '@/model/globals';
 
   export default {
     name: 'DashboardDocumentList',
@@ -223,7 +225,7 @@
       }
     },
     async mounted() {
-      const apWrapper = new ApWrapper2(AP);
+      const apWrapper = globals.apWrapper;
       await apWrapper.initializeContext();
       this.loadInitCustomData(await apWrapper.getDialogCustomData());
       this.customContentStorageProvider = new CustomContentStorageProvider(apWrapper);
@@ -271,6 +273,7 @@
           this.loadInitCustomData(customData);
           await this.search();
         });
+        this.trackFullScreenEvent('enter');
       },
       tryRefreshEmbeddedViewer(){
         const iframe = document.getElementById('embedded-viewer');
@@ -279,6 +282,10 @@
       exitFullScreen() {
         this.fullScreen=false;
         AP.dialog.close(this.buildInitCustomData());
+        this.trackFullScreenEvent('exit');
+      },
+      trackFullScreenEvent(category) {
+        trackEvent('', 'dashboard_full_screen', category);
       },
       setFilter(docType) {
         this.docTypeFilter = docType;
