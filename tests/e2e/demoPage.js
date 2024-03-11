@@ -7,8 +7,6 @@ const pageUrl = (id) => `${baseUrl}/pages/${id}`;
 const isLite = process.env.IS_LITE === 'true';
 const existingPageId = process.env.PAGE_ID;
 
-const delay = (time) => new Promise(resolve => setTimeout(resolve, time));
-
 (async () => {
   const browser = await puppeteer.launch({headless: process.env.CI === "true",
     args: ['--disable-web-security', '--disable-features=IsolateOrigins,site-per-process']});
@@ -24,12 +22,11 @@ const delay = (time) => new Promise(resolve => setTimeout(resolve, time));
   if(!password) {
     throw 'Error: Missing password';
   }
- 
   await page.click('input[name=password]');
-  await delay(500); // Waits for 500 milliseconds, otherwise we are not able to type in.
+  await page.waitForTimeout(500);  // Waits for 500 milliseconds, otherwise we are not able to type in.
   await page.keyboard.type(password);
 
-  await page.waitForSelector('xpath///span[text() = "Log in"]');
+  await page.waitForXPath('//span[text() = "Log in"]');
   await page.click("#login-submit");
   await page.waitForSelector('#title-text');
 
@@ -546,7 +543,7 @@ const delay = (time) => new Promise(resolve => setTimeout(resolve, time));
   async function waitForSelector(container, selector, options) {
     const isXpath = selector.indexOf('/') === 0;
     try {
-      return await (isXpath ? container.waitForSelector(`xpath/${selector}`, options) : container.waitForSelector(selector, options));
+      return await (isXpath ? container.waitForXPath(selector, options) : container.waitForSelector(selector, options));
     } catch(e) {
       console.log(`Error on waiting for ${selector} in ${container}`);
       if(!options || !options.hidden) {
