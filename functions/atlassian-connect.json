@@ -46,7 +46,7 @@
         "icon": {
           "width": 16,
           "height": 16,
-          "url": "image/zenuml_logo.png"
+          "url": "image/diagram_macro_icon.png"
         },
         "documentation": {
           "url": "https://zenuml.atlassian.net/wiki/spaces/Doc/overview"
@@ -100,7 +100,7 @@
         "icon": {
           "width": 16,
           "height": 16,
-          "url": "image/zenuml_logo.png"
+          "url": "image/graph_macro_icon.png"
         },
         "documentation": {
           "url": "https://zenuml.atlassian.net/wiki/spaces/Doc/overview"
@@ -154,7 +154,7 @@
         "icon": {
           "width": 16,
           "height": 16,
-          "url": "image/zenuml_logo.png"
+          "url": "image/openapi_macro_icon.png"
         },
         "documentation": {
           "url": "https://zenuml.atlassian.net/wiki/spaces/Doc/overview"
