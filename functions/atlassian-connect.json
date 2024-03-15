@@ -356,10 +356,11 @@
       {
         "key": "zenuml-content-graph-editor-dialog",
         "location": "none",
-        "url": "/drawio/editor.html?version=__VERSION__&spaceKey={space.key}&addonKey=__ADDON_KEY__&contentKey=__CONTENT_KEY__",
+        "url": "/drawio/editor.html?version=__VERSION__&addonKey=__ADDON_KEY__&contentKey=__CONTENT_KEY__",
         "name": {
           "value": "ZenUML Graph Editor Dialog"
-        }
+        },
+        "cacheable": true
       },
       {
         "key": "zenuml-content-dashboard-graph-editor-dialog",
