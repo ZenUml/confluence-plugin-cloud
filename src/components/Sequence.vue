@@ -8,6 +8,7 @@
 import ZenUml from "@zenuml/core";
 import EventBus from "@/EventBus";
 import { DiagramType } from "@/model/Diagram/Diagram";
+import { trackEvent } from "@/utils/window";
 let zenuml;
 export default {
   name: "Sequence",
@@ -44,6 +45,8 @@ export default {
         stickyOffset: 56,
         onContentChange: this.updateCode,
         onThemeChange: (theme) => {
+          console.log(1231);
+          trackEvent('set_theme', 'click', 'sequence')
           // there will not be an id when the diagram is just created
           if (this.$store.state.diagram.id) {
             localStorage.setItem(
