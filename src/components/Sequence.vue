@@ -5,9 +5,9 @@
 </template>
 
 <script>
-import ZenUml from '@zenuml/core';
+import ZenUml from "@zenuml/core";
 import EventBus from "@/EventBus";
-import {DiagramType} from "@/model/Diagram/Diagram";
+import { DiagramType } from "@/model/Diagram/Diagram";
 let zenuml;
 export default {
   name: "Sequence",
@@ -17,32 +17,52 @@ export default {
         this.$store.state.diagram.diagramType === DiagramType.Sequence &&
         this.$store.state.diagram.code
       );
-    }
+    },
   },
   async mounted() {
-    console.debug('SequenceCanvas - mounted', );
-    zenuml = new ZenUml(this.$refs['zenuml']);
+    console.debug("SequenceCanvas - mounted");
+    zenuml = new ZenUml(this.$refs["zenuml"]);
     await this.render();
-    EventBus.$emit('diagramLoaded', this.$store.state.diagram.code, this.$store.state.diagram.diagramType);
+    EventBus.$emit(
+      "diagramLoaded",
+      this.$store.state.diagram.code,
+      this.$store.state.diagram.diagramType
+    );
   },
   methods: {
     async render() {
-      // stickyOffset is used only at view mode or edit when the iframe scroll out of the viewport
-      // In fullscreen viewer or editor mode, the iFrame element is not scrollable, so we don't need to offset.
-      // Note when the iframe is not scrollable, the stickyOffset does not have any effect.
-      const theme =
-        localStorage.getItem(`${location.hostname}-zenuml-theme`) ||
-        "theme-default";
+      const theme = this.$store.state.diagram.id
+        ? localStorage.getItem(
+            `${location.hostname}-${this.$store.state.diagram.id}-zenuml-theme`
+          )
+        : sessionStorage.getItem(`${location.hostname}-preserve-zenuml-theme`);
       await zenuml.render(this.$store.state.diagram.code, {
-        theme,
+        // stickyOffset is used only at view mode or edit when the iframe scroll out of the viewport
+        // In fullscreen viewer or editor mode, the iFrame element is not scrollable, so we don't need to offset.
+        // Note when the iframe is not scrollable, the stickyOffset does not have any effect.
+        theme: theme || "theme-default",
         stickyOffset: 56,
-        onContentChange: this.updateCode
+        onContentChange: this.updateCode,
+        onThemeChange: (theme) => {
+          // there will not be an id when the diagram is just created
+          if (this.$store.state.diagram.id) {
+            localStorage.setItem(
+              `${location.hostname}-${this.$store.state.diagram.id}-zenuml-theme`,
+              theme
+            );
+          } else {
+            sessionStorage.setItem(
+              `${location.hostname}-preserve-zenuml-theme`,
+              theme
+            );
+          }
+        },
       });
     },
     updateCode(newCode) {
       this.$store.dispatch("updateCode2", newCode);
-      EventBus.$emit('updateContent', this.$store.state.diagram);
-    }
+      EventBus.$emit("updateContent", this.$store.state.diagram);
+    },
   },
   watch: {
     // watch in general is not a good idea, but it seems that this is the only native way to trigger reactivity.
@@ -50,8 +70,8 @@ export default {
     async code() {
       if (!this.code) return;
       await this.render();
-    }
-  }
+    },
+  },
 };
 </script>
 
