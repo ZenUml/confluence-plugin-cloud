@@ -3,6 +3,9 @@ import {defineConfig, splitVendorChunkPlugin} from 'vite';
 import createVuePlugin from '@vitejs/plugin-vue';
 import {execSync} from "child_process";
 import fs from 'fs'
+import { createFilter } from '@rollup/pluginutils';
+
+const filter = createFilter(['./drawio/**/*']);
 
 process.env.VITE_APP_GIT_HASH = execSync('git rev-parse --short HEAD').toString().trim()
 process.env.VITE_APP_GIT_BRANCH = execSync('git branch --show-current').toString().trim()
@@ -32,6 +35,10 @@ export default defineConfig({
       output: {
         // TODO: improve the strategy
         manualChunks(id) {
+          if (!filter(id)) {
+            return; // 跳过 ./drawio 下的文件
+          }
+
           if ((id.includes('node_modules') && id.includes('swagger'))) {
             return 'swagger'
           }
