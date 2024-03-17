@@ -55,4 +55,9 @@ export default {
 };
 </script>
 
-<style scoped></style>
+<style>
+  #headlessui-portal-root {
+    position: relative;
+    z-index: 11;
+  }
+</style>
