@@ -25,7 +25,7 @@ export class CompositeContentProvider implements IContentProvider{
           console.debug('Loaded diagram from', contentProvider.constructor.name);
           if(doc.diagramType === undefined || doc.diagramType === DiagramType.Unknown) {
             console.warn('diagramType is undefined', doc);
-            trackEvent('CompositeContentProvider', 'load_macro', 'error');
+            trackEvent('diagramType is undefined or unknown', 'load_macro', 'warn');
             doc.diagramType = DiagramType.Sequence;
           }
           return {id, doc};
