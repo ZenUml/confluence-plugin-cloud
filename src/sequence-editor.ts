@@ -42,7 +42,13 @@ async function main() {
 export default main();
 
 EventBus.$on('save', async () => {
-  await saveToPlatform(store.state.diagram);
+  const isNewSequence = !store.state.diagram.id && store.state.diagram.diagramType === "sequence"
+  const id = await saveToPlatform(store.state.diagram);
+  const preservedTheme = sessionStorage.getItem(`${location.hostname}-preserve-zenuml-theme`);
+  if(isNewSequence && preservedTheme) {
+    sessionStorage.removeItem(`${location.hostname}-preserve-zenuml-theme`);
+    localStorage.setItem(`${location.hostname}-${id}-zenuml-theme`, preservedTheme);
+  }
   // Give some time for track event to be sent out. We are not using a more reliable way to track event because
   // we don't want to block dialog close for too long.
   setTimeout(() => {
