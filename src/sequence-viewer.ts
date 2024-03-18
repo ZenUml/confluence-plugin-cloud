@@ -3,16 +3,17 @@ import defaultContentProvider from "@/model/ContentProvider/CompositeContentProv
 import globals from '@/model/globals';
 
 import DiagramPortal from "@/components/DiagramPortal.vue";
-import {mountRoot} from "@/mount-root";
+import { mountRoot } from "@/mount-root";
 
 import AP from "@/model/AP";
 import EventBus from './EventBus'
-import {trackEvent} from "@/utils/window";
+import { trackEvent } from "@/utils/window";
 import createAttachmentIfContentChanged from "@/model/Attachment";
-import {Diagram, DiagramType} from "@/model/Diagram/Diagram";
+import { Diagram, DiagramType } from "@/model/Diagram/Diagram";
 
 import './assets/tailwind.css'
 import { saveToPlatform } from "./model/ContentProvider/Persistence";
+import themePrompt from "@/utils/theme-prompt";
 
 async function main() {
   await globals.apWrapper.initializeContext();
@@ -20,8 +21,9 @@ async function main() {
   trackEvent(macroData?.uuid, 'view_macro', 'sequence');
 
   const compositeContentProvider = defaultContentProvider(globals.apWrapper as ApWrapper2);
-  let {doc} = await compositeContentProvider.load();
+  let { doc } = await compositeContentProvider.load();
   mountRoot(doc, DiagramPortal);
+  await themePrompt().showPopup();
 }
 
 export default main()
@@ -55,9 +57,9 @@ EventBus.$on('diagramLoaded', async (code: string, diagramType: DiagramType) => 
 EventBus.$on('edit', () => {
   AP.dialog.create({
     key: 'zenuml-content-sequence-editor-dialog',
-      chrome: false,
-      width: "100%",
-      height: "100%",
+    chrome: false,
+    width: "100%",
+    height: "100%",
   }).on('close', async () => {
     location.reload();
   });
