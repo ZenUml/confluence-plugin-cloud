@@ -167,6 +167,7 @@
                     </div>
                     <a
                       :href="customContentItem.container.link"
+                      target="_blank"
                       class="text-gray-500 hover:text-[#004EEB] hover:underline"
                       >{{ customContentItem.container.title }}</a
                     >
@@ -243,6 +244,7 @@
                     </div>
                     <a
                       :href="customContentItem.container.link"
+                      target="_blank"
                       class="text-gray-500 hover:text-[#004EEB] hover:underline"
                       >{{ customContentItem.container.title }}</a
                     >
